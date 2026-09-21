@@ -1,0 +1,247 @@
+---
+import { getCollection, render } from 'astro:content';
+
+const sectionOrder = ['programming-basics', 'php', 'php-runtime', 'oop', 'auth', 'database'];
+const sectionNames = {
+	ar: {
+		'programming-basics': 'أساسيات البرمجة والويب',
+		php: 'لغة PHP',
+		'php-runtime': 'تشغيل PHP والإنتاج',
+		oop: 'البرمجة كائنية التوجه',
+		auth: 'الأمان والهوية والصلاحيات',
+		database: 'قواعد البيانات وPDO',
+	},
+	en: {
+		'programming-basics': 'Programming and web fundamentals',
+		php: 'The PHP language',
+		'php-runtime': 'PHP runtime and production',
+		oop: 'Object-oriented programming',
+		auth: 'Security, identity, and authorization',
+		database: 'Databases and PDO',
+	},
+};
+
+const docs = (await getCollection('docs'))
+	.map((entry) => {
+		const locale = entry.id.startsWith('en/') ? 'en' : 'ar';
+		const normalizedId = locale === 'en' ? entry.id.slice(3) : entry.id;
+		const section = normalizedId.split('/')[0];
+		return { entry, locale, section, order: entry.data.sidebar?.order ?? 999 };
+	})
+	.filter((item) => sectionOrder.includes(item.section))
+	.sort((a, b) => {
+		const localeDifference = a.locale.localeCompare(b.locale);
+		if (localeDifference) return localeDifference;
+		const sectionDifference = sectionOrder.indexOf(a.section) - sectionOrder.indexOf(b.section);
+		if (sectionDifference) return sectionDifference;
+		return a.order - b.order || a.entry.data.title.localeCompare(b.entry.data.title);
+	});
+
+const renderedDocs = await Promise.all(
+	docs.map(async (item) => ({ ...item, ...(await render(item.entry)) })),
+);
+
+const groups = [
+	{ locale: 'ar', label: 'النسخة العربية', direction: 'rtl' },
+	{ locale: 'en', label: 'English edition', direction: 'ltr' },
+].map((group) => ({
+	...group,
+	sections: sectionOrder.map((section) => ({
+		id: section,
+		name: sectionNames[group.locale][section],
+		items: renderedDocs.filter((item) => item.locale === group.locale && item.section === section),
+	})),
+}));
+
+const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).format(new Date());
+---
+
+<!doctype html>
+<html lang="ar">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Omar Dev Notes — Complete Edition</title>
+		<style is:global>
+			:root { font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: #172033; background: #fff; }
+			* { box-sizing: border-box; }
+			body { margin: 0; background: #fff; font-size: 10.5pt; line-height: 1.72; }
+			a { color: #2855c5; text-decoration: none; }
+			.cover, .language-cover, .section-cover {
+				min-height: 257mm; display: flex; flex-direction: column; justify-content: center;
+				page-break-after: always; break-after: page; position: relative; overflow: hidden;
+				padding: 24mm 17mm;
+			}
+			.cover {
+				color: #fff;
+				background:
+					radial-gradient(circle at 16% 17%, rgba(69,209,255,.34), transparent 25%),
+					radial-gradient(circle at 83% 82%, rgba(170,100,255,.32), transparent 28%),
+					linear-gradient(145deg, #07172f 0%, #102c5d 52%, #3b2374 100%);
+			}
+			.cover::before, .cover::after {
+				content: ""; position: absolute; border: 1px solid rgba(255,255,255,.22);
+				border-radius: 50%; width: 120mm; height: 120mm;
+			}
+			.cover::before { inset: -44mm auto auto -42mm; }
+			.cover::after { inset: auto -52mm -48mm auto; }
+			.cover-mark {
+				width: 18mm; height: 18mm; border-radius: 5mm; display: grid; place-items: center;
+				background: linear-gradient(135deg, #57dbff, #9e6cff); font: 800 16pt/1 Consolas, monospace;
+				margin-bottom: 24mm; box-shadow: 0 8px 30px rgba(0,0,0,.28);
+			}
+			.eyebrow { text-transform: uppercase; letter-spacing: .18em; font-size: 9pt; font-weight: 700; opacity: .76; }
+			.cover h1 { font-size: 39pt; line-height: 1.08; letter-spacing: -.035em; margin: 5mm 0 7mm; max-width: 160mm; }
+			.cover-lead { font-size: 16pt; line-height: 1.6; max-width: 145mm; color: rgba(255,255,255,.83); margin: 0; }
+			.cover-meta { margin-top: 25mm; display: flex; gap: 4mm; flex-wrap: wrap; }
+			.cover-meta span {
+				border: 1px solid rgba(255,255,255,.23); background: rgba(255,255,255,.08);
+				border-radius: 999px; padding: 2.5mm 5mm; font-size: 9pt;
+			}
+			.toc { page-break-after: always; break-after: page; padding: 8mm 0 4mm; }
+			.toc h2 { font-size: 25pt; margin: 0 0 3mm; color: #102c5d; }
+			.toc-intro { color: #59667e; margin: 0 0 9mm; }
+			.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+			.toc-language { border: 1px solid #dfe5f1; border-radius: 5mm; padding: 7mm; break-inside: avoid; }
+			.toc-language h3 { margin: 0 0 5mm; color: #5f35a8; font-size: 16pt; }
+			.toc-language ol { margin: 0; padding-inline-start: 6mm; }
+			.toc-language li { margin: 2.2mm 0; }
+			.language-cover { background: linear-gradient(155deg, #eef8ff, #f5f0ff); color: #102c5d; }
+			.language-cover h2, .section-cover h2 { font-size: 34pt; line-height: 1.2; margin: 4mm 0; }
+			.language-cover p, .section-cover p { color: #5c6880; font-size: 14pt; max-width: 140mm; }
+			.section-cover { min-height: 120mm; background: #102c5d; color: #fff; border-radius: 7mm; }
+			.section-cover .section-number { font: 800 48pt/1 Consolas, monospace; color: #63ddff; opacity: .88; }
+			.section-cover p { color: rgba(255,255,255,.72); }
+			.document { page-break-before: always; break-before: page; padding-top: 2mm; }
+			.document-header { border-bottom: 2px solid #dbe2f0; margin-bottom: 7mm; padding-bottom: 4mm; }
+			.document-kicker { color: #6d4dc1; font-weight: 700; font-size: 8.5pt; letter-spacing: .04em; }
+			.document-header h1 { color: #102c5d; font-size: 25pt; line-height: 1.25; margin: 2mm 0; }
+			.document-description { color: #667087; margin: 0; font-size: 10pt; }
+			.doc-content > .sl-heading-wrapper.level-h1:first-child,
+			.doc-content .sl-anchor-link,
+			.doc-content .copy { display: none !important; }
+			.doc-content h2 {
+				color: #163d7a; font-size: 18pt; line-height: 1.35; margin: 10mm 0 4mm;
+				padding-bottom: 2mm; border-bottom: 1px solid #dfe5f1; break-after: avoid;
+			}
+			.doc-content h3 { color: #4e3687; font-size: 14pt; margin: 7mm 0 3mm; break-after: avoid; }
+			.doc-content h4 { break-after: avoid; }
+			.doc-content p { orphans: 3; widows: 3; }
+			.doc-content li { margin: 1.2mm 0; }
+			.doc-content code {
+				font-family: Consolas, "Courier New", monospace; font-size: .9em; background: #eef1f7;
+				color: #7a245b; border-radius: 1mm; padding: .3mm 1mm; direction: ltr; unicode-bidi: embed;
+			}
+			.doc-content pre {
+				background: #111b2d; color: #e8eef9; border-radius: 3mm; padding: 5mm;
+				white-space: pre-wrap; overflow-wrap: anywhere; direction: ltr; text-align: left;
+				break-inside: avoid; font-size: 8.7pt; line-height: 1.55;
+			}
+			.doc-content pre code { background: transparent; color: inherit; padding: 0; }
+			.doc-content pre, .doc-content pre * { color: #e8eef9 !important; }
+			.doc-content table {
+				width: 100%; border-collapse: collapse; margin: 5mm 0; font-size: 9pt; break-inside: avoid;
+			}
+			.doc-content th, .doc-content td { border: 1px solid #d7deec; padding: 2.4mm; vertical-align: top; }
+			.doc-content th { background: #edf3fc; color: #173969; }
+			.doc-content blockquote {
+				margin: 5mm 0; padding: 3mm 5mm; border-inline-start: 4px solid #6d4dc1;
+				background: #f5f2fb; color: #3f4656;
+			}
+			.doc-content img, .doc-content svg {
+				display: block; max-width: 100%; max-height: 190mm; height: auto;
+				margin: 6mm auto; break-inside: avoid;
+			}
+			.doc-content .starlight-aside {
+				border: 1px solid #cedaf0; border-inline-start: 4px solid #3773d6; background: #f3f7fd;
+				border-radius: 2mm; padding: 4mm 5mm; margin: 5mm 0; break-inside: avoid;
+			}
+			.doc-content .starlight-aside__title { font-weight: 800; color: #234e92; }
+			[dir="rtl"] { text-align: right; }
+			[dir="rtl"] .doc-content pre, [dir="rtl"] .doc-content code { text-align: left; }
+			@page { size: A4; margin: 16mm 15mm 18mm; }
+			@media print { .cover, .language-cover, .section-cover { margin: -16mm -15mm -18mm; } }
+		</style>
+	</head>
+	<body>
+		<main>
+			<section class="cover" dir="rtl">
+				<div class="cover-mark">&lt;/&gt;</div>
+				<div class="eyebrow">Omar Dev Notes · Complete Edition</div>
+				<h1>مرجع PHP والويب الكامل</h1>
+				<p class="cover-lead">
+					كل محتوى الدوكس الحالي في كتاب واحد: 75 درسًا بالعربية والإنجليزية، من رحلة الطلب
+					وأساسيات PHP إلى التشغيل والأمان وقواعد البيانات.
+				</p>
+				<div class="cover-meta">
+					<span>6 مسارات مترابطة</span><span>Arabic + English</span><span>إصدار {generatedAt}</span>
+				</div>
+			</section>
+
+			<section class="toc" dir="rtl">
+				<div class="eyebrow">Contents · المحتويات</div>
+				<h2>فهرس الكتاب</h2>
+				<p class="toc-intro">يبدأ كل مسار وكل درس في صفحة مستقلة لتسهيل القراءة والطباعة والمراجعة.</p>
+				<div class="toc-grid">
+					{groups.map((group) => (
+						<div class="toc-language" dir={group.direction}>
+							<h3>{group.label}</h3>
+							<ol>
+								{group.sections.map((section) => (
+									<li>
+										<a href={'#' + group.locale + '-' + section.id}>{section.name}</a>
+										<span>
+											— {Math.max(section.items.length - 1, 0)}
+											{group.locale === 'ar' ? ' درسًا' : ' lessons'}
+										</span>
+									</li>
+								))}
+							</ol>
+						</div>
+					))}
+				</div>
+			</section>
+
+			{groups.map((group) => (
+				<div lang={group.locale} dir={group.direction}>
+					<section class="language-cover">
+						<div class="eyebrow">Omar Dev Notes</div>
+						<h2>{group.label}</h2>
+						<p>
+							{group.locale === 'ar'
+								? 'نسخة منظمة للطباعة تشمل كل المسارات والدروس المنشورة في الدوكس.'
+								: 'A print-ready edition containing every published track and lesson in the documentation.'}
+						</p>
+					</section>
+					{group.sections.map((section, sectionIndex) => (
+						<>
+							<section class="section-cover" id={group.locale + '-' + section.id}>
+								<div class="section-number">{String(sectionIndex + 1).padStart(2, '0')}</div>
+								<div class="eyebrow">
+									{group.locale === 'ar' ? 'المسار' : 'Track'} · {Math.max(section.items.length - 1, 0)}
+									{group.locale === 'ar' ? ' درسًا' : ' lessons'}
+								</div>
+								<h2>{section.name}</h2>
+								<p>
+									{group.locale === 'ar'
+										? 'شرح متدرج، أمثلة عملية، وتصحيحات تساعدك على الانتقال من الفكرة إلى التطبيق.'
+										: 'Progressive explanations, practical examples, and corrections that take each idea into real code.'}
+								</p>
+							</section>
+							{section.items.map(({ entry, Content }) => (
+								<article class="document" id={'doc-' + entry.id}>
+									<header class="document-header">
+										<div class="document-kicker">{section.name}</div>
+										<h1>{entry.data.title}</h1>
+										{entry.data.description && <p class="document-description">{entry.data.description}</p>}
+									</header>
+									<div class="doc-content"><Content /></div>
+								</article>
+							))}
+						</>
+					))}
+				</div>
+			))}
+		</main>
+	</body>
+</html>

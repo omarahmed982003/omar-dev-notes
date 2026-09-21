@@ -1,0 +1,213 @@
+---
+import Search from '@astrojs/starlight/components/Search.astro';
+import SiteTitle from '@astrojs/starlight/components/SiteTitle.astro';
+
+const pathname = Astro.url.pathname;
+const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
+const languageHref = isEnglish
+	? pathname.replace(/^\/en(?=\/|$)/, '') || '/'
+	: '/en' + (pathname === '/' ? '/' : pathname);
+const languageLabel = isEnglish ? 'العربية' : 'English';
+const themeLabel = isEnglish ? 'Toggle color theme' : 'تبديل المظهر';
+---
+
+<modern-docs-header class="modern-header">
+	<div class="header-brand">
+		<SiteTitle><slot /></SiteTitle>
+	</div>
+
+	<div class="header-search">
+		<Search><slot /></Search>
+	</div>
+
+	<nav class="header-actions" aria-label={isEnglish ? 'Quick actions' : 'إجراءات سريعة'}>
+		<div class="social-actions">
+			<a
+				class="icon-action"
+				href="https://github.com/omarahmed982003/omar-dev-notes"
+				target="_blank"
+				rel="me noopener noreferrer"
+				aria-label="GitHub"
+				title="GitHub"
+			>
+				<svg aria-hidden="true" viewBox="0 0 24 24">
+					<path d="M12 .7a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.55v-2.23c-3.22.7-3.9-1.37-3.9-1.37-.52-1.34-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.95.1-.75.4-1.25.73-1.54-2.57-.3-5.27-1.29-5.27-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.16 1.18a10.9 10.9 0 0 1 5.76 0c2.2-1.49 3.16-1.18 3.16-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.71 5.39-5.29 5.68.42.36.79 1.06.79 2.14v3.26c0 .3.21.67.8.55A11.5 11.5 0 0 0 12 .7Z"/>
+				</svg>
+			</a>
+			<a
+				class="icon-action linkedin-action"
+				href="https://www.linkedin.com/in/omar-ahmed-86b16b405/"
+				target="_blank"
+				rel="me noopener noreferrer"
+				aria-label="LinkedIn"
+				title="LinkedIn"
+			>
+				<svg aria-hidden="true" viewBox="0 0 24 24">
+					<path d="M5.37 3.5A2.18 2.18 0 1 1 5.36 7.86 2.18 2.18 0 0 1 5.37 3.5ZM3.48 9.55h3.78V20.5H3.48V9.55Zm6.12 0h3.62v1.5h.05c.5-.96 1.74-1.97 3.58-1.97 3.83 0 4.54 2.52 4.54 5.8v5.62h-3.77v-4.99c0-1.19-.02-2.72-1.66-2.72-1.66 0-1.92 1.3-1.92 2.63v5.08H9.6V9.55Z"/>
+				</svg>
+			</a>
+		</div>
+
+		<span class="action-divider" aria-hidden="true"></span>
+
+		<a class="icon-action language-action" href={languageHref} aria-label={languageLabel} title={languageLabel}>
+			<svg aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.92 6h-3.05a15.7 15.7 0 0 0-1.38-3.18A8.04 8.04 0 0 1 18.92 8ZM12 4c.83 1.01 1.5 2.37 1.86 4h-3.72C10.5 6.37 11.17 5.01 12 4ZM4.26 14a7.8 7.8 0 0 1 0-4h3.4a16.5 16.5 0 0 0 0 4h-3.4Zm.82 2h3.05c.31 1.16.78 2.24 1.38 3.18A8.04 8.04 0 0 1 5.08 16Zm3.05-8H5.08a8.04 8.04 0 0 1 4.43-3.18A15.7 15.7 0 0 0 8.13 8ZM12 20c-.83-1.01-1.5-2.37-1.86-4h3.72c-.36 1.63-1.03 2.99-1.86 4Zm2.24-6H9.76a14.1 14.1 0 0 1 0-4h4.48a14.1 14.1 0 0 1 0 4Zm.25 5.18c.6-.94 1.07-2.02 1.38-3.18h3.05a8.04 8.04 0 0 1-4.43 3.18ZM16.34 14a16.5 16.5 0 0 0 0-4h3.4a7.8 7.8 0 0 1 0 4h-3.4Z"/>
+			</svg>
+			<span class="language-code">{isEnglish ? 'AR' : 'EN'}</span>
+		</a>
+
+		<button class="icon-action theme-action" type="button" aria-label={themeLabel} title={themeLabel}>
+			<svg class="sun-icon" aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M12 4a1 1 0 0 1-1-1V1a1 1 0 1 1 2 0v2a1 1 0 0 1-1 1Zm0 16a1 1 0 0 1 1 1v2a1 1 0 1 1-2 0v-2a1 1 0 0 1 1-1ZM4 12a1 1 0 0 1-1 1H1a1 1 0 1 1 0-2h2a1 1 0 0 1 1 1Zm16 0a1 1 0 0 1 1-1h2a1 1 0 1 1 0 2h-2a1 1 0 0 1-1-1ZM5.64 5.64a1 1 0 0 1-1.41 0L2.81 4.22a1 1 0 0 1 1.41-1.41l1.42 1.42a1 1 0 0 1 0 1.41Zm12.72 12.72a1 1 0 0 1 1.41 0l1.42 1.42a1 1 0 0 1-1.41 1.41l-1.42-1.42a1 1 0 0 1 0-1.41ZM18.36 5.64a1 1 0 0 1 0-1.41l1.42-1.42a1 1 0 1 1 1.41 1.41l-1.42 1.42a1 1 0 0 1-1.41 0ZM5.64 18.36a1 1 0 0 1 0 1.41l-1.42 1.42a1 1 0 0 1-1.41-1.41l1.42-1.42a1 1 0 0 1 1.41 0ZM12 6.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"/>
+			</svg>
+			<svg class="moon-icon" aria-hidden="true" viewBox="0 0 24 24">
+				<path d="M20.4 15.2A8.8 8.8 0 0 1 8.8 3.6 9.1 9.1 0 1 0 20.4 15.2Z"/>
+			</svg>
+		</button>
+	</nav>
+</modern-docs-header>
+
+<script>
+	class ModernDocsHeader extends HTMLElement {
+		connectedCallback() {
+			const button = this.querySelector<HTMLButtonElement>('.theme-action');
+			if (!button || button.dataset.ready === 'true') return;
+			button.dataset.ready = 'true';
+			button.addEventListener('click', () => {
+				const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+				document.documentElement.dataset.theme = nextTheme;
+				localStorage.setItem('starlight-theme', nextTheme);
+			});
+		}
+	}
+
+	if (!customElements.get('modern-docs-header')) {
+		customElements.define('modern-docs-header', ModernDocsHeader);
+	}
+</script>
+
+<style>
+	.modern-header {
+		display: grid;
+		grid-template-columns: minmax(13rem, 1fr) minmax(18rem, 36rem) minmax(13rem, 1fr);
+		grid-template-areas: "brand search actions";
+		align-items: center;
+		gap: 1.25rem;
+		width: 100%;
+		height: 100%;
+		min-width: 0;
+		padding: 0.35rem max(1rem, calc((100vw - 96rem) / 2));
+		direction: ltr;
+	}
+
+	:global([dir='rtl']) .modern-header {
+		grid-template-areas: "actions search brand";
+	}
+
+	.header-brand {
+		grid-area: brand;
+		min-width: 0;
+		justify-self: start;
+		direction: var(--sl-text-direction);
+	}
+
+	:global([dir='rtl']) .header-brand { justify-self: end; }
+
+	.header-search {
+		grid-area: search;
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		min-width: 0;
+	}
+
+	.header-search :global(site-search) {
+		width: 100% !important;
+		max-width: none !important;
+	}
+
+	.header-search :global(site-search > button) {
+		width: 100% !important;
+	}
+
+	.header-actions {
+		grid-area: actions;
+		display: flex;
+		align-items: center;
+		justify-self: end;
+		gap: 0.38rem;
+		direction: ltr;
+	}
+
+	:global([dir='rtl']) .header-actions { justify-self: start; }
+	.social-actions { display: flex; gap: 0.38rem; }
+
+	.icon-action {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.28rem;
+		width: 2.45rem;
+		height: 2.45rem;
+		padding: 0;
+		border: 1px solid var(--docs-border);
+		border-radius: 0.8rem;
+		background: color-mix(in srgb, var(--sl-color-bg-nav) 78%, transparent);
+		color: var(--sl-color-gray-2);
+		cursor: pointer;
+		text-decoration: none;
+		transition: 160ms ease;
+	}
+
+	.icon-action:hover {
+		border-color: color-mix(in srgb, var(--sl-color-accent) 48%, var(--docs-border));
+		background: color-mix(in srgb, var(--sl-color-accent) 10%, var(--sl-color-bg-nav));
+		color: var(--sl-color-text-accent);
+		transform: translateY(-1px);
+	}
+
+	.icon-action:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 2px;
+	}
+
+	.icon-action svg { width: 1.15rem; height: 1.15rem; fill: currentColor; }
+	.linkedin-action:hover { color: #0a66c2; }
+
+	.language-action { width: auto; padding-inline: 0.62rem; }
+	.language-code { font-size: 0.68rem; font-weight: 850; letter-spacing: 0.04em; }
+
+	.action-divider {
+		width: 1px;
+		height: 1.5rem;
+		margin-inline: 0.15rem;
+		background: var(--docs-border);
+	}
+
+	.sun-icon { display: none; }
+	:global([data-theme='dark']) .sun-icon { display: block; }
+	:global([data-theme='dark']) .moon-icon { display: none; }
+
+	@media (max-width: 66rem) {
+		.modern-header {
+			grid-template-columns: minmax(10rem, 1fr) minmax(15rem, 27rem) auto;
+			gap: 0.75rem;
+		}
+		.social-actions,
+		.action-divider { display: none; }
+	}
+
+	@media (max-width: 50rem) {
+		.modern-header {
+			grid-template-columns: minmax(0, 1fr) auto;
+			grid-template-areas: "brand actions" "search search";
+			padding: 0.35rem 1rem 0.45rem;
+		}
+		:global([dir='rtl']) .modern-header {
+			grid-template-areas: "actions brand" "search search";
+		}
+		.header-search { max-width: none; }
+		.header-brand :global(.site-title) { font-size: 0.95rem; }
+	}
+</style>

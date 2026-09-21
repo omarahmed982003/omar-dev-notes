@@ -1,0 +1,137 @@
+---
+title: 8. الملفات والـ Streams وJSON وCSV
+description: نظام الملفات، أوضاع الفتح، الصلاحيات، streams وwrappers وcontexts وJSON وCSV.
+sidebar:
+  order: 8
+---
+
+## Streams
+
+الـ stream واجهة موحّدة للتعامل مع تدفق بيانات من مصدر أو إلى وجهة: ملف، ذاكرة، شبكة، URL، أو عملية أخرى. يتكون المفهوم من:
+
+1. **Wrapper** يحدد البروتوكول مثل `file://` و`http://` و`ftp://` و`php://` و`data://` و`zlib://`. ويمكن تسجيل wrapper مخصص بـ `stream_wrapper_register()`.
+2. **Context** يمرر options وparameters مثل timeout وHTTP headers.
+3. **Filter** يحوّل البيانات أثناء القراءة أو الكتابة.
+
+```php
+$context = stream_context_create([
+    'http' => [
+        'timeout' => 3,
+        'header' => "Accept: application/json\r\n",
+        'ignore_errors' => true,
+    ],
+]);
+
+$body = file_get_contents('https://example.com/api', false, $context);
+```
+
+:::caution
+`allow_url_fopen` يتحكم في استخدام URL-aware wrappers مع دوال الملفات. لا تفعّل `allow_url_include`؛ تضمين كود PHP من URL مخاطرة شديدة. لطلبات HTTP الحقيقية استخدم عميلًا يدعم TLS والتحقق من الحالة وإعادة المحاولة.
+:::
+
+الـ streams قد تعمل محليًا أو عبر الشبكة وتستخدم buffers وchunks. راقب أخطاء الاتصال والصلاحيات والتسجيل، وافحص `false` بدل إخفاء الخطأ بـ `@`.
+
+## فتح الملفات
+
+```php
+$handle = fopen(__DIR__ . '/data.txt', 'rb');
+
+if ($handle === false) {
+    throw new RuntimeException('تعذر فتح الملف');
+}
+
+try {
+    while (($line = fgets($handle)) !== false) {
+        echo rtrim($line), PHP_EOL;
+    }
+} finally {
+    fclose($handle);
+}
+```
+
+| الوضع | المعنى |
+|---|---|
+| `r` | قراءة من البداية؛ الملف يجب أن يوجد |
+| `r+` | قراءة وكتابة؛ الملف يجب أن يوجد |
+| `w` | كتابة مع تفريغ الملف أو إنشائه |
+| `w+` | قراءة وكتابة مع التفريغ أو الإنشاء |
+| `a` | كتابة في النهاية أو إنشاء |
+| `a+` | قراءة وكتابة؛ الكتابة دائمًا في النهاية |
+| `x` / `x+` | إنشاء جديد فقط؛ يفشل إن كان موجودًا |
+| `c` / `c+` | إنشاء إن لزم بلا تفريغ؛ المؤشر في البداية |
+
+أضف `b` مثل `rb` للملفات الثنائية، خصوصًا للتوافق بين الأنظمة.
+
+```php
+$handle = fopen(__DIR__ . '/app.log', 'ab');
+if ($handle === false) {
+    throw new RuntimeException('Cannot open log');
+}
+
+try {
+    if (!flock($handle, LOCK_EX)) {
+        throw new RuntimeException('Cannot lock log');
+    }
+    fwrite($handle, date(DATE_ATOM) . " started\n");
+    fflush($handle);
+    flock($handle, LOCK_UN);
+} finally {
+    fclose($handle);
+}
+```
+
+`fwrite()` قد يعيد عدد bytes أقل من المطلوب، و`fclose()` يغلق المقبض. يمكن استخدام `file_get_contents` و`file_put_contents` للملفات الصغيرة، مع `LOCK_EX` عند الحاجة.
+
+## الصلاحيات
+
+في Unix: read=4، write=2، execute=1، وتُجمع لكل من owner وgroup وothers.
+
+- `0644`: المالك يقرأ ويكتب، والباقون يقرؤون.
+- `0755`: المالك كامل الصلاحيات، والباقون قراءة وتنفيذ.
+- `0600`: المالك فقط يقرأ ويكتب.
+
+```php
+chmod($path, 0640);
+```
+
+لا تجعل `0777` حلًا افتراضيًا. `chmod` وسلوك الملكية يختلفان على Windows، وتتحكم صلاحيات نظام التشغيل والمستخدم الذي يشغّل PHP في النتيجة.
+
+## JSON وSerialization
+
+```php
+$json = json_encode(
+    ['name' => 'عمر', 'active' => true],
+    JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
+);
+
+$data = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
+
+if (function_exists('json_validate')) {
+    var_dump(json_validate($json)); // PHP 8.3+
+}
+```
+
+`serialize()` و`unserialize()` يحتفظان ببنية PHP، لكن:
+
+:::danger
+لا تستخدم `unserialize()` على بيانات غير موثوقة؛ قد يؤدي إلى Object Injection. استخدم JSON للبيانات المتبادلة، أو قيّد `allowed_classes` عند الضرورة.
+:::
+
+## CSV
+
+```php
+$out = fopen(__DIR__ . '/users.csv', 'wb');
+fputcsv($out, ['id', 'name']);
+fputcsv($out, [1, 'Omar']);
+fclose($out);
+
+$in = fopen(__DIR__ . '/users.csv', 'rb');
+while (($row = fgetcsv($in)) !== false) {
+    [$id, $name] = $row;
+}
+fclose($in);
+
+$row = str_getcsv('2,"Mona Ahmed"');
+```
+
+استخدم دوال CSV بدل `explode(',')` لأنها تتعامل مع علامات الاقتباس والفواصل داخل الحقول.

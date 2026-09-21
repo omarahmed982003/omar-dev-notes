@@ -1,0 +1,740 @@
+---
+interface Props {
+	locale: 'ar' | 'en';
+}
+
+const { locale } = Astro.props;
+const isArabic = locale === 'ar';
+
+const content = isArabic
+	? {
+			eyebrow: 'مسار تعلّم ثنائي اللغة',
+			title: 'تعلّم PHP كنظام متكامل، لا كأوامر منفصلة.',
+			description:
+				'ابدأ من رحلة الطلب عبر الويب، ثم أتقن اللغة وOOP وقواعد البيانات والأمان، وصولًا إلى تشغيل تطبيق PHP بكفاءة في الإنتاج.',
+			primary: { label: 'ابدأ بالأساسيات', href: '/programming-basics/' },
+			secondary: { label: 'استكشف PHP', href: '/php/' },
+			download: { label: 'تحميل الدوكس PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
+			stats: [
+				{ value: '75', label: 'درسًا عمليًا' },
+				{ value: '6', label: 'مسارات مترابطة' },
+				{ value: 'AR · EN', label: 'عربي وإنجليزي' },
+			],
+			flowTitle: 'رحلة الطلب',
+			flowLabel: 'من المتصفح إلى تطبيق PHP والعودة',
+			sectionTitle: 'اختر مسارك',
+			sectionDescription: 'اتبع الترتيب المقترح أو ادخل مباشرة إلى الموضوع الذي تحتاجه الآن.',
+			lessonLabel: 'دروس',
+			paths: [
+				{
+					code: '01',
+					title: 'أساسيات البرمجة والويب',
+					description: 'افهم DNS وHTTP وTLS ورحلة الطلب قبل الدخول إلى تفاصيل اللغة.',
+					href: '/programming-basics/',
+					count: '13',
+					level: 'البداية',
+					accent: 'blue',
+				},
+				{
+					code: 'PHP',
+					title: 'لغة PHP',
+					description: 'من الصياغة والأنواع والدوال إلى الملفات والجلسات وبناء طلب حقيقي.',
+					href: '/php/',
+					count: '16',
+					level: 'مبتدئ ← متوسط',
+					accent: 'violet',
+				},
+				{
+					code: 'OPS',
+					title: 'تشغيل PHP والإنتاج',
+					description: 'Composer وcURL وOPcache وPHP-FPM وNginx والإعدادات الآمنة.',
+					href: '/php-runtime/',
+					count: '14',
+					level: 'متوسط',
+					accent: 'cyan',
+				},
+				{
+					code: 'OOP',
+					title: 'البرمجة كائنية التوجه',
+					description: 'صمّم أصنافًا واضحة باستخدام التغليف والوراثة والواجهات والتركيب.',
+					href: '/oop/',
+					count: '8',
+					level: 'متوسط',
+					accent: 'amber',
+				},
+				{
+					code: 'SEC',
+					title: 'الأمان والهوية والصلاحيات',
+					description: 'الجلسات وXSS وCSRF وJWT وOAuth وOIDC وسياسات الوصول.',
+					href: '/auth/',
+					count: '19',
+					level: 'متوسط ← متقدم',
+					accent: 'rose',
+				},
+				{
+					code: 'DB',
+					title: 'قواعد البيانات وPDO',
+					description: 'Prepared Statements وORM وTransactions وACID والفهارس والترحيلات.',
+					href: '/database/',
+					count: '5',
+					level: 'متوسط',
+					accent: 'green',
+				},
+			],
+		}
+	: {
+			eyebrow: 'A bilingual learning path',
+			title: 'Learn PHP as a complete system, not isolated syntax.',
+			description:
+				'Follow a request across the web, then master the language, OOP, databases, security, and the production runtime that holds everything together.',
+			primary: { label: 'Start with the basics', href: '/en/programming-basics/' },
+			secondary: { label: 'Explore PHP', href: '/en/php/' },
+			download: { label: 'Download the complete PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
+			stats: [
+				{ value: '75', label: 'practical lessons' },
+				{ value: '6', label: 'connected tracks' },
+				{ value: 'AR · EN', label: 'Arabic and English' },
+			],
+			flowTitle: 'Request journey',
+			flowLabel: 'From the browser to PHP and back',
+			sectionTitle: 'Choose your path',
+			sectionDescription: 'Follow the suggested order or jump directly to the topic you need.',
+			lessonLabel: 'lessons',
+			paths: [
+				{
+					code: '01',
+					title: 'Programming & web basics',
+					description: 'Understand DNS, HTTP, TLS, and request flow before language details.',
+					href: '/en/programming-basics/',
+					count: '13',
+					level: 'Start here',
+					accent: 'blue',
+				},
+				{
+					code: 'PHP',
+					title: 'The PHP language',
+					description: 'Syntax, types, functions, files, sessions, and real request handling.',
+					href: '/en/php/',
+					count: '16',
+					level: 'Beginner → intermediate',
+					accent: 'violet',
+				},
+				{
+					code: 'OPS',
+					title: 'PHP runtime & production',
+					description: 'Composer, HTTP clients, OPcache, PHP-FPM, Nginx, and safe configuration.',
+					href: '/en/php-runtime/',
+					count: '14',
+					level: 'Intermediate',
+					accent: 'cyan',
+				},
+				{
+					code: 'OOP',
+					title: 'Object-oriented programming',
+					description: 'Design clear classes with encapsulation, inheritance, interfaces, and composition.',
+					href: '/en/oop/',
+					count: '8',
+					level: 'Intermediate',
+					accent: 'amber',
+				},
+				{
+					code: 'SEC',
+					title: 'Security, identity & access',
+					description: 'Sessions, XSS, CSRF, JWT, OAuth, OIDC, and authorization policies.',
+					href: '/en/auth/',
+					count: '19',
+					level: 'Intermediate → advanced',
+					accent: 'rose',
+				},
+				{
+					code: 'DB',
+					title: 'Databases & PDO',
+					description: 'Prepared statements, ORM, transactions, ACID, indexes, and migrations.',
+					href: '/en/database/',
+					count: '5',
+					level: 'Intermediate',
+					accent: 'green',
+				},
+			],
+		};
+
+const arrow = isArabic ? '←' : '→';
+---
+
+<div class="home-shell">
+	<section class="home-hero" aria-labelledby="home-title">
+		<div class="hero-copy">
+			<p class="eyebrow"><span aria-hidden="true"></span>{content.eyebrow}</p>
+			<h1 id="home-title">{content.title}</h1>
+			<p class="hero-description">{content.description}</p>
+			<div class="hero-actions">
+				<a class="primary-action" href={content.primary.href}>
+					{content.primary.label}<span aria-hidden="true">{arrow}</span>
+				</a>
+				<a class="secondary-action" href={content.secondary.href}>
+					{content.secondary.label}<span aria-hidden="true">{arrow}</span>
+				</a>
+				<button
+					type="button"
+					class="download-action"
+					data-docs-download
+					data-download-url={content.download.href}
+				>
+					<span aria-hidden="true">↓</span>{content.download.label}
+				</button>
+			</div>
+			<ul class="learning-stats" aria-label={isArabic ? 'ملخص المحتوى' : 'Content summary'}>
+				{content.stats.map((stat) => (
+					<li>
+						<strong>{stat.value}</strong>
+						<span>{stat.label}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+
+		<div class="request-visual" role="img" aria-label={content.flowLabel}>
+			<div class="visual-topbar">
+				<div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+				<span>{content.flowTitle}</span>
+			</div>
+			<div class="flow-line">
+				<span class="flow-number">01</span>
+				<code><b>GET</b> /learn/php</code>
+				<span class="flow-status">request</span>
+			</div>
+			<div class="flow-connector" aria-hidden="true"></div>
+			<div class="flow-line">
+				<span class="flow-number">02</span>
+				<code>DNS → TLS → Nginx</code>
+				<span class="flow-status">web</span>
+			</div>
+			<div class="flow-connector" aria-hidden="true"></div>
+			<div class="flow-line">
+				<span class="flow-number">03</span>
+				<code>PHP-FPM → Application</code>
+				<span class="flow-status">runtime</span>
+			</div>
+			<div class="flow-connector" aria-hidden="true"></div>
+			<div class="flow-line is-success">
+				<span class="flow-number">04</span>
+				<code><b>200</b> application/json</code>
+				<span class="flow-status">response</span>
+			</div>
+		</div>
+	</section>
+
+	<section class="learning-paths" aria-labelledby="paths-title">
+		<div class="section-heading">
+			<div>
+				<p class="section-kicker">01 — 06</p>
+				<h2 id="paths-title">{content.sectionTitle}</h2>
+			</div>
+			<p>{content.sectionDescription}</p>
+		</div>
+
+		<div class="paths-grid">
+			{content.paths.map((path) => (
+				<a class="path-card" data-accent={path.accent} href={path.href}>
+					<div class="card-topline">
+						<span class="path-code">{path.code}</span>
+						<span class="path-arrow" aria-hidden="true">{arrow}</span>
+					</div>
+					<div class="card-copy">
+						<h3>{path.title}</h3>
+						<p>{path.description}</p>
+					</div>
+					<div class="card-meta">
+						<span>{path.count} {content.lessonLabel}</span>
+						<span>{path.level}</span>
+					</div>
+				</a>
+			))}
+		</div>
+	</section>
+</div>
+
+<style>
+	.home-shell {
+		width: min(100%, 78rem);
+		margin-inline: auto;
+		padding: clamp(1.5rem, 3vw, 3rem) clamp(0.25rem, 2vw, 1.5rem) 5rem;
+		overflow-x: clip;
+	}
+
+	.home-hero {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
+		align-items: center;
+		gap: clamp(2rem, 6vw, 5.5rem);
+		min-height: 31rem;
+		padding-block: 2rem 4rem;
+	}
+
+	.home-hero::before {
+		position: absolute;
+		z-index: -1;
+		inset: 5% 0 auto auto;
+		width: min(28rem, 80vw);
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: radial-gradient(circle, color-mix(in srgb, var(--sl-color-accent) 16%, transparent), transparent 68%);
+		content: '';
+		filter: blur(10px);
+		pointer-events: none;
+	}
+
+	.eyebrow,
+	.section-kicker {
+		margin: 0 0 1rem;
+		color: var(--sl-color-accent);
+		font-size: 0.78rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.eyebrow {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+		padding: 0.45rem 0.75rem;
+		border: 1px solid color-mix(in srgb, var(--sl-color-accent) 28%, transparent);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--sl-color-accent-low) 58%, transparent);
+	}
+
+	.eyebrow > span {
+		width: 0.48rem;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: var(--sl-color-accent);
+		box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+	}
+
+	h1 {
+		max-width: 15ch;
+		margin: 0;
+		color: var(--sl-color-white);
+		font-size: clamp(2.6rem, 5vw, 4.7rem);
+		font-weight: 850;
+		letter-spacing: -0.055em;
+		line-height: 1.04;
+		text-wrap: balance;
+	}
+
+	:global([data-theme='light']) h1 {
+		color: #0b1020;
+	}
+
+	.hero-description {
+		max-width: 61ch;
+		margin: 1.5rem 0 0;
+		color: var(--sl-color-gray-2);
+		font-size: clamp(1.04rem, 1.5vw, 1.2rem);
+		line-height: 1.9;
+	}
+
+	:global([data-theme='light']) .hero-description {
+		color: #465066;
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 1.85rem;
+	}
+
+	.hero-actions a,
+	.hero-actions button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		min-height: 3rem;
+		padding: 0.72rem 1.1rem;
+		border: 1px solid transparent;
+		border-radius: 0.8rem;
+		font-weight: 750;
+		text-decoration: none;
+		font: inherit;
+		cursor: pointer;
+		transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+	}
+
+	.hero-actions a:hover,
+	.hero-actions button:hover {
+		transform: translateY(-2px);
+	}
+
+	.primary-action {
+		background: linear-gradient(135deg, #4f46e5, #2563eb);
+		box-shadow: 0 12px 30px rgb(37 99 235 / 22%);
+		color: white;
+	}
+
+	.secondary-action {
+		border-color: var(--sl-color-hairline) !important;
+		background: color-mix(in srgb, var(--sl-color-bg-nav) 78%, transparent);
+		color: var(--sl-color-text-accent);
+	}
+
+	.download-action {
+		border-color: color-mix(in srgb, #22c55e 48%, var(--sl-color-hairline)) !important;
+		background: color-mix(in srgb, #22c55e 11%, var(--sl-color-bg-nav));
+		color: color-mix(in srgb, #22c55e 72%, var(--sl-color-text));
+	}
+
+	.download-action span {
+		display: grid;
+		place-items: center;
+		width: 1.35rem;
+		height: 1.35rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, #22c55e 20%, transparent);
+		font-size: 1rem;
+		font-weight: 900;
+	}
+
+	.learning-stats {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.learning-stats li {
+		display: grid;
+		gap: 0.1rem;
+	}
+
+	.learning-stats strong {
+		color: var(--sl-color-white);
+		font-size: 1.15rem;
+	}
+
+	:global([data-theme='light']) .learning-stats strong {
+		color: #111827;
+	}
+
+	.learning-stats span {
+		color: var(--sl-color-gray-3);
+		font-size: 0.78rem;
+		font-weight: 650;
+	}
+
+	.request-visual {
+		direction: ltr;
+		overflow: hidden;
+		border: 1px solid rgb(148 163 184 / 22%);
+		border-radius: 1.25rem;
+		background:
+			linear-gradient(180deg, rgb(15 23 42 / 98%), rgb(8 15 29 / 98%));
+		box-shadow: 0 30px 80px rgb(2 6 23 / 32%), inset 0 1px 0 rgb(255 255 255 / 7%);
+		color: #dbeafe;
+		text-align: left;
+		transform: perspective(900px) rotateY(-2deg);
+	}
+
+	.visual-topbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.9rem 1rem;
+		border-bottom: 1px solid rgb(148 163 184 / 14%);
+		color: #94a3b8;
+		font: 650 0.72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
+	.window-dots {
+		display: flex;
+		gap: 0.38rem;
+	}
+
+	.window-dots i {
+		width: 0.52rem;
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: #fb7185;
+	}
+
+	.window-dots i:nth-child(2) { background: #fbbf24; }
+	.window-dots i:nth-child(3) { background: #34d399; }
+
+	.flow-line {
+		display: grid;
+		grid-template-columns: 2rem 1fr auto;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0.85rem 1rem;
+		padding: 0.85rem;
+		border: 1px solid rgb(148 163 184 / 14%);
+		border-radius: 0.75rem;
+		background: rgb(15 23 42 / 72%);
+	}
+
+	.flow-line code {
+		overflow: hidden;
+		color: #dbeafe;
+		font: 600 clamp(0.74rem, 1.2vw, 0.86rem)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.flow-line code b { color: #60a5fa; }
+	.flow-line.is-success code b { color: #34d399; }
+
+	.flow-number {
+		color: #64748b;
+		font: 700 0.68rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+	}
+
+	.flow-status {
+		padding: 0.3rem 0.48rem;
+		border-radius: 999px;
+		background: rgb(37 99 235 / 15%);
+		color: #93c5fd;
+		font: 700 0.62rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+	}
+
+	.is-success .flow-status {
+		background: rgb(16 185 129 / 14%);
+		color: #6ee7b7;
+	}
+
+	.flow-connector {
+		width: 1px;
+		height: 0.55rem;
+		margin: -0.85rem 0 -0.85rem 2.95rem;
+		background: linear-gradient(#334155, #60a5fa);
+	}
+
+	.learning-paths {
+		padding-top: 1rem;
+	}
+
+	.section-heading {
+		display: grid;
+		grid-template-columns: 1fr minmax(18rem, 31rem);
+		align-items: end;
+		gap: 2rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.section-heading h2 {
+		margin: 0;
+		color: var(--sl-color-white);
+		font-size: clamp(2rem, 3.5vw, 3.2rem);
+		letter-spacing: -0.04em;
+		line-height: 1.08;
+	}
+
+	:global([data-theme='light']) .section-heading h2 {
+		color: #111827;
+	}
+
+	.section-heading > p {
+		margin: 0;
+		color: var(--sl-color-gray-3);
+		line-height: 1.75;
+	}
+
+	.paths-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.path-card {
+		--path-accent: #60a5fa;
+		position: relative;
+		display: flex;
+		min-height: 14.5rem;
+		flex-direction: column;
+		overflow: hidden;
+		padding: 1.25rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 1rem;
+		background:
+			linear-gradient(145deg, color-mix(in srgb, var(--path-accent) 7%, transparent), transparent 44%),
+			color-mix(in srgb, var(--sl-color-bg-nav) 82%, transparent);
+		box-shadow: 0 10px 28px rgb(2 6 23 / 7%);
+		color: inherit;
+		text-decoration: none;
+		transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+	}
+
+	.path-card::before {
+		position: absolute;
+		inset: 0 auto auto 0;
+		width: 100%;
+		height: 2px;
+		background: linear-gradient(90deg, var(--path-accent), transparent 75%);
+		content: '';
+	}
+
+	.path-card[data-accent='violet'] { --path-accent: #a78bfa; }
+	.path-card[data-accent='cyan'] { --path-accent: #22d3ee; }
+	.path-card[data-accent='amber'] { --path-accent: #fbbf24; }
+	.path-card[data-accent='rose'] { --path-accent: #fb7185; }
+	.path-card[data-accent='green'] { --path-accent: #34d399; }
+
+	.path-card:hover,
+	.path-card:focus-visible {
+		border-color: color-mix(in srgb, var(--path-accent) 58%, var(--sl-color-hairline));
+		box-shadow: 0 18px 44px color-mix(in srgb, var(--path-accent) 13%, transparent);
+		transform: translateY(-4px);
+	}
+
+	.path-card:focus-visible {
+		outline: 3px solid color-mix(in srgb, var(--path-accent) 32%, transparent);
+		outline-offset: 3px;
+	}
+
+	.card-topline,
+	.card-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.path-code {
+		display: inline-grid;
+		min-width: 2.6rem;
+		height: 2.2rem;
+		place-items: center;
+		padding-inline: 0.55rem;
+		border: 1px solid color-mix(in srgb, var(--path-accent) 28%, transparent);
+		border-radius: 0.65rem;
+		background: color-mix(in srgb, var(--path-accent) 11%, transparent);
+		color: var(--path-accent);
+		font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+		letter-spacing: 0.04em;
+	}
+
+	.path-arrow {
+		color: var(--path-accent);
+		font-size: 1.35rem;
+		transition: transform 180ms ease;
+	}
+
+	.path-card:hover .path-arrow {
+		transform: translateX(calc(3px * var(--arrow-direction, 1)));
+	}
+
+	:global([dir='rtl']) .path-card { --arrow-direction: -1; }
+
+	.card-copy {
+		margin-block: 1.25rem auto;
+	}
+
+	.card-copy h3 {
+		margin: 0;
+		color: var(--sl-color-white);
+		font-size: 1.14rem;
+		font-weight: 800;
+		letter-spacing: -0.015em;
+		line-height: 1.35;
+	}
+
+	:global([data-theme='light']) .card-copy h3 {
+		color: #111827;
+	}
+
+	.card-copy p {
+		margin: 0.75rem 0 0;
+		color: var(--sl-color-gray-3);
+		font-size: 0.9rem;
+		line-height: 1.75;
+	}
+
+	.card-meta {
+		padding-top: 0.85rem;
+		border-top: 1px solid var(--sl-color-hairline-light);
+		color: var(--sl-color-gray-3);
+		font-size: 0.72rem;
+		font-weight: 650;
+	}
+
+	@media (max-width: 60rem) {
+		.home-hero {
+			grid-template-columns: 1fr;
+			min-height: auto;
+			padding-top: 2rem;
+		}
+
+		.hero-copy {
+			max-width: 48rem;
+		}
+
+		h1 { max-width: 17ch; }
+		.request-visual { transform: none; }
+		.paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+
+	@media (max-width: 42rem) {
+		.home-shell {
+			padding: 1.2rem 0.15rem 3.5rem;
+		}
+
+		.home-hero {
+			gap: 2.25rem;
+			padding-block: 1.25rem 2.75rem;
+		}
+
+		h1 {
+			font-size: clamp(2.25rem, 11vw, 3.2rem);
+			letter-spacing: -0.04em;
+		}
+
+		.hero-description { font-size: 1rem; }
+		.hero-actions { display: grid; grid-template-columns: 1fr; }
+		.hero-actions a,
+		.hero-actions button { width: 100%; }
+		.learning-stats { gap: 1rem 1.4rem; }
+		.request-visual { border-radius: 1rem; }
+		.flow-line { grid-template-columns: 1.7rem 1fr; }
+		.flow-status { display: none; }
+
+		.section-heading {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+
+		.paths-grid { grid-template-columns: 1fr; }
+		.path-card { min-height: 13rem; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero-actions a,
+		.hero-actions button,
+		.path-card,
+		.path-arrow {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const downloadButton = document.querySelector<HTMLButtonElement>('[data-docs-download]');
+
+	downloadButton?.addEventListener('click', () => {
+		const url = downloadButton.dataset.downloadUrl;
+		if (!url) return;
+
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = 'omar-dev-notes-complete.pdf';
+		link.style.display = 'none';
+		document.body.append(link);
+		link.click();
+		link.remove();
+	});
+</script>

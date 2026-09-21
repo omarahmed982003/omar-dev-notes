@@ -1,11 +1,11 @@
 ---
-title: Example Reference
-description: A reference page in my new Starlight docs site.
+title: مثال مرجعي
+description: مثال على صفحات المراجع داخل قاعدة المعرفة.
 ---
 
-Reference pages are ideal for outlining how things work in terse and clear terms.
-Less concerned with telling a story or addressing a specific use case, they should give a comprehensive outline of what you're documenting.
+صفحات المراجع مناسبة لشرح كيفية عمل شيء ما بصورة مختصرة وواضحة.
+وهي تركّز على توفير معلومات دقيقة وشاملة أكثر من تركيزها على سرد قصة أو حالة استخدام محددة.
 
-## Further reading
+## قراءة إضافية
 
-- Read [about reference](https://diataxis.fr/reference/) in the Diátaxis framework
+- اقرأ عن [صفحات المراجع](https://diataxis.fr/reference/) في إطار Diátaxis.
