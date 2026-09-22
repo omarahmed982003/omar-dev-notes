@@ -75,3 +75,40 @@ Namespace ليست filesystem path إجباريًا في اللغة؛ PSR-4 هو
 - [PHP Namespaces](https://www.php.net/manual/en/language.namespaces.php)
 - [Composer PSR-4](https://getcomposer.org/doc/04-schema.md#psr-4)
 
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Namespaces وAutoloading">
+<p class="lesson-diagram-title">خريطة مفاهيم: Namespaces وAutoloading</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>لماذا Namespace؟</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>الاستيراد والـaliases</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Composer وPSR-4</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>قواعد تنظيم</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>مرجع</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «لماذا Namespace؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تمنع تعارض أسماء classes/functions/constants بين مكتبات مختلفة، وتعطي الكود اسمًا منطقيًا مستقلًا عن اسم الملف. يجب أن يأتي إعلان namespace مبكرًا بعد declare إن وُجد. الـnamespace لا تحمّل الملف تلقائيًا؛ autoloader يفعل ذلك. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «لماذا Namespace؟» و«الاستيراد والـaliases». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Namespaces وAutoloading»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «لماذا Namespace؟»: تمنع تعارض أسماء classes/functions/constants بين مكتبات مختلفة، وتعطي الكود اسمًا منطقيًا مستقلًا عن اسم الملف. يجب أن يأتي إعلان namespace مبكرًا بعد declare إن وُجد. الـnamespace لا تحمّل الملف تلقائيًا؛ autoloader يفعل ذلك. أما «الاستيراد والـaliases»: الاسم الذي يبدأ بـ\ كامل من global namespace. الاسم المستورد يُحل عبر use. الاسم غير المستورد داخل namespace يبدأ من namespace الحالية. لا تضع use ديناميكيًا داخل function؛ imports compile-time وعلى مستوى الملف. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Composer وPSR-4». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> App\Billing\InvoiceService يصبح عادة في src/Billing/InvoiceService.php: في الإنتاج استخدم autoloader المحسن حسب حجم التطبيق وطريقة النشر، ولا تكتب سلسلة require يدوية لكل class. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «قواعد تنظيم» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> class رئيسية واحدة في الملف غالبًا. طابق case الاسم والمسار لأن Linux حساس للحروف. لا تربط domain namespaces باسم framework بلا ضرورة. استخدم App\Tests أو autoload-dev للاختبارات. لا تعتمد على تنفيذ side effects عند تحميل ملف class. :::caution Namespace ليست filesystem path إجباريًا في اللغة؛ PSR-4 هو الاتفاق الذي يربطهما عبر Composer. ::: وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

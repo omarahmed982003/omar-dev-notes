@@ -108,3 +108,41 @@ echo json_encode(
 ```
 
 جرّب `curl -i "http://localhost:8000/hello.php?name=Omar"`، ثم افحص الطلب من Network في DevTools.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: HTTP Request وResponse والحالة">
+<p class="lesson-diagram-title">خريطة مفاهيم: HTTP Request وResponse والحالة</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Request</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Methods</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Headers شائعة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Response</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Stateless لا يعني بلا حالة في التطبيق</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Request» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في HTTP/1.1 النصي يتكون الطلب من start line وheaders وسطر فارغ ثم body اختياري: Method: نية الطلب. Target/Path + Query: المورد والمعاملات. Version: نسخة بروتوكول الرسالة. Headers: metadata والتحكم. Body: المحتوى، وليس موجودًا في كل طلب. HTTP/2 وHTTP/3 يشفّران الرسائل بصيغة ثنائية وليست الأسطر النصية نفسها، لكن المعاني تبقى methods/fields/content. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Request» و«Methods». لماذا لا يغني أحدهما عن الآخر داخل موضوع «HTTP Request وResponse والحالة»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Request»: في HTTP/1.1 النصي يتكون الطلب من start line وheaders وسطر فارغ ثم body اختياري: Method: نية الطلب. Target/Path + Query: المورد والمعاملات. Version: نسخة بروتوكول الرسالة. Headers: metadata والتحكم. Body: المحتوى، وليس موجودًا في كل طلب. HTTP/2 وHTTP/3 يشفّران الرسائل بصيغة ثنائية وليست الأسطر النصية نفسها، لكن المعاني تبقى methods/fields/content. أما «Methods»: | Method | الدلالة المعتادة | Safe؟ | Idempotent؟ | |---|---|---:|---:| | GET | جلب representation | نعم | نعم | | HEAD | مثل GET دون response content | نعم | نعم | | POST | معالجة خاصة بالمورد/إنشاء شائعًا | لا | لا غالبًا | | PUT | استبدال الحالة الكاملة | لا | نعم | | PATCH | تعديل جزئي | لا | يعتمد على التصميم | | DELETE | إزالة المورد | لا | نعم دلاليًا | | OPTIONS | إمكانات الاتصال | نعم | نعم | Safe… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Headers شائعة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Host: اسم الموقع المطلوب، مهم مع Virtual Hosts. Accept: أنواع الاستجابة المقبولة. Content-Type: نوع body المرسل. Authorization: بيانات اعتماد، مثل Bearer token. Cookie: cookies المطابقة. User-Agent: معلومات العميل. Cache-Control: سياسة Cache. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Response» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تتكون من protocol version وstatus code وreason phrase اختياري في HTTP/1.1، ثم headers وbody اختياري. | الفئة | المعنى | أمثلة | |---|---|---| | 1xx | معلومات مؤقتة | 100 Continue | | 2xx | نجاح | 200 OK, 201 Created, 204 No Content | | 3xx | Redirect/Cache | 301, 302, 304 | | 4xx | مشكلة في الطلب | 400, 401, 403, 404, 422 | | 5xx | فشل جهة الخادم | 500, 502, 503 | 401 يعني غالبًا أن المصادقة مطلوبة أو غير صالحة،… وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

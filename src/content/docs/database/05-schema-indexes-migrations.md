@@ -117,3 +117,41 @@ Migrations للبنية والتغييرات الحتمية. Seed ينشئ بي�
 - هل الفهرس يخدم query مقاسة؟
 - هل migration آمنة على بيانات كبيرة؟
 - هل النسخ الاحتياطي والاسترجاع مجرّبان؟
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: تصميم المخطط والفهارس وMigrations">
+<p class="lesson-diagram-title">خريطة مفاهيم: تصميم المخطط والفهارس وMigrations</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>اجعل قاعدة البيانات تحمي قواعدها</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>الفهرس</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>EXPLAIN والقياس</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Pagination</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Migrations</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «اجعل قاعدة البيانات تحمي قواعدها» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> التطبيق قد يحتوي bug أو توجد أداة إدارية أو worker آخر. ضع القيود الأساسية في Schema أيضًا: استخدم: NOT NULL للقيم الإلزامية. UNIQUE للهوية الفريدة. CHECK للقواعد المحلية المدعومة. Foreign keys للتكامل المرجعي. أنواعًا مناسبة؛ المال غالبًا integer minor units أو DECIMAL، لا float. timestamps مع سياسة timezone واضحة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «اجعل قاعدة البيانات تحمي قواعدها» و«الفهرس». لماذا لا يغني أحدهما عن الآخر داخل موضوع «تصميم المخطط والفهارس وMigrations»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «اجعل قاعدة البيانات تحمي قواعدها»: التطبيق قد يحتوي bug أو توجد أداة إدارية أو worker آخر. ضع القيود الأساسية في Schema أيضًا: استخدم: NOT NULL للقيم الإلزامية. UNIQUE للهوية الفريدة. CHECK للقواعد المحلية المدعومة. Foreign keys للتكامل المرجعي. أنواعًا مناسبة؛ المال غالبًا integer minor units أو DECIMAL، لا float. timestamps مع سياسة timezone واضحة. أما «الفهرس»: الفهرس بنية إضافية تسرّع lookup/sort/join مقابل مساحة وكلفة كتابة. ترتيب الأعمدة مهم. يفيد هذا غالبًا queries تبدأ بـuser_id ثم status وتستفيد من created_at. ليس ضمانًا أن index لكل عمود أو كل query أفضل. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «EXPLAIN والقياس». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> افحص plan والصفوف المقدرة والفعلية إن كانت الأداة تدعم analysis. اختبر بيانات بحجم قريب من الإنتاج، وراقب slow query log وp95/p99. أسباب بطء شائعة: N+1. SELECT * ونقل بيانات غير لازمة. Pagination عميقة بـOFFSET. Functions/casts تمنع استخدام index. Missing أو low-selectivity index. Query كثيرة بدل batch. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Pagination» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Offset سهل: لكنه يزداد كلفة وقد يتغير مع إدخالات متزامنة. Keyset pagination: أفضل غالبًا للfeeds الكبيرة مع ترتيب ثابت. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

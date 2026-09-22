@@ -118,3 +118,41 @@ printf(
 - انتبه إلى closures التي تلتقط كائنات كبيرة.
 - افصل cache مشتركة مثل OPcache/Redis عن ذاكرة heap الخاصة بالطلب.
 - لا ترفع `memory_limit` قبل معرفة سبب الاستهلاك.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: ذاكرة PHP وGarbage Collection">
+<p class="lesson-diagram-title">خريطة مفاهيم: ذاكرة PHP وGarbage Collection</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Reference Counting</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Copy-on-write</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>References بعلامة &amp;</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>لماذا نحتاج Garbage Collector؟</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>الذاكرة في PHP-FPM</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Reference Counting» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عندما لا يعود شيء يشير إلى قيمة محسوبة المراجع، يمكن تحريرها فورًا عادة. لكن refcount ليس “عدد المتغيرات” بصورة مطلقة؛ قد تتدخل temporaries وinterning وتحسينات المحرك، لذلك مخرجات debugging قد تبدو أعلى من المتوقع. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Reference Counting» و«Copy-on-write». لماذا لا يغني أحدهما عن الآخر داخل موضوع «ذاكرة PHP وGarbage Collection»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Reference Counting»: عندما لا يعود شيء يشير إلى قيمة محسوبة المراجع، يمكن تحريرها فورًا عادة. لكن refcount ليس “عدد المتغيرات” بصورة مطلقة؛ قد تتدخل temporaries وinterning وتحسينات المحرك، لذلك مخرجات debugging قد تبدو أعلى من المتوقع. أما «Copy-on-write»: عند الإسناد لا ينسخ PHP array أو string كبيرًا فورًا عادة؛ يشترك المتغيران في البيانات حتى يحاول أحدهما تعديلها: هذا يوفّر الذاكرة والوقت، لكنه يعني أن تعديل نسخة كبيرة قد يسبب memory spike لحظيًا. الكائنات تختلف: $a و$b يحملان handle للكائن نفسه. للحصول على كائن مستقل استخدم clone ونفّذ __clone() للنسخ العميق عند الحاجة. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «References بعلامة &amp;». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> المرجع في PHP alias إلى نفس متغير التخزين، وليس مؤشر C عام يمكن إجراء pointer arithmetic عليه. لا تستخدم &amp; كتحسين أداء؛ غالبًا يزيد التعقيد وقد يمنع تحسينات Copy-on-write. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «لماذا نحتاج Garbage Collector؟» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Reference counting وحده لا يحرر دورة تشير إلى نفسها: يسجل GC الحاويات المرشحة ويفحص الدورات دوريًا. يمكن طلب دورة جمع يدويًا: لا تستدعها بعد كل عملية. استخدمها في workers طويلة العمر فقط بعد القياس، مثل queue consumer ينشئ graphs كبيرة بين jobs. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

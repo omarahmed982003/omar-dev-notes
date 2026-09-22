@@ -152,3 +152,41 @@ hard-coded safe defaults
 ```
 
 لا تجعل ترتيب الدمج ضمنيًا؛ سجّل **مصدر الإعداد وأسماء المفاتيح** عند التشخيص، دون تسجيل القيم السرية.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: متغيرات البيئة وإدارة الإعدادات">
+<p class="lesson-diagram-title">خريطة مفاهيم: متغيرات البيئة وإدارة الإعدادات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>getenv و$_ENV وputenv</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>تحميل .env في التطوير</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>طبقة Config واحدة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>PHP-FPM والبيئة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>قواعد الأسرار</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «getenv و$_ENV وputenv» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> افحص === false لأن النص &quot;0&quot; قيمة صحيحة لكنه falsy. getenv('NAME') يقرأ متغيرًا ويعيد false عند غيابه. $_ENV نسخة superglobal من القيم التي استوردتها PHP، وقد تكون فارغة إذا كان variables_order لا يحتوي E. $_SERVER قد يحتوي بعض قيم البيئة/CGI حسب SAPI. putenv('NAME=value') يغيّر بيئة العملية للطلب الحالي، ولا يعني أن $_ENV سيتزامن تلقائيًا معه. :::caution[تصحيح مهم] PHP لا تقرأ ملف .env تلقائيًا. تحتاج framework أو… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «getenv و$_ENV وputenv» و«تحميل .env في التطوير». لماذا لا يغني أحدهما عن الآخر داخل موضوع «متغيرات البيئة وإدارة الإعدادات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «getenv و$_ENV وputenv»: افحص === false لأن النص &quot;0&quot; قيمة صحيحة لكنه falsy. getenv('NAME') يقرأ متغيرًا ويعيد false عند غيابه. $_ENV نسخة superglobal من القيم التي استوردتها PHP، وقد تكون فارغة إذا كان variables_order لا يحتوي E. $_SERVER قد يحتوي بعض قيم البيئة/CGI حسب SAPI. putenv('NAME=value') يغيّر بيئة العملية للطلب الحالي، ولا يعني أن $_ENV سيتزامن تلقائيًا معه. :::caution[تصحيح مهم] PHP لا تقرأ ملف .env تلقائيًا. تحتاج framework أو… أما «تحميل .env في التطوير»: ارفع .env.example بلا أسرار. ضع .env في .gitignore وخارج document root. لا تضع قيم production الحقيقية في README أو logs أو frontend bundle. إذا تسرب سر، احذفه من السجل ودوّره؛ حذف commit وحده لا يبطل السر. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «طبقة Config واحدة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تستدعِ getenv() في كل class. حوّل النصوص وتحقق منها عند بدء التطبيق: بهذا يفشل التطبيق مبكرًا بدل اكتشاف إعداد ناقص وسط طلب حقيقي، وتتعامل بقية الطبقات مع أنواع صحيحة. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «PHP-FPM والبيئة» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> FPM قد ينظف البيئة افتراضيًا عبر clear_env. مرّر قائمة صريحة في إعداد pool أو عبر مدير الخدمة: الأفضل عدم نسخ البيئة كاملة بلا حاجة. امنح كل pool الحد الأدنى من الأسرار والصلاحيات. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

@@ -104,3 +104,41 @@ concurrency = throughput × latency = 100 × 0.2 = 20 workers
 ## Graceful reload وfastcgi_finish_request
 
 استخدم reload من مدير الخدمة في النشر حتى تكمل العمليات الحالية حيث أمكن. وتسمح `fastcgi_finish_request()` بإرسال الاستجابة ثم متابعة عمل قصير، لكنها تبقي worker مشغولًا؛ الأعمال الثقيلة أو الموثوقة مكانها queue worker مستقل.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: PHP-FPM وإدارة العمليات">
+<p class="lesson-diagram-title">خريطة مفاهيم: PHP-FPM وإدارة العمليات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Master وWorkers</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>أوضاع Process Manager</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>حساب pm.max_children</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>إعدادات تشغيل مفيدة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>queue وLittle's Law</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Master وWorkers» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Master process يقرأ إعدادات pools ويدير الإنشاء والإيقاف وإعادة التحميل. Worker process يعالج طلب PHP واحدًا في اللحظة في النموذج المعتاد. Pool يعزل مجموعة workers بإعدادات مثل user/group وsocket وphp.ini values والحدود. يمكن أن تخدم تطبيقين بمستخدمين وsockets منفصلة لتقليل أثر الاختراق، بدل وضع كل المواقع في pool واحدة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Master وWorkers» و«أوضاع Process Manager». لماذا لا يغني أحدهما عن الآخر داخل موضوع «PHP-FPM وإدارة العمليات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Master وWorkers»: Master process يقرأ إعدادات pools ويدير الإنشاء والإيقاف وإعادة التحميل. Worker process يعالج طلب PHP واحدًا في اللحظة في النموذج المعتاد. Pool يعزل مجموعة workers بإعدادات مثل user/group وsocket وphp.ini values والحدود. يمكن أن تخدم تطبيقين بمستخدمين وsockets منفصلة لتقليل أثر الاختراق، بدل وضع كل المواقع في pool واحدة. أما «أوضاع Process Manager»: static ينشئ بالضبط pm.max_children workers ويحتفظ بها. أداء متوقع ولا يوجد spawn عند الضغط، لكنه يحجز الذاكرة حتى في الهدوء. dynamic يبدأ بعدد workers ويحافظ على spare capacity بين حدين: غالبًا اختيار متوازن لخدمة نشطة. ondemand ينشئ workers عند وصول الطلبات ويقتل الخامل بعد مدة: يوفر ذاكرة للمواقع قليلة المرور مقابل cold-start وتكلفة spawn. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «حساب pm.max_children». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ابدأ بقياس RSS الفعلي بعد warm-up: مثال: إذا خصصت 2 GiB لـFPM وكان worker عند الحمل يستهلك 80 MiB، فالحد النظري 25. اترك هامشًا للنظام وخادم الويب وOPcache وقاعدة البيانات؛ قد تبدأ مثلًا بـ18–20 ثم تختبر. لا تقسم memory_limit على RAM مباشرة؛ memory_limit حد request تقريبي وليس RSS العامل المعتاد، وقد توجد ذاكرة Extensions أو shared memory خارجه. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «إعدادات تشغيل مفيدة» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> pm.max_requests يعيد تدوير worker بعد عدد طلبات، مفيد للحد من نمو طويل الأمد. slowlog يسجل backtrace للطلبات البطيئة، وليس مجرد URL. status يعرض active/idle processes وqueue وmax children reached. لا تنشر ping/status للعامة؛ اسمح بهما داخليًا فقط. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

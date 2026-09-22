@@ -105,3 +105,41 @@ API key غالبًا تعرّف project/client وتستخدم للحصة أو خ
 - Scope ليس Role داخليًا بالضرورة.
 - Access token لا يذهب إلى صفحة login، وRefresh token لا يذهب إلى API.
 - امتلاك token صالح لا يلغي فحص ملكية المورد وقواعد المجال.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: مفاهيم OAuth 2.0 والتوكينات">
+<p class="lesson-diagram-title">خريطة مفاهيم: مفاهيم OAuth 2.0 والتوكينات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>الأدوار الأربعة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Client registration</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Scope وConsent</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Access token</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Refresh token</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «الأدوار الأربعة» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Resource Owner: الجهة القادرة على منح الوصول، وغالبًا المستخدم. Client: التطبيق الذي يطلب الوصول؛ ليس “المستخدم”. Authorization Server: يصادق الأطراف حسب الحاجة ويصدر التوكينات بعد التفويض. Resource Server: الـAPI التي تستقبل access token وتحمي الموارد. قد تكون Authorization Server وResource Server جزءًا من منتج واحد أو خدمتين مختلفتين. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «الأدوار الأربعة» و«Client registration». لماذا لا يغني أحدهما عن الآخر داخل موضوع «مفاهيم OAuth 2.0 والتوكينات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «الأدوار الأربعة»: Resource Owner: الجهة القادرة على منح الوصول، وغالبًا المستخدم. Client: التطبيق الذي يطلب الوصول؛ ليس “المستخدم”. Authorization Server: يصادق الأطراف حسب الحاجة ويصدر التوكينات بعد التفويض. Resource Server: الـAPI التي تستقبل access token وتحمي الموارد. قد تكون Authorization Server وResource Server جزءًا من منتج واحد أو خدمتين مختلفتين. أما «Client registration»: يسجل العميل عادة: client_id: معرف عام، ليس سرًا. Redirect URIs دقيقة. نوع العميل وطرق authentication المسموحة. scopes/grants المسموحة وسياسات consent. Public وConfidential Public client: لا يستطيع حفظ secret، مثل native app أو JavaScript يعمل في المتصفح. تضمين client_secret في bundle لا يجعله سريًا. Confidential client: backend قادر على حماية credentials ويصادق نفسه عند token endpoint. اسم النوع يصف قدرة حفظ السر،… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Scope وConsent». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> scope اسم صلاحية يطلبها Client: صمم scopes حول capabilities واضحة وبأقل صلاحية. لا تجعل admin scope عامًا يختصر عشرات العمليات الحساسة بلا سبب. Consent واجهة/قرار يمنح فيه Resource Owner وصولًا. لكنه ليس بديلًا عن سياسة Authorization Server؛ قد ترفض المؤسسة scope حتى لو وافق المستخدم، وقد يكون consent سابقًا أو إداريًا في machine-to-machine. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Access token» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Credential يقدمها Client إلى Resource Server: قد يكون opaque string أو JWT؛ OAuth لا يفرض صيغة واحدة. يجب تقييده بالمدة والجمهور والموارد والإجراءات. Bearer يعني أن من يحمله يمكنه استخدامه، لذلك خزنه وانقله كسر. API يجب أن تتحقق أنه موجه إليها وأن scope يسمح بالفعل، لا أن signature صحيحة فقط. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

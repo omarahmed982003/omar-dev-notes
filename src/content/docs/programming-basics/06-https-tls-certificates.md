@@ -90,3 +90,41 @@ curl -v https://example.com/ -o NUL
 ```
 
 راقب نسخة TLS والشهادة وALPN الذي قد يختار HTTP/2. لا تطبع أسرارًا أو tokens أثناء التصحيح.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: HTTPS وTLS والشهادات">
+<p class="lesson-diagram-title">خريطة مفاهيم: HTTPS وTLS والشهادات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>HTTPS</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>التشفير المتماثل وغير المتماثل</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>TLS 1.3 Handshake مبسط</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>ما الشهادة الرقمية؟</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>مستويات التحقق</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «HTTPS» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> HTTPS = HTTP over TLS. لا يغيّر دلالات GET وPOST أو status codes، لكنه ينقل رسائل HTTP داخل قناة محمية. يوفر TLS ثلاث خصائص رئيسية: Confidentiality: منع قراءة المحتوى في الطريق. Integrity: كشف تعديل البيانات. Authentication: التحقق من أن الخادم يملك الهوية/المفتاح المرتبط بالشهادة. HTTPS لا يصلح SQL Injection أو XSS أو ضعف الصلاحيات، ولا يخفي بالضرورة عنوان IP أو اسم النطاق عن كل طبقات الشبكة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «HTTPS» و«التشفير المتماثل وغير المتماثل». لماذا لا يغني أحدهما عن الآخر داخل موضوع «HTTPS وTLS والشهادات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «HTTPS»: HTTPS = HTTP over TLS. لا يغيّر دلالات GET وPOST أو status codes، لكنه ينقل رسائل HTTP داخل قناة محمية. يوفر TLS ثلاث خصائص رئيسية: Confidentiality: منع قراءة المحتوى في الطريق. Integrity: كشف تعديل البيانات. Authentication: التحقق من أن الخادم يملك الهوية/المفتاح المرتبط بالشهادة. HTTPS لا يصلح SQL Injection أو XSS أو ضعف الصلاحيات، ولا يخفي بالضرورة عنوان IP أو اسم النطاق عن كل طبقات الشبكة. أما «التشفير المتماثل وغير المتماثل»: Asymmetric cryptography: زوج Public/Private Key. مناسب للتوقيع والاتفاق الآمن على الأسرار، لكنه أعلى كلفة. Symmetric cryptography: مفتاح مشترك مثل Session Key لتشفير بيانات الاتصال بسرعة، مثل AES-GCM أو ChaCha20-Poly1305. الملاحظات تشرح أن العميل ينشئ Session Key ويشفره بـPublic Key. هذا يصف RSA key exchange القديم بصورة مبسطة. في TLS 1.3 يجري عادة اتفاق مفاتيح مؤقت ECDHE؛ لا يُرسل Session Key النهائي نفسه، بل يشتق… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «TLS 1.3 Handshake مبسط». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قد تُستأنف جلسة سابقة فتقل الخطوات. ومع QUIC/HTTP/3 يندمج TLS 1.3 داخل بروتوكول QUIC. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «ما الشهادة الرقمية؟» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تربط الشهادة Public Key باسم نطاق، وتوقّعها Certificate Authority موثوقة أو سلسلة تنتهي في Root CA موجودة في Trust Store. يفحص العميل عادة: اسم النطاق في SAN. مدة الصلاحية. سلسلة التوقيع حتى Root موثوق. Key Usage/Extended Key Usage. حالة الإلغاء عند دعم آليته. توقيع الخادم الذي يثبت امتلاك Private Key. امتلاك الشهادة لا يعني أن الموقع «آمن من كل شيء»؛ يعني أن الاتصال بهوية النطاق المطلوبة موثق ومشفر ضمن حدود TLS. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

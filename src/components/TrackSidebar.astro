@@ -6,6 +6,7 @@ const isEnglish = routeId === 'en' || routeId.startsWith('en/');
 const normalizedId = isEnglish ? routeId.replace(/^en\/?/, '') : routeId;
 const tracks = [
 	{ slug: 'programming-basics', ar: 'أساسيات البرمجة والويب', en: 'Programming & Web Basics' },
+	{ slug: 'cpp', ar: 'لغة C++', en: 'The C++ Language' },
 	{ slug: 'php', ar: 'لغة PHP', en: 'The PHP Language' },
 	{ slug: 'php-runtime', ar: 'تشغيل PHP والإنتاج', en: 'PHP Runtime & Production' },
 	{ slug: 'oop', ar: 'البرمجة كائنية التوجه', en: 'Object-Oriented Programming' },
@@ -206,7 +207,8 @@ const pickerLabel = isEnglish ? 'Choose a learning track' : 'اختر مسار �
 	.track-sidebar[data-track-index='2'] .track-lessons :global(.top-level > li:nth-child(3)),
 	.track-sidebar[data-track-index='3'] .track-lessons :global(.top-level > li:nth-child(4)),
 	.track-sidebar[data-track-index='4'] .track-lessons :global(.top-level > li:nth-child(5)),
-	.track-sidebar[data-track-index='5'] .track-lessons :global(.top-level > li:nth-child(6)) {
+	.track-sidebar[data-track-index='5'] .track-lessons :global(.top-level > li:nth-child(6)),
+	.track-sidebar[data-track-index='6'] .track-lessons :global(.top-level > li:nth-child(7)) {
 		display: block;
 	}
 

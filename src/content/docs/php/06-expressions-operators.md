@@ -103,3 +103,41 @@ $slug = ' PHP 8.5 Released '
 ```
 
 يمرر `|>` ناتج اليسار كوسيط وحيد إلى callable في اليمين، فيجعل السلسلة تُقرأ من أعلى لأسفل. هذا المثال **لن يعمل على PHP 8.4 أو أقدم**.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: التعبيرات والمؤثرات">
+<p class="lesson-diagram-title">خريطة مفاهيم: التعبيرات والمؤثرات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>التعبير والأولوية</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>الحساب والزيادة والإسناد</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>المقارنة</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>المؤثرات المنطقية والنصوص والمصفوفات</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Error control والتنفيذ</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «التعبير والأولوية» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> كل ما ينتج قيمة يُعد expression. حتى الإسناد يعيد القيمة المسندة: الأقواس أفضل من حفظ جدول الأولوية. الفخ الأشهر: استخدم &amp;&amp; و|| عادة، وضع أقواسًا عندما يختلط أكثر من مؤثر. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «التعبير والأولوية» و«الحساب والزيادة والإسناد». لماذا لا يغني أحدهما عن الآخر داخل موضوع «التعبيرات والمؤثرات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «التعبير والأولوية»: كل ما ينتج قيمة يُعد expression. حتى الإسناد يعيد القيمة المسندة: الأقواس أفضل من حفظ جدول الأولوية. الفخ الأشهر: استخدم &amp;&amp; و|| عادة، وضع أقواسًا عندما يختلط أكثر من مؤثر. أما «الحساب والزيادة والإسناد»: الإسنادات المختصرة: += -= *= /= %= = .= ??=. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «المقارنة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> == مساواة مع تحويلات؛ === قيمة ونوع. != و&lt;&gt; عدم مساواة، و!== عدم تطابق صارم. = للترتيب. يعيد -1 أو 0 أو 1. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «المؤثرات المنطقية والنصوص والمصفوفات» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> مؤثر + للمصفوفات union حسب المفاتيح ويحتفظ بقيمة اليسار عند تكرار المفتاح؛ ليس بديلًا مطابقًا لـ array_merge(). و== يقارن أزواج المفتاح/القيمة، أما === فيطلب أيضًا النوع والترتيب نفسه. إسناد object إلى متغير آخر يجعل المتغيرين يشيران عادة إلى الكائن نفسه؛ استخدم clone لنسخة كائن مستقلة، مع الانتباه للكائنات الداخلية. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

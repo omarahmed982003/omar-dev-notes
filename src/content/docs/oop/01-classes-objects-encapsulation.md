@@ -123,3 +123,41 @@ var_dump($a === $b); // false: ليست instance نفسها
 ```
 
 لـValue Objects عرّف method مثل `equals()` بدل الاعتماد على مقارنة عامة قد تتغير عند إضافة property.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الأصناف والكائنات والتغليف">
+<p class="lesson-diagram-title">خريطة مفاهيم: الأصناف والكائنات والتغليف</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Class وObject</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Encapsulation</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Visibility</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>$this وObject operator</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Property types وDynamic properties</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Class وObject» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الـClass قالب يحدد الحالة والسلوك، والـObject instance مستقلة منه: كل object له حالته، بينما تعريف methods مشترك منطقيًا بين instances. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Class وObject» و«Encapsulation». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الأصناف والكائنات والتغليف»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Class وObject»: الـClass قالب يحدد الحالة والسلوك، والـObject instance مستقلة منه: كل object له حالته، بينما تعريف methods مشترك منطقيًا بين instances. أما «Encapsulation»: التغليف ليس مجرد كتابة private. معناه أن الكائن: يخفي تفاصيل تمثيله الداخلية. يعرض عمليات ذات معنى. يمنع الحالة غير الصالحة. يستطيع تغيير تنفيذه دون كسر المستدعين. Setter عام لكل property قد يهدم التغليف؛ سمِّ العمليات حسب المجال مثل withdraw() بدل setBalance(). العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Visibility». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> | modifier | داخل class | child class | الخارج | |---|---:|---:|---:| | public | نعم | نعم | نعم | | protected | نعم | نعم | لا | | private | نعم | لا مباشرة | لا | اجعل أقل visibility ممكنة. protected يربط الأبناء بتفاصيل الأب، لذلك لا تستخدمه تلقائيًا بدل private. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «$this وObject operator» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> داخل instance method يشير $this إلى object الحالي: استخدم -&gt; للأعضاء غير static. لا يتوفر $this داخل static method. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

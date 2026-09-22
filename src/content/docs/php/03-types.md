@@ -164,3 +164,41 @@ function findUser(int $id, ?string $locale = null): array|null
 ```
 
 بدون strict mode قد تحول PHP الأنواع scalar الممكنة. الكتابة الصارمة قرار **لكل ملف مستدعٍ**، وتنطبق على الأنواع scalar مع استثناء قبول `int` حيث يُطلب `float`. افحص الأنواع بـ `get_debug_type()` و`var_dump()`.
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: أنواع البيانات ونظام الأنواع">
+<p class="lesson-diagram-title">خريطة مفاهيم: أنواع البيانات ونظام الأنواع</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>خريطة الأنواع</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>المصفوفات والكائنات وEnum وResource</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>void وnever وmixed</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>callable وClosure وFirst-class callable</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>iterable وGenerator</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «خريطة الأنواع» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Scalar: bool وint وfloat وstring. مركبة: array وobject. خاصة: null وresource وcallable وiterable وmixed وvoid وnever. يعرّفها المطور: classes وinterfaces وenums. مركبة في التصريحات: Union مثل int|string وIntersection مثل Countable&amp;Iterator. Singleton types مثل true وfalse. null وbool يكون المتغير null إذا أُسندت إليه null، أو لم يُعرَّف، أو أزيل بـ unset. استخدم is_null($x) أو $x === null. القيم falsey هي: false و0… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «خريطة الأنواع» و«المصفوفات والكائنات وEnum وResource». لماذا لا يغني أحدهما عن الآخر داخل موضوع «أنواع البيانات ونظام الأنواع»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «خريطة الأنواع»: Scalar: bool وint وfloat وstring. مركبة: array وobject. خاصة: null وresource وcallable وiterable وmixed وvoid وnever. يعرّفها المطور: classes وinterfaces وenums. مركبة في التصريحات: Union مثل int|string وIntersection مثل Countable&amp;Iterator. Singleton types مثل true وfalse. null وbool يكون المتغير null إذا أُسندت إليه null، أو لم يُعرَّف، أو أزيل بـ unset. استخدم is_null($x) أو $x === null. القيم falsey هي: false و0… أما «المصفوفات والكائنات وEnum وResource»: المصفوفة في PHP قد تكون قائمة، associative map، أو متعددة الأبعاد: الكائن instance من class يجمع properties وmethods. والـ enum يمثل مجموعة محدودة من الحالات: resource مقبض لمورد خارجي مثل stream. كثير من الامتدادات الحديثة أصبحت تعيد objects بدل resources، لذا افحص التوثيق وget_debug_type(). العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «void وnever وmixed». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> void: الدالة لا تسمح بإرجاع قيمة مفيدة؛ يمكن كتابة return;. never: الدالة لا تعود طبيعيًا لأنها ترمي exception أو تستدعي exit أو لا تنتهي. mixed: يقبل كل الأنواع، ومنها null؛ استخدم نوعًا أدق إن أمكن. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «callable وClosure وFirst-class callable» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Callback هو callable يتم تمريره ليُستدعى لاحقًا. Closure كائن يمثل دالة مجهولة. والكائن يصبح callable إذا عرّف __invoke(). وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

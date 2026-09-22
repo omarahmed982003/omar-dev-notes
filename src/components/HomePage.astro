@@ -16,8 +16,8 @@ const content = isArabic
 			secondary: { label: 'استكشف PHP', href: '/php/' },
 			download: { label: 'تحميل الدوكس PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
-				{ value: '75', label: 'درسًا عمليًا' },
-				{ value: '6', label: 'مسارات مترابطة' },
+				{ value: '105', label: 'درسًا عمليًا' },
+				{ value: '7', label: 'مسارات مترابطة' },
 				{ value: 'AR · EN', label: 'عربي وإنجليزي' },
 			],
 			flowTitle: 'رحلة الطلب',
@@ -29,11 +29,20 @@ const content = isArabic
 				{
 					code: '01',
 					title: 'أساسيات البرمجة والويب',
-					description: 'افهم DNS وHTTP وTLS ورحلة الطلب قبل الدخول إلى تفاصيل اللغة.',
+					description: 'أساسيات الكمبيوتر والرياضيات والمنطق وحل المشكلات، ثم الشبكات وHTTP ورحلة الطلب.',
 					href: '/programming-basics/',
-					count: '13',
+					count: '23',
 					level: 'البداية',
 					accent: 'blue',
+				},
+				{
+					code: 'C++',
+					title: 'لغة C++',
+					description: 'من النظام الثنائي والأدوات والأنواع إلى الشروط والحلقات والمشروعات ومسائل Codeforces.',
+					href: '/cpp/',
+					count: '20',
+					level: 'مبتدئ ← متوسط',
+					accent: 'orange',
 				},
 				{
 					code: 'PHP',
@@ -91,8 +100,8 @@ const content = isArabic
 			secondary: { label: 'Explore PHP', href: '/en/php/' },
 			download: { label: 'Download the complete PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
-				{ value: '75', label: 'practical lessons' },
-				{ value: '6', label: 'connected tracks' },
+				{ value: '105', label: 'practical lessons' },
+				{ value: '7', label: 'connected tracks' },
 				{ value: 'AR · EN', label: 'Arabic and English' },
 			],
 			flowTitle: 'Request journey',
@@ -104,11 +113,20 @@ const content = isArabic
 				{
 					code: '01',
 					title: 'Programming & web basics',
-					description: 'Understand DNS, HTTP, TLS, and request flow before language details.',
+					description: 'Computer basics, math, logic, problem solving, networking, HTTP, and request flow.',
 					href: '/en/programming-basics/',
-					count: '13',
+					count: '23',
 					level: 'Start here',
 					accent: 'blue',
+				},
+				{
+					code: 'C++',
+					title: 'The C++ language',
+					description: 'Binary, tools, types, conditions, loops, projects, and explained Codeforces problems.',
+					href: '/en/cpp/',
+					count: '20',
+					level: 'Beginner → intermediate',
+					accent: 'orange',
 				},
 				{
 					code: 'PHP',
@@ -227,7 +245,7 @@ const arrow = isArabic ? '←' : '→';
 	<section class="learning-paths" aria-labelledby="paths-title">
 		<div class="section-heading">
 			<div>
-				<p class="section-kicker">01 — 06</p>
+				<p class="section-kicker">01 — 07</p>
 				<h2 id="paths-title">{content.sectionTitle}</h2>
 			</div>
 			<p>{content.sectionDescription}</p>
@@ -584,6 +602,7 @@ const arrow = isArabic ? '←' : '→';
 	.path-card[data-accent='amber'] { --path-accent: #fbbf24; }
 	.path-card[data-accent='rose'] { --path-accent: #fb7185; }
 	.path-card[data-accent='green'] { --path-accent: #34d399; }
+	.path-card[data-accent='orange'] { --path-accent: #fb923c; }
 
 	.path-card:hover,
 	.path-card:focus-visible {

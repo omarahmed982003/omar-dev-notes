@@ -1,15 +1,23 @@
 ---
-title: Web and networking basics
-description: "A corrected, expanded track for pages 1–11, from entering a URL to PHP and the response."
+title: Computer, programming, and web foundations
+description: "A structured path from computers, math, logic, and problem solving to networking, the web, and request flow."
 sidebar:
   order: 0
 ---
 
-# Web and networking basics for programmers
+# Computer, programming, and web foundations
 
-This section turns pages **1–11** of the notes into a structured learning path. It retains every readable concept, corrects oversimplifications, and adds practical examples.
+The foundations track now has three groups so computer and math topics do not become mixed with networking. It includes **Lecture01 and lecture_02 in full**, preserving slide text and speaker notes, together with the existing expanded web material.
 
-## Learning path
+## 1. Computer and programming fundamentals
+
+[Start the computer-fundamentals path](./computer-fundamentals/) for hardware and software, the data-processing cycle, binary, programming languages, algorithms, technology fields, and AI tools.
+
+## 2. Math, logic, and problem solving
+
+[Start the math and problem-solving path](./math-problem-solving/) for remainders, percentages, variables, Boolean logic, graphs, computational thinking, pseudocode, decision trees, flowcharts, loops, and debugging.
+
+## 3. Networking and web fundamentals
 
 1. [The Web and request flow](./01-web-and-request-flow/)
 2. [DNS and IP addresses](./02-dns-and-ip/)

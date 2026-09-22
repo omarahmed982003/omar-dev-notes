@@ -119,3 +119,41 @@ Bearer token قابل لإعادة الاستخدام من أي حامل. للأ
 :::tip[الخلاصة]
 استخدم مكتبة OIDC/OAuth مجرّبة وموفر هوية ناضج. البروتوكول يبدو redirects وHTTP parameters، لكن صحة الربط بين browser session وissuer وclient وredirect والتوكين هي الجزء الأمني الصعب.
 :::
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: أمان OAuth وOIDC">
+<p class="lesson-diagram-title">خريطة مفاهيم: أمان OAuth وOIDC</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Callback آمن</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Redirect URIs</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>مكان التوكينات في تطبيق Browser</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Bearer مقابل Sender-constrained</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Access وRefresh lifecycle</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Callback آمن» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تسجل query كاملة لأن callback قد يحتوي code. ضع Referrer-Policy: no-referrer وتجنب third-party scripts في صفحة callback. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Callback آمن» و«Redirect URIs». لماذا لا يغني أحدهما عن الآخر داخل موضوع «أمان OAuth وOIDC»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Callback آمن»: لا تسجل query كاملة لأن callback قد يحتوي code. ضع Referrer-Policy: no-referrer وتجنب third-party scripts في صفحة callback. أما «Redirect URIs»: سجل HTTPS URI كاملة وطابقها حرفيًا؛ لا تستخدم wildcard للإنتاج. اسمح loopback/custom URI وفق قواعد native apps الرسمية فقط. لا تجعل callback open redirect يأخذ next=https://evil.example. بعد callback استخدم destination مخزنة server-side أو allowlist لمسارات داخلية. اربط المعاملة بالـissuer لتجنب mix-up عندما يدعم Client أكثر من Authorization Server. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «مكان التوكينات في تطبيق Browser». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Backend for Frontend هذا الاختيار يقلل وصول JavaScript إلى التوكينات. طبّق CSRF protection وSameSite مناسبًا وsession rotation. Browser-only client إذا كان التوكين داخل المتصفح، فضّل memory على storage دائم طويل العمر. localStorage متاح لأي JavaScript داخل origin؛ XSS يستطيع سرقته. CSP وTrusted Types وتقليل third-party scripts دفاعات مهمة لكنها لا تجعل التخزين آمنًا مطلقًا. لا تضع token في URL أو history أو logs أو… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Bearer مقابل Sender-constrained» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Bearer token قابل لإعادة الاستخدام من أي حامل. للأنظمة الأعلى حساسية يمكن ربط التوكين بعميل عبر mTLS أو DPoP، لكن ذلك يزيد التعقيد ولا يلغي التحقق من audience/scope أو حماية الجهاز. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

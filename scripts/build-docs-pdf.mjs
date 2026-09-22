@@ -40,6 +40,9 @@ try {
 
 	await page.evaluate(async () => {
 		await document.fonts.ready;
+		document.querySelectorAll('details.quiz-answer').forEach((details) => {
+			details.open = true;
+		});
 		await Promise.all(
 			Array.from(document.images)
 				.filter((image) => !image.complete)

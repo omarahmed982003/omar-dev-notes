@@ -137,3 +137,41 @@ client_id=...
 - **Implicit Grant:** يعيد access token عبر front channel حيث يزداد التسريب وإعادة الاستخدام. استخدم Authorization Code + PKCE.
 - **Resource Owner Password Credentials:** يعلّم المستخدم إدخال كلمة مروره في Client ويصعّب MFA وWebAuthn؛ RFC 9700 يقول إنه يجب عدم استخدامه.
 :::
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: OAuth Flows الحديثة">
+<p class="lesson-diagram-title">خريطة مفاهيم: OAuth Flows الحديثة</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>Authorization Code + PKCE</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Client Credentials</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Device Authorization</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Refresh Token Grant</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Assertion Grants</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Authorization Code + PKCE» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> هذا هو الاختيار الأساسي لتطبيقات الويب وSPA وNative Apps. الكود يمر عبر الـFront Channel لكنه قصير العمر وأحادي الاستخدام، أما التوكينات فتعود من Token Endpoint عبر اتصال مباشر. إنشاء PKCE طلب التفويض: عند callback طابق state بقيمة session مقارنة ثابتة الزمن واحذف المعاملة بعد الاستخدام. ثم أرسل code وcode_verifier وredirect URI نفسها إلى token endpoint. الـAuthorization Server يحسب: PKCE ليس تشفيرًا للكود؛ يربط… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Authorization Code + PKCE» و«Client Credentials». لماذا لا يغني أحدهما عن الآخر داخل موضوع «OAuth Flows الحديثة»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Authorization Code + PKCE»: هذا هو الاختيار الأساسي لتطبيقات الويب وSPA وNative Apps. الكود يمر عبر الـFront Channel لكنه قصير العمر وأحادي الاستخدام، أما التوكينات فتعود من Token Endpoint عبر اتصال مباشر. إنشاء PKCE طلب التفويض: عند callback طابق state بقيمة session مقارنة ثابتة الزمن واحذف المعاملة بعد الاستخدام. ثم أرسل code وcode_verifier وredirect URI نفسها إلى token endpoint. الـAuthorization Server يحسب: PKCE ليس تشفيرًا للكود؛ يربط… أما «Client Credentials»: لـmachine-to-machine عندما يعمل Client بصفته، لا بصفة مستخدم: للـConfidential clients فقط. لا يوجد user أو consent تفاعلي؛ لا تخترع user_id لهذا token. فضّل مصادقة أقوى مثل mTLS أو private_key_jwt في الأنظمة الحساسة. اجعل كل workload بهوية وصلاحيات مستقلة بدل secret مشترك بين الخدمات كلها. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Device Authorization». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> مناسب لـSmart TV أو CLI أو جهاز إدخاله محدود: الجهاز يطلب device_code وuser_code وverification_uri. يعرض للمستخدم الرابط والكود، ويفضل QR لا يحتوي أسرارًا غير مطلوبة. المستخدم يفتح الرابط على جهاز آخر ويسجل الدخول ويوافق. الجهاز يعمل polling للـtoken endpoint. احترم interval، ومع slow_down زد فترة polling خمس ثوانٍ، وتوقف عند access_denied أو expired_token. اعرض اسم الجهاز والعميل للمستخدم لتقليل هجمات خداع الأكواد. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Refresh Token Grant» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تطلب scope أوسع من الأصلي. استخدم rotation: كل استبدال يصدر refresh token جديدًا ويلغي السابق، مع كشف reuse. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>

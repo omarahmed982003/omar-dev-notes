@@ -129,3 +129,39 @@ session_destroy();
 يمكن تخصيص التخزين في قاعدة بيانات أو Redis عبر `SessionHandlerInterface` أو `session_set_save_handler()`. طبّق انتهاءً زمنيًا للخمول والعمر الكلي، وسجّل الجلسات النشطة، ولا تعتمد على garbage collection وحده.
 
 للتفاصيل الأمنية والهجمات المرتبطة بالجلسات، تابع [حماية الجلسات](/auth/01-session-security/).
+
+## خريطة الدرس
+
+<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: رفع الملفات والكوكيز والجلسات">
+<p class="lesson-diagram-title">خريطة مفاهيم: رفع الملفات والكوكيز والجلسات</p>
+<div class="diagram-flow">
+<div class="diagram-node input"><span>رفع الملفات</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Cookies</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Sessions</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>تنظيف الجلسة وتسجيل الخروج</span></div>
+</div>
+</div>
+
+## تأكد من فهمك
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «رفع الملفات» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يجب أن يكون النموذج POST وبـ multipart/form-data: تضع PHP البيانات في $_FILES وتنقل الملف أولًا إلى upload_tmp_dir. لا تثق في الاسم أو MIME القادم من المتصفح. افحص UPLOAD_ERR_* والحجم الحقيقي وMIME بـ finfo، وأعد تسمية الملف، وخزنه خارج public web root إن أمكن. لا تنفذ الملف، واضبط upload_max_filesize وpost_max_size. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «رفع الملفات» و«Cookies». لماذا لا يغني أحدهما عن الآخر داخل موضوع «رفع الملفات والكوكيز والجلسات»؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «رفع الملفات»: يجب أن يكون النموذج POST وبـ multipart/form-data: تضع PHP البيانات في $_FILES وتنقل الملف أولًا إلى upload_tmp_dir. لا تثق في الاسم أو MIME القادم من المتصفح. افحص UPLOAD_ERR_* والحجم الحقيقي وMIME بـ finfo، وأعد تسمية الملف، وخزنه خارج public web root إن أمكن. لا تنفذ الملف، واضبط upload_max_filesize وpost_max_size. أما «Cookies»: الكوكي قيمة صغيرة يخزنها المتصفح ويرسلها مع الطلبات المطابقة للنطاق والمسار. Secure: الإرسال عبر HTTPS فقط. HttpOnly: يمنع JavaScript من قراءة الكوكي، فيقلل سرقة session عبر XSS. SameSite=Lax/Strict/None: يقيّد الطلبات cross-site. None يتطلب Secure. هذه الإعدادات تساعد ضد CSRF لكنها لا تستبدل CSRF token في العمليات الحساسة. لا تضع أسرارًا أو بيانات حساسة خامًا في Cookies. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Sessions». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> بيانات الجلسة تُحفظ عادة على الخادم، بينما يحتفظ المتصفح بمعرّف session في Cookie. عند session_start() تنشئ PHP جلسة أو تستعيدها وتملأ $_SESSION. بعد نجاح تسجيل الدخول أو رفع الصلاحية، غيّر المعرّف قبل تثبيت حالة المصادقة الجديدة: :::caution[تصحيح أمني مهم] كتابة session_regenerate_id(true) وحذف الجلسة القديمة فورًا تبدو أكثر أمانًا، لكنها قد تسبب فقد الجلسة أو race conditions مع الطلبات المتزامنة والشبكات غير… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «تنظيف الجلسة وتسجيل الخروج» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> session_unset() يزيل متغيرات الجلسة، ويمكن أيضًا تعيين $_SESSION = []. session_destroy() يحذف بيانات التخزين الحالية، لكنه لا يمسح تلقائيًا مصفوفة $_SESSION أو Cookie عند العميل. session_write_close()/ session_commit() يحفظ ويغلق القفل مبكرًا. للقراءة فقط: session_start(['read_and_close' =&gt; true]);. يمكن تخصيص التخزين في قاعدة بيانات أو Redis عبر SessionHandlerInterface أو session_set_save_handler(). طبّق انتهاءً… وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
+</section>
+</div>
