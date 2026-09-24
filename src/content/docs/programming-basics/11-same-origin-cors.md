@@ -1,5 +1,5 @@
 ---
-title: 11. Same-Origin Policy وCORS
+title: 10. Same-Origin Policy وCORS
 description: تعريف Origin وقيود المتصفح وSimple Requests وPreflight والـCredentials والإعداد الآمن.
 sidebar:
   order: 11

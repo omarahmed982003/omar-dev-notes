@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "المعاملات والتحويلات والرياضيات وTernary"
 description: "استخدم العوامل لبناء شروط وصيغ مقروءة. المعيار ليس قِصر السطر بل وضوح المعنى وسلامة النوع والحدود."
 tableOfContents: true
 ---
 
-## الفكرة العامة
+## العوامل الرياضية والمنطقية
 
 استخدم العوامل لبناء شروط وصيغ مقروءة. المعيار ليس قِصر السطر بل وضوح المعنى وسلامة النوع والحدود.
 
-## المفاهيم التي تحتاجها
+## الأولوية والتحويل والعامل الثلاثي
 
 - استخرج أجزاء التعبير إلى متغيرات Boolean ذات أسماء.
 - Short-circuit يمنع تقييم الطرف الثاني عندما حُسمت النتيجة.
@@ -16,7 +17,7 @@ tableOfContents: true
 - العامل الثلاثي يعيد قيمة، لذلك يناسب اختيارًا بسيطًا.
 - العوامل البتية لها حالات مثل flags ولا تعادل المنطق البولياني.
 
-## مثال
+## مثال: حساب واختيار قيمة
 
 ```cpp
 bool canDivide = denominator != 0;
@@ -24,7 +25,7 @@ double result = canDivide ? numerator / denominator : 0.0;
 int boxes = static_cast<int>(std::ceil(items / 12.0));
 ```
 
-## أخطاء شائعة وتصحيحات
+## أخطاء الأولوية والتحويل
 
 - لا تستخدم ternary متداخلة إذا احتجت وقتًا لفكها.
 - floor(-2.1) يساوي -3؛ اختبر السالب صراحة.
@@ -34,9 +35,9 @@ int boxes = static_cast<int>(std::ceil(items / 12.0));
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المعاملات والتحويلات والرياضيات وTernary">
 <p class="lesson-diagram-title">خريطة مفاهيم: المعاملات والتحويلات والرياضيات وTernary</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-node input"><span>القيم</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم التي تحتاجها</span></div>
+<div class="diagram-node process"><span>العوامل والأولوية</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>مثال</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -66,7 +67,3 @@ int boxes = static_cast<int>(std::ceil(items / 12.0));
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عند التعامل مع flags أو masks وتمثيل البتات. شروط الأعمال المعتادة تستخدم &amp;&amp; و||.</div></details>
 </section>
 </div>
-
-## الخلاصة
-
-اكتب الحل على مراحل، فعّل التحذيرات، واختبر الحالة العادية والحدود والمدخل غير الصالح. عندما تستطيع تفسير سبب كل سطر تكون قد فهمت الفكرة بدل حفظها.

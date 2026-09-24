@@ -42,6 +42,14 @@ To test 29, try prime divisors up to √29≈5.38: 2, 3, and 5. None divides it,
 </div>
 </div>
 
+## Sequences, counting, probability, and graphs
+
+Arithmetic sequences add a fixed difference, while geometric sequences multiply by a fixed ratio. A recurrence defines terms from earlier terms and must include base cases.
+
+The multiplication principle counts independent stages. Permutations consider order; combinations do not. Probability begins with a sample space and events. Pseudorandom generators are deterministic and ordinary generators must not protect secrets.
+
+A graph contains vertices and edges. Edges may be directed or weighted. Paths connect vertices, cycles revisit a vertex, and a tree is connected and acyclic. Graphs model networks, routes, dependencies, and social relationships.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

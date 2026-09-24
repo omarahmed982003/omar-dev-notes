@@ -1,14 +1,16 @@
 ---
-title: "Training center registration project"
+title: "13. Training center project"
+sidebar:
+  order: 13
 description: "The training-center project should demonstrate understandable design, not one large code block. Separate input, validation, pricing, eligibility, and output."
 tableOfContents: true
 ---
 
-## Overview
+## Registration system requirements
 
 The training-center project should demonstrate understandable design, not one large code block. Separate input, validation, pricing, eligibility, and output.
 
-## Concepts you need
+## Input, validation, pricing, and eligibility
 
 - Define input types, plan choices, and valid ranges.
 - Validate before financial calculation.
@@ -17,7 +19,7 @@ The training-center project should demonstrate understandable design, not one la
 - Write normal, boundary, and rejection tests for every rule.
 - After the first correct version, extract functions so main only coordinates.
 
-## Example
+## Core rule functions
 
 ```cpp
 bool validAge(int age) { return age >= 12 && age <= 80; }
@@ -26,19 +28,99 @@ double planPrice(char plan) {
 }
 ```
 
-## Corrections and common mistakes
+## Duplication and test-design mistakes
 
 - Do not duplicate the full algorithm for each plan; vary data instead.
 - Calculate expected test results independently before comparing output.
+
+## Analyze the project before coding
+
+Create an input contract first. A useful version may read the trainee's age, selected plan, whether seats remain, and the paid amount. For every field, define its type, valid values, and rejection message. Then list the output: registration status, base fee, discount, required amount, paid amount, and remaining balance.
+
+The decision pipeline should be visible:
+
+1. Read the raw data and confirm that extraction succeeded.
+2. Validate age, plan code, and non-negative payment.
+3. Check eligibility and seat availability.
+4. Choose the plan price.
+5. Apply one documented discount policy.
+6. Compare payment with the final fee.
+7. Print an itemized result and the exact rejection reason when applicable.
+
+```cpp
+bool hasValidPlan(char plan) {
+    return plan == 'B' || plan == 'P';
+}
+
+long long planPrice(char plan) {
+    switch (plan) {
+    case 'B': return 60'000;
+    case 'P': return 90'000;
+    default:  return 0;
+    }
+}
+
+bool canRegister(int age, bool seatsAvailable) {
+    return age >= 12 && age <= 80 && seatsAvailable;
+}
+```
+
+Small functions isolate rules from input/output. They can be tested directly and reused when the interface later changes from a console program to a web application.
+
+## Decision table and tests
+
+At minimum, cover: age `11/12/13` and `79/80/81`, every valid plan plus an unknown one, available and full capacity, payment below/equal/above the required fee, and malformed numeric input. Also test combinations—valid age with no seats, or a valid plan with insufficient payment—because projects fail where rules meet, not only where each rule stands alone.
+
+Avoid duplicating a complete branch for each plan. The algorithm is the same; the price and plan properties are data. This keeps a new plan from requiring a copied and slightly inconsistent version of the whole program.
+
+## Analyze the project before coding
+
+Create an input contract first. A useful version may read the trainee's age, selected plan, whether seats remain, and the paid amount. For every field, define its type, valid values, and rejection message. Then list the output: registration status, base fee, discount, required amount, paid amount, and remaining balance.
+
+The decision pipeline should be visible:
+
+1. Read the raw data and confirm that extraction succeeded.
+2. Validate age, plan code, and non-negative payment.
+3. Check eligibility and seat availability.
+4. Choose the plan price.
+5. Apply one documented discount policy.
+6. Compare payment with the final fee.
+7. Print an itemized result and the exact rejection reason when applicable.
+
+```cpp
+bool hasValidPlan(char plan) {
+    return plan == 'B' || plan == 'P';
+}
+
+long long planPrice(char plan) {
+    switch (plan) {
+    case 'B': return 60'000;
+    case 'P': return 90'000;
+    default:  return 0;
+    }
+}
+
+bool canRegister(int age, bool seatsAvailable) {
+    return age >= 12 && age <= 80 && seatsAvailable;
+}
+```
+
+Small functions isolate rules from input/output. They can be tested directly and reused when the interface later changes from a console program to a web application.
+
+## Decision table and tests
+
+At minimum, cover: age `11/12/13` and `79/80/81`, every valid plan plus an unknown one, available and full capacity, payment below/equal/above the required fee, and malformed numeric input. Also test combinations—valid age with no seats, or a valid plan with insufficient payment—because projects fail where rules meet, not only where each rule stands alone.
+
+Avoid duplicating a complete branch for each plan. The algorithm is the same; the price and plan properties are data. This keeps a new plan from requiring a copied and slightly inconsistent version of the whole program.
 
 ## Lesson map
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Training center registration project">
 <p class="lesson-diagram-title">Concept map: Training center registration project</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Trainee data</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Eligibility and plan</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -68,7 +150,3 @@ double planPrice(char plan) {
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Represent plans as data—name, price, properties—and run one calculation path over that data.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

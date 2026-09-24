@@ -1,5 +1,5 @@
 ---
-title: 11. Same-origin policy and CORS
+title: 10. Same-origin policy and CORS
 description: Origins, browser boundaries, simple requests, preflight, credentials, and safe configuration.
 sidebar:
   order: 11

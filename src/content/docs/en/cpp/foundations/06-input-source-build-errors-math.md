@@ -1,14 +1,16 @@
 ---
-title: "Input, source structure, errors, and the math library"
+title: "8. Input, conversions, limits, and math"
+sidebar:
+  order: 8
 description: "Input and output are part of program design. Validate extraction, understand cin versus getline, and distinguish build, runtime, and logic failures."
 tableOfContents: true
 ---
 
-## Overview
+## Reading input and writing output
 
 Input and output are part of program design. Validate extraction, understand cin versus getline, and distinguish build, runtime, and logic failures.
 
-## Concepts you need
+## cin, getline, stream state, and cmath
 
 - cin extracts whitespace-delimited values; getline reads a full line.
 - After cin, a newline may remain; std::ws is useful before getline.
@@ -16,7 +18,7 @@ Input and output are part of program design. Validate extraction, understand cin
 - Includes are preprocessed; source becomes objects and then an executable through linking.
 - cmath provides sqrt, pow, abs, floor, ceil, and round; respect domain and types.
 
-## Example
+## Example: reading a number and a full line
 
 ```cpp
 #include <iostream>
@@ -31,7 +33,7 @@ int main() {
 }
 ```
 
-## Corrections and common mistakes
+## Input, linker, and formula mistakes
 
 - A linker error differs from a syntax error; look for missing definitions or duplicate symbols.
 - Real-number sqrt is invalid for negative input.
@@ -41,9 +43,9 @@ int main() {
 <div class="lesson-diagram" role="img" aria-label="Concept map: Input, source structure, errors, and the math library">
 <p class="lesson-diagram-title">Concept map: Input, source structure, errors, and the math library</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>User data</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>cin and getline</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -52,6 +54,16 @@ int main() {
 <div class="diagram-node output"><span>Input and output are part of program design. Validate</span></div>
 </div>
 </div>
+
+## Stream state and line input
+
+Extraction returns the stream, which becomes false on failure. Call `clear()` before recovery and discard the invalid remainder with `ignore()`. Mixing `>>` with `getline` can leave a newline that produces an empty line, so consume the delimiter deliberately.
+
+## Limits, math, and formulas
+
+Integer division drops the fractional part; convert before division. `static_cast` does not prevent overflow. Use `numeric_limits` for implementation-specific bounds. `<cmath>` supplies `sqrt`, `pow`, `abs`, `round`, `ceil`, and `floor`; note that ceiling and floor behave differently for negative values.
+
+Translate formulas by naming quantities and normalizing units. Test zero, invalid negative input, exact boundaries, and values large enough to expose overflow. Keep shared declarations in headers and definitions in source files, and include every direct dependency explicitly.
 
 ## Check your understanding
 
@@ -73,7 +85,3 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The compiler checks types, not runtime values; a negative real input is outside the function domain and produces NaN.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

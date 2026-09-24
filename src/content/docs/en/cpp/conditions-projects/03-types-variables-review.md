@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "Types, variables, and scope review"
 description: "This applied review revisits types, initialization, and scope before larger conditional programs. Select a type that preserves meaning and supports the expected range."
 tableOfContents: true
 ---
 
-## Overview
+## Types and variables review
 
 This applied review revisits types, initialization, and scope before larger conditional programs. Select a type that preserves meaning and supports the expected range.
 
-## Concepts you need
+## Range, initialization, and conversion
 
 - Use bool for binary state instead of magic integers.
 - auto helps when the initializer makes the type obvious, not when it hides important meaning.
@@ -16,7 +17,7 @@ This applied review revisits types, initialization, and scope before larger cond
 - Keep a variable in the narrowest useful scope.
 - Use const for validated inputs that should not change.
 
-## Example
+## Example: choosing an appropriate type
 
 ```cpp
 std::string plan{"standard"};
@@ -26,7 +27,7 @@ bool paid{true};
 const double subtotal = sessions * pricePerSession;
 ```
 
-## Corrections and common mistakes
+## Type and range mistakes
 
 - Do not use unsigned merely to reject negatives; conversions can surprise.
 - Do not leave local fundamental variables uninitialized.
@@ -36,9 +37,9 @@ const double subtotal = sessions * pricePerSession;
 <div class="lesson-diagram" role="img" aria-label="Concept map: Types, variables, and scope review">
 <p class="lesson-diagram-title">Concept map: Types, variables, and scope review</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Value meaning</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Type selection</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -68,7 +69,3 @@ const double subtotal = sessions * pricePerSession;
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> No. Conversion can wrap a negative value into a large positive number; validate before conversion.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

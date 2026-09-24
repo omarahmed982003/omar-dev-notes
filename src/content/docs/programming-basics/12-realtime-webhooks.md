@@ -1,5 +1,5 @@
 ---
-title: 12. الاتصال اللحظي وWebhooks
+title: 11. الاتصال اللحظي وWebhooks
 description: Polling وLong Polling وSSE وWebSocket وWebhooks وكيف تختار النمط المناسب.
 sidebar:
   order: 12

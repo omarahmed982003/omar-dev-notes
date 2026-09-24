@@ -25,6 +25,24 @@ To classify a grade: read it, validate that it is between 0 and 100, then report
 - Code is one language-specific implementation of an algorithm.
 - One successful sample is insufficient; test boundaries and invalid input.
 
+## From binary to hexadecimal
+
+Hexadecimal makes bit patterns shorter because one hex digit represents four bits. For example, `1111 1010₂` equals `FA₁₆`. Hex appears in memory addresses, colors such as `#22C55E`, binary-file viewers, and bit masks.
+
+## Unicode and UTF-8 in practice
+
+Unicode assigns a code point to each character, such as `U+0639` for the Arabic letter ع. UTF-8 defines the bytes used to encode that value. Basic English characters use one byte, Arabic letters usually use two, and other symbols may use up to four.
+
+Do not assume character count equals byte count or slice text at arbitrary byte positions. Use library operations that understand Unicode when measuring or splitting human text.
+
+## From an algorithm to a program
+
+1. Define inputs, outputs, and constraints.
+2. Write language-independent steps as pseudocode or a flowchart.
+3. Dry-run a normal, boundary, and invalid case.
+4. Translate the design into code and compare behavior with expectations.
+5. Optimize only after correctness and measurement show a real need.
+
 <div class="lesson-diagram" role="img" aria-label="From a problem to machine-executable instructions">
 <p class="lesson-diagram-title">From a problem to machine-executable instructions</p>
 <div class="diagram-flow">
@@ -39,6 +57,14 @@ To classify a grade: read it, validate that it is between 0 and 100, then report
 <div class="diagram-node output"><span>Executable instructions</span></div>
 </div>
 </div>
+
+## Signed values, floating point, endianness, and runtimes
+
+The same bits have different meanings under different types. Unsigned values wrap within their range, while common signed integers use two's complement. Floating point stores an approximation using a sign, exponent, and significand, so many decimal fractions cannot be represented exactly.
+
+Endianness defines byte order for multi-byte values. It matters in binary files and network protocols. A compiler translates source before execution, an interpreter executes a representation at runtime, and a JIT compiles selected code while the program runs. A runtime supplies services required by the language or platform.
+
+Libraries may link statically or load dynamically. Projects record dependency versions because API and behavior can change between releases.
 
 ## Check your understanding
 

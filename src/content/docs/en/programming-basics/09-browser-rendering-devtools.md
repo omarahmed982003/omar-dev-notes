@@ -1,5 +1,5 @@
 ---
-title: 9. How browsers render a page
+title: 8. How browsers render a page
 description: Navigation, DOM, CSSOM, render trees, JavaScript execution, and practical DevTools analysis.
 sidebar:
   order: 9

@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "الصيغ والتمارين وتتبع الناتج"
 description: "تحويل الصيغة إلى برنامج يمر بثلاث مراحل: فهم الوحدات، كتابة العلاقة، ثم اختبار النتيجة بقيم يمكن حسابها يدويًا."
 tableOfContents: true
 ---
 
-## الفكرة العامة
+## الصيغ والتنبؤ بالناتج
 
 تحويل الصيغة إلى برنامج يمر بثلاث مراحل: فهم الوحدات، كتابة العلاقة، ثم اختبار النتيجة بقيم يمكن حسابها يدويًا.
 
-## المفاهيم التي تحتاجها
+## ترتيب العمليات وتتبع القيم
 
 - سمِّ المتغيرات بحسب معناها ووحدتها.
 - ضع الأقواس لتطابق الصيغة الرياضية.
@@ -16,7 +17,7 @@ tableOfContents: true
 - صيغة مجموع 1..n هي n(n+1)/2 ويمكن مقارنتها بحلقة للتحقق.
 - العامل الثلاثي مناسب لاختيار قصير، وليس لتفرعات معقدة متداخلة.
 
-## مثال
+## مثال: ترجمة صيغة إلى C++
 
 ```cpp
 double celsius{25.0};
@@ -25,7 +26,7 @@ int n{100};
 long long sum = 1LL * n * (n + 1) / 2;
 ```
 
-## أخطاء شائعة وتصحيحات
+## أخطاء الأقواس والقسمة الصحيحة
 
 - استخدام 9/5 قبل التحويل يعطي 1 بسبب القسمة الصحيحة.
 - قد يحدث overflow في الضرب قبل تخزين النتيجة في نوع أوسع؛ وسّع أحد العوامل أولًا.
@@ -35,9 +36,9 @@ long long sum = 1LL * n * (n + 1) / 2;
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الصيغ والتمارين وتتبع الناتج">
 <p class="lesson-diagram-title">خريطة مفاهيم: الصيغ والتمارين وتتبع الناتج</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-node input"><span>الصيغة الرياضية</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم التي تحتاجها</span></div>
+<div class="diagram-node process"><span>ترتيب العمليات</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>مثال</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -67,7 +68,3 @@ long long sum = 1LL * n * (n + 1) / 2;
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عندما تتعدد الشروط أو الآثار الجانبية أو يتداخل ternary؛ الوضوح والصيانة أهم من قصر السطر.</div></details>
 </section>
 </div>
-
-## الخلاصة
-
-اكتب الحل على مراحل، فعّل التحذيرات، واختبر الحالة العادية والحدود والمدخل غير الصالح. عندما تستطيع تفسير سبب كل سطر تكون قد فهمت الفكرة بدل حفظها.

@@ -25,6 +25,25 @@ When a message is sent, the keyboard supplies input, the app processes and encod
 - A CPU does not infer intent; it executes precise instructions.
 - A file on disk becomes a running process only after loading and execution.
 
+## The fetch-decode-execute cycle
+
+The processor repeatedly fetches an instruction from memory, decodes its operation and operands, then executes it and updates registers or memory. Modern CPUs add pipelines, caches, parallel execution, and branch prediction, but this model explains why a running program needs instructions, data, and execution state.
+
+## The memory hierarchy
+
+| Level | Relative speed | Capacity | Main use |
+|---|---|---|---|
+| Registers | Highest | Tiny | Values used by execution units now |
+| CPU cache | Very high | Small | Nearby copies of frequently used data and instructions |
+| RAM | High | Medium | Active programs and data |
+| SSD/HDD | Lower | Large | Files and installed programs |
+
+Data that stays closer to the CPU is cheaper to access. Data layout and access patterns can therefore affect performance even when two solutions execute a similar number of operations.
+
+## What happens when a program opens?
+
+The operating system checks the executable and permissions, creates a process and virtual address space, loads the required pages, and starts execution at the entry point. Its scheduler shares CPU time between processes while device drivers handle displays, storage, and networks.
+
 <div class="lesson-diagram" role="img" aria-label="The computer data-processing cycle">
 <p class="lesson-diagram-title">The computer data-processing cycle</p>
 <div class="diagram-flow">
@@ -37,6 +56,14 @@ When a message is sent, the keyboard supplies input, the app processes and encod
 <div class="diagram-node start"><span>Optional storage</span></div>
 </div>
 </div>
+
+## CPU execution, memory, processes, and threads
+
+Registers hold the values currently used by the CPU. The ALU performs arithmetic and logic, while the control unit coordinates instruction fetch, decode, and execution. Clock rate alone does not compare processors; architecture, cache, cores, and work per cycle also matter.
+
+The stack commonly holds function calls and short-lived local state, while the heap supports dynamic allocation. Virtual memory gives each process an address space divided into pages. A page fault occurs when a required mapping must be created or loaded.
+
+A process owns resources and an address space. Threads within a process share much of that state but keep their own execution stacks. The scheduler switches CPU time between them. Unsynchronized access to shared state can create a race condition.
 
 ## Check your understanding
 

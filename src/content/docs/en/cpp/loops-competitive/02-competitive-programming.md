@@ -1,14 +1,16 @@
 ---
-title: "Competitive programming and practice platforms"
+title: "14. Competitive programming and practice platforms"
+sidebar:
+  order: 14
 description: "Competitive programming trains constraint analysis, algorithm choice, and fast correct implementation. The judge is a measurement tool, not a substitute for understanding."
 tableOfContents: true
 ---
 
-## Overview
+## Competitive programming
 
 Competitive programming trains constraint analysis, algorithm choice, and fast correct implementation. The judge is a measurement tool, not a substitute for understanding.
 
-## Concepts you need
+## Statements, constraints, and complexity
 
 - Read input, output, and constraints before samples.
 - Translate constraints into acceptable complexity; n=10^5 usually rules out O(n²).
@@ -16,26 +18,34 @@ Competitive programming trains constraint analysis, algorithm choice, and fast c
 - After Wrong Answer, inspect boundaries, types, rounding, and interpretation.
 - State time and memory complexity after solving.
 
-## Example
+## Example: Elephant and ceiling division
 
 ```cpp
 // Elephant: minimum moves of length at most 5
 int moves = (distance + 4) / 5; // integer ceiling
 ```
 
-## Corrections and common mistakes
+## Samples, submissions, and random changes
 
 - Passing samples does not prove correctness.
 - Do not start with maximum difficulty; build a consistent practice ladder.
+
+## Platforms and problem patterns
+
+Codeforces emphasizes contests, ratings, and broad problem sets. LeetCode often emphasizes interview-oriented data-structure patterns. Begin with implementation, arithmetic, and conditions, then add loops and containers. After each problem record the idea, the bug, complexity, and a missed test case.
+
+The practice set covers: ceiling division in 617A and 1A, `min` and remainder in 581A, character handling in 281A, parity in 4A and 959A, formula derivation in 486A, three-way comparison in 835A, guaranteed outcomes in 1173A, odd/even block mapping in 318A, and geometric case analysis in 459A.
+
+Read an editorial only after a genuine attempt, then close it and derive the method again on a different example.
 
 ## Lesson map
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Competitive programming and practice platforms">
 <p class="lesson-diagram-title">Concept map: Competitive programming and practice platforms</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Problem statement</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Constraints and complexity</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -65,7 +75,3 @@ int moves = (distance + 4) / 5; // integer ceiling
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Record complexity, study an alternative, reimplement later, and document the misconception that blocked the first attempt.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

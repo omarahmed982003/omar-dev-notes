@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "switch وتطبيق الآلة الحاسبة"
 description: "الآلة الحاسبة مثال مناسب لاختيار العملية بـswitch، بشرط فصل قراءة البيانات والتحقق من تنفيذ العملية ومعالجة القسمة على صفر."
 tableOfContents: true
 ---
 
-## الفكرة العامة
+## اختيار عملية الحاسبة
 
 الآلة الحاسبة مثال مناسب لاختيار العملية بـswitch، بشرط فصل قراءة البيانات والتحقق من تنفيذ العملية ومعالجة القسمة على صفر.
 
-## المفاهيم التي تحتاجها
+## case وbreak وفحص القسمة
 
 - اقرأ العددين ورمز العملية وتحقق من نجاح الإدخال.
 - كل case تنفذ عملية واحدة ثم break.
@@ -16,7 +17,7 @@ tableOfContents: true
 - default يرفض العملية غير المعروفة.
 - إذا زادت العمليات، يمكن نقل كل عملية إلى دالة واستخدام تصميم أكثر قابلية للتوسع.
 
-## مثال
+## مثال: حاسبة باستخدام switch
 
 ```cpp
 switch (op) {
@@ -31,7 +32,7 @@ default: std::cout << "Unsupported operation";
 }
 ```
 
-## أخطاء شائعة وتصحيحات
+## أخطاء Fall-through والقسمة على صفر
 
 - إن كان a وb من int فالقسمة صحيحة؛ استخدم double إذا أردت كسرًا.
 - لا تعتمد على fall-through دون قصد موثق.
@@ -41,9 +42,9 @@ default: std::cout << "Unsupported operation";
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: switch وتطبيق الآلة الحاسبة">
 <p class="lesson-diagram-title">خريطة مفاهيم: switch وتطبيق الآلة الحاسبة</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-node input"><span>الرقمان والعامل</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم التي تحتاجها</span></div>
+<div class="diagram-node process"><span>اختيار case</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>مثال</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -73,7 +74,3 @@ default: std::cout << "Unsupported operation";
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عند كثرة العمليات أو حاجتها لبيانات وسلوك مستقل؛ استخدم دوال وجدول dispatch أو كائنات بحسب الحجم.</div></details>
 </section>
 </div>
-
-## الخلاصة
-
-اكتب الحل على مراحل، فعّل التحذيرات، واختبر الحالة العادية والحدود والمدخل غير الصالح. عندما تستطيع تفسير سبب كل سطر تكون قد فهمت الفكرة بدل حفظها.

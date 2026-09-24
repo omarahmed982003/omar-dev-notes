@@ -1,5 +1,5 @@
 ---
-title: 10. HTTP Caching والضغط
+title: 9. HTTP Caching والضغط
 description: Freshness وValidation وCache-Control وETag وVary وCDN وضغط gzip وBrotli.
 sidebar:
   order: 10

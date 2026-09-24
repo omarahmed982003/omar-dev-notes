@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "switch and the calculator exercise"
 description: "A calculator is a good switch example when input, operation selection, and division validation remain separate."
 tableOfContents: true
 ---
 
-## Overview
+## Choosing a calculator operation
 
 A calculator is a good switch example when input, operation selection, and division validation remain separate.
 
-## Concepts you need
+## case, break, and division checks
 
 - Read two operands and an operator, and validate extraction.
 - Each case performs one operation and breaks.
@@ -16,7 +17,7 @@ A calculator is a good switch example when input, operation selection, and divis
 - default rejects an unsupported operator.
 - As operations grow, extract functions or use a more extensible design.
 
-## Example
+## Example: a switch calculator
 
 ```cpp
 switch (op) {
@@ -31,7 +32,7 @@ default: std::cout << "Unsupported operation";
 }
 ```
 
-## Corrections and common mistakes
+## Fall-through and division-by-zero mistakes
 
 - With int operands, division is integer division; use double for fractions.
 - Do not rely on accidental fall-through.
@@ -41,9 +42,9 @@ default: std::cout << "Unsupported operation";
 <div class="lesson-diagram" role="img" aria-label="Concept map: switch and the calculator exercise">
 <p class="lesson-diagram-title">Concept map: switch and the calculator exercise</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Operands and operator</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Select case</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -73,7 +74,3 @@ default: std::cout << "Unsupported operation";
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> When operations grow or need independent state and behavior; functions, dispatch tables, or objects may scale better.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

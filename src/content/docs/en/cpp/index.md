@@ -1,35 +1,33 @@
 ---
-title: C++ from Foundations to Control Flow
-description: An organized C++ track that corrects and expands the three decks with examples and practice.
+title: C++
+description: An ordered path from problem solving and computer fundamentals through C++ builds, data, decisions, loops, and projects.
+sidebar:
+  order: 0
 ---
 
-This track rebuilds the ideas from **1 c++.pptx, 2 c++.pptx, and 3 c++.pptx** as a studyable curriculum. Repeated material is merged, explanations are corrected, and focused examples, exercises, and common mistakes replace literal slide transcription.
+# C++ from fundamentals to control flow and loops
 
-## 1. Language and computer foundations
+This section begins with problem analysis and number representation, then explains C++ tools, program structure, and the compiler pipeline in detail. The lessons continue through types, variables, text encoding, operators, input, conditions, `switch`, and loops. Complete examples, projects, common mistakes, and review questions accompany the explanations.
 
-- Number systems and computer components.
-- Tool setup and the first program.
-- Compilation and linking stages.
-- Types, variables, scope, and text encoding.
-- Operators, conversions, and type limits.
-- Input, output, errors, and the math library.
+## Lesson map
 
-## 2. Conditions and projects
+1. [**Problem solving, diagrams, and debugging**](./foundations/01-problem-solving-review/) — Decision trees, flowcharts, pseudocode, tests, and logic-error tracing.
+2. [**Number systems, computers, and memory**](./foundations/02-number-systems-computer-internals/) — Binary, octal, hex, CPU, memory, storage, and operating systems.
+3. [**C++ introduction, tools, and the first program**](./foundations/03-setup-syntax-translation-output/) — Language goals, standards, editors, IDEs, program structure, and output.
+4. [**Compiler, build pipeline, and diagnostics**](./conditions-projects/02-compilation-pipeline-diagnostics/) — Preprocessing, tokens, AST, IR, optimization, assembly, objects, linking, and errors.
+5. [**Types, variables, scope, and memory**](./foundations/04-types-variables-scope-encoding/) — Built-in types, sizes, ranges, initialization, constants, scope, and lifetime.
+6. [**Text encoding, characters, and casts**](./loops-competitive/01-encoding-casts-math/) — ASCII, Unicode, UTF-8, `char`, and explicit conversions.
+7. [**Operators, expressions, and bitwise operations**](./foundations/05-operators-conversions-limits/) — Precedence, assignment, comparison, logic, short circuiting, and bit operations.
+8. [**Input, conversions, limits, and math**](./foundations/06-input-source-build-errors-math/) — Stream state, casts, `numeric_limits`, `cmath`, and formulas.
+9. [**Input and business rules**](./conditions-projects/01-input-business-rules/) — Turning requirements into variables, Boolean rules, and tests.
+10. [**Online order project**](./conditions-projects/05-online-order-project/) — Price, quantity, discount, shipping, validation, and a test matrix.
+11. [**if, else, validation, and nesting**](./conditions-projects/06-if-else-validation-nesting/) — Exclusive and independent branches, ranges, ordering, and nested rules.
+12. [**switch, control flow, and a calculator**](./conditions-projects/07-switch-control-flow/) — `case`, `break`, `default`, fall-through, and local scope.
+13. [**Training center project**](./conditions-projects/08-training-center-project/) — Requirement analysis, program decomposition, registration, payment, and outcomes.
+14. [**Competitive programming platforms**](./loops-competitive/02-competitive-programming/) — Constraints, complexity, practice plans, Codeforces, and LeetCode.
+15. [**Condition and formula problems**](./loops-competitive/03-conditions-codeforces/) — Arithmetic, logical, and geometry problems with derivation and boundary tests.
+16. [**Loops and repetition patterns**](./loops-competitive/04-loops-counters-accumulators/) — `while`, `for`, `do-while`, counters, accumulators, sentinels, and nested loops.
 
-- Translating business rules into Boolean expressions.
-- `if`, `else if`, `else`, and nesting.
-- Input validation and short-circuit evaluation.
-- `switch`, `case`, and fall-through.
-- Online-order and training-center projects.
-
-## 3. Loops and competitive programming
-
-- `while`, `for`, and `do-while`.
-- Counters, accumulators, and sentinels.
-- `break`, `continue`, and nested loops.
-- Codeforces, LeetCode, and constraint analysis.
-- Explained problems and complete solutions.
-
-## Recommended next material
-
-The supplied decks end around conditions and loops. The next sequence should cover functions, arrays and vectors, references and pointers, RAII, classes, the STL, algorithms, and testing. These topics remain a separate next stage so the current track stays focused on control flow and loops.
+:::tip[Study method]
+Run every example, change its inputs, and predict the result before execution. Draw the build pipeline during the compiler lesson and write test cases before conditions and loops.
+:::

@@ -1,14 +1,16 @@
 ---
-title: "Conditions and Codeforces exercises"
+title: "15. Condition and formula problems"
+sidebar:
+  order: 15
 description: "Conditional problems train translation from story text into equations and exclusive cases. The main difficulty is usually boundaries, not typing if."
 tableOfContents: true
 ---
 
-## Overview
+## From a problem statement to cases and formulas
 
 Conditional problems train translation from story text into equations and exclusive cases. The main difficulty is usually boundaries, not typing if.
 
-## Concepts you need
+## Boundaries, exclusive cases, and direct formulas
 
 - Define symbols and equations before coding.
 - Look for a mathematical shortcut instead of unnecessary simulation.
@@ -16,7 +18,7 @@ Conditional problems train translation from story text into equations and exclus
 - Use a wide type when large constraints are multiplied.
 - For Even Odds, split the odd and even halves using the 1-based position.
 
-## Example
+## Example: deriving Even Odds
 
 ```cpp
 long long oddCount = (n + 1) / 2;
@@ -25,19 +27,89 @@ long long answer = (k <= oddCount)
     : 2 * (k - oddCount);
 ```
 
-## Corrections and common mistakes
+## Indexing, overflow, and precision mistakes
 
 - Confirm whether k is 1-based or 0-based.
 - Do not use double for exact integer arithmetic.
+
+## Problem families covered by this lesson
+
+The goal is not to memorize solutions, but to recognize the mathematical form behind each statement:
+
+| Problem pattern | Main idea | Typical trap |
+|---|---|---|
+| Mahmoud and Ehab and the even/odd winner | The parity of the input determines the winner | Simulating a game whose result is direct |
+| Calculating Function | Pair positive and negative terms, then handle an odd remainder | Iterating up to a huge `n` |
+| Watermelon | Split an even number into two positive even parts | Accepting `2`, although `1 + 1` is not valid |
+| Key races | Compare two computed arrival times | Reversing distance or speed terms |
+| Nauuo and Votes | Compare the difference after considering an allowed uncertainty | Missing the equality boundary |
+| Even Odds | Map a 1-based position into the odd half or even half | Wrong half size when `n` is odd |
+| Pasha and Stick | Form four equal sides after removing at most one unit | Forgetting positivity and divisibility |
+| Pashmak and Garden | Complete an axis-aligned square or reject | Accepting a diagonal that is not at 45 degrees |
+
+Additional short problems such as Elephant, Vasya the Hipster, Word Capitalization, and Theatre Square reinforce ceiling division, minimum/remaining counts, safe character handling, and overflow-aware multiplication.
+
+## Derive instead of simulate
+
+For the alternating sum `-1 + 2 - 3 + 4 ...`, every complete pair contributes `1`. Therefore `n / 2` is the answer for even `n`; for odd `n`, subtract the final odd number. This changes an `O(n)` loop into `O(1)` arithmetic.
+
+For Theatre Square, the number of flagstones along one dimension is ceiling division:
+
+```cpp
+long long rows = (n + a - 1) / a;
+long long columns = (m + a - 1) / a;
+long long answer = rows * columns;
+```
+
+The variables and product must be wide enough. Integer division truncates, so plain `n / a` undercounts whenever a remainder exists.
+
+## A disciplined contest workflow
+
+Extract constraints, write the mathematical cases, choose types from the largest possible intermediate value, and create tiny hand-computed samples before coding. Test the first and last valid inputs, every point where a condition changes, and values that make both branches look nearly identical. Only then consider micro-optimizations.
+
+## Problem families covered by this lesson
+
+The goal is not to memorize solutions, but to recognize the mathematical form behind each statement:
+
+| Problem pattern | Main idea | Typical trap |
+|---|---|---|
+| Mahmoud and Ehab and the even/odd winner | The parity of the input determines the winner | Simulating a game whose result is direct |
+| Calculating Function | Pair positive and negative terms, then handle an odd remainder | Iterating up to a huge `n` |
+| Watermelon | Split an even number into two positive even parts | Accepting `2`, although `1 + 1` is not valid |
+| Key races | Compare two computed arrival times | Reversing distance or speed terms |
+| Nauuo and Votes | Compare the difference after considering an allowed uncertainty | Missing the equality boundary |
+| Even Odds | Map a 1-based position into the odd half or even half | Wrong half size when `n` is odd |
+| Pasha and Stick | Form four equal sides after removing at most one unit | Forgetting positivity and divisibility |
+| Pashmak and Garden | Complete an axis-aligned square or reject | Accepting a diagonal that is not at 45 degrees |
+
+Additional short problems such as Elephant, Vasya the Hipster, Word Capitalization, and Theatre Square reinforce ceiling division, minimum/remaining counts, safe character handling, and overflow-aware multiplication.
+
+## Derive instead of simulate
+
+For the alternating sum `-1 + 2 - 3 + 4 ...`, every complete pair contributes `1`. Therefore `n / 2` is the answer for even `n`; for odd `n`, subtract the final odd number. This changes an `O(n)` loop into `O(1)` arithmetic.
+
+For Theatre Square, the number of flagstones along one dimension is ceiling division:
+
+```cpp
+long long rows = (n + a - 1) / a;
+long long columns = (m + a - 1) / a;
+long long answer = rows * columns;
+```
+
+The variables and product must be wide enough. Integer division truncates, so plain `n / a` undercounts whenever a remainder exists.
+
+## A disciplined contest workflow
+
+Extract constraints, write the mathematical cases, choose types from the largest possible intermediate value, and create tiny hand-computed samples before coding. Test the first and last valid inputs, every point where a condition changes, and values that make both branches look nearly identical. Only then consider micro-optimizations.
 
 ## Lesson map
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Conditions and Codeforces exercises">
 <p class="lesson-diagram-title">Concept map: Conditions and Codeforces exercises</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Inputs and constraints</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Cases and formulas</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -67,7 +139,3 @@ long long answer = (k <= oddCount)
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Test k=1, the last position of the first half, the first of the second half, and k=n.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

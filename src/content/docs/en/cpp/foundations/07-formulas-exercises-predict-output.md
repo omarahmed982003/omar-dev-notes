@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "Formulas, exercises, and output tracing"
 description: "Turning a formula into code has three stages: understand units, express the relationship, and verify with values that can be calculated manually."
 tableOfContents: true
 ---
 
-## Overview
+## Formulas and output prediction
 
 Turning a formula into code has three stages: understand units, express the relationship, and verify with values that can be calculated manually.
 
-## Concepts you need
+## Evaluation order and value tracing
 
 - Name variables by meaning and unit.
 - Use parentheses to mirror the mathematical formula.
@@ -16,7 +17,7 @@ Turning a formula into code has three stages: understand units, express the rela
 - The sum 1..n is n(n+1)/2 and can be checked against a loop.
 - The ternary operator fits short choices, not complex nested decisions.
 
-## Example
+## Example: translating a formula to C++
 
 ```cpp
 double celsius{25.0};
@@ -25,7 +26,7 @@ int n{100};
 long long sum = 1LL * n * (n + 1) / 2;
 ```
 
-## Corrections and common mistakes
+## Parentheses and integer-division mistakes
 
 - Using 9/5 performs integer division and gives 1.
 - Multiplication may overflow before assignment to a wider result; widen an operand first.
@@ -35,9 +36,9 @@ long long sum = 1LL * n * (n + 1) / 2;
 <div class="lesson-diagram" role="img" aria-label="Concept map: Formulas, exercises, and output tracing">
 <p class="lesson-diagram-title">Concept map: Formulas, exercises, and output tracing</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Mathematical formula</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Evaluation order</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -67,7 +68,3 @@ long long sum = 1LL * n * (n + 1) / 2;
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> When conditions, side effects, or nesting grow; readability and maintainability matter more than line count.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

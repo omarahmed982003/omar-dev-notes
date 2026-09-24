@@ -1,21 +1,23 @@
 ---
-title: "Decision trees, flowcharts, and debugging review"
+title: "1. Problem solving, diagrams, and debugging"
+sidebar:
+  order: 1
 description: "Before writing C++, stabilize the solution logic: define inputs and output, write the steps, model decisions, and dry-run the algorithm. The language implements the reasoning; it does not replace it."
 tableOfContents: true
 ---
 
-## Overview
+## Problem analysis before code
 
 Before writing C++, stabilize the solution logic: define inputs and output, write the steps, model decisions, and dry-run the algorithm. The language implements the reasoning; it does not replace it.
 
-## Concepts you need
+## Inputs, outputs, constraints, and tests
 
 - Use pseudocode for sequence and a flowchart for visible branches.
 - Design the valid path, then add boundaries and invalid inputs.
 - Syntax errors stop the build; logic errors produce wrong answers even when the program runs.
 - A trace table records variable values after each step and exposes divergence.
 
-## Example
+## Example: safe division
 
 ```text
 READ a, b
@@ -26,7 +28,7 @@ ELSE
 END IF
 ```
 
-## Corrections and common mistakes
+## Syntax, runtime, and logic errors
 
 - Do not test only easy values; include zero, boundaries, and negatives.
 - A diagram must reflect real execution paths, not act as decoration.
@@ -45,6 +47,18 @@ END IF
 <div class="diagram-node output"><span>Report and test</span></div>
 </div>
 </div>
+
+## Decision trees and business rules
+
+A decision tree places a question at each node, a branch for each answer, and a complete outcome at each leaf. It exposes missing paths and contradictory rules before they become nested `if` statements. Test exact boundaries such as age 21 or subtotal 500.
+
+## Flowcharts and pseudocode
+
+Flowcharts use terminators, process boxes, decision diamonds, input/output shapes, connectors, and directed lines. Pseudocode expresses the same logic in structured, language-independent text. A calculator flowchart should branch by operator, validate a zero divisor on the division branch, and rejoin successful paths at one result output.
+
+## Tests and logic-error tracing
+
+Prepare normal, boundary, and invalid cases before code. Reproduce a wrong result, record state after each step, find the first divergence, correct one cause, and rerun the failing case plus its neighbors. In a running-total bug, the first incorrect iteration is more informative than later totals that inherited the error.
 
 ## Check your understanding
 
@@ -66,7 +80,3 @@ END IF
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Test each position as largest, ties, negatives, and type boundaries, with expected results written first.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

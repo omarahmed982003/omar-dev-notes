@@ -1,14 +1,16 @@
 ---
-title: "Types, variables, scope, and text encoding"
+title: "5. Types, variables, scope, and memory"
+sidebar:
+  order: 5
 description: "A type defines representation, valid operations, and range. A variable combines a name, type, value, lifetime, and visibility."
 tableOfContents: true
 ---
 
-## Overview
+## Types and variables
 
 A type defines representation, valid operations, and range. A variable combines a name, type, value, lifetime, and visibility.
 
-## Concepts you need
+## Type selection, initialization, scope, and lifetime
 
 - Choose a type by meaning and range, not size alone.
 - Brace initialization rejects many accidental narrowing conversions.
@@ -16,7 +18,7 @@ A type defines representation, valid operations, and range. A variable combines 
 - Local scope reduces coupling; a static local retains value across calls.
 - Unicode defines characters; UTF-8 and UTF-16 encode them into storage units.
 
-## Example
+## Declaration and initialization examples
 
 ```cpp
 #include <limits>
@@ -28,7 +30,7 @@ const std::string country{"Egypt"};
 constexpr int daysPerWeek{7};
 ```
 
-## Corrections and common mistakes
+## Range, precision, and platform mistakes
 
 - Type sizes can vary; use sizeof and numeric_limits when it matters.
 - float and double are approximate, so direct decimal equality can be unsafe.
@@ -38,9 +40,9 @@ constexpr int daysPerWeek{7};
 <div class="lesson-diagram" role="img" aria-label="Concept map: Types, variables, scope, and text encoding">
 <p class="lesson-diagram-title">Concept map: Types, variables, scope, and text encoding</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Type and value</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Initialization and range</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -49,6 +51,18 @@ constexpr int daysPerWeek{7};
 <div class="diagram-node output"><span>A type defines representation, valid operations, and range. A</span></div>
 </div>
 </div>
+
+## Type categories and ranges
+
+Built-in types include Boolean, character, integer, floating-point, and `void`. Compound and user-defined types include arrays, pointers, references, classes, and enums, while `std::string` comes from the standard library. Sizes vary by implementation, so inspect `sizeof` and `numeric_limits` rather than assuming one platform.
+
+Unsigned arithmetic wraps modulo its width, while signed overflow is undefined. Mixing signed and unsigned values can turn a negative number into a large positive value. Floating-point values have limited binary precision, so exact decimal equality is often inappropriate.
+
+## Initialization, constants, scope, and lifetime
+
+Brace initialization catches many narrowing conversions. Value initialization with `{}` gives a defined zero-like value for arithmetic types. `auto` still has a concrete inferred type. `const` prevents later modification through that name; `constexpr` supports compile-time values when requirements are met.
+
+Scope determines where a name is visible. Lifetime determines when the object exists. Shadowing hides an outer name and can confuse review. Optimizers may keep values in registers or remove storage entirely, so a source-level variable does not guarantee a permanent memory slot.
 
 ## Check your understanding
 
@@ -70,7 +84,3 @@ constexpr int daysPerWeek{7};
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> That character is commonly encoded as multiple bytes, while char stores one byte-sized code unit.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

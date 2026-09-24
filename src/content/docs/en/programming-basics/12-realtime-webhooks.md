@@ -1,5 +1,5 @@
 ---
-title: 12. Real-time communication and webhooks
+title: 11. Real-time communication and webhooks
 description: Polling, long polling, SSE, WebSockets, webhooks, and choosing the smallest suitable model.
 sidebar:
   order: 12

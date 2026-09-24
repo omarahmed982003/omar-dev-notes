@@ -1,5 +1,5 @@
 ---
-title: 10. HTTP caching and compression
+title: 9. HTTP caching and compression
 description: Freshness, validation, Cache-Control, ETag, Vary, CDNs, gzip, and Brotli.
 sidebar:
   order: 10

@@ -42,6 +42,14 @@ For an ATM: separate card validation, PIN checking, operation selection, balance
 </div>
 </div>
 
+## Complexity, solution patterns, and test design
+
+Best, average, and worst cases may perform different amounts of work. Time complexity tracks operation growth; space complexity tracks additional memory. A hash set may spend memory to reduce repeated searches.
+
+Common patterns include brute force, simulation, frequency maps, prefix sums, two pointers, and greedy choice. Each depends on constraints and correctness reasoning rather than its name alone.
+
+Tests should cover equivalence classes, boundaries, empty and single-element input, duplicates, large values, invalid data, and overflow. Write the expected result independently before comparing program output.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

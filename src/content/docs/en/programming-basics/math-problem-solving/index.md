@@ -3,7 +3,7 @@ title: Math, Logic & Problem Solving
 description: Programming math, Boolean logic, computational thinking, algorithms, flowcharts, loops, and debugging.
 ---
 
-This section distills and organizes **Lecture 02** with corrected explanations and practice. It begins with the math used in programs, then covers variables, logic, requirements analysis, pseudocode, decision trees, flowcharts, loops, and debugging.
+This section begins with the mathematics used in programs, then covers variables, logic, requirements analysis, pseudocode, decision trees, flowcharts, loops, and debugging. Practical examples connect each mathematical rule to a concrete algorithm step.
 
 1. [Remainders, ratios, averages, and powers](./01-arithmetic-foundations/)
 2. [Variables, equations, and Boolean logic](./02-variables-equations-logic/)

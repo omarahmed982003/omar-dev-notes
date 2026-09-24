@@ -1,5 +1,5 @@
 ---
-title: 9. كيف يعرض المتصفح الصفحة؟
+title: 8. كيف يعرض المتصفح الصفحة؟
 description: Navigation وDOM وCSSOM وRender Tree وتنفيذ JavaScript واستخدام DevTools لفهم الأداء.
 sidebar:
   order: 9

@@ -1,14 +1,16 @@
 ---
-title: "if, else, validation, and nested conditions"
+title: "11. if, else, validation, and nesting"
+sidebar:
+  order: 11
 description: "if and else direct execution. Write conditions as readable rules and reduce nesting through early validation and grouped logic."
 tableOfContents: true
 ---
 
-## Overview
+## How if chooses an execution path
 
 if and else direct execution. Write conditions as readable rules and reduce nesting through early validation and grouped logic.
 
-## Concepts you need
+## if, else, else-if, and short circuiting
 
 - if accepts a contextually Boolean expression, but explicit predicates are often clearer.
 - Braces prevent maintenance bugs when a one-line body grows.
@@ -17,7 +19,7 @@ if and else direct execution. Write conditions as readable rules and reduce nest
 - Place specific boundary cases before broad cases.
 - Short-circuiting can validate a denominator or index before use.
 
-## Example
+## Example: validate and classify a score
 
 ```cpp
 if (score < 0 || score > 100) {
@@ -31,7 +33,7 @@ if (score < 0 || score > 100) {
 }
 ```
 
-## Corrections and common mistakes
+## Assignment, empty-body, and nesting mistakes
 
 - if (x = 5) assigns instead of comparing.
 - A semicolon immediately after if creates an empty body.
@@ -50,6 +52,12 @@ if (score < 0 || score > 100) {
 <div class="diagram-node output"><span>Return result</span></div>
 </div>
 </div>
+
+## From business rule to condition
+
+Write the rule in plain language, identify variables and boundaries, and then translate it into a Boolean expression. “Accept when quantity is positive and stock is sufficient” becomes `quantity > 0 && quantity <= stock`. Test zero, one, exactly the stock, and one above it.
+
+Validate invalid input first, then special cases, then the general rule. Use separate `if` statements when several labels may apply, and an `else if` chain when exactly one outcome must win. Parenthesize mixed `&&` and `||` rules even when precedence would produce the same result.
 
 ## Check your understanding
 
@@ -71,7 +79,3 @@ if (score < 0 || score > 100) {
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Reject invalid states early with guard clauses so the main valid path remains shallow.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

@@ -1,14 +1,16 @@
 ---
-title: "Text encoding, casts, and math"
+title: "6. Text encoding, characters, and casts"
+sidebar:
+  order: 6
 description: "Text encoding, conversions, and math functions often meet in real problems. Know what a value represents before casting or calculating."
 tableOfContents: true
 ---
 
-## Overview
+## Characters, text, and encodings
 
 Text encoding, conversions, and math functions often meet in real problems. Know what a value represents before casting or calculating.
 
-## Concepts you need
+## ASCII, Unicode, UTF-8, and UTF-16
 
 - ASCII covers a limited legacy set; Unicode defines code points across scripts.
 - UTF-8 is variable length and ASCII-compatible; UTF-16 uses one or two code units.
@@ -16,7 +18,7 @@ Text encoding, conversions, and math functions often meet in real problems. Know
 - Widening usually preserves value; narrowing may lose data or exceed range.
 - Math functions return specific types and may require domain checks.
 
-## Example
+## Example: widening and domain checks
 
 ```cpp
 unsigned char raw{255};
@@ -24,7 +26,7 @@ int widened = raw;
 double root = value >= 0 ? std::sqrt(value) : 0.0;
 ```
 
-## Corrections and common mistakes
+## Byte counts, characters, and unsafe narrowing
 
 - Byte count is not always visible-character count.
 - static_cast does not prove a value is in range; validate first.
@@ -34,9 +36,9 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 <div class="lesson-diagram" role="img" aria-label="Concept map: Text encoding, casts, and math">
 <p class="lesson-diagram-title">Concept map: Text encoding, casts, and math</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Unicode code point</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>UTF-8 and UTF-16</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -45,6 +47,16 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 <div class="diagram-node output"><span>Text encoding, conversions, and math functions often meet in</span></div>
 </div>
 </div>
+
+## Characters, code points, and bytes
+
+Unicode assigns code points; UTF-8 encodes them into one to four bytes. A C++ `char` stores one byte-sized code unit, not necessarily one complete user-visible character. `std::string::size()` reports bytes, and a visible grapheme can contain several code points.
+
+## Conversion rules
+
+Integral promotions and usual arithmetic conversions choose evaluation types. `static_cast` documents supported conversions but does not guarantee that a value fits. `const_cast`, `dynamic_cast`, and `reinterpret_cast` solve specialized problems and do not replace validation. Narrowing a floating value to an integer discards its fraction.
+
+Parsing text such as `"123"` is not a cast. Use a parser such as `from_chars` or a checked stream, and verify complete consumption and range.
 
 ## Check your understanding
 
@@ -66,7 +78,3 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Reject it or use complex arithmetic when required; do not disguise NaN as a valid result.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

@@ -1,5 +1,5 @@
 ---
-title: 13. تصميم APIs
+title: 12. تصميم APIs
 description: REST وRPC وGraphQL وتصميم الموارد والحالات والأخطاء والصفحات والإصدارات والعقود.
 sidebar:
   order: 13

@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "Operators, conversions, math, and the ternary operator"
 description: "Use operators to build readable formulas and conditions. The goal is clarity and type safety, not the shortest line."
 tableOfContents: true
 ---
 
-## Overview
+## Arithmetic and logical operators
 
 Use operators to build readable formulas and conditions. The goal is clarity and type safety, not the shortest line.
 
-## Concepts you need
+## Precedence, conversion, and the conditional operator
 
 - Extract complex expressions into named Boolean values.
 - Short-circuiting skips the right operand when the result is already known.
@@ -16,7 +17,7 @@ Use operators to build readable formulas and conditions. The goal is clarity and
 - The ternary operator returns a value and fits a simple choice.
 - Bitwise operators suit flags and do not equal Boolean logic.
 
-## Example
+## Example: calculating and selecting a value
 
 ```cpp
 bool canDivide = denominator != 0;
@@ -24,7 +25,7 @@ double result = canDivide ? numerator / denominator : 0.0;
 int boxes = static_cast<int>(std::ceil(items / 12.0));
 ```
 
-## Corrections and common mistakes
+## Precedence and conversion mistakes
 
 - Avoid nested ternaries that require decoding.
 - floor(-2.1) is -3; test negative values explicitly.
@@ -34,9 +35,9 @@ int boxes = static_cast<int>(std::ceil(items / 12.0));
 <div class="lesson-diagram" role="img" aria-label="Concept map: Operators, conversions, math, and the ternary operator">
 <p class="lesson-diagram-title">Concept map: Operators, conversions, math, and the ternary operator</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-node input"><span>Values</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Concepts you need</span></div>
+<div class="diagram-node process"><span>Operators and precedence</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Example</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -66,7 +67,3 @@ int boxes = static_cast<int>(std::ceil(items / 12.0));
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For flags, masks, and bit representations; normal business predicates use &amp;&amp; and ||.</div></details>
 </section>
 </div>
-
-## Summary
-
-Build the solution in stages, enable warnings, and test normal, boundary, and invalid cases. Understanding means you can explain why each line exists.

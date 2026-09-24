@@ -18,7 +18,7 @@ A flowchart visualizes execution, loops represent repetition, and debugging comp
 
 ## Worked example
 
-To sum 1..N: initialize sum=0 and i=1; while i≤N, add i to sum and increment i; print sum after the loop.
+To sum `1..N`, initialize `sum = 0` and `i = 1`; while `i <= N`, add `i` to `sum` and increment `i`; print `sum` after the loop.
 
 ## Corrections and common mistakes
 

@@ -7,7 +7,7 @@ sidebar:
 
 # أساسيات الكمبيوتر والبرمجة والشبكات
 
-أصبح قسم الأساسيات مقسمًا إلى ثلاث مجموعات حتى لا تختلط موضوعات الكمبيوتر والرياضيات بمحتوى الشبكات. أضفنا **Lecture01 وlecture_02 كاملتين** مع النص الأصلي وSpeaker Notes والشرح العربي، واحتفظنا بمسار الويب السابق كاملًا.
+ينقسم المسار إلى ثلاث مجموعات مترابطة: كيف يعمل الكمبيوتر وكيف تدرس البرمجة، ثم الرياضيات والمنطق وتصميم الحلول، ثم الشبكات والويب ورحلة الطلب كاملة. ابدأ بالترتيب إن كنت جديدًا، أو استخدم كل مجموعة كمرجع مستقل.
 
 ## 1. أساسيات الكمبيوتر والبرمجة
 
@@ -16,6 +16,8 @@ sidebar:
 ## 2. الرياضيات والمنطق وحل المشكلات
 
 [ابدأ بمسار الرياضيات وحل المشكلات](./math-problem-solving/). ستدرس الباقي والنسب والمتوسط والقوى، المتغيرات والمنطق، الإحداثيات، التفكير الحاسوبي، Pseudocode، أشجار القرار، Flowcharts، الحلقات والتصحيح.
+
+[التفكير البرمجي والخوارزميات](./08-problem-solving-algorithms/) يربط هذه الموضوعات باختيار بنية البيانات وتحليل Big O وبناء خوارزمية قابلة للاختبار.
 
 ## 3. أساسيات الشبكات والويب
 
@@ -26,12 +28,15 @@ sidebar:
 5. [HTTP Request وResponse والحالة](./05-http-messages-state/) — Methods وHeaders وBody وStatus Codes وCookies/Sessions/Tokens.
 6. [HTTPS وTLS والشهادات](./06-https-tls-certificates/) — التشفير المتماثل وغير المتماثل وHandshake وأنواع التحقق.
 7. [داخل الخادم: Load Balancer وNginx وPHP-FPM](./07-server-side-path/) — الملفات الثابتة والديناميكية وVirtual Hosts والتطبيق وقاعدة البيانات.
-8. [التفكير البرمجي والخوارزميات](./08-problem-solving-algorithms/) — تحليل المشكلة وPseudocode وبنى البيانات وBig O.
-9. [كيف يعرض المتصفح الصفحة؟](./09-browser-rendering-devtools/) — DOM وCSSOM وLayout وPaint وDevTools.
-10. [HTTP Caching والضغط](./10-http-caching-compression/) — Cache-Control وETag وVary وgzip وBrotli.
-11. [Same-Origin Policy وCORS](./11-same-origin-cors/) — Origins وPreflight والـCredentials والإعداد الآمن.
-12. [الاتصال اللحظي وWebhooks](./12-realtime-webhooks/) — Polling وSSE وWebSocket وWebhooks.
-13. [تصميم APIs](./13-api-design/) — REST وRPC وGraphQL والأخطاء والصفحات والإصدارات.
+8. [كيف يعرض المتصفح الصفحة؟](./09-browser-rendering-devtools/) — DOM وCSSOM وLayout وPaint وDevTools.
+9. [HTTP Caching والضغط](./10-http-caching-compression/) — Cache-Control وETag وVary وgzip وBrotli.
+10. [Same-Origin Policy وCORS](./11-same-origin-cors/) — Origins وPreflight والـCredentials والإعداد الآمن.
+11. [الاتصال اللحظي وWebhooks](./12-realtime-webhooks/) — Polling وSSE وWebSocket وWebhooks.
+12. [تصميم APIs](./13-api-design/) — REST وRPC وGraphQL والأخطاء والصفحات والإصدارات.
+13. [طبقات TCP/IP والشبكة المحلية وEthernet وARP](./14-network-layers-lan-ethernet-arp/) — Encapsulation وFrames وMAC وSwitch وDefault Gateway.
+14. [DHCP وNAT وSubnetting وRouting وIPv6](./15-addressing-dhcp-nat-routing-ipv6/) — إعدادات الشبكة والعناوين الخاصة وCIDR واختيار المسار.
+15. [HTTP/2 وHTTP/3 وQUIC](./16-http2-http3-quic/) — Binary Framing وMultiplexing وStreams وتقليل Head-of-line Blocking.
+16. [Proxy وCDN وWAF والمراقبة](./17-proxies-cdn-waf-observability/) — الوسطاء والتخزين عند الحافة والحماية وLogs وMetrics وTracing.
 
 :::tip[طريقة المذاكرة]
 ابدأ بالرسم، ثم افتح أدوات المطور في المتصفح وتابع طلبًا حقيقيًا من تبويب Network. اربط كل حقل تراه بالدرس المناسب.

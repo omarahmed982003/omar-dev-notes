@@ -1,5 +1,5 @@
 ---
-title: 13. API design
+title: 12. API design
 description: REST, RPC, GraphQL, resources, status codes, errors, pagination, versioning, and contracts.
 sidebar:
   order: 13

@@ -42,6 +42,12 @@ Loan eligibility might require an acceptable age AND sufficient income AND no ri
 </div>
 </div>
 
+## Sets, functions, truth tables, and predicates
+
+A set contains unique elements. Union combines membership, intersection keeps shared elements, and difference removes one set from another. A function maps every element in its domain to one result; its range contains the results actually produced.
+
+Truth tables enumerate Boolean inputs. De Morgan's laws transform `!(A && B)` into `!A || !B` and `!(A || B)` into `!A && !B`. A predicate is a Boolean statement about a value. Universal and existential conditions correspond to operations such as “all elements” and “at least one element.”
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

@@ -42,6 +42,12 @@ For a price of 800 with a 15% discount, the discount is 120 and the final price 
 </div>
 </div>
 
+## Integer division, number theory, and precision
+
+Integer division truncates the fractional part. For positive integers, `(count + size - 1) / size` computes ceiling division. Euclid's algorithm repeatedly replaces `(a, b)` with `(b, a % b)` to find the GCD; the LCM can then be derived carefully without overflowing intermediate values.
+
+Modular arithmetic models cycles such as clocks and parity. Floating-point results are approximate, so comparisons may require a tolerance chosen for the problem's scale.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

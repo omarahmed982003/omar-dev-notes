@@ -1,14 +1,15 @@
 ---
+pagefind: false
 title: "مراجعة الأنواع والمتغيرات والنطاق"
 description: "هذه مراجعة تطبيقية للأنواع والتهيئة والنطاق قبل استخدام الشروط في مشروع أكبر. المطلوب اختيار نوع يحفظ المعنى ويتحمل المجال المتوقع."
 tableOfContents: true
 ---
 
-## الفكرة العامة
+## مراجعة الأنواع والمتغيرات
 
 هذه مراجعة تطبيقية للأنواع والتهيئة والنطاق قبل استخدام الشروط في مشروع أكبر. المطلوب اختيار نوع يحفظ المعنى ويتحمل المجال المتوقع.
 
-## المفاهيم التي تحتاجها
+## المدى والتهيئة والتحويل
 
 - استخدم bool للحالات الثنائية بدل أرقام سحرية.
 - auto مفيد عندما يكون النوع واضحًا من القيمة، لا عندما يخفي معنى مهمًا.
@@ -16,7 +17,7 @@ tableOfContents: true
 - قلل عمر المتغير بوضعه في أضيق نطاق يحتاجه.
 - استخدم const للمدخلات التي لا ينبغي تعديلها بعد التحقق.
 
-## مثال
+## مثال: اختيار النوع المناسب
 
 ```cpp
 std::string plan{"standard"};
@@ -26,7 +27,7 @@ bool paid{true};
 const double subtotal = sessions * pricePerSession;
 ```
 
-## أخطاء شائعة وتصحيحات
+## أخطاء النوع والمدى
 
 - لا تستخدم unsigned فقط لمنع السالب؛ الإدخال والتحويل قد ينتجان مفاجآت.
 - لا تترك متغيرًا محليًا بلا تهيئة.
@@ -36,9 +37,9 @@ const double subtotal = sessions * pricePerSession;
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: مراجعة الأنواع والمتغيرات والنطاق">
 <p class="lesson-diagram-title">خريطة مفاهيم: مراجعة الأنواع والمتغيرات والنطاق</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-node input"><span>معنى القيمة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم التي تحتاجها</span></div>
+<div class="diagram-node process"><span>اختيار النوع</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>مثال</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
@@ -68,7 +69,3 @@ const double subtotal = sessions * pricePerSession;
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا؛ التحويل قد يلف القيمة إلى عدد كبير. تحقق من الإدخال في نوع مناسب قبل التحويل.</div></details>
 </section>
 </div>
-
-## الخلاصة
-
-اكتب الحل على مراحل، فعّل التحذيرات، واختبر الحالة العادية والحدود والمدخل غير الصالح. عندما تستطيع تفسير سبب كل سطر تكون قد فهمت الفكرة بدل حفظها.
