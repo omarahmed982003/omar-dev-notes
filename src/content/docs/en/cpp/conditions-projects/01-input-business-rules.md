@@ -1,7 +1,7 @@
 ---
-title: "9. Input and business rules"
+title: "12. Input and business rules"
 sidebar:
-  order: 9
+  order: 12
 description: "Business rules become clear conditions when each fact is named and inputs are validated. Separate data validity from the acceptance decision."
 tableOfContents: true
 ---
@@ -111,17 +111,39 @@ For each rule, identify the first valid value and test one value below it, the b
 <div class="lesson-diagram" role="img" aria-label="Concept map: Input and business rules">
 <p class="lesson-diagram-title">Concept map: Input and business rules</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Inputs</span></div>
+<div class="diagram-node input"><span>Raw input</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Validation</span></div>
+<div class="diagram-node process"><span>Validated input</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Example</span></div>
+<div class="diagram-node process"><span>Named Boolean facts</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Decision table</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Business rules become clear conditions when each fact is</span></div>
+<div class="diagram-node output"><span>Approval or a precise rejection reason</span></div>
 </div>
 </div>
+
+## Complete program: valid data before eligibility
+
+```cpp
+#include <iostream>
+int main() {
+    int score{}, attendance{}; char paidAnswer{};
+    std::cout << "Score attendance paid(y/n): ";
+    if (!(std::cin >> score >> attendance >> paidAnswer)) {
+        std::cerr << "Invalid input format\n"; return 1;
+    }
+    if (score < 0 || score > 100 || attendance < 0 || attendance > 100 ||
+        (paidAnswer != 'y' && paidAnswer != 'Y' && paidAnswer != 'n' && paidAnswer != 'N')) {
+        std::cerr << "Input outside the accepted domain\n"; return 1;
+    }
+    const bool paid = paidAnswer == 'y' || paidAnswer == 'Y';
+    const bool eligible = score >= 60 && attendance >= 75 && paid;
+    std::cout << (eligible ? "Eligible\n" : "Not eligible\n");
+}
+```
+
+Test `59/60`, `74/75`, both payment answers, and out-of-range input. Validation must precede the eligibility decision.
 
 ## Check your understanding
 
@@ -141,5 +163,13 @@ For each rule, identify the first valid value and test one value below it, the b
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>Why is “not eligible” alone a weak message?</p></div>
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> It does not identify the failed rule for users, tests, or support; return a specific but non-sensitive reason.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">05</span><p>Design the smallest useful test set for age 18–60 inclusive and attendance at least 75%.</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Test ages 17, 18, 60, and 61 with valid attendance; then 74.99 and 75 with a valid age; finally include non-numeric input.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">06</span><p>How can a decision table expose conflicting rules before coding?</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> It lists combinations of facts and their outcomes. A row with two outcomes, or no outcome, reveals ambiguity before it becomes an if chain.</div></details>
 </section>
 </div>

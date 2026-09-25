@@ -1,7 +1,7 @@
 ---
-title: "11. if وelse والتحقق والتداخل"
+title: "9. if وelse والتحقق والتداخل"
 sidebar:
-  order: 11
+  order: 9
 description: "if وelse توجّهان التنفيذ. اكتب الشروط بحيث يقرأها الإنسان كقواعد واضحة، وقلل التعشيق بالتحقق المبكر وتجميع المنطق المتشابه."
 tableOfContents: true
 ---
@@ -110,6 +110,23 @@ if (age < 0 || age > 120) {
 
 نفي `(age >= 18 && hasId)` يساوي `(age < 18 || !hasId)`. تساعد قوانين De Morgan في كتابة سبب الرفض مباشرة، لكن لا تحول الشرط إلى صيغة أصعب. سمّ الأجزاء المنطقية عندما يزيد عدد العوامل.
 
+## برنامج كامل: التحقق ثم التصنيف
+
+```cpp
+#include <iostream>
+int main() {
+    int score{};
+    std::cout << "Score from 0 to 100: ";
+    if (!(std::cin >> score)) { std::cerr << "Score must be an integer\n"; return 1; }
+    if (score < 0 || score > 100) std::cout << "Invalid score\n";
+    else if (score >= 85) std::cout << "Excellent\n";
+    else if (score >= 50) std::cout << "Pass\n";
+    else std::cout << "Fail\n";
+}
+```
+
+اختبر `-1` و`0` و`49` و`50` و`84` و`85` و`100` و`101` ومدخلًا نصيًا. وضع `score >= 50` أولًا يجعل فرع الممتاز غير قابل للوصول.
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -119,7 +136,7 @@ if (age < 0 || age > 120) {
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">02</span><p>ما أثر if(x=5)؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يسند 5 إلى x ثم تتحول القيمة غير الصفرية إلى true؛ استخدم == وفعّل تحذيرات المترجم.</div></details>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يسند 5 إلى x ثم تتحول القيمة غير الصفرية إلى true؛ استخدم <code>==</code> وفعّل تحذيرات المترجم.</div></details>
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">03</span><p>متى تستخدم if مستقلة بدل else-if؟</p></div>
@@ -128,5 +145,13 @@ if (age < 0 || age > 120) {
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>كيف تقلل Nested if في التحقق؟</p></div>
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم Guard clauses لرفض المدخل غير الصالح مبكرًا، ثم اترك المسار الرئيسي أقل تعشيقًا.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">05</span><p>لديك الفروع <code>score &gt;= 50</code> ثم <code>score &gt;= 85</code>. لماذا لن يصل البرنامج إلى تقدير ممتاز؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لأن درجة 85 تحقق الفرع الأول في سلسلة else-if ويتوقف الاختيار. رتب الحدود من الأكثر تحديدًا والأعلى إلى الأقل: 85 ثم 50 ثم الباقي.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">06</span><p>صحح <code>if (age = 18)</code> واذكر وسيلة تمنع مرور الخطأ بصمت.</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم <code>if (age == 18)</code>. فعّل تحذيرات المترجم مثل <code>-Wall -Wextra -Werror</code> واكتب اختبارين لقيمتي 17 و18.</div></details>
 </section>
 </div>

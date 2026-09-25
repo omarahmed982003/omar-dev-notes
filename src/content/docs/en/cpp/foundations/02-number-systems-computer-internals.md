@@ -34,15 +34,15 @@ Number systems explain how values are represented; computer architecture explain
 <div class="lesson-diagram" role="img" aria-label="Concept map: Number systems and computer internals">
 <p class="lesson-diagram-title">Concept map: Number systems and computer internals</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>Value and base</span></div>
+<div class="diagram-node input"><span>Decimal value</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Binary and hex</span></div>
+<div class="diagram-node process"><span>Binary bits</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Example</span></div>
+<div class="diagram-node process"><span>Bytes in memory</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>CPU instruction</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Number systems explain how values are represented; computer architecture</span></div>
+<div class="diagram-node output"><span>Displayable result</span></div>
 </div>
 </div>
 
@@ -57,6 +57,38 @@ Hex appears in addresses, debuggers, byte viewers, colors, and bit masks. Octal 
 Storage holds program files, RAM holds active pages, and the CPU fetches and executes instructions. Registers are smallest and fastest, followed by caches, RAM, and persistent storage. The motherboard connects components; the GPU handles graphics and suitable parallel work; power, cooling, network, input, and output devices support execution.
 
 The operating system creates a process, maps memory, schedules CPU time, manages files and devices, and displays results. A stored executable is not a running process until the system loads and starts it.
+
+## Positional value and manual conversion
+
+In base `b`, each digit is multiplied by a power of `b`. Convert binary to decimal by summing set-bit positions. Convert a nonnegative decimal integer to another base by repeated division and reading remainders in reverse. Hexadecimal maps each digit to exactly four bits, which makes it useful for addresses and masks.
+
+## Signed values and two's complement
+
+For a fixed width, two's complement represents negative values so addition hardware can use the same circuit. Negating a bit pattern means invert the bits and add one. Width matters: an 8-bit demonstration does not describe the range of every C++ `int`.
+
+## CPU, memory, storage, and process execution
+
+Storage keeps files without power. RAM holds active program data. CPU registers are smaller and faster; the ALU performs arithmetic and logic, while the control unit coordinates instructions. The operating system loads an executable, creates a process and virtual address space, schedules threads, and provides controlled access to files and devices through system calls.
+
+## Memory hierarchy
+
+Registers, caches, RAM, and persistent storage trade capacity for latency. A value may exist at several levels during execution. Virtual memory maps process addresses to physical pages; a page fault asks the operating system to make a page available and is much slower than a cache miss.
+
+## Hexadecimal and the nibble
+
+One hexadecimal digit represents exactly four binary bits, called a nibble. That is why `0xAF` maps directly to `1010 1111`: `A` is 10 or `1010`, and `F` is 15 or `1111`. Hexadecimal is a compact notation for bit patterns; it does not change the stored value.
+
+## Bits, bytes, words, and signed values
+
+A bit has two states. A byte is the smallest addressable unit on typical systems and is normally eight bits. A machine word is the processor's natural working width and depends on the architecture. Do not infer a C++ type's exact range only from the machine being “64-bit”; use `sizeof` and `<limits>`, or fixed-width types when the exact width is part of the contract.
+
+Signed integers are commonly represented with two's complement. For an `n`-bit signed value, the usual range is `-2^(n-1)` through `2^(n-1)-1`; the negative side has one extra value. This asymmetry matters when taking the absolute value of the minimum representable integer.
+
+## From storage to a running process
+
+An executable rests on persistent storage. The operating system loader maps its code and data into memory, prepares the process, and schedules its threads. The CPU fetches, decodes, and executes instructions; registers and caches hold nearby working data, RAM holds the active program state, and storage preserves files after power is removed. Faster levels are smaller and closer to the CPU, while slower levels are larger.
+
+Input devices, displays, network adapters, and storage controllers communicate through operating-system drivers. They are not “inside the CPU”; the OS coordinates access and presents abstractions such as files, sockets, and processes.
 
 ## Check your understanding
 

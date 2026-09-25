@@ -26,7 +26,8 @@ sidebar:
 13. [النصوص وUnicode وRegex](./13-strings-unicode-regex/) — UTF-8 وmbstring والتطبيع والـpatterns الآمنة.
 14. [التاريخ والوقت](./14-datetime-timezones/) — UTC وDateTimeImmutable وtimezones وDST.
 15. [Request وRouter وResponse](./15-request-router-response/) — Front Controller وJSON وMiddleware.
-16. [ميزات PHP الحديثة](./16-modern-php-features/) — PHP 8.4 و8.5 وHooks وPipe وURI وClone With.
+16. [خريطة ميزات PHP الحديثة](./16-modern-php-features/) — PHP 8.0–8.5 وWeakMap وFibers وDNF وReadonly وHooks.
+17. [برامج مترابطة وDebugging عملي](./17-integrated-programs-debugging/) — برامج CLI وStreaming وJSON وتمارين توقع الناتج وتصحيح الأخطاء.
 
 :::tip[طريقة المذاكرة]
 نفّذ كل مثال، ثم غيّر المدخلات وتوقع النتيجة قبل التشغيل. الأمثلة الأمنية ليست إضافات اختيارية؛ هي جزء من الاستخدام الصحيح لـ PHP.

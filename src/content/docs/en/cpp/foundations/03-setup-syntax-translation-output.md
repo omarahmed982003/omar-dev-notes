@@ -71,6 +71,55 @@ Tokens form expressions and statements. `price + tax` produces a value; `total =
 
 Namespaces prevent collisions. Prefer qualified names such as `std::cout`; broad `using namespace` directives are especially harmful in headers.
 
+## Tokens, expressions, statements, and blocks
+
+The compiler first sees tokens such as identifiers, keywords, literals, and operators. An expression produces a value or effect; a statement forms a complete action; braces create a block and often a scope. A semicolon ends many statements but must not be added blindly after `if` or `while`.
+
+## Source files, headers, and commands
+
+Place declarations shared by files in guarded headers and definitions in `.cpp` files. A command such as `g++ -std=c++20 -Wall -Wextra -Wpedantic main.cpp -o app` selects a standard and useful warnings. Compilation success does not prove the formula is correct.
+
+## main, exit status, stdout, and stderr
+
+`main` returns an integer status to the environment: zero normally means success. Command-line arguments arrive through `argc` and `argv` when that signature is used. Normal results go to `std::cout`; diagnostics go to `std::cerr`. Newline and flushing are different operations, so use `\n` unless an immediate flush is required.
+
+## Escape sequences and namespaces
+
+`\n`, `\t`, `\\`, and `\"` represent characters that would otherwise be awkward inside a literal. `std::` identifies names from the standard library. Avoid `using namespace std;` in headers because it injects many names into every including translation unit.
+
+## Why C++ and what the standard controls
+
+C++ combines high-level abstractions with explicit control over object lifetime, memory layout, and performance. The ISO language standard defines source-level behavior; an implementation supplies a compiler, standard library, linker, and platform-specific ABI. Selecting `-std=c++20` or another required standard prevents accidental dependence on whatever default a compiler happens to use.
+
+## Build stages and diagnostics
+
+1. Preprocessing expands includes and macros into translation units.
+2. Compilation parses and type-checks each translation unit and emits object code.
+3. Linking resolves referenced symbols and combines object files and libraries into an executable.
+4. Loading is performed by the operating system when the executable starts.
+
+A missing semicolon is a compile error. Declaring a function without supplying its definition can become a linker error. Accessing invalid memory is a runtime failure. Producing the wrong total without crashing is a logic error. Read the first meaningful diagnostic before secondary messages caused by it.
+
+```cpp
+// math.hpp
+#pragma once
+int add(int left, int right);
+```
+
+```cpp
+// math.cpp
+#include "math.hpp"
+int add(int left, int right) { return left + right; }
+```
+
+Build both source files, not the header by itself: `g++ -std=c++20 -Wall -Wextra -Wpedantic main.cpp math.cpp -o app`.
+
+## Strings, escape sequences, and buffered output
+
+String literals use double quotes; character literals use single quotes. `\n` inserts a newline, `\t` a tab, `\\` a backslash, and `\"` a quote inside a string. Prefer `\n` for ordinary line endings. `std::endl` also flushes the stream, which is useful only when an immediate flush is required.
+
+`std::cout` is standard output and `std::cerr` is the diagnostic stream. A command-line program communicates success or failure through the integer returned by `main`; returning zero conventionally means success. `int main(int argc, char* argv[])` exposes command-line arguments when they are part of the program contract.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

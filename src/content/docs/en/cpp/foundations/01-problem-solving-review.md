@@ -60,6 +60,40 @@ Flowcharts use terminators, process boxes, decision diamonds, input/output shape
 
 Prepare normal, boundary, and invalid cases before code. Reproduce a wrong result, record state after each step, find the first divergence, correct one cause, and rerun the failing case plus its neighbors. In a running-total bug, the first incorrect iteration is more informative than later totals that inherited the error.
 
+## Problem contract and algorithm correctness
+
+Write the input domain, required output, constraints, and invalid cases before choosing syntax. An algorithm is correct only when it terminates and produces the required result for every valid input, not only for the sample. A trace table records the state after each step and exposes missing updates or incorrect branches.
+
+## Flowchart symbols and equivalent test classes
+
+Use an oval for start/end, a parallelogram for input/output, a rectangle for processing, and a diamond for a decision. Label both decision exits. Group similar inputs into equivalence classes, then test boundaries on both sides: for an allowed score `0..100`, test `-1, 0, 1, 99, 100, 101`.
+
+## Logic-error investigation
+
+When code runs but returns a wrong answer, reproduce the failure with the smallest input, write the expected trace, compare it with the actual state, and locate the first divergence. Keep that case as a regression test after fixing the defect.
+
+## Pseudocode, flowcharts, and trace tables
+
+Pseudocode records the order of decisions without committing to C++ syntax. A flowchart makes branching and repetition visible. A trace table then verifies the algorithm by listing each important variable after every step. These tools answer different questions: pseudocode explains the procedure, the flowchart exposes paths, and the trace table tests state changes.
+
+For safe division, write the contract first:
+
+1. Read a numerator and denominator.
+2. If the denominator is zero, produce an error and stop that path.
+3. Otherwise divide and display the result.
+
+| numerator | denominator | selected path | result |
+|---:|---:|---|---:|
+| 8 | 2 | valid division | 4 |
+| 8 | 0 | rejection | — |
+| -9 | 3 | valid division | -3 |
+
+## Test cases before implementation
+
+Partition inputs into equivalent classes instead of choosing only comfortable samples: a normal positive value, zero, a negative value, a minimum or maximum boundary, and malformed input when the program reads text. A single representative from each class is useful, but values immediately below, at, and above every boundary are essential for discovering off-by-one errors.
+
+When investigating a logic error, preserve the failing input, state the expected result, record the actual result, and trace only the variables that influence the wrong decision. Change one hypothesis at a time; random edits destroy evidence.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">

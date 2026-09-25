@@ -1,7 +1,7 @@
 ---
-title: "14. Competitive programming and practice platforms"
+title: "13. Competitive programming and practice platforms"
 sidebar:
-  order: 14
+  order: 13
 description: "Competitive programming trains constraint analysis, algorithm choice, and fast correct implementation. The judge is a measurement tool, not a substitute for understanding."
 tableOfContents: true
 ---
@@ -25,6 +25,31 @@ Competitive programming trains constraint analysis, algorithm choice, and fast c
 int moves = (distance + 4) / 5; // integer ceiling
 ```
 
+### Complete runnable submission
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int distance{};
+    if (!(std::cin >> distance) || distance < 0) {
+        return 1;
+    }
+
+    const int moves = (distance + 4) / 5;
+    std::cout << moves << '\n';
+}
+```
+
+For input `12`, the output is `3`: two moves of length 5 and a final move of length 2. Time and auxiliary memory are both `O(1)`. The program prints no prompt such as `Enter distance` because an online judge compares output exactly. The validation helps during local use, although the original problem normally guarantees valid input.
+
+## The Online Judge workflow
+
+The judge compiles submitted source code with a documented compiler and options, runs the executable against hidden tests under time and memory limits, and compares actual output with expected output through a checker. `Compilation Error` means the source did not build. `Wrong Answer` means it ran but produced incorrect output. `Runtime Error` covers failures such as invalid access or division by zero. `Time Limit Exceeded` and `Memory Limit Exceeded` identify exhausted resource limits.
+
 ## Samples, submissions, and random changes
 
 - Passing samples does not prove correctness.
@@ -45,13 +70,13 @@ Read an editorial only after a genuine attempt, then close it and derive the met
 <div class="diagram-flow">
 <div class="diagram-node input"><span>Problem statement</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Constraints and complexity</span></div>
+<div class="diagram-node process"><span>Input and constraints</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Example</span></div>
+<div class="diagram-node process"><span>Algorithm and complexity</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Submit to the judge</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Competitive programming trains constraint analysis, algorithm choice, and fast</span></div>
+<div class="diagram-node output"><span>Verdict, diagnosis, and correction</span></div>
 </div>
 </div>
 

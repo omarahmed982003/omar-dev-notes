@@ -19,14 +19,12 @@ sidebar:
 6. [**ترميز النصوص والمحارف والتحويلات**](./loops-competitive/01-encoding-casts-math/) — ASCII وUnicode وUTF-8 و`char` والتحويلات الضمنية والصريحة.
 7. [**المعاملات والتعبيرات والعمليات البتية**](./foundations/05-operators-conversions-limits/) — الأولوية والإسناد والمقارنة والمنطق وShort Circuit والعمليات على البتات.
 8. [**الإدخال والتحويلات والحدود والرياضيات**](./foundations/06-input-source-build-errors-math/) — `cin` وفشل الإدخال وCasting و`numeric_limits` و`cmath` والصيغ.
-9. [**المدخلات وقواعد العمل**](./conditions-projects/01-input-business-rules/) — تحويل المتطلبات إلى متغيرات وقواعد Boolean وحالات اختبار.
-10. [**مشروع الطلب الإلكتروني**](./conditions-projects/05-online-order-project/) — السعر والكمية والخصم والشحن والتحقق ومصفوفة الاختبارات.
-11. [**if وelse والتحقق والتداخل**](./conditions-projects/06-if-else-validation-nesting/) — الفروع الحصرية والمستقلة وترتيب الشروط والنطاقات والشروط المتداخلة.
-12. [**switch وتدفق التحكم والحاسبة**](./conditions-projects/07-switch-control-flow/) — `case` و`break` و`default` وFall-through والنطاق المحلي.
-13. [**مشروع المركز التدريبي**](./conditions-projects/08-training-center-project/) — تحليل المتطلبات وتقسيم البرنامج وربط قواعد التسجيل والدفع والنتائج.
-14. [**البرمجة التنافسية ومنصات التدريب**](./loops-competitive/02-competitive-programming/) — قراءة القيود والتعقيد وخطة التدريب وCodeforces وLeetCode.
-15. [**مسائل الشروط والصيغ**](./loops-competitive/03-conditions-codeforces/) — مسائل حسابية ومنطقية وهندسية مع اشتقاق الحل واختبار الحدود.
-16. [**الحلقات وأنماط التكرار**](./loops-competitive/04-loops-counters-accumulators/) — `while` و`for` و`do-while` والعدادات والمجمّعات وSentinel والحلقات المتداخلة.
+9. [**if وelse والتحقق والتداخل**](./conditions-projects/06-if-else-validation-nesting/) — الفروع الحصرية والمستقلة وترتيب الشروط والنطاقات والشروط المتداخلة.
+10. [**switch وتدفق التحكم والحاسبة**](./conditions-projects/07-switch-control-flow/) — `case` و`break` و`default` وFall-through والنطاق المحلي.
+11. [**الحلقات وأنماط التكرار**](./loops-competitive/04-loops-counters-accumulators/) — `while` و`for` و`do-while` والعدادات والمجمّعات وSentinel والحلقات المتداخلة.
+12. [**المدخلات وقواعد العمل**](./conditions-projects/01-input-business-rules/) — تحويل المتطلبات إلى متغيرات وقواعد Boolean وحالات اختبار.
+13. [**البرمجة التنافسية ومنصات التدريب**](./loops-competitive/02-competitive-programming/) — قراءة القيود والتعقيد وخطة التدريب وCodeforces وLeetCode.
+14. [**مسائل الشروط والصيغ**](./loops-competitive/03-conditions-codeforces/) — مسائل حسابية ومنطقية وهندسية مع اشتقاق الحل واختبار الحدود.
 
 :::tip[طريقة المذاكرة]
 نفّذ كل مثال ثم غيّر المدخلات وتوقع الناتج قبل التشغيل. في درس الـCompiler ارسم مراحل البناء بيدك، وفي دروس التحكم اكتب Test Cases قبل كتابة الشرط أو الحلقة.

@@ -61,7 +61,7 @@ $slug = ' PHP 8.5 Released '
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Arithmetic operators are + - * / %</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Use ===/!== when type matters</span></div>
+<div class="diagram-node output"><span>Use <code>===</code>/<code>!==</code> when type matters</span></div>
 </div>
 </div>
 
@@ -82,6 +82,6 @@ $slug = ' PHP 8.5 Released '
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Arithmetic operators are + - * / %” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Arithmetic operators are + - * / % ; assignments include += -= *= /= %= = .= ??=. Prefix increment changes then returns; postfix returns then changes. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
+<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Arithmetic operators are <code>+ - * / %</code>; assignments include <code>+= -= *= /= %= = .= ??=</code>. Prefix increment changes then returns; postfix returns then changes. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
 </section>
 </div>

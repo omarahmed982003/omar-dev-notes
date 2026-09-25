@@ -29,6 +29,9 @@ These subjects are neither OOP nor PHP syntax. They form the **runtime and produ
 12. [Queues, workers, and scheduling](./12-queues-workers-scheduling/)
 13. [Deployment, CI/CD, and containers](./13-deployment-cicd-containers/)
 14. [Dependency and supply-chain security](./14-dependency-supply-chain-security/)
+15. [Profiling, SLI/SLO, and OpenTelemetry](./15-profiling-slo-opentelemetry/) — Flame graphs, percentiles, objectives, and trace propagation.
+16. [Resilience and worker management](./16-resilience-workers/) — Circuit breakers, bulkheads, backpressure, signals, and systemd.
+17. [Disaster recovery and restore testing](./17-disaster-recovery/) — RPO, RTO, backups, restores, and game days.
 
 ```text
 Client

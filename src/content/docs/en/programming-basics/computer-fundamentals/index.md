@@ -1,14 +1,27 @@
 ---
 title: Computer & Programming Fundamentals
-description: Computer components, data processing, binary, programming languages, and technology fields.
+description: A progressive path through data flow, hardware, processors, memory, operating systems, terminals, and Git.
+sidebar:
+  order: 0
 ---
 
-This section explains computer components and the data-processing cycle, how hardware represents numbers and text, and the difference between a programming language, an algorithm, and a program. It then covers technology fields, AI tools, operating systems, terminals, files, and Git.
+# Computer & Programming Fundamentals
+
+This section builds the system from the inside out: how data moves, what each physical component does, how the OS manages programs and memory, how information is represented, and how developers use terminals, Git, debugging, and tests.
 
 ## Lesson map
 
-1. [**Learning roadmap and study rules**](./01-learning-roadmap/) — Study order, active learning, review, note taking, and measurable progress.
-2. [**Computers, data, and the processing cycle**](./02-computers-data-processing/) — Input and output devices, CPU, RAM, storage, and the Input–Process–Output–Storage cycle.
-3. [**Binary, programming languages, and algorithms**](./03-binary-languages-algorithms/) — Bits, bytes, data representation, machine code, assembly, high-level languages, and algorithms.
-4. [**Technology fields, AI, and the engineering mindset**](./04-tech-fields-ai-engineering-mindset/) — Software, web, data, security, AI, and engineering decisions.
-5. [**Operating systems, terminal, files, and Git**](./05-os-terminal-files-git/) — Processes, paths, basic commands, file organization, and version control.
+1. [**Learning roadmap and study rules**](./01-learning-roadmap/) — Active learning, review, practice, and measurable progress.
+2. [**Computers, data, and the processing cycle**](./02-computers-data-processing/) — Input, processing, output, storage, and a practical data journey.
+3. [**Hardware components and the motherboard**](./03-hardware-architecture/) — Buses, storage, I/O, drivers, power, and cooling.
+4. [**CPU, GPU, and parallel processing**](./04-cpu-gpu/) — Instruction execution, cores, threads, caches, and workload differences.
+5. [**RAM, virtual memory, and buffers**](./05-ram-memory-buffers/) — Pages, MMU, stack, heap, allocation, buffering, and backpressure.
+6. [**Operating systems: structure, types, and operation**](./06-operating-systems/) — Kernels, system calls, processes, scheduling, files, drivers, and OS families.
+7. [**Binary, programming languages, and algorithms**](./03-binary-languages-algorithms/) — Number/text representation, language levels, and executable programs.
+8. [**Terminal, files, permissions, and environment**](./05-os-terminal-files-git/) — Shells, paths, permissions, environment variables, streams, and exit codes.
+9. [**Git, debugging, and testing fundamentals**](./09-git-debugging/) — History, branches, merging, evidence-based diagnosis, and tests.
+10. [**Technology fields, AI, and the engineering mindset**](./04-tech-fields-ai-engineering-mindset/) — Specializations, tools, constraints, and trade-offs.
+
+:::tip[Recommended order]
+Follow the numbers if you are new. To close a specific gap, read its focused lesson and then return to the processing-cycle overview to connect it to the full system.
+:::

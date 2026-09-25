@@ -1,7 +1,9 @@
 ---
-title: "Technology fields, AI, and the engineering mindset"
+title: "10. Technology fields, AI, and the engineering mindset"
 description: "Technology fields share foundations but differ in problems and tools. Make an informed choice by trying small tasks in several areas rather than chasing the most popular title."
 tableOfContents: true
+sidebar:
+  order: 10
 ---
 
 ## Overview

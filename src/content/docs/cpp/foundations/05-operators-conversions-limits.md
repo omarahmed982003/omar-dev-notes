@@ -97,15 +97,15 @@ double area = pi * radius * radius;
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المعاملات والتحويلات وحدود الأنواع">
 <p class="lesson-diagram-title">خريطة مفاهيم: المعاملات والتحويلات وحدود الأنواع</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>قيم ومعاملات</span></div>
+<div class="diagram-node input"><span>Operands</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Expression</span></div>
+<div class="diagram-node process"><span>Promotions</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>Operation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>Range Check</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>Result Type</span></div>
 </div>
 </div>
 
@@ -129,6 +129,24 @@ Floating-point overflow قد ينتج Infinity، والقيم الصغيرة ج�
 
 يمكن لكل بت أن يمثل Flag مستقلة. يستخدم `mask | flag` لتفعيل راية، و`mask & flag` لاختبارها، و`mask & ~flag` لإزالتها، و`mask ^ flag` لقلبها. يجب استخدام نوع unsigned مناسب، وتوثيق معنى كل بت بثابت مسمى بدل أرقام سحرية.
 
+## برنامج كامل: العمليات والتحويل والقسمة الآمنة
+
+```cpp
+#include <iostream>
+int main() {
+    long long total{}; int count{};
+    std::cout << "Total and count: ";
+    if (!(std::cin >> total >> count) || count <= 0) {
+        std::cerr << "Count must be positive\n"; return 1;
+    }
+    const double average = static_cast<double>(total) / count;
+    std::cout << "Average: " << average << '\n'
+              << "High average: " << std::boolalpha << (average >= 85.0) << '\n';
+}
+```
+
+النسخة `double average = total / count;` تنفذ قسمة صحيحة أولًا. اختبر `7 2` لترى الفرق بين `3` و`3.5`، واختبر Count صفرًا.
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -147,5 +165,13 @@ Floating-point overflow قد ينتج Infinity، والقيم الصغيرة ج�
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>كيف تمنع Overflow في n*(n+1)/2؟</p></div>
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> وسّع أحد العوامل قبل الضرب مثل 1LL*n، وتحقق أن المجال الأوسع يكفي للحد الأقصى المتوقع.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">05</span><p>توقع قيم <code>7 / 2</code> و<code>7 / 2.0</code> وفسر اختلافهما.</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الأولى 3 لأن المعاملين صحيحان، والثانية 3.5 لأن وجود 2.0 يرفع العملية إلى floating point قبل القسمة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">06</span><p>ما الخطأ في حساب <code>long long total = a * b;</code> إذا كان <code>a</code> و<code>b</code> من نوع <code>int</code>؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قد يحدث overflow أثناء ضرب int قبل الإسناد الواسع. صححه إلى <code>1LL * a * b</code> وتحقق من أن long long نفسه يكفي.</div></details>
 </section>
 </div>

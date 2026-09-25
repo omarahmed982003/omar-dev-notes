@@ -1,7 +1,7 @@
 ---
-title: "14. البرمجة التنافسية ومنصات التدريب"
+title: "13. البرمجة التنافسية ومنصات التدريب"
 sidebar:
-  order: 14
+  order: 13
 description: "البرمجة التنافسية تدريب مركز على تحليل القيود واختيار الخوارزمية وكتابة حل صحيح سريع. المنصة أداة قياس وليست بديلًا عن الفهم."
 tableOfContents: true
 ---
@@ -24,6 +24,27 @@ tableOfContents: true
 // Elephant: minimum moves of length at most 5
 int moves = (distance + 4) / 5; // integer ceiling
 ```
+
+### برنامج كامل قابل للتشغيل
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int distance{};
+    if (!(std::cin >> distance) || distance < 0) {
+        return 1;
+    }
+
+    const int moves = (distance + 4) / 5;
+    std::cout << moves << '\n';
+}
+```
+
+إذا كان الإدخال `12` فالخروج `3`: خطوتان بطول 5 وخطوة أخيرة بطول 2. الزمن `O(1)` والذاكرة `O(1)`. لا يطبع البرنامج رسالة مثل `Enter distance` لأن الـOnline Judge يقارن الخرج حرفيًا. فحص الإدخال هنا مفيد عند تشغيل المثال محليًا، بينما تضمن المسألة الأصلية عادة أن الإدخال يطابق القيود.
 
 ## أخطاء شائعة وتصحيحات
 
@@ -59,13 +80,13 @@ int moves = (distance + 4) / 5; // integer ceiling
 <div class="diagram-flow">
 <div class="diagram-node input"><span>نص المسألة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>القيود والتعقيد</span></div>
+<div class="diagram-node process"><span>المدخلات والقيود</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>الخوارزمية والتعقيد</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>إرسال للحكم</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>Verdict ثم تحليل الخطأ وإصلاحه</span></div>
 </div>
 </div>
 

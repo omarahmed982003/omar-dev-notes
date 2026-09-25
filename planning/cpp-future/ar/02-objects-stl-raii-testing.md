@@ -56,9 +56,15 @@ auto passed = std::count_if(scores.begin(), scores.end(),
 اختبر الدالة بوحدات صغيرة تغطي الحالة العادية والحدود والمدخل غير الصالح. استخدم Assertions لفرض افتراضات داخلية في التطوير، ولا تجعلها بديلًا عن التحقق من بيانات المستخدم.
 
 ```cpp
-assert(finalPrice(100.0, 0.10) == 90.0);
-assert(finalPrice(0.0, 0.10) == 0.0);
+#include <cassert>
+#include <cmath>
+
+constexpr double tolerance = 1e-9;
+assert(std::abs(finalPrice(100.0, 0.10) - 90.0) < tolerance);
+assert(std::abs(finalPrice(0.0, 0.10) - 0.0) < tolerance);
 ```
+
+المقارنة بسماحية تناسب الحسابات العشرية التقريبية، لكن `assert` قد يزال عند تعريف `NDEBUG`. استخدم إطار اختبارات حقيقيًا لاختبارات المشروع، واترك Assertions لافتراضات التطوير الداخلية.
 
 فعّل تحذيرات المترجم، واستخدم Debugger وSanitizers لاكتشاف القراءة خارج الحدود واستخدام الذاكرة بعد انتهاء عمرها. اجعل كل إصلاح Bug مصحوبًا باختبار كان يفشل قبله.
 

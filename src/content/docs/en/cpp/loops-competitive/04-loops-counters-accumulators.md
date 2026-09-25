@@ -1,7 +1,7 @@
 ---
-title: "16. Loops and repetition patterns"
+title: "11. Loops and repetition patterns"
 sidebar:
-  order: 16
+  order: 11
 description: "A loop has initial state, a continuation condition, and an update. Choose while, for, or do-while according to the repetition model."
 tableOfContents: true
 ---
@@ -434,6 +434,29 @@ while (row <= 3) {
 ```
 
 If `column` is initialized only once outside the outer loop, it reaches 5 after the first row and later rows print no stars. Different loop types may be nested when each one models a different role.
+
+## Interactive menu with stream recovery
+
+```cpp
+#include <iostream>
+#include <limits>
+int main() {
+    int choice{};
+    do {
+        std::cout << "1. Continue\n0. Exit\nChoice: ";
+        if (!(std::cin >> choice)) {
+            std::cout << "Enter a numeric choice.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
+        if (choice == 1) std::cout << "Continuing\n";
+        else if (choice != 0) std::cout << "Unknown choice\n";
+    } while (choice != 0);
+}
+```
+
+`clear()` restores the stream state and `ignore()` removes the bad line. Omitting either step can trap the menu in a failed-input loop.
 
 ## Check your understanding
 

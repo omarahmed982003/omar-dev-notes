@@ -1,81 +1,74 @@
 ---
-title: "نظام التشغيل والطرفية والملفات وGit"
-description: "افهم ما يديره نظام التشغيل، وتعلّم التنقل بين الملفات من الطرفية، ثم استخدم Git لحفظ تاريخ واضح لتغييرات المشروع."
-tableOfContents: true
+title: 8. الطرفية والملفات والصلاحيات والبيئة
+description: Shell والمسارات والملفات والصلاحيات ومتغيرات البيئة وPipes وExit Codes والعمل الآمن من الطرفية.
+sidebar:
+  order: 8
 ---
 
-## دور نظام التشغيل
+## Terminal وShell
 
-يوفر نظام التشغيل طبقة منظمة بين التطبيقات والعتاد. يدير العمليات والذاكرة الافتراضية والملفات والأجهزة والمستخدمين والصلاحيات والشبكة. يستدعي البرنامج خدماته عبر System Calls بدل التحكم المباشر في القرص أو لوحة المفاتيح.
+Terminal واجهة نصية تعرض الإدخال والإخراج، بينما Shell برنامج يقرأ الأوامر ويفسر الاقتباس والتوسعات والـPipes ثم يبدأ Processes. أمثلة: PowerShell وBash وzsh و`cmd.exe`. الأمر نفسه قد تختلف صياغته بين Shells، لذلك لا تنسخ Escaping من Bash إلى PowerShell بلا فهم.
 
-الـ**Process** برنامج قيد التنفيذ وله ذاكرته وحالته. والـ**Thread** مسار تنفيذ داخل العملية يشارك مواردها. قد يحتوي التطبيق الواحد على عدة عمليات أو Threads لتنفيذ مهام متزامنة.
+## المسارات والـWorking Directory
 
-## الملفات والمسارات
+المسار المطلق يبدأ من Root أوDrive، والنسبي يُفسر انطلاقًا من Current Working Directory. `.` يعني الحالي و`..` الأب. اسم الملف ليس هو Path، ووجود Extension لا يضمن نوع المحتوى الحقيقي.
 
-- المسار المطلق يبدأ من جذر نظام الملفات، أما النسبي فيبدأ من المجلد الحالي.
-- المجلد ينظم أسماء الملفات، والامتداد يساعد الأدوات لكنه لا يغيّر محتوى الملف وحده.
-- الصلاحيات تحدد من يستطيع القراءة أو الكتابة أو التنفيذ.
-- لا تعتمد على حالة الأحرف في الأسماء؛ بعض الأنظمة تفرق بين `App.cpp` و`app.cpp`.
-
-## أوامر الطرفية الأساسية
-
-| المهمة | PowerShell | Bash |
-|---|---|---|
-| معرفة المجلد الحالي | `Get-Location` | `pwd` |
-| عرض الملفات | `Get-ChildItem` | `ls` |
-| تغيير المجلد | `Set-Location path` | `cd path` |
-| إنشاء مجلد | `New-Item -ItemType Directory demo` | `mkdir demo` |
-| قراءة ملف نصي | `Get-Content file.txt` | `cat file.txt` |
-
-قبل تشغيل أمر حذف أو نقل، اطبع المسار النهائي وتأكد أنه داخل المشروع المقصود. تجنب الأوامر الواسعة أو المسارات غير المحسومة.
-
-## Git كتاريخ للمشروع
-
-Git يسجل لقطات مترابطة من الملفات. ابدأ بـ`git status` لمعرفة ما تغير، واستخدم `git diff` لمراجعة التفاصيل، ثم اجمع تغييرًا مترابطًا في Commit برسالة تصف السبب. الفرع يسمح بتطوير فكرة بمعزل عن الخط الرئيسي ثم دمجها بعد المراجعة.
-
-```text
-Working tree → Staging area → Commit history
-   تعديل          اختيار          لقطة موثقة
+```powershell
+Get-Location
+Get-ChildItem
+Set-Location C:\my_docs
+Get-Content .\package.json
 ```
 
-لا تضع كلمات المرور أو مفاتيح API في المستودع. استخدم ملفات بيئة مستبعدة، ووفّر ملف مثال يذكر أسماء المتغيرات دون أسرار.
+استخدم إكمال Tab و`-LiteralPath` عندما يحتوي الاسم محارف خاصة. قبل حذف أو نقل Recursive اطبع المسار المحلول وتأكد أنه داخل النطاق المقصود.
 
-## تمرين عملي
+## الملفات والمجلدات والMetadata
 
-أنشئ مجلدًا لمشروع صغير وداخله `README.md` و`src`. افتح Git، غيّر الملف، افحص `status` و`diff`، ثم أنشئ Commit. بعد ذلك أنشئ فرعًا لتجربة تعديل، وقارن تاريخه بالفرع الأساسي.
-
-## Kernel وUser Space وSystem Calls
-
-يعمل Kernel بصلاحيات عالية ويدير الذاكرة والعمليات والأجهزة. تعمل البرامج العادية في User Space وتطلب خدمات النظام عبر System Calls مثل فتح ملف أو إنشاء Process أو إرسال بيانات عبر Socket. يمنع الفصل برنامجًا عاديًا من التحكم المباشر في كل الذاكرة والأجهزة.
+الملف Bytes مع Metadata مثل الحجم والأوقات والمالك والصلاحيات. المجلد يربط أسماء بإدخالات. Rename داخل Filesystem نفسها قد يكون تعديل Metadata سريعًا، بينما النقل بين أقراص قد يعني Copy ثمDelete. Symbolic Link يشير إلى Path آخر ولا ينسخ البيانات.
 
 ## Users وGroups وPermissions
 
-تحدد صلاحيات الملف من يستطيع القراءة والكتابة والتنفيذ. في الأنظمة الشبيهة بـUnix توجد صلاحيات للمالك والمجموعة والآخرين. لا تمنح التطبيق صلاحيات أوسع من حاجته، ولا تشغله كمسؤول لحل مشكلة مسار من غير فهم السبب.
+الصلاحيات تقرر من يستطيع القراءة والكتابة والتنفيذ. على Unix تُفهم غالبًا كـowner/group/others، بينما Windows يستخدم ACLs أكثر تفصيلًا. لا تجعل ملفات الأسرار قابلة للقراءة لكل المستخدمين، ولا تشغّل Server بصلاحية Administrator/Root بلا حاجة.
 
-## Shell وEnvironment Variables وPipes
+Executable Permission لا تعني أن الملف آمن، وامتلاك Read لا يعني السماح بتنفيذ محتواه داخل التطبيق.
 
-الـTerminal نافذة تتفاعل مع Shell مثل Bash أو PowerShell. يحتفظ Shell بمتغيرات بيئة مثل `PATH` الذي يحدد أماكن البحث عن البرامج. يرسل `>` الخرج إلى ملف، ويربط Pipe مثل `command1 | command2` خرج الأمر الأول بمدخل الثاني. افهم الاقتباس والمسافات قبل تشغيل أوامر على أسماء ملفات قادمة من المستخدم.
+## Environment Variables
 
-## Branch وMerge وConflict في Git
+هي Key/Value يرثها Child Process عادة من Parent. مناسبة لإعدادات البيئة، لكنها ليست خزنة أسرار بذاتها وقد تظهر في Process inspection أوCrash reports أوLogs. استخدم Secret Manager للإنتاج، وتحقق من وجود القيم ونوعها وحدودها عند بدء التطبيق.
 
-يشير Branch إلى سلسلة عمل متحركة، بينما Commit لقطة ثابتة لها أب وتغييرات وبيانات تعريف. يجمع Merge تاريخين، وقد يظهر Conflict عندما تغير الجانبان الأسطر نفسها ولا يستطيع Git اختيار النتيجة. حل التعارض قرار في المحتوى، ثم يحتاج تشغيل الاختبارات وليس حذف العلامات فقط.
+```powershell
+$env:APP_ENV = 'development'
+Get-ChildItem Env:APP_ENV
+```
 
-يفرق `fetch` بين تنزيل تاريخ Remote وبين `pull` الذي ينزله ثم يدمجه أو يعيد ترتيبه حسب الإعداد. يرسل `push` Commits المحلية. لا تخزن أسرارًا في Git؛ حذفها من آخر Commit لا يمحوها تلقائيًا من التاريخ.
+التغيير داخل Process لا يعدل الجهاز كله تلقائيًا ولا يغير Processes بدأت بالفعل.
 
-## Debugging والاختبارات
+## stdin وstdout وstderr وExit Code
 
-يوقف Breakpoint التنفيذ في سطر لتفحص القيم وCall Stack. يوضح Call Stack سلسلة الدوال التي أوصلت التنفيذ إلى الموضع الحالي. تساعد Logs في المشكلات التي يصعب إيقافها، لكن يجب ألا تحتوي كلمات مرور أو Tokens.
+البرنامج يقرأ من Standard Input ويكتب النتيجة العادية إلى Standard Output والتشخيص إلى Standard Error. Exit Code صفر يعني نجاحًا عادة، وغير الصفر يصنف الفشل. هذا يسمح للـShell وCI بالتعامل مع البرنامج دون تحليل نص بشري.
 
-يفحص Unit Test جزءًا صغيرًا معزولًا، ويختبر Integration Test تعاون مكونات مثل التطبيق وقاعدة البيانات، بينما يفحص End-to-End Test رحلة المستخدم كاملة. ابدأ بحالات عادية وحدود ومدخلات غير صالحة، وأضف Regression Test لكل خطأ أصلحته.
+```text
+producer stdout | consumer stdin
+errors ----------------> stderr
+status ----------------> exit code
+```
+
+Pipe تمرر Stream وليست ملفًا مؤقتًا بالضرورة. Backpressure قد تجعل المنتج ينتظر إذا كان المستهلك أبطأ. Redirection تغير وجهة Stream، لذلك لا تخلط Progress messages مع Output معد للمعالجة.
+
+## أوامر آمنة ومفيدة
+
+- اكتشف المكان والمحتوى قبل التعديل.
+- استخدم `--help` أو`Get-Help` واقرأ المعاملات.
+- اقتبس Paths التي تحتوي Spaces.
+- جرّب على ملف مؤقت قبل Bulk operation.
+- لا تمرر أسرارًا في Command line إذا كانت ستظهر في History أوProcess list.
+- افحص Exit Code وstderr في Scripts وCI.
 
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين Program وProcess وThread؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> البرنامج تعليمات مخزنة، والعملية نسخة عاملة لها موارد وحالة، والـThread مسار تنفيذ داخل العملية يشارك ذاكرتها ومواردها.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا تبدأ بـgit diff قبل إنشاء Commit؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لتتأكد أن اللقطة تحتوي التغيير المقصود فقط، ولا تضم ملفًا سريًا أو تعديلًا تجريبيًا أو سطرًا غير مكتمل.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>متى يصبح المسار النسبي غير موثوق؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عندما يتغير المجلد الحالي أو يعمل البرنامج من بيئة مختلفة. يجب حسم المسار انطلاقًا من جذر معروف أو ملف الإعداد.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين Terminal وShell؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Terminal تعرض الجلسة، وShell تفسر الأوامر وتبدأ العمليات وتربط الـStreams.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا يفشل Relative Path أحيانًا رغم وجود الملف؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأنه يُفسر من Working Directory الحالية، وقد تختلف عن مجلد Script أوالمشروع.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>لماذا نفصل stdout عن stderr؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> حتى تظل البيانات القابلة للمعالجة نظيفة بينما يمكن عرض أوتسجيل التشخيص منفصلًا.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>هل Environment Variable خزنة أسرار؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لا؛ هي قناة إعداد وقد تتسرب. استخدم Secret Manager وصلاحيات وتدويرًا ومنعًا للتسجيل.</div></details></section>
 </div>
-
-## الخلاصة
-
-المطور لا يكتب الكود فقط؛ يفهم البيئة التي تشغله، ويتعامل بأمان مع الملفات، ويحتفظ بتاريخ يمكن مراجعته والرجوع إليه.

@@ -43,15 +43,15 @@ int main() {
 <div class="lesson-diagram" role="img" aria-label="Concept map: Input, source structure, errors, and the math library">
 <p class="lesson-diagram-title">Concept map: Input, source structure, errors, and the math library</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>User data</span></div>
+<div class="diagram-node input"><span>Input token</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>cin and getline</span></div>
+<div class="diagram-node process"><span>Stream state</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Example</span></div>
+<div class="diagram-node process"><span>Range validation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Calculation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Input and output are part of program design. Validate</span></div>
+<div class="diagram-node output"><span>Clear output or error</span></div>
 </div>
 </div>
 
@@ -64,6 +64,49 @@ Extraction returns the stream, which becomes false on failure. Call `clear()` be
 Integer division drops the fractional part; convert before division. `static_cast` does not prevent overflow. Use `numeric_limits` for implementation-specific bounds. `<cmath>` supplies `sqrt`, `pow`, `abs`, `round`, `ceil`, and `floor`; note that ceiling and floor behave differently for negative values.
 
 Translate formulas by naming quantities and normalizing units. Test zero, invalid negative input, exact boundaries, and values large enough to expose overflow. Keep shared declarations in headers and definitions in source files, and include every direct dependency explicitly.
+
+## Recovering a failed stream
+
+```cpp
+#include <iostream>
+#include <limits>
+
+int main() {
+    int value{};
+    while (true) {
+        std::cout << "Enter an integer: ";
+        if (std::cin >> value) break;
+        std::cout << "Invalid token; try again.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    std::cout << "Accepted: " << value << '\n';
+}
+```
+
+`clear()` removes the failure flags; `ignore()` discards the bad line. Omitting either operation can leave the loop reading the same failed state forever.
+
+## Output formatting and mathematical domains
+
+Use `<iomanip>` tools such as `fixed`, `setprecision`, and `setw` when the output contract requires them. `sqrt` requires a nonnegative real argument, division requires a nonzero denominator, and floating calculations may produce infinity or NaN. `pow(x, 2)` is often less clear than `x * x`.
+
+## Compile, link, runtime, and logic errors
+
+A syntax or type error belongs to compilation. A missing definition appears during linking. Invalid runtime data or resource failure happens while executing. A program that runs but implements the wrong formula has a logic error; the compiler cannot infer the intended business rule.
+
+## Converting input and checking type limits
+
+Formatted extraction reports failure through the stream state; it does not guarantee that a successfully parsed value belongs to the business domain. First verify extraction, then compare against `std::numeric_limits<T>` or narrower application limits. Converting text manually with functions such as `std::stoi` also requires handling invalid text and out-of-range values.
+
+## Source structure and error categories
+
+Declarations in headers describe interfaces, while definitions usually belong in source files. Include guards or `#pragma once` prevent repeated declarations in one translation unit. Compilers process source files separately, then the linker resolves cross-file definitions. This distinction explains why “declared but undefined” may compile and fail only during linking.
+
+Compile errors violate language rules; linker errors leave unresolved or duplicate symbols; runtime errors occur during execution; logic errors finish but produce incorrect behavior. A useful bug report includes input, expected output, actual output, compiler command, and the first diagnostic.
+
+## Rounding and mathematical domains
+
+`std::floor` rounds toward negative infinity, `std::ceil` toward positive infinity, `std::trunc` toward zero, and `std::round` to the nearest integer with halfway cases away from zero. These are not interchangeable for negative inputs. Before `std::sqrt`, check that the value is nonnegative; before division, check the denominator; before converting a floating result to an integer, define the intended rounding policy.
 
 ## Check your understanding
 

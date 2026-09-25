@@ -1,91 +1,51 @@
 ---
-title: "Computers, data, and the processing cycle"
-description: "A computer receives data, executes instructions, produces results, and may store them. This cycle connects software to memory, the processor, storage, and input/output devices."
+title: "2. Computers, data, and the processing cycle"
+description: "A connected model of a computer receiving data, processing it, producing output, and storing results across hardware and software layers."
 tableOfContents: true
+sidebar:
+  order: 2
 ---
 
-## Overview
+## A computer is a system, not one component
 
-A computer receives data, executes instructions, produces results, and may store them. This cycle connects software to memory, the processor, storage, and input/output devices.
+Hardware is the physical machinery, software is instructions plus data, and the operating system manages resources and exposes controlled interfaces to programs. A computer does not understand intent; it executes precise instructions over data represented as bits.
 
-## Core concepts
+Distinguish raw **data**, interpreted **information**, a stored **program**, and a running **process** with memory, state, and resources.
 
-- Data is raw fact; information is organized data; knowledge is the ability to use it.
-- Hardware is physical equipment; software is the instructions controlling it.
-- A program is stored instructions, while a process is a running instance.
-- RAM is fast and temporary; storage is persistent and usually slower.
-- The IPO model describes inputs, processing, outputs, and optional storage.
+## Input–Process–Output–Storage
 
-## Worked example
+1. **Input:** keyboard, file, network, camera, or sensor data.
+2. **Process:** validation, conversion, calculation, and decisions.
+3. **Output:** a display, file, network response, or control signal.
+4. **Storage:** temporary memory or persistent SSD/HDD state.
 
-When a message is sent, the keyboard supplies input, the app processes and encodes it, the network carries it, and the receiver displays and may store it.
+The stages may overlap. A video player receives chunks, decodes them, fills a buffer, and displays frames while later chunks are still arriving.
 
-## Corrections and common mistakes
+<div class="lesson-diagram" role="img" aria-label="Computer data-processing cycle">
+<p class="lesson-diagram-title">The data journey</p><div class="diagram-flow"><div class="diagram-node input"><span>Input</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node process"><span>Validation + Processing</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node output"><span>Output</span></div><span class="diagram-arrow" aria-hidden="true">↔</span><div class="diagram-node start"><span>Memory / Storage</span></div></div></div>
 
-- A CPU does not infer intent; it executes precise instructions.
-- A file on disk becomes a running process only after loading and execution.
+## Example: opening and editing an image
 
-## The fetch-decode-execute cycle
+The app asks the OS for the file. The storage controller reads blocks into RAM, the program decodes the format using the CPU, and the GPU may render it. RAM holds active state and the display receives the result. Saving requires writing persistent storage and checking that the write succeeded; changing RAM alone is not enough.
 
-The processor repeatedly fetches an instruction from memory, decodes its operation and operands, then executes it and updates registers or memory. Modern CPUs add pipelines, caches, parallel execution, and branch prediction, but this model explains why a running program needs instructions, data, and execution state.
+## Where data lives
 
-## The memory hierarchy
+- **Registers and CPU caches:** immediately needed values and instructions.
+- **RAM:** fast active workspace.
+- **SSD/HDD:** larger persistent storage with higher access latency.
+- **Network:** movement to another machine through agreed protocols.
 
-| Level | Relative speed | Capacity | Main use |
-|---|---|---|---|
-| Registers | Highest | Tiny | Values used by execution units now |
-| CPU cache | Very high | Small | Nearby copies of frequently used data and instructions |
-| RAM | High | Medium | Active programs and data |
-| SSD/HDD | Lower | Large | Files and installed programs |
+This is the overview. Dedicated lessons explain CPU/GPU, memory, storage, and the operating system without duplicating their details here.
 
-Data that stays closer to the CPU is cheaper to access. Data layout and access patterns can therefore affect performance even when two solutions execute a similar number of operations.
+## Diagnose along the data path
 
-## What happens when a program opens?
-
-The operating system checks the executable and permissions, creates a process and virtual address space, loads the required pages, and starts execution at the entry point. Its scheduler shares CPU time between processes while device drivers handle displays, storage, and networks.
-
-<div class="lesson-diagram" role="img" aria-label="The computer data-processing cycle">
-<p class="lesson-diagram-title">The computer data-processing cycle</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Data input</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>CPU/RAM processing</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Result output</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node start"><span>Optional storage</span></div>
-</div>
-</div>
-
-## CPU execution, memory, processes, and threads
-
-Registers hold the values currently used by the CPU. The ALU performs arithmetic and logic, while the control unit coordinates instruction fetch, decode, and execution. Clock rate alone does not compare processors; architecture, cache, cores, and work per cycle also matter.
-
-The stack commonly holds function calls and short-lived local state, while the heap supports dynamic allocation. Virtual memory gives each process an address space divided into pages. A page fault occurs when a required mapping must be created or loaded.
-
-A process owns resources and an address space. Threads within a process share much of that state but keep their own execution stacks. The scheduler switches CPU time between them. Unsynchronized access to shared state can create a race condition.
+Check whether input arrived in the expected format, which processing step changed it, whether internal output differs from presentation, whether persistence succeeded, whether a stale cache is being read, and whether disk or network work failed partially.
 
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>How does a program differ from a process, and when can one program have several processes?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A program is stored instructions; a process is a running instance with state and memory. Multiple launches or workers can create several processes from one program.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Trace sending a photo and identify data, information, and knowledge.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Bytes are data, the rendered photo with sender context is information, and deciding whether it is trustworthy or actionable is knowledge.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Why is persistent storage not a substitute for RAM?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Storage favors persistence and capacity but is slower. RAM is the fast working area into which the OS loads active code and data.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Inputs are correct but output is wrong. Where do you start in the IPO model?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Inspect processing steps and intermediate state, then confirm the output uses the current value and the intended formatting.</div></details>
-</section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Why is an executable file on an SSD not yet a running program?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It contains stored instructions. The OS must create a process, map required pages and resources, and start execution.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>Trace a voice message through IPO and storage.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The microphone supplies input; encoding and compression process it; sending and persistence are output/storage. The receiver accepts bytes, decodes them, and outputs audio.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>The calculation succeeds but the UI shows an old value. What do you inspect?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Inspect the write result, the UI data source, and every cache or buffer that may contain stale state.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>How do a program and a process differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A program is stored instructions. A process is a live execution with an address space, state, open resources, and scheduling context.</div></details></section>
 </div>
-
-## Summary
-
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.

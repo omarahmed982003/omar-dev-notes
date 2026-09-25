@@ -5,6 +5,14 @@ sidebar:
   order: 7
 ---
 
+## What is a server?
+
+**Server** describes a role rather than one physical shape. It may mean physical hardware or a virtual machine supplying compute and networking, a program listening on an IP address and port such as Nginx or PostgreSQL, or the provider side of one interaction. The same application is a server to a browser and a client of a database.
+
+A server process normally opens and binds a socket, listens, reads and validates requests, performs work, and returns responses. Running `localhost:8000` means a process on your machine listens locally; it does not imply a separate computer. Development may combine web, application, and database roles, while production separates them for scaling and isolation.
+
+“The server is down” is incomplete until you identify whether the host, process, network, dependency, or capacity failed.
+
 ```text
 Network → Load Balancer → Web Server
                            ├─ Static file → Response

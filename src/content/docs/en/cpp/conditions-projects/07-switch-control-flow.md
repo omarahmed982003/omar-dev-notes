@@ -1,7 +1,7 @@
 ---
-title: "12. switch, control flow, and a calculator"
+title: "10. switch, control flow, and a calculator"
 sidebar:
-  order: 12
+  order: 10
 description: "switch selects a branch from one discrete value. Use it for clear constant cases; prefer if for ranges and compound predicates."
 tableOfContents: true
 ---

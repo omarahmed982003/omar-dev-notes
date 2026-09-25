@@ -45,15 +45,15 @@ int main() {
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الإدخال وبنية المصدر والأخطاء ومكتبة الرياضيات">
 <p class="lesson-diagram-title">خريطة مفاهيم: الإدخال وبنية المصدر والأخطاء ومكتبة الرياضيات</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>بيانات المستخدم</span></div>
+<div class="diagram-node input"><span>Input Token</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>cin وgetline</span></div>
+<div class="diagram-node process"><span>Stream State</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>Range Validation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>Calculation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>Output أو Error واضح</span></div>
 </div>
 </div>
 

@@ -19,14 +19,12 @@ This section begins with problem analysis and number representation, then explai
 6. [**Text encoding, characters, and casts**](./loops-competitive/01-encoding-casts-math/) — ASCII, Unicode, UTF-8, `char`, and explicit conversions.
 7. [**Operators, expressions, and bitwise operations**](./foundations/05-operators-conversions-limits/) — Precedence, assignment, comparison, logic, short circuiting, and bit operations.
 8. [**Input, conversions, limits, and math**](./foundations/06-input-source-build-errors-math/) — Stream state, casts, `numeric_limits`, `cmath`, and formulas.
-9. [**Input and business rules**](./conditions-projects/01-input-business-rules/) — Turning requirements into variables, Boolean rules, and tests.
-10. [**Online order project**](./conditions-projects/05-online-order-project/) — Price, quantity, discount, shipping, validation, and a test matrix.
-11. [**if, else, validation, and nesting**](./conditions-projects/06-if-else-validation-nesting/) — Exclusive and independent branches, ranges, ordering, and nested rules.
-12. [**switch, control flow, and a calculator**](./conditions-projects/07-switch-control-flow/) — `case`, `break`, `default`, fall-through, and local scope.
-13. [**Training center project**](./conditions-projects/08-training-center-project/) — Requirement analysis, program decomposition, registration, payment, and outcomes.
-14. [**Competitive programming platforms**](./loops-competitive/02-competitive-programming/) — Constraints, complexity, practice plans, Codeforces, and LeetCode.
-15. [**Condition and formula problems**](./loops-competitive/03-conditions-codeforces/) — Arithmetic, logical, and geometry problems with derivation and boundary tests.
-16. [**Loops and repetition patterns**](./loops-competitive/04-loops-counters-accumulators/) — `while`, `for`, `do-while`, counters, accumulators, sentinels, and nested loops.
+9. [**if, else, validation, and nesting**](./conditions-projects/06-if-else-validation-nesting/) — Exclusive and independent branches, ranges, ordering, and nested rules.
+10. [**switch, control flow, and a calculator**](./conditions-projects/07-switch-control-flow/) — `case`, `break`, `default`, fall-through, and local scope.
+11. [**Loops and repetition patterns**](./loops-competitive/04-loops-counters-accumulators/) — `while`, `for`, `do-while`, counters, accumulators, sentinels, and nested loops.
+12. [**Input and business rules**](./conditions-projects/01-input-business-rules/) — Turning requirements into variables, Boolean rules, and tests.
+13. [**Competitive programming platforms**](./loops-competitive/02-competitive-programming/) — Constraints, complexity, practice plans, Codeforces, and LeetCode.
+14. [**Condition and formula problems**](./loops-competitive/03-conditions-codeforces/) — Arithmetic, logical, and geometry problems with derivation and boundary tests.
 
 :::tip[Study method]
 Run every example, change its inputs, and predict the result before execution. Draw the build pipeline during the compiler lesson and write test cases before conditions and loops.

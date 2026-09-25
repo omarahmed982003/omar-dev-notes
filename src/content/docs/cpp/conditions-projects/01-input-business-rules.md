@@ -1,7 +1,7 @@
 ---
-title: "9. المدخلات وقواعد العمل"
+title: "12. المدخلات وقواعد العمل"
 sidebar:
-  order: 9
+  order: 12
 description: "قواعد العمل تتحول إلى شروط واضحة بعد تسمية كل حقيقة مستقلة والتحقق من صحة المدخلات. افصل صلاحية البيانات عن قرار القبول."
 tableOfContents: true
 ---
@@ -37,15 +37,15 @@ bool eligible = validScore && score >= 60 && attendance >= 75;
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الإدخال وتحويل قواعد العمل إلى شروط">
 <p class="lesson-diagram-title">خريطة مفاهيم: الإدخال وتحويل قواعد العمل إلى شروط</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>المدخلات</span></div>
+<div class="diagram-node input"><span>مدخل خام</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>فحص الصلاحية</span></div>
+<div class="diagram-node process"><span>Validation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>حقائق Boolean مسماة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>Decision Table</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>قبول أو سبب رفض واضح</span></div>
 </div>
 </div>
 
@@ -82,6 +82,28 @@ bool canApprove = adult && incomeEnough && strongCredit;
 
 احسب الحقيقة المسماة مرة واحدة ثم استخدمها. إذا كررت `score >= 60 && attendance >= 75` في ثلاثة أماكن، فقد تعدل حدًا وتنسى الآخرين. يمكن لاحقًا نقل القاعدة إلى دالة نقية تستقبل البيانات وتعيد النتيجة من غير قراءة أو طباعة، فيسهل اختبارها.
 
+## برنامج كامل: صلاحية البيانات ثم قرار الأهلية
+
+```cpp
+#include <iostream>
+int main() {
+    int score{}, attendance{}; char paidAnswer{};
+    std::cout << "Score attendance paid(y/n): ";
+    if (!(std::cin >> score >> attendance >> paidAnswer)) {
+        std::cerr << "Invalid input format\n"; return 1;
+    }
+    if (score < 0 || score > 100 || attendance < 0 || attendance > 100 ||
+        (paidAnswer != 'y' && paidAnswer != 'Y' && paidAnswer != 'n' && paidAnswer != 'N')) {
+        std::cerr << "Input outside the accepted domain\n"; return 1;
+    }
+    const bool paid = paidAnswer == 'y' || paidAnswer == 'Y';
+    const bool eligible = score >= 60 && attendance >= 75 && paid;
+    std::cout << (eligible ? "Eligible\n" : "Not eligible\n");
+}
+```
+
+اختبر `59/60` و`74/75` وإجابتي الدفع ومدخلًا خارج المجال. الـValidation يسبق قرار الأهلية ولا يختلط به.
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -100,5 +122,13 @@ bool canApprove = adult && incomeEnough && strongCredit;
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>لماذا رسالة “غير مؤهل” وحدها ضعيفة؟</p></div>
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تساعد المستخدم أو الاختبار أو الدعم على معرفة القاعدة الفاشلة؛ أعد سببًا محددًا دون كشف معلومات حساسة.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">05</span><p>صمم أقل مجموعة اختبارات لقاعدة: العمر من 18 إلى 60 شاملًا والحضور 75% على الأقل.</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> اختبر 17 و18 و60 و61 مع حضور صالح، ثم 74.99 و75 مع عمر صالح، وأضف مدخلًا غير رقميًا. هذه تغطي الحدود وكل سبب رفض مستقل.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">06</span><p>كيف تكشف Decision Table تعارض قاعدتين قبل كتابة الكود؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تسرد تركيبات الحقائق ونتيجة كل تركيب؛ إذا حصل الصف نفسه على نتيجتين أو بقي صف بلا نتيجة يظهر الغموض قبل تحويله إلى if.</div></details>
 </section>
 </div>

@@ -1,7 +1,9 @@
 ---
-title: "Binary, programming languages, and algorithms"
+title: "7. Binary, programming languages, and algorithms"
 description: "All data and instructions become bits inside the machine. Programming languages let us express algorithms clearly before a compiler or interpreter turns them into executable work."
 tableOfContents: true
+sidebar:
+  order: 7
 ---
 
 ## Overview

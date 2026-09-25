@@ -26,7 +26,8 @@ This section turns pages **12–60** of the notes into a practical learning path
 13. [Strings, Unicode, and regular expressions](./13-strings-unicode-regex/)
 14. [Date, time, and timezones](./14-datetime-timezones/)
 15. [From HTTP request to router and response](./15-request-router-response/)
-16. [Modern PHP 8.4 and 8.5](./16-modern-php-features/)
+16. [Modern PHP 8.0–8.5 roadmap](./16-modern-php-features/) — WeakMap, Fibers, DNF types, readonly classes, hooks, and later features.
+17. [Integrated programs and practical debugging](./17-integrated-programs-debugging/) — Complete CLI, streaming, and JSON programs with output-prediction exercises.
 
 :::tip[How to study]
 Run every example, change its inputs, and predict the result before running it again. The security notes are part of correct PHP usage, not optional extras.

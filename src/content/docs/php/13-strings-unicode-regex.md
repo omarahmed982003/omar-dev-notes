@@ -93,7 +93,7 @@ if (preg_match('/\A(?<country>[A-Z]{2})-(?<number>\d{6})\z/D', $code, $m)) {
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Formatting آمن». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم interpolation أو sprintf للعرض، لا لبناء SQL. قارن secrets بـhash_equals() لا === عند الحاجة لمقارنة ثابتة الزمن. استخدم htmlspecialchars عند إخراج نص في HTML، وrawurlencode لمعامل URL. لا توجد “دالة تعقيم عامة” لكل السياقات. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم interpolation أو sprintf للعرض، لا لبناء SQL. قارن secrets بـhash_equals() لا <code>===</code> عند الحاجة لمقارنة ثابتة الزمن. استخدم htmlspecialchars عند إخراج نص في HTML، وrawurlencode لمعامل URL. لا توجد “دالة تعقيم عامة” لكل السياقات. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Regular Expressions» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>

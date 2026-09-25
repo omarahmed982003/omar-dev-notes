@@ -34,15 +34,15 @@ tableOfContents: true
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: أنظمة الأعداد ومكوّنات الكمبيوتر">
 <p class="lesson-diagram-title">خريطة مفاهيم: أنظمة الأعداد ومكوّنات الكمبيوتر</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>القيمة والقاعدة</span></div>
+<div class="diagram-node input"><span>قيمة عشرية</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Binary وHex</span></div>
+<div class="diagram-node process"><span>Binary Bits</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>Bytes في الذاكرة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>CPU Instruction</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>نتيجة قابلة للعرض</span></div>
 </div>
 </div>
 

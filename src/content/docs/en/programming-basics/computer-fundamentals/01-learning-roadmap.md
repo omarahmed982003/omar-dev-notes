@@ -1,7 +1,9 @@
 ---
-title: "Learning roadmap and study rules"
+title: "1. Learning roadmap and study rules"
 description: "Start with a clear learning loop: understand, implement, test, and review. The goal is not to memorize tools but to build a repeatable problem-solving habit."
 tableOfContents: true
+sidebar:
+  order: 1
 ---
 
 ## Overview

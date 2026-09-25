@@ -30,6 +30,9 @@ sidebar:
 17. [Rate Limiting ومقاومة الإساءة](./17-rate-limiting-abuse/) — الخوارزميات وحماية login وسياسة الفشل.
 18. [Security Logging وAudit Trail](./18-security-logging-audit/) — الأحداث والتنقية والسلامة والتنبيهات.
 19. [إدارة الأسرار والمفاتيح](./19-secrets-key-management/) — Secret managers وrotation وenvelope encryption.
+20. [Threat Modeling واختبار الصلاحيات](./20-threat-modeling-authorization-testing/) — أصول وحدود ثقة ومصفوفة أدوار وملكية وTenants.
+21. [الأجهزة والجلسات وكلمات المرور المسربة وSCIM](./21-device-sessions-breached-passwords-scim/) — إبطال الجلسات وBreached Passwords وProvisioning مؤسسي.
+22. [PAR وJAR وRAR وحوادث التوكينات](./22-par-jar-rar-token-incidents/) — طلبات OAuth المتقدمة وRunbook لتسريب Tokens وKeys.
 
 :::danger[قاعدة أساسية]
 كل ما يأتي من المتصفح أو API أو Cookie أو Header أو قاعدة بيانات قديمة يُعامل كبيانات غير موثوقة حتى يُتحقق منه، ثم يُرمّز عند موضع الإخراج المناسب.
@@ -42,3 +45,5 @@ sidebar:
 - [PKCE - RFC 7636](https://www.rfc-editor.org/info/rfc7636/) و[Device Authorization - RFC 8628](https://www.rfc-editor.org/info/rfc8628/)
 - [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0-18.html)
 - [SAML 2.0 Technical Overview](https://docs.oasis-open.org/security/saml/Post2.0/sstc-saml-tech-overview-2.0.html)
+- [SCIM Protocol - RFC 7644](https://www.rfc-editor.org/info/rfc7644/) و[PAR - RFC 9126](https://www.rfc-editor.org/info/rfc9126/)
+- [JAR - RFC 9101](https://www.rfc-editor.org/info/rfc9101/) و[RAR - RFC 9396](https://www.rfc-editor.org/info/rfc9396/)

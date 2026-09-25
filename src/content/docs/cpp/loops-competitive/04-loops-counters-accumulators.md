@@ -1,7 +1,7 @@
 ---
-title: "16. الحلقات وأنماط التكرار"
+title: "11. الحلقات وأنماط التكرار"
 sidebar:
-  order: 16
+  order: 11
 description: "الحلقة تصف تكرارًا له حالة بداية وشرط استمرار وتحديث. اختيار while أو for أو do-while يعتمد على شكل التكرار لا على التفضيل الشخصي."
 tableOfContents: true
 ---
@@ -485,6 +485,30 @@ while (row <= 3) {
 ```
 
 لو وضعت `column` خارج الحلقة الخارجية ولم تعدها إلى 1، ستنتهي بعد الصف الأول وتفشل بقية الصفوف. ويمكن دمج نوعين مختلفين من الحلقات؛ المهم أن يكون دور كل واحدة واضحًا، مثل `while` لعدد الصفوف الذي تحكمه حالة خارجية و`for` لأعمدة ذات عدد معروف.
+
+## قائمة تفاعلية تتعافى من فشل الإدخال
+
+```cpp
+#include <iostream>
+#include <limits>
+
+int main() {
+    int choice{};
+    do {
+        std::cout << "1. Continue\n0. Exit\nChoice: ";
+        if (!(std::cin >> choice)) {
+            std::cout << "Enter a numeric choice.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            continue;
+        }
+        if (choice == 1) std::cout << "Continuing\n";
+        else if (choice != 0) std::cout << "Unknown choice\n";
+    } while (choice != 0);
+}
+```
+
+عند إدخال نص يفشل Extraction. تعيد `clear()` حالة Stream إلى العمل، وتحذف `ignore()` بقية السطر الفاسد، ثم تبدأ دورة جديدة. حذف إحداهما قد يجعل القائمة لا نهائية.
 
 ## تأكد من فهمك
 

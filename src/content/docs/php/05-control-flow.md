@@ -160,7 +160,7 @@ unset($price); // مهم: إزالة المرجع الباقي من آخر عن�
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «match». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> match expression تعيد قيمة، تستخدم ===، لا يحدث فيها fall-through، ولا تحتاج break. وإذا لم يوجد arm مطابق ولا default ترمي UnhandledMatchError. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> match expression تعيد قيمة، تستخدم <code>===</code>، لا يحدث فيها fall-through، ولا تحتاج break. وإذا لم يوجد arm مطابق ولا default ترمي UnhandledMatchError. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
 </section>
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «for» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>

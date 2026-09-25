@@ -38,13 +38,13 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 <div class="diagram-flow">
 <div class="diagram-node input"><span>Unicode code point</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>UTF-8 and UTF-16</span></div>
+<div class="diagram-node process"><span>Code units</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Example</span></div>
+<div class="diagram-node process"><span>UTF-8 bytes</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Parsing and casting</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Text encoding, conversions, and math functions often meet in</span></div>
+<div class="diagram-node output"><span>Validate the range before use</span></div>
 </div>
 </div>
 
@@ -57,6 +57,27 @@ Unicode assigns code points; UTF-8 encodes them into one to four bytes. A C++ `c
 Integral promotions and usual arithmetic conversions choose evaluation types. `static_cast` documents supported conversions but does not guarantee that a value fits. `const_cast`, `dynamic_cast`, and `reinterpret_cast` solve specialized problems and do not replace validation. Narrowing a floating value to an integer discards its fraction.
 
 Parsing text such as `"123"` is not a cast. Use a parser such as `from_chars` or a checked stream, and verify complete consumption and range.
+
+## Code points, code units, and visible characters
+
+A Unicode code point is an abstract numbered value such as `U+0627`. An encoding represents it with code units: UTF-8 uses one to four bytes, while UTF-16 uses one or two 16-bit code units. A visible grapheme may combine several code points, so byte count, code-point count, and what a user sees are three different measurements.
+
+UTF-8 preserves ASCII as single-byte values. Leading-bit patterns identify the length of a multibyte sequence, and continuation bytes begin with `10`. Indexing a `std::string` visits bytes, not Unicode characters. Real normalization, case mapping, and grapheme iteration require a Unicode-aware library rather than hand-written byte slicing.
+
+## Parsing is not casting
+
+Casting converts an already existing value between C++ types. Parsing interprets text according to a grammar. `static_cast<int>('7')` returns the character code, not the number seven; parsing must subtract `'0'` after validation or use a numeric parser for longer text.
+
+## Promotions and the four named casts
+
+Small integer types normally promote to `int` before arithmetic. Mixed arithmetic then selects a common type, so inspect intermediate expressions as well as destination variables.
+
+- `static_cast` expresses ordinary checked-at-compile-time conversions, but it does not perform runtime range validation.
+- `dynamic_cast` performs runtime-checked navigation in a polymorphic class hierarchy.
+- `const_cast` changes cv-qualification; modifying an object that was originally const is undefined behavior.
+- `reinterpret_cast` reinterprets low-level representation and should be isolated behind a carefully reviewed systems-level requirement.
+
+Prefer redesigning the types over scattering casts. Every narrowing conversion needs an explicit domain check.
 
 ## Check your understanding
 

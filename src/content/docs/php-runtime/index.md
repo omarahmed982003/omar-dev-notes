@@ -29,6 +29,9 @@ sidebar:
 12. [Queues وWorkers](./12-queues-workers-scheduling/) — Idempotency وretry وDLQ وscheduling.
 13. [Deployment وCI/CD وContainers](./13-deployment-cicd-containers/) — artifacts وhealth checks وrollout وrollback.
 14. [أمان الاعتماديات](./14-dependency-supply-chain-security/) — Composer audit والسياسات وplugins وCI.
+15. [Profiling وSLI/SLO وOpenTelemetry](./15-profiling-slo-opentelemetry/) — Flame Graphs وPercentiles وأهداف الخدمة وانتقال Trace Context.
+16. [المرونة وإدارة Workers](./16-resilience-workers/) — Circuit Breaker وBulkhead وBackpressure وSignals وsystemd.
+17. [Disaster Recovery واختبار الاستعادة](./17-disaster-recovery/) — RPO وRTO والنسخ والاسترجاع وGame Days.
 
 :::tip[الخيط الذي يربط الدروس]
 المتصفح يتصل بخادم الويب، والخادم يمرر طلب PHP إلى FPM، والـWorker يشغّل كودًا حمّله Composer ويستفيد من OPcache، وقد يستدعي خدمة خارجية عبر cURL. الإعدادات والأسرار تصل من البيئة، والذاكرة تُدار داخل كل Worker.

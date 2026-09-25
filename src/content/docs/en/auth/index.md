@@ -28,6 +28,9 @@ This section expands pages **60–66 and 87–103** into a practical, modern sec
 17. [Rate limiting and abuse resistance](./17-rate-limiting-abuse/)
 18. [Security logging and audit trails](./18-security-logging-audit/)
 19. [Secrets and key management](./19-secrets-key-management/)
+20. [Threat modeling and authorization testing](./20-threat-modeling-authorization-testing/) — Assets, trust boundaries, roles, ownership, and tenant matrices.
+21. [Devices, sessions, breached passwords, and SCIM](./21-device-sessions-breached-passwords-scim/) — Session revocation, password screening, and enterprise provisioning.
+22. [PAR, JAR, RAR, and token incidents](./22-par-jar-rar-token-incidents/) — Advanced OAuth requests and incident runbooks for leaked credentials.
 
 Treat browser, API, cookie, header, uploaded, and legacy database data as untrusted. Validate at the boundary and encode for the exact output context.
 

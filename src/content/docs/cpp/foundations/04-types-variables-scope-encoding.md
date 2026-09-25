@@ -42,15 +42,15 @@ constexpr int daysPerWeek{7};
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الأنواع والمتغيرات والنطاق وترميز النص">
 <p class="lesson-diagram-title">خريطة مفاهيم: الأنواع والمتغيرات والنطاق وترميز النص</p>
 <div class="diagram-flow">
-<div class="diagram-node input"><span>النوع والقيمة</span></div>
+<div class="diagram-node input"><span>معنى القيمة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>التهيئة والمدى</span></div>
+<div class="diagram-node process"><span>اختيار النوع</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>تهيئة صحيحة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>Scope وLifetime</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>عمليات آمنة ومسموحة</span></div>
 </div>
 </div>
 
@@ -118,6 +118,36 @@ Block scope يبدأ وينتهي مع `{}`، وFunction scope يتعلق بأج
 
 لا تعتمد على أن الذاكرة كانت صفرًا أثناء التجربة. بعض الأخطاء تؤدي إلى Undefined Behavior، أي أن معيار C++ لا يفرض نتيجة محددة، وقد يبدو البرنامج صحيحًا ثم يتغير مع التحسين أو بيئة أخرى.
 
+## برنامج كامل: اختيار النوع والتحقق من المدى
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string name;
+    int age{};
+    long long balancePiasters{};
+
+    std::cout << "Name age balance-in-piasters: ";
+    if (!(std::cin >> name >> age >> balancePiasters)) {
+        std::cerr << "Invalid input\n";
+        return 1;
+    }
+    if (age < 0 || age > 130 || balancePiasters < 0) {
+        std::cerr << "Value outside the accepted range\n";
+        return 1;
+    }
+
+    const bool adult = age >= 18;
+    std::cout << name << " | age=" << age
+              << " | adult=" << std::boolalpha << adult
+              << " | balance=" << balancePiasters << " piasters\n";
+}
+```
+
+مدخل `Omar 24 12550` يطبع بيانات صحيحة، بينما `Omar -2 100` يمر من ناحية النوع لكنه يفشل قاعدة المجال. النوع لا يغني عن Validation، و`long long` يختار من الحد الأقصى المحتمل لا من القيمة التجريبية الصغيرة.
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -136,5 +166,13 @@ Block scope يبدأ وينتهي مع `{}`، وFunction scope يتعلق بأج
 <section class="quiz-card" role="listitem">
 <div class="quiz-question-row"><span class="quiz-number">04</span><p>لماذا لا يمثل char حرفًا عربيًا كاملًا في UTF-8 غالبًا؟</p></div>
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لأن الحرف العربي يُرمز عادة بعدة بايتات، وchar يخزن وحدة بايت واحدة لا Code Point كاملًا.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">05</span><p>توقع الناتج: <code>int x{3}; double y{x / 2};</code> ثم طباعة <code>y</code>. لماذا؟</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الناتج 1 لأن القسمة حدثت بين عددين صحيحين قبل التحويل إلى double. استخدم <code>double y = x / 2.0;</code> للحصول على 1.5.</div></details>
+</section>
+<section class="quiz-card" role="listitem">
+<div class="quiz-question-row"><span class="quiz-number">06</span><p>صحح تعريفًا يخزن عدد زوار قد يتجاوز ملياري زائر وقيمة لا يجوز أن تتغير بعد التهيئة.</p></div>
+<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم نوعًا موثق المجال مثل <code>const std::int64_t visitors{value};</code> بعد التحقق من المدخل، بدل افتراض أن <code>int</code> يكفي.</div></details>
 </section>
 </div>

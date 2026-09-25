@@ -38,13 +38,13 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 <div class="diagram-flow">
 <div class="diagram-node input"><span>Unicode Code Point</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>UTF-8 وUTF-16</span></div>
+<div class="diagram-node process"><span>Code Units</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال</span></div>
+<div class="diagram-node process"><span>UTF-8 Bytes</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>أخطاء شائعة وتصحيحات</span></div>
+<div class="diagram-node decision"><span>Parsing وCasting</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الخلاصة</span></div>
+<div class="diagram-node output"><span>التحقق من المجال قبل الاستخدام</span></div>
 </div>
 </div>
 

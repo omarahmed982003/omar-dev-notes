@@ -51,7 +51,7 @@ Encapsulation means hiding representation, exposing meaningful operations, and p
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>$this refers to the current object inside instance</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>== compares object properties while === requires the</span></div>
+<div class="diagram-node output"><span><code>==</code> compares object properties while <code>===</code> requires the</span></div>
 </div>
 </div>
 
