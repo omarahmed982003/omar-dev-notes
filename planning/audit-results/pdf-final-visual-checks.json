@@ -1,0 +1,14 @@
+{
+  "pages": 1219,
+  "documents": 382,
+  "visualPages": [
+    19,
+    67,
+    197,
+    828
+  ],
+  "visualResult": "Readable Arabic and English, tables and code blocks; no clipping observed on sampled pages.",
+  "downloadMatches": true,
+  "sha256": "CC30171A1C4C0CB141411669FD4F482D2E351FD38B43AB63B35B0F83C12CCCDE",
+  "buildPages": 388
+}

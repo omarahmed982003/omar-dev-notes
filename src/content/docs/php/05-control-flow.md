@@ -5,6 +5,47 @@ sidebar:
   order: 5
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+
+
+## البرنامج بياخد قرار إزاي؟
+
+لحد دلوقتي كتبنا تعليمات بتتنفذ بالترتيب. لكن أي برنامج حقيقي محتاج يختار: لو المستخدم مسجل دخول اعرض حسابه، ولو مش مسجل دخوله ودّيه لصفحة الدخول. ومحتاج يكرر: اطبع كل المنتجات، أو حاول قراءة الإدخال لحد ما يبقى صحيحًا.
+
+ده اسمه **Control Flow**، يعني الطريق اللي التنفيذ بيمشي فيه. الشروط تختار فرعًا، والحلقات تكرر مجموعة تعليمات. قبل ما تكتب شرطًا، حوّل قاعدة العمل لسؤال نتيجته `true` أو`false`:
+
+```text
+هل الدرجة بين 0 و100؟
+هل المستخدم نشط وعنده الصلاحية؟
+هل لسه فيه عناصر ما اتعالجتش؟
+```
+
+مثلًا ترتيب شروط التقدير مهم. لو بدأت بـ`$score >= 50`، فالطالب صاحب 95 هيدخل أول فرع ومش هيوصل لامتياز. رتب الشروط من الأكثر تحديدًا أو الأعلى إلى الأقل، واختبر القيم عند الحدود نفسها: 49 و50 و74 و75.
+
+```php
+$score = 75;
+
+if ($score < 0 || $score > 100) {
+    $grade = 'invalid';
+} elseif ($score >= 90) {
+    $grade = 'A';
+} elseif ($score >= 75) {
+    $grade = 'B';
+} elseif ($score >= 50) {
+    $grade = 'C';
+} else {
+    $grade = 'F';
+}
+```
+
+أثناء قراءة أي Loop، دور على ثلاث حاجات: قيمة البداية، شرط الاستمرار، والخطوة اللي تقربنا من النهاية. لو واحدة منهم ناقصة، ممكن تعمل Infinite Loop.
+
 ## if وelseif وelse
 
 ```php
@@ -130,40 +171,38 @@ unset($price); // مهم: إزالة المرجع الباقي من آخر عن�
 
 استخدم `continue` لتخطي الدورة الحالية و`break` لإنهاء الحلقة. ويمكن `break 2` للخروج من حلقتين متداخلتين، وهو أوضح غالبًا من `goto`.
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الشروط والحلقات">
-<p class="lesson-diagram-title">خريطة مفاهيم: الشروط والحلقات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>if وelseif وelse</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>switch</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>match</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>for</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>while وdo-while</span></div>
-</div>
-</div>
+<details><summary>1. توقع التقدير عند الدرجات 49 و50 و75 و90</summary><p>تتبّع الشروط من فوق لتحت. الحدود المفروض تنتج F وC وB وA. لو نتيجة مختلفة، راجع ترتيب الفروع واستخدام <code>&gt;=</code>.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. اكتشف الـInfinite Loop</summary><p>في <code>$i = 0; while ($i &lt; 3) { echo $i; }</code> لا تتغير <code>$i</code>. أضف <code>$i++</code> داخل الحلقة، وتوقع الناتج قبل التشغيل.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «if وelseif وelse» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في القوالب يمكن استخدام الصياغة البديلة: Ternary وNull coalescing وNullsafe ?? يفحص الوجود وعدم null بطريقة تشبه isset. والـ nullsafe operator هو ?-&gt;، لا ?.. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «if وelseif وelse» و«switch». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الشروط والحلقات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «if وelseif وelse»: في القوالب يمكن استخدام الصياغة البديلة: Ternary وNull coalescing وNullsafe ?? يفحص الوجود وعدم null بطريقة تشبه isset. والـ nullsafe operator هو ?-&gt;، لا ?.. أما «switch»: نسيان break يسبب fall-through وقد يكون مقصودًا أو خطأ. تاريخيًا يستخدم switch مقارنة غير صارمة، لذلك تجنب خلط الأنواع. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «match». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> match expression تعيد قيمة، تستخدم <code>===</code>، لا يحدث فيها fall-through، ولا تحتاج break. وإذا لم يوجد arm مطابق ولا default ترمي UnhandledMatchError. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «for» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الأجزاء الثلاثة اختيارية؛ for (;;) حلقة لا نهائية وتحتاج break أو نهاية للعملية. توجد صياغة for (...): ... endfor; للقوالب. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. اختار بين switch وmatch</summary><p>لو محتاج قيمة ناتجة، ومقارنة صارمة، ومنع Fall-through، استخدم <code>match</code>. استخدم <code>switch</code> بحذر عند التعامل مع كود قديم أوتدفق يحتاج أكثر من Statement.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>متى تستخدم <code>match</code> بدل <code>switch</code>؟</summary><p>عندما تريد مقارنة صارمة تعيد قيمة ولا تسمح بالسقوط التلقائي بين الفروع.</p></details>
+
+<details><summary>لماذا قد تصبح حلقة <code>while</code> لا نهائية؟</summary><p>إذا لم تتغير القيمة التي يعتمد عليها الشرط أو لم يوجد مسار خروج؛ اختبر التقدم في كل دورة.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php control-flow-lab.php
+~~~
+
+**معيار النجاح:** تغطي الحالات الحد الأدنى وما دونه والحد الأعلى وما فوقه، ويصل كل إدخال إلى فرع واحد مقصود فقط.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+<code>break</code> ينهي الحلقة الحالية و<code>continue</code> ينتقل للتكرار التالي، ويمكن تحديد مستوى في الحلقات المتداخلة لكن ذلك يحتاج وضوحًا. Alternative syntax مفيدة في templates. ضع حدًا أو تقدمًا قابلًا للإثبات لكل while، واختبر صفر دورة وآخر حد.
+
+### جرّب بنفسك
+
+اكتب حلقة ثم اختبر zero/one/many وحدًا يمنع infinite loop.

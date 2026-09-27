@@ -5,6 +5,18 @@ sidebar:
   order: 22
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Scope:** نطاق التفويض: اسم صلاحية يطلبها التطبيق أو يحصل عليها، زي orders:read لقراءة الطلبات؛ ولسه لازم نتحقق إن المستخدم يملك الطلب.
+
+
 ## المشكلة التي تعالجها الإضافات
 
 Authorization Request عادي يمر عبر Browser ويحتوي `client_id` و`redirect_uri` و`scope` و`state` وربما تفاصيل حساسة. التوقيع أوالدفع المباشر إلى Authorization Server يقلل العبث والتسريب، لكنه لا يلغي PKCE وState وNonce والتحقق من Redirect URI.
@@ -63,3 +75,23 @@ PAR وJAR وRAR أدوات مختلفة ويمكن جمعها: RAR يصف الص
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>ماذا يضيف RAR فوق Scope عام؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> تفاصيل منظمة للعملية تسمح بقرار وConsent أدق من اسم Scope واسع.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>ماذا تفعل إذا تسرب Refresh Token؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> ابطل العائلة أوGrant، افحص Reuse، احتوِ مصدر التسريب، دوّر الأسرار عند الحاجة، وحقق في الاستخدام غير الطبيعي.</div></details></section>
 </div>
+
+## تدريب تهديد
+
+**السيناريو:** يعدّل المهاجم معاملات authorization في المتصفح أو يعيد توكينًا مسروقًا أثناء الاستجابة للحادث.
+
+**اختبار المنع:** غيّر معاملة خارج الطلب الموقّع، ثم ألغِ عائلة refresh token وحاول استخدامها مرة أخرى.
+
+**النتيجة المتوقعة:** يرفض الخادم المعلمات غير المرتبطة بالطلب المحمي، ويكشف إعادة الاستخدام ويلغي العائلة دون قبول توكين جديد.
+
+### مرجع التحقق
+
+- [RFC 9126: Pushed Authorization Requests](https://www.rfc-editor.org/rfc/rfc9126.html)
+
+## اربط النقاط ببعض
+
+ارسم sequence يوضح browser وclient وauthorization server وresource server، وحدد أي parameters محمية بـPAR/JAR وأيها تتحقق عند كل طرف. تحقق من request object issuer/audience/time/jti/signature ومنع replay. نفذ tabletop لحادث token يحدد detection وcontainment وrevocation وevidence وpostmortem.
+
+### جرّب بنفسك
+
+أعد request object نفسه وغيّر parameter خارجه وتأكد من رفض replay والتعارض.

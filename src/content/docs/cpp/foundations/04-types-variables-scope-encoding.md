@@ -6,6 +6,18 @@ description: "النوع يحدد شكل القيمة والعمليات الم�
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
+- **Scope:** النطاق: المكان اللي يقدر الكود داخله يشوف اسمًا أو متغيرًا.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
 ## النوع والمتغير
 
 النوع يحدد شكل القيمة والعمليات الممكنة عليها وحدود تمثيلها. المتغير يجمع اسمًا ونوعًا وقيمة وعمرًا ونطاق رؤية.
@@ -41,7 +53,7 @@ constexpr int daysPerWeek{7};
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الأنواع والمتغيرات والنطاق وترميز النص">
 <p class="lesson-diagram-title">خريطة مفاهيم: الأنواع والمتغيرات والنطاق وترميز النص</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>معنى القيمة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>اختيار النوع</span></div>
@@ -176,3 +188,11 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم نوعًا موثق المجال مثل <code>const std::int64_t visitors{value};</code> بعد التحقق من المدخل، بدل افتراض أن <code>int</code> يكفي.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+Reference اسم بديل لكائن موجود ولا يجوز أن تكون null بصورة عادية، بينما pointer قيمة عنوان قد تكون null وتتغير. enum class يمنع تسرب الأسماء والتحويل الضمني للأعداد. استخدم <code>std::span</code> أو range عندما تحتاج view مع حجم بدل pointer منفرد.
+
+### جرّب بنفسك
+
+اكتب API مرة بـpointer ومرة بـreference ومرة بـspan وحدد العقد الذي يعبّر عنه كل اختيار.

@@ -5,6 +5,21 @@ sidebar:
   order: 21
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Scope:** نطاق التفويض: اسم صلاحية يطلبها التطبيق أو يحصل عليها، زي orders:read لقراءة الطلبات؛ ولسه لازم نتحقق إن المستخدم يملك الطلب.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
 ## سجل جلسات قابل للإدارة
 
 لكل Session خزّن Server-side معرفًا Hash، ووقت الإنشاء وآخر استخدام ووقت الانتهاء وDevice label تقريبيًا وعنوان IP مختصرًا عند الحاجة القانونية والتشغيلية. لا تدّعِ أن User-Agent يحدد جهازًا بهوية مؤكدة؛ هو Metadata قابلة للتغيير.
@@ -65,3 +80,23 @@ SCIM بروتوكول HTTP لإدارة Users وGroups بين Identity System و
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>لماذا SCIM لا يستبدل OIDC؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> SCIM يدير دورة حياة الحسابات والمجموعات؛ OIDC يثبت هوية المستخدم عند تسجيل الدخول.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>لماذا يجب أن يكون Deprovision idempotent؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأن المزود قد يعيد الطلب؛ التكرار يجب ألا يعيد حذفًا أوTransfer أوSide effect خطيرًا.</div></details></section>
 </div>
+
+## تدريب تهديد
+
+**السيناريو:** يعطّل المسؤول مستخدمًا عبر SCIM لكن جلساته على أجهزة متعددة تبقى نشطة.
+
+**اختبار المنع:** أرسل حدث تعطيل مكررًا، ثم حاول استخدام كل جلسة وتجديد توكين وتسجيل دخول بكلمة مرور مسربة.
+
+**النتيجة المتوقعة:** المعالجة idempotent، تُلغى الجلسات والتوكينات ضمن المهلة، وتُرفض كلمة المرور وفق سياسة الخصوصية ومقاومة الإساءة.
+
+### مرجع التحقق
+
+- [RFC 7644: SCIM Protocol](https://www.rfc-editor.org/rfc/rfc7644.html)
+
+## اربط النقاط ببعض
+
+Device binding إشارة مخاطرة لا حقيقة مطلقة لأن المتصفح والجهاز يتغيران؛ اشرح للمستخدم الجلسات ووقت آخر نشاط ومكان تقريبي مع إلغاء فردي وكلي. في SCIM اختبر PATCH وgroups وidempotency وout-of-order events، واجعل deprovisioning يلغي sessions وtokens ضمن SLO مراقب.
+
+### جرّب بنفسك
+
+أرسل SCIM disable مكررًا ومتأخرًا وتأكد من الحالة النهائية والإلغاء.

@@ -5,6 +5,18 @@ sidebar:
   order: 19
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Cache:** A temporary copy that reduces waiting and repeated work.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+
+
 ## Identify the secret
 
 Database passwords, API keys, private keys, encryption keys, and signing secrets are sensitive. Public environment names and URLs usually are not. A `.env` file is a development loading mechanism, not a secret manager, and Base64 is not encryption.
@@ -37,40 +49,26 @@ After exposure, restrict use, rotate or revoke, determine scope from audit recor
 
 - [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Secrets and key management">
-<p class="lesson-diagram-title">Concept map: Secrets and key management</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Identify the secret</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Lifecycle</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Secret managers and envelope encryption</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Rotation</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Access and incident response</span></div>
-</div>
-</div>
+<details><summary>What is the first response to a leaked secret?</summary><p>Revoke or rotate it immediately, determine usage from logs, fix the source, and monitor abuse.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Identify the secret” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Database passwords, API keys, private keys, encryption keys, and signing secrets are sensitive. Public environment names and URLs usually are not. A .env file is a development loading mechanism, not a secret manager, and Base64 is not encryption. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Identify the secret” with “Lifecycle”. Why does neither replace the other in “Secrets and key management”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Identify the secret”: Database passwords, API keys, private keys, encryption keys, and signing secrets are sensitive. Public environment names and URLs usually are not. A .env file is a development loading mechanism, not a secret manager, and Base64 is not encryption. For “Lifecycle”: Every secret needs an owner, purpose, consumers, lifetime, and rotation policy. Avoid sharing one credential across many services. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Secret managers and envelope encryption”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Let the workload authenticate with least privilege and prefer short-lived or dynamic credentials. Cache only briefly in memory and never write values to logs. With envelope encryption, a KMS/HSM master key protects a data-encryption key, while the DEK encrypts application data. Store ciphertext, encrypted DEK, algorithm, and key version. Use authenticated encryption with correct nonces and contextual associated data. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Rotation” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Store a key ID/version. Create a new key, write new data with it, keep old versions readable, re-encrypt where needed, then revoke after a safe window. Destroying an encryption key may permanently destroy access to data. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An old encryption-key version leaks while some stored data still depends on it.
+
+**Negative test:** Rotate the key, encrypt new data, decrypt legacy data during the migration window, then disable the old version.
+
+**Expected result:** New writes immediately use the new key, controlled migration succeeds, and the retired key cannot perform new operations.
+
+### Verification source
+
+- [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
+
+## Connect the ideas
+
+Define a cryptoperiod for each key and use KMS/HSM for non-exportable keys or separation of duties. Encrypted backups need separate key backup and restore testing. Key destruction is a documented irreversible decision, and rotation differs from re-encryption; use dual-read/single-write during migration.
+
+### Try it yourself
+
+Rotate a key, restore an old backup, and prove required key availability matches policy.

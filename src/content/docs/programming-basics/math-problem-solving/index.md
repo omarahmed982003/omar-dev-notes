@@ -1,17 +1,30 @@
 ---
-title: الرياضيات والمنطق وحل المشكلات
-description: أساسيات الرياضيات والمنطق البولياني والتفكير الحاسوبي والخوارزميات والمخططات والتصحيح.
+title: "الرياضيات وحل المشكلات"
+description: "ابدأ بالحساب والمنطق اللي تحتاجه المسألة، ثم اكتب خطوات الحل وتتبعها. بعد كده قارن طرق الحل واتوسع في الرياضيات التطبيقية."
+sidebar:
+  order: 0
 ---
 
-يبدأ هذا القسم بالرياضيات التي تظهر في البرامج، ثم ينتقل إلى المتغيرات والمنطق وتحليل المتطلبات وPseudocode وأشجار القرار وFlowcharts والحلقات والتصحيح. ترتبط الدروس بأمثلة عملية حتى تتحول القاعدة الرياضية إلى خطوة واضحة داخل خوارزمية.
+ابدأ بالحساب والمنطق اللي تحتاجه المسألة، ثم اكتب خطوات الحل وتتبعها. بعد كده قارن طرق الحل واتوسع في الرياضيات التطبيقية.
 
-1. [الباقي والنسب والمتوسط والقوى](./01-arithmetic-foundations/)
-2. [المتغيرات والمعادلات والمنطق البولياني](./02-variables-equations-logic/)
-3. [القياس والرسوم والأعداد الأولية](./03-applied-math-graphs-primes/)
-4. [التفكير الحاسوبي وتحليل المتطلبات](./04-computational-thinking/)
-5. [الخوارزميات وPseudocode وأشجار القرار](./05-algorithms-pseudocode-decision-trees/)
-6. [المخططات الانسيابية والحلقات والتصحيح](./06-flowcharts-loops-debugging/)
+## قارن واتعمّق
 
-## طريقة مذاكرة هذا القسم
 
-لا تكتفِ بقراءة الناتج. نفّذ Trace يدويًا للقيم، ثم غيّر الحدود مثل `50` إلى `49` و`51`. ارسم مسار القرار قبل كتابة الكود، واختبر حالة صحيحة وحالة خاطئة وحالة على الحد لكل قاعدة.
+تفاصيل نمو كلفة الحل وتتبع الرسوم والبرمجة الديناميكية تبني على القوائم والحلقات والدوال. جرّب تتبّعها بعد تطبيقات البرمجة؛ البداية من مسألة صغيرة تفهمها، مش حفظ أسماء طرق الحل.
+
+## امشِ بالترتيب وطبّق كل خطوة
+
+- [النسب والمتوسط والقوى](/programming-basics/math-problem-solving/01-arithmetic-foundations/)
+- [القسمة والباقي ودقة الحساب](/programming-basics/math-problem-solving/07-division-and-precision/)
+- [المتغيرات والمعادلات والمنطق البولياني](/programming-basics/math-problem-solving/02-variables-equations-logic/)
+- [المجموعات والعلاقات ومدخلات الدالة](/programming-basics/math-problem-solving/08-sets-relations/)
+- [التفكير الحاسوبي وتحليل المتطلبات](/programming-basics/math-problem-solving/04-computational-thinking/)
+- [الخوارزميات وPseudocode وأشجار القرار](/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/)
+- [المخططات الانسيابية والحلقات والتصحيح](/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/)
+- [مقارنة الخوارزميات وطرق تنظيم البيانات](/programming-basics/08-problem-solving-algorithms/)
+- [ليه الحلقة صحيحة وبتنتهي؟](/programming-basics/math-problem-solving/13-loop-reasoning/)
+- [حوّل أنماط الحل إلى خطوات](/programming-basics/math-problem-solving/09-solution-patterns/)
+- [اختَر بين الحل الجشع وحفظ النتائج](/programming-basics/math-problem-solving/10-greedy-dynamic-programming/)
+- [القياس والوحدات والأعداد الأولية](/programming-basics/math-problem-solving/03-applied-math-graphs-primes/)
+- [المتتابعات والعد والاحتمال](/programming-basics/math-problem-solving/11-counting-probability/)
+- [ارسم العلاقات وابحث عن طريق](/programming-basics/math-problem-solving/12-graphs-and-search/)

@@ -6,6 +6,16 @@ description: "الإدخال والإخراج جزء من تصميم البرن�
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+
+
 ## قراءة البيانات وكتابة النتائج
 
 الإدخال والإخراج جزء من تصميم البرنامج، وليس مجرد سطرين. تحقق من نجاح القراءة، وافهم حدود cin وgetline، وافصل خطأ البناء عن خطأ التشغيل والمنطق.
@@ -44,7 +54,7 @@ int main() {
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الإدخال وبنية المصدر والأخطاء ومكتبة الرياضيات">
 <p class="lesson-diagram-title">خريطة مفاهيم: الإدخال وبنية المصدر والأخطاء ومكتبة الرياضيات</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Input Token</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Stream State</span></div>
@@ -133,3 +143,11 @@ std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> المترجم يتحقق من النوع لا من قيمة التشغيل؛ الجذر الحقيقي لقيمة سالبة خارج المجال ويعطي NaN.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+<code>std::from_chars</code> يفصل parsing عن locale ويعطي موضع التوقف والخطأ دون exceptions. Stream exceptions اختيارية ويجب ألا تستبدل فحص الحالة بلا خطة. قراءة الملفات تضيف open failure وEOF وpartial data، وlocale قد يغير الفاصل العشري.
+
+### جرّب بنفسك
+
+اقرأ القيمة نفسها عبر cin وfrom_chars وملف، وقارن عقود الفشل.

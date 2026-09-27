@@ -118,40 +118,43 @@ Migrations للبنية والتغييرات الحتمية. Seed ينشئ بي�
 - هل migration آمنة على بيانات كبيرة؟
 - هل النسخ الاحتياطي والاسترجاع مجرّبان؟
 
-## خريطة الدرس
+## مسائل مرتبطة بالدرس
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: تصميم المخطط والفهارس وMigrations">
-<p class="lesson-diagram-title">خريطة مفاهيم: تصميم المخطط والفهارس وMigrations</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>اجعل قاعدة البيانات تحمي قواعدها</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>الفهرس</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>EXPLAIN والقياس</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Pagination</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Migrations</span></div>
-</div>
-</div>
+<details><summary>لماذا لا نضيف index لكل عمود؟</summary><p>الفهارس تستهلك مساحة وتبطئ الكتابة؛ صممها للاستعلامات الفعلية وافحص execution plan.</p></details>
 
-## تأكد من فهمك
+<details><summary>كيف تنشر migration خطرة بأمان؟</summary><p>استخدم expand/migrate/contract: أضف المتوافق أولًا، انقل البيانات، حدّث التطبيق، ثم احذف القديم لاحقًا.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «اجعل قاعدة البيانات تحمي قواعدها» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> التطبيق قد يحتوي bug أو توجد أداة إدارية أو worker آخر. ضع القيود الأساسية في Schema أيضًا: استخدم: NOT NULL للقيم الإلزامية. UNIQUE للهوية الفريدة. CHECK للقواعد المحلية المدعومة. Foreign keys للتكامل المرجعي. أنواعًا مناسبة؛ المال غالبًا integer minor units أو DECIMAL، لا float. timestamps مع سياسة timezone واضحة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «اجعل قاعدة البيانات تحمي قواعدها» و«الفهرس». لماذا لا يغني أحدهما عن الآخر داخل موضوع «تصميم المخطط والفهارس وMigrations»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «اجعل قاعدة البيانات تحمي قواعدها»: التطبيق قد يحتوي bug أو توجد أداة إدارية أو worker آخر. ضع القيود الأساسية في Schema أيضًا: استخدم: NOT NULL للقيم الإلزامية. UNIQUE للهوية الفريدة. CHECK للقواعد المحلية المدعومة. Foreign keys للتكامل المرجعي. أنواعًا مناسبة؛ المال غالبًا integer minor units أو DECIMAL، لا float. timestamps مع سياسة timezone واضحة. أما «الفهرس»: الفهرس بنية إضافية تسرّع lookup/sort/join مقابل مساحة وكلفة كتابة. ترتيب الأعمدة مهم. يفيد هذا غالبًا queries تبدأ بـuser_id ثم status وتستفيد من created_at. ليس ضمانًا أن index لكل عمود أو كل query أفضل. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «EXPLAIN والقياس». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> افحص plan والصفوف المقدرة والفعلية إن كانت الأداة تدعم analysis. اختبر بيانات بحجم قريب من الإنتاج، وراقب slow query log وp95/p99. أسباب بطء شائعة: N+1. SELECT * ونقل بيانات غير لازمة. Pagination عميقة بـOFFSET. Functions/casts تمنع استخدام index. Missing أو low-selectivity index. Query كثيرة بدل batch. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Pagination» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Offset سهل: لكنه يزداد كلفة وقد يتغير مع إدخالات متزامنة. Keyset pagination: أفضل غالبًا للfeeds الكبيرة مع ترتيب ثابت. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+## مشروع تراكمي: مخزون لا يسمح بالبيع الزائد
+
+صمّم جداول <code>products</code> و<code>orders</code> و<code>order_items</code>، ثم نفّذ عملية شراء واحدة عبر PDO. يجب أن تحمي قاعدة البيانات القواعد التي لا يجوز كسرها حتى لو أخطأ التطبيق: كمية موجبة، مفاتيح أجنبية صحيحة، ومعرّف طلب فريد.
+
+### السيناريو المتزامن
+
+1. ابدأ Transaction واقرأ صف المنتج بالقفل المناسب لمحركك.
+2. ارفض العملية إذا كان المخزون أقل من الكمية المطلوبة.
+3. أنشئ الطلب وبنوده، ثم حدّث المخزون والتزم.
+4. عند أي خطأ نفّذ rollback كاملًا؛ لا تترك طلبًا بلا بنود أو خصمًا بلا طلب.
+
+### بيانات تحقق ثابتة
+
+~~~text
+initial_stock=5
+buyer_A_requests=4
+buyer_B_requests=4
+expected_successes=1
+expected_final_stock=1
+expected_negative_stock_rows=0
+~~~
+
+شغّل العمليتين بالتوازي عدة مرات. وجود نجاحين أو مخزون سالب يعني أن الاختبار كشف Race Condition حقيقية، لا مشكلة تجميلية.
+
+### قياس الفهرس والهجرة
+
+احفظ ناتج <code>EXPLAIN</code> لاستعلام الطلبات حسب <code>user_id, created_at</code> قبل الفهرس وبعده، وسجّل الصفوف المقدّرة أو المقروءة بدل الاكتفاء بعبارة «أصبح أسرع». طبّق migration بأسلوب expand/migrate/contract: أضف البنية المتوافقة، انقل البيانات على دفعات قابلة للاستئناف، حوّل القراءة والكتابة، ثم اترك إزالة القديم لإصدار لاحق بعد إثبات عدم استخدامه.
+
+### شروط القبول
+
+- كل قيم العميل تُمرر كـprepared parameters.
+- اختبار التكامل يثبت commit وrollback والتنافس بين مشتريين.
+- القيود تمنع الحالة المستحيلة مباشرة داخل القاعدة.
+- خطة rollback أو roll-forward مكتوبة، واسترجاع النسخة الاحتياطية مُجرّب لا مفترض.

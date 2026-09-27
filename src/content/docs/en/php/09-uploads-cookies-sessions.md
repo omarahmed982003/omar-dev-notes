@@ -5,6 +5,33 @@ sidebar:
   order: 9
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Session:** Temporary server-side state used to recognize a user across requests.
+- **Cookie:** A small value stored by the browser and sent with matching requests.
+
+
+## Three related but different mechanisms
+
+- An **upload** moves bytes from a user device to the server.
+- A **cookie** is a small browser-stored value sent with matching requests.
+- A **session** stores user state, commonly on the server while the browser holds only an identifier.
+
+For uploads, a browser-provided filename or content type is not proof. Validate the upload error, size, and server-detected MIME; generate a new name; store outside the public root when possible; and never execute uploaded content.
+
+```text
+Browser selects file → temporary upload → validation
+                     → generated safe name → private storage
+```
+
+A session cookie is like a random ticket. If an attacker steals it, they may act as the user. HTTPS, `Secure`, `HttpOnly`, `SameSite`, identifier regeneration, expiration, and server-side invalidation are core lifecycle controls rather than decorative flags.
+
+## Secure file uploads
+
 File-upload forms use POST and `enctype="multipart/form-data"`. PHP exposes metadata in `$_FILES` and initially stores data in `upload_tmp_dir`.
 
 ```php
@@ -62,40 +89,40 @@ For logout, clear `$_SESSION`, expire the session cookie using its existing para
 
 Continue with [Session security](/en/auth/01-session-security/) for fixation, hijacking, and lifecycle defenses.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Uploads, cookies, and sessions">
-<p class="lesson-diagram-title">Concept map: Uploads, cookies, and sessions</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>File-upload forms use POST and enctype=&quot;multipart/form-data&quot;</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Check UPLOAD_ERR_*, size, and server-detected MIME; generate the</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Secure requires HTTPS; HttpOnly blocks JavaScript access; SameSite</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Session data normally lives server-side while the browser</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Regenerate after authentication/privilege changes, before setting the el…</span></div>
-</div>
-</div>
+<details><summary>1. Is <code>avatar.php.jpg</code> safe because of its extension?</summary><p>No. Check upload status, size, and server-detected MIME; generate a name; keep it outside the public root; and never execute it.</p></details>
 
-## Check your understanding
+<details><summary>2. What does HttpOnly prevent, and what does it not fix?</summary><p>It blocks JavaScript from reading the cookie, reducing direct theft through XSS. It does not stop browser sending or repair the XSS vulnerability.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “File-upload forms use POST and enctype=&quot;multipart/form-data&quot;” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> File-upload forms use POST and enctype=&quot;multipart/form-data&quot;. PHP exposes metadata in $_FILES and initially stores data in upload_tmp_dir. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “File-upload forms use POST and enctype=&quot;multipart/form-data&quot;” with “Check UPLOAD_ERR_*, size, and server-detected MIME; generate the”. Why does neither replace the other in “Uploads, cookies, and sessions”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “File-upload forms use POST and enctype=&quot;multipart/form-data&quot;”: File-upload forms use POST and enctype=&quot;multipart/form-data&quot;. PHP exposes metadata in $_FILES and initially stores data in upload_tmp_dir. For “Check UPLOAD_ERR_*, size, and server-detected MIME; generate the”: Check UPLOAD_ERR_*, size, and server-detected MIME; generate the filename, store outside the public root where possible, and never execute an upload. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Secure requires HTTPS; HttpOnly blocks JavaScript access; SameSite”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Secure requires HTTPS; HttpOnly blocks JavaScript access; SameSite controls cross-site sending. SameSite=None requires Secure. These controls do not replace CSRF tokens for sensitive actions. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Session data normally lives server-side while the browser” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Session data normally lives server-side while the browser holds an identifier cookie. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Describe a complete logout</summary><p>Load the session, clear its state, expire the cookie with matching attributes, destroy server-side state, and revoke central/session records when applicable.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Why distrust the uploaded name and browser MIME type?</summary><p>Both are user-controlled; generate a safe name and validate content and size outside executable paths.</p></details>
+
+<details><summary>When should a session ID change?</summary><p>After login or privilege change to prevent fixation, while invalidating the old session correctly.</p></details>
+
+## Run and verify
+
+The local test covers CSRF tokens and origin policy only. Upload behavior requires multipart requests through a web server: exercise the preceding example with accepted/rejected files, then inspect storage and session regeneration after login.
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php tests.php security
+~~~
+
+**Extended integration exercise target:** Disallowed name, size, or MIME is rejected; accepted content moves under a generated name outside web root, and login regenerates the session identifier.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Check UPLOAD_ERR, size, and content-derived MIME; generate a new name, store outside web root, and scan or process by type. Cookies need Secure, HttpOnly, SameSite, and lifetime policy. Regenerate the session ID after login and protect state changes from CSRF; never trust extension or client name.
+
+### Try it yourself
+
+Test a double-extension file, spoofed MIME, and session identity before/after login.

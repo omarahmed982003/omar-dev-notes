@@ -1,10 +1,20 @@
 ---
-title: "13. Competitive programming and practice platforms"
+title: "Archived reference: problem-solving practice"
 sidebar:
   order: 13
-description: "Competitive programming trains constraint analysis, algorithm choice, and fast correct implementation. The judge is a measurement tool, not a substitute for understanding."
+description: "An archived copy of the practice material now integrated into the problem-solving lesson."
 tableOfContents: true
 ---
+
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Runtime:** The period when a program is actually running.
+
 
 ## Competitive programming
 
@@ -67,7 +77,7 @@ Read an editorial only after a genuine attempt, then close it and derive the met
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Competitive programming and practice platforms">
 <p class="lesson-diagram-title">Concept map: Competitive programming and practice platforms</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Problem statement</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Input and constraints</span></div>
@@ -100,3 +110,11 @@ Read an editorial only after a genuine attempt, then close it and derive the met
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Record complexity, study an alternative, reimplement later, and document the misconception that blocked the first attempt.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+Use a small template that does not hide types or errors, and enable fast I/O only when constraints justify it. Separate local diagnostics from submitted output and generate small cases comparing the fast solution with brute force. Track defect types and time-to-solution, not only problem count.
+
+### Try it yourself
+
+Write a stress test that generates small inputs and stops at the first mismatch.

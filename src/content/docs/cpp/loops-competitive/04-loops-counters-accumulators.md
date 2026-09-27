@@ -6,6 +6,15 @@ description: "الحلقة تصف تكرارًا له حالة بداية وشر
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+
+
 ## مكوّنات الحلقة
 
 الحلقة تصف تكرارًا له حالة بداية وشرط استمرار وتحديث. اختيار while أو for أو do-while يعتمد على شكل التكرار لا على التفضيل الشخصي.
@@ -63,7 +72,7 @@ for (int i = 0; i < n; ++i) {
 
 <div class="lesson-diagram" role="img" aria-label="دورة الحلقة ومكان حدوث أخطاء البداية والحد والتحديث">
 <p class="lesson-diagram-title">دورة الحلقة ومكان حدوث أخطاء البداية والحد والتحديث</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-cycle">
 <div class="diagram-node start"><span>تهيئة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>الشرط</span></div>
@@ -490,25 +499,33 @@ while (row <= 3) {
 
 ```cpp
 #include <iostream>
-#include <limits>
+#include <sstream>
+#include <string>
 
 int main() {
-    int choice{};
-    do {
+    std::string line;
+    while (true) {
         std::cout << "1. Continue\n0. Exit\nChoice: ";
-        if (!(std::cin >> choice)) {
-            std::cout << "Enter a numeric choice.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (!std::getline(std::cin, line)) {
+            if (std::cin.eof()) return 0;
+            std::cerr << "Input read failed\n";
+            return 1;
+        }
+        std::istringstream input(line);
+        int choice{};
+        char extra{};
+        if (!(input >> choice) || (input >> extra)) {
+            std::cout << "Enter one integer only.\n";
             continue;
         }
+        if (choice == 0) return 0;
         if (choice == 1) std::cout << "Continuing\n";
-        else if (choice != 0) std::cout << "Unknown choice\n";
-    } while (choice != 0);
+        else std::cout << "Unknown choice\n";
+    }
 }
 ```
 
-عند إدخال نص يفشل Extraction. تعيد `clear()` حالة Stream إلى العمل، وتحذف `ignore()` بقية السطر الفاسد، ثم تبدأ دورة جديدة. حذف إحداهما قد يجعل القائمة لا نهائية.
+بنقرأ سطرًا كاملًا بـ`getline`، وبنحلله في `istringstream`، يعني stream مصدره نص في الذاكرة. بنرفض النص الزائد زي `1x`، ونعيد الطلب بعد المدخل الخطأ من غير فحص اختيار قديم. نهاية الإدخال EOF تنهي البرنامج بنجاح؛ فشل القراءة الآخر يرجع 1. في نهج القراءة المباشرة القديم، `clear()` يمسح حالة الفشل و`ignore()` يتخلص من بقية السطر، لكن لازم تفحص EOF قبل المحاولة من جديد.
 
 ## تأكد من فهمك
 
@@ -546,3 +563,18 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لأن الحلقة الداخلية تستهلك قيم العمود حتى النهاية في الصف الأول. تهيئته داخل الحلقة الخارجية تنشئ عداد أعمدة جديدًا لكل صف.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+الدرس فائق الكثافة؛ ادرسه في ثلاث وحدات: بناء الحلقة والتتبع، ثم counters/accumulators/search، ثم nested loops وcomplexity. حلقة range-based for تمر على العناصر مباشرة. تعديل حجم حاوية أثناء المرور عليها قد يبطل الـiterator، أي الموضع الذي تعتمد عليه الحلقة؛ اقرأ التطبيق في [درس الحاويات](/cpp/advanced/01-functions-containers-references/). اختبر كل نمط قبل الانتقال للوحدة التالية.
+
+### جرّب بنفسك
+
+أنشئ ثلاثة ملفات تدريب مستقلة بدل تشغيل أمثلة الدرس كلها كبرنامج واحد.
+
+
+## اختبر عقد إدخال القائمة
+
+البرنامج الكامل بيحلل سطرًا كاملًا، فبيرفض `abc` والسطر الفارغ و`1x` والعدد خارج حدود int. المسافات حول عدد واحد مقبولة. جرّب السطور `abc` ثم `1` ثم `0`: رسالة خطأ، ثم `Continuing`، ثم خروج. اقفل الإدخال فورًا، ومرة ثانية بعد `1`: الحالتان لازم ينتهوا من غير دوران. مقتطف do-while السابق بيفترض مدخلات صحيحة. `continue` فيه لسه بيفحص شرط الحلقة، ففشل التحويل اللي يترك صفرًا ممكن يخرج بالخطأ. استخدم البرنامج الكامل لما تحتاج التعافي من المدخل غير الصحيح.
+
+احفظه باسم `menu.cpp` وترجمه بالأمر `g++ -std=c++17 -Wall -Wextra -pedantic menu.cpp -o menu`. شغّل `./menu` على Linux/macOS أو `.\menu.exe` في PowerShell.

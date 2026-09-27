@@ -5,6 +5,16 @@ sidebar:
   order: 18
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Session:** Temporary server-side state used to recognize a user across requests.
+
+
 ## Different records
 
 Operational logs support debugging, security events support detection, and an audit trail records who did what, when, and to which resource with stronger integrity and retention requirements.
@@ -27,38 +37,26 @@ Alert on patterns such as distributed failures, privilege escalation, a new key 
 
 - [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Security logging and audit trails">
-<p class="lesson-diagram-title">Concept map: Security logging and audit trails</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Different records</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Events and exclusions</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Integrity and detection</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Reference</span></div>
-</div>
-</div>
+<details><summary>What belongs in a security event?</summary><p>Actor, action, resource, outcome, time, and correlation ID without passwords, tokens, or excess sensitive data.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Different records” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Operational logs support debugging, security events support detection, and an audit trail records who did what, when, and to which resource with stronger integrity and retention requirements. Use a structured schema containing UTC time, event name, request ID, actor, tenant, action, resource, result, and a stable reason code. Prefer identifiers over unnecessary personal values and version the schema. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Different records” with “Events and exclusions”. Why does neither replace the other in “Security logging and audit trails”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Different records”: Operational logs support debugging, security events support detection, and an audit trail records who did what, when, and to which resource with stronger integrity and retention requirements. Use a structured schema containing UTC time, event name, request ID, actor, tenant, action, resource, result, and a stable reason code. Prefer identifiers over unnecessary personal values and version the schema. For “Events and exclusions”: Record login/MFA/recovery outcomes, identity and role changes, key lifecycle, authorization denial, administrative activity, exports/deletion, secret access, and policy changes. Never record passwords, raw tokens, session IDs, API secrets, or recovery codes. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Integrity and detection”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Send records to centralized restricted storage, separate write and deletion authority, define retention and backup, synchronize clocks, and detect ingestion failure or tampering. Alert on patterns such as distributed failures, privilege escalation, a new key followed by a large export, or unusual recovery. Give every alert an owner and runbook, and preserve request/trace IDs for investigation. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Reference” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> OWASP Logging Cheat Sheet Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An attacker tries to forge log entries with newline characters or flood telemetry with secrets.
+
+**Negative test:** Submit a value containing a newline and a token-shaped string, then inspect the stored event and correlation chain.
+
+**Expected result:** The event remains one structured record, secrets are redacted, and actor, time, outcome, and searchable correlation ID are present.
+
+### Verification source
+
+- [OWASP Logging Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html)
+
+## Connect the ideas
+
+Audit trails need append-only or tamper-evident storage with write/delete separation, synchronized time, and a clear timestamp source. Define retention, legal access, and SIEM export, and test log injection plus redaction. Every alert needs an owner, runbook, and noise threshold.
+
+### Try it yourself
+
+Modify a stored event or inject a newline and prove tampering is detected.

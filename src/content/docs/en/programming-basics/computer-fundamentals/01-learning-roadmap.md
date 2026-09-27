@@ -1,70 +1,36 @@
 ---
-title: "1. Learning roadmap and study rules"
-description: "Start with a clear learning loop: understand, implement, test, and review. The goal is not to memorize tools but to build a repeatable problem-solving habit."
-tableOfContents: true
+title: "Start here: from using a computer to your first program"
+description: "Learn to use the computer and files, then write, run, and explain a small program. No programming or command-line knowledge is assumed."
 sidebar:
   order: 1
+prev: false
+next: {"link":"/en/programming-basics/computer-fundamentals/01-using-your-computer/","label":"Windows, pointing, and typing"}
 ---
 
-## Overview
+Learn to use the computer and files, then write, run, and explain a small program. No programming or command-line knowledge is assumed.
 
-Start with a clear learning loop: understand, implement, test, and review. The goal is not to memorize tools but to build a repeatable problem-solving habit.
+## Prepare your workspace
 
-## Core concepts
+You need a computer with a keyboard and a user account that can save your files. Practical steps use Windows; menu names may vary with version and language. We use the Notepad text editor and an existing browser such as Edge. A phone alone is not a suitable replacement for these keyboard and file exercises. The ideas also apply to other systems, although interface steps differ.
 
-- Programming is cumulative; implement a small example before moving on.
-- Split study time between concepts, coding, and debugging.
-- A useful question includes the goal, attempted steps, exact error, and expected result.
-- Small projects expose gaps faster than passive watching.
-- Review weekly and identify one concept that still needs explanation.
+A program is a set of instructions a computer executes. First you learn to use existing programs; later you write instructions yourself.The tools already on your computer are enough to start. Additional tools are introduced when a lesson needs them.
 
-## Worked example
+## Your route
 
-Choose a tiny program such as a discount calculator. Define its inputs, rules, and outputs before selecting a language.
+Windows and typing → creating and saving files → programs and computer components → internet use → describing a solution → creating a runnable file → changing values, making decisions, and repeating steps.
 
-## Corrections and common mistakes
+Your first instructions use JavaScript inside a browser, which can already execute it. This is a short bridge to experience programming. Afterward choose C++ or PHP and learn that language’s syntax and tools from the beginning.
 
-- Do not measure progress only in hours; measure what you can explain and build.
-- Do not copy a solution before attempting to decompose the problem.
+## Study with observable results
 
-## Lesson map
+Read one step and perform it before the next. Close the explanation and repeat the task. When results differ, record what you did and what appeared instead of describing every issue as “the computer does not work.” Keep practice files in the folder you will create in the files lesson.
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Learning roadmap and study rules">
-<p class="lesson-diagram-title">Concept map: Learning roadmap and study rules</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Core concepts</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Worked example</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Start with a clear learning loop: understand, implement, test,</span></div>
-</div>
-</div>
+**Try now:** Open an existing program, write down its name, and identify what you entered and what appeared. For example, entering 2+3 in Calculator produces 5. You are not being asked to write code yet.
 
-## Check your understanding
+## When are you ready to continue?
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Why is time spent watching a poor progress metric? Give two better metrics.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Watching measures exposure, not understanding. Better evidence is explaining the idea unaided and implementing or debugging a new example.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>You have only two study hours per week. How should you avoid passive learning?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use a short block for concepts, most of the time for implementation and debugging, and finish by recording what is clear and what still needs review.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>What information makes a technical question efficient to answer?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Provide the goal, minimal reproduction, attempted steps, exact error, environment, and expected versus actual behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Design a test that proves understanding rather than memorization.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Rebuild without copying, change an important condition, predict before running, then explain the result and diagnose an intentionally introduced bug.</div></details>
-</section>
-</div>
+You can create a file, identify its location and extension, open it for editing or execution, change a small program and predict its result, and explain and repair one error. Memorizing hardware names or finishing every networking lesson is not required.
 
-## Summary
+**Check yourself:** If you know the definition of a file but cannot find the file you saved, should you move on? Repeat the saving/location exercise first; practical ability is the evidence.
 
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.
+After values and loops, continue through functions, user input, text, failures, and saving. Your practical endpoint is a [shopping list](/en/programming-basics/computer-fundamentals/16-shopping-project/) that you can close, reopen, restore, and test. The [programming section guide](/en/programming-basics/programming-practice/) lists these steps in order.

@@ -7,7 +7,7 @@ sidebar:
 
 # تشغيل PHP من التطوير إلى الإنتاج
 
-يحوّل هذا القسم الصفحات **78–86** من الملاحظات إلى مسار متكامل يشرح الأدوات والطبقات التي تحيط بتطبيق PHP بعد كتابة الكود. صححنا المعلومات المرتبطة بمحرك PHP الحديث، وفصلنا بين مسؤولية مدير الحزم وعميل HTTP وخادم الويب وPHP-FPM.
+المسار ده يشرح الأدوات والطبقات اللي بتحيط بتطبيق PHP بعد كتابة الكود. هتتعرف بالتدريج على مسؤولية مدير الحزم وعميل HTTP وخادم الويب وPHP-FPM، وإزاي تفرّق بين دور كل جزء.
 
 ## لماذا هو قسم مستقل؟
 
@@ -15,23 +15,23 @@ sidebar:
 
 ## خريطة الدروس
 
-1. [Composer وإدارة الاعتماديات](./01-composer-dependencies/) — `composer.json` و`composer.lock` و`install` و`update` وPSR-4.
-2. [cURL وعملاء HTTP](./02-curl-http-clients/) — libcurl وامتداد PHP وGuzzle والمهلات والتحقق من TLS.
-3. [OPcache وPreloading](./03-opcache-preloading/) — Opcode cache، الإعداد للإنتاج، القياس، وحدود Preloading.
-4. [ذاكرة PHP وGarbage Collection](./04-memory-garbage-collection/) — zval وReference Counting وCopy-on-write والدورات المرجعية.
-5. [PHP-FPM وإدارة العمليات](./05-php-fpm-processes/) — Master وWorkers وPools وأنماط `static` و`dynamic` و`ondemand`.
-6. [Apache وNginx وFastCGI](./06-web-servers-fastcgi/) — مسار الطلب والـMPM والـEvent Loop والاتصال بـFPM.
-7. [متغيرات البيئة وإدارة الإعدادات](./07-environment-configuration/) — `getenv()` و`$_ENV` و`.env` والأسرار.
-8. [PHP CLI وphp.ini والامتدادات](./08-cli-ini-extensions/) — SAPIs واكتشاف الإعداد وextensions.
-9. [Logging وObservability](./09-logging-observability/) — PSR-3 وstructured logs وmetrics وtraces.
-10. [الاختبارات وجودة الكود](./10-testing-quality/) — PHPUnit وdoubles وcoverage والتحليل الساكن.
-11. [Data Caching وRedis](./11-data-caching-redis/) — Cache-aside وTTL وinvalidation وstampede.
-12. [Queues وWorkers](./12-queues-workers-scheduling/) — Idempotency وretry وDLQ وscheduling.
-13. [Deployment وCI/CD وContainers](./13-deployment-cicd-containers/) — artifacts وhealth checks وrollout وrollback.
-14. [أمان الاعتماديات](./14-dependency-supply-chain-security/) — Composer audit والسياسات وplugins وCI.
-15. [Profiling وSLI/SLO وOpenTelemetry](./15-profiling-slo-opentelemetry/) — Flame Graphs وPercentiles وأهداف الخدمة وانتقال Trace Context.
-16. [المرونة وإدارة Workers](./16-resilience-workers/) — Circuit Breaker وBulkhead وBackpressure وSignals وsystemd.
-17. [Disaster Recovery واختبار الاستعادة](./17-disaster-recovery/) — RPO وRTO والنسخ والاسترجاع وGame Days.
+1. [Composer وإدارة الاعتماديات](/php-runtime/01-composer-dependencies/) — `composer.json` و`composer.lock` و`install` و`update` وPSR-4.
+2. [cURL وعملاء HTTP](/php-runtime/02-curl-http-clients/) — libcurl وامتداد PHP وGuzzle والمهلات والتحقق من TLS.
+3. [OPcache وPreloading](/php-runtime/03-opcache-preloading/) — Opcode cache، الإعداد للإنتاج، القياس، وحدود Preloading.
+4. [ذاكرة PHP وGarbage Collection](/php-runtime/04-memory-garbage-collection/) — zval وReference Counting وCopy-on-write والدورات المرجعية.
+5. [PHP-FPM وإدارة العمليات](/php-runtime/05-php-fpm-processes/) — Master وWorkers وPools وأنماط `static` و`dynamic` و`ondemand`.
+6. [Apache وNginx وFastCGI](/php-runtime/06-web-servers-fastcgi/) — مسار الطلب والـMPM والـEvent Loop والاتصال بـFPM.
+7. [متغيرات البيئة وإدارة الإعدادات](/php-runtime/07-environment-configuration/) — `getenv()` و`$_ENV` و`.env` والأسرار.
+8. [PHP CLI وphp.ini والامتدادات](/php-runtime/08-cli-ini-extensions/) — SAPIs واكتشاف الإعداد وextensions.
+9. [Logging وObservability](/php-runtime/09-logging-observability/) — PSR-3 وstructured logs وmetrics وtraces.
+10. [الاختبارات وجودة الكود](/php-runtime/10-testing-quality/) — PHPUnit وdoubles وcoverage والتحليل الساكن.
+11. [Data Caching وRedis](/php-runtime/11-data-caching-redis/) — Cache-aside وTTL وinvalidation وstampede.
+12. [Queues وWorkers](/php-runtime/12-queues-workers-scheduling/) — Idempotency وretry وDLQ وscheduling.
+13. [Deployment وCI/CD وContainers](/php-runtime/13-deployment-cicd-containers/) — artifacts وhealth checks وrollout وrollback.
+14. [أمان الاعتماديات](/php-runtime/14-dependency-supply-chain-security/) — Composer audit والسياسات وplugins وCI.
+15. [Profiling وSLI/SLO وOpenTelemetry](/php-runtime/15-profiling-slo-opentelemetry/) — Flame Graphs وPercentiles وأهداف الخدمة وانتقال Trace Context.
+16. [المرونة وإدارة Workers](/php-runtime/16-resilience-workers/) — Circuit Breaker وBulkhead وBackpressure وSignals وsystemd.
+17. [Disaster Recovery واختبار الاستعادة](/php-runtime/17-disaster-recovery/) — RPO وRTO والنسخ والاسترجاع وGame Days.
 
 :::tip[الخيط الذي يربط الدروس]
 المتصفح يتصل بخادم الويب، والخادم يمرر طلب PHP إلى FPM، والـWorker يشغّل كودًا حمّله Composer ويستفيد من OPcache، وقد يستدعي خدمة خارجية عبر cURL. الإعدادات والأسرار تصل من البيئة، والذاكرة تُدار داخل كل Worker.

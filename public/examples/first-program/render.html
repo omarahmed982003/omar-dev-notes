@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Measure a visible change</title>
+<p><span id="sample" style="font-size:16px;display:inline-block">Hello</span></p>
+<button id="grow">Grow text</button>
+<p id="output"></p>
+<script>
+function measure() {
+  const width = document.querySelector("#sample").getBoundingClientRect().width;
+  document.querySelector("#output").textContent = "Width: " + width + " CSS pixels";
+}
+function grow() {
+  document.querySelector("#sample").style.fontSize = "32px";
+  measure();
+}
+document.querySelector("#grow").addEventListener("click", grow);
+measure();
+</script>
+</html>

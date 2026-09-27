@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One input</title>
+<label>Price <input id="price"></label>
+<button id="read">Read</button>
+<p id="output"></p>
+<script>
+function readPrice() {
+  const text = document.querySelector("#price").value.trim();
+  const output = document.querySelector("#output");
+  if (text === "") {
+    output.textContent = "Enter a price.";
+    return;
+  }
+  const price = Number(text);
+  if (!Number.isFinite(price)) {
+    output.textContent = "Enter a number.";
+    return;
+  }
+  output.textContent = price;
+}
+document.querySelector("#read").addEventListener("click", readPrice);
+</script>
+</html>

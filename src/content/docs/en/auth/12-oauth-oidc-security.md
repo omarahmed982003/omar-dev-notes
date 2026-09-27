@@ -5,6 +5,24 @@ sidebar:
   order: 12
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Cache:** A temporary copy that reduces waiting and repeated work.
+- **Session:** Temporary server-side state used to recognize a user across requests.
+- **Cookie:** A small value stored by the browser and sent with matching requests.
+- **Token:** A value representing identity or permission without resending a password.
+
+
+- **Authorization:** Deciding which actions an identity may perform.
+- **CSRF:** An attack that makes a signed-in browser send an unintended request.
+- **OAuth:** A delegation protocol granting limited access without sharing a password.
+- **OIDC:** An identity layer over OAuth that identifies who signed in.
+- **Secret:** A sensitive value such as an API key or service password.
+
 # Different controls protect different boundaries
 
 | Control | Primary purpose |
@@ -87,40 +105,26 @@ Keep tokens out of URLs, history, logs, and analytics.
 
 Log issuer, client ID, flow, outcome, error code, and correlation ID, but never tokens, codes, verifiers, secrets, or assertions. Monitor invalid grants, refresh-token reuse, issuer/redirect mismatch, signature/audience failures, unusual scopes, and device-flow polling.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: OAuth and OIDC security">
-<p class="lesson-diagram-title">Concept map: OAuth and OIDC security</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Callback skeleton</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Redirect safety</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Browser architectures</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Lifecycle</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>OIDC checklist</span></div>
-</div>
-</div>
+<details><summary>Why validate state and nonce?</summary><p>State binds the response and resists CSRF; nonce binds the ID token to the flow and resists replay.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Callback skeleton” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Do not log the callback query. Use Referrer-Policy: no-referrer and avoid third-party content on callback pages. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Callback skeleton” with “Redirect safety”. Why does neither replace the other in “OAuth and OIDC security”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Callback skeleton”: Do not log the callback query. Use Referrer-Policy: no-referrer and avoid third-party content on callback pages. For “Redirect safety”: Register and exactly match complete HTTPS redirect URIs. Avoid production wildcards and open redirects. Store post-login destinations server-side or restrict them to internal paths. Bind the transaction to the expected issuer when one client supports multiple authorization servers. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Browser architectures”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A Backend for Frontend keeps tokens server-side: Protect the cookie session against CSRF and fixation. In browser-only clients, memory limits persistence; long-lived localStorage tokens are available to any JavaScript executing in that origin. Never ship a client secret to a SPA. Keep tokens out of URLs, history, logs, and analytics. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Lifecycle” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Keep access tokens short-lived and resource/audience restricted. Store refresh tokens with stronger protection. Rotate refresh tokens and detect reuse. Revoke the token family on compromise, logout, or security changes. Use revocation or introspection where immediate control is required. Consider mTLS or DPoP for sender-constrained tokens in higher-risk systems. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An attacker changes the redirect URI or replays <code>state</code> from an earlier transaction to mix login sessions.
+
+**Negative test:** Try a similar but non-identical redirect URI, a missing state, and an already-consumed state.
+
+**Expected result:** All three fail; redirect matching is exact and state is single-use and bound to the initiating browser.
+
+### Verification source
+
+- [RFC 9700: OAuth 2.0 Security Best Current Practice](https://www.rfc-editor.org/rfc/rfc9700.html)
+
+## Connect the ideas
+
+Prevent mix-up by pinning issuer and binding the response to the expected authorization server; prevent code injection by binding code to state, nonce, PKCE, and session. Sender-constrained tokens such as DPoP or mTLS reduce stolen-token value but need replay cache and key lifecycle. Never log codes or tokens.
+
+### Try it yourself
+
+Swap issuer at callback and replay a DPoP proof and confirm both fail.

@@ -5,6 +5,25 @@ sidebar:
   order: 6
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **IP:** A numeric address that identifies a device or network interface.
+- **TCP:** A transport method that checks that data arrives completely and in order.
+- **TLS:** An encryption layer that protects data while it moves between two parties.
+- **Proxy:** An intermediary that receives a request and forwards it according to rules.
+- **Worker:** A background process that takes jobs from a queue and runs them.
+
+
+- **PHP-FPM:** A process manager that runs PHP workers for a web server.
+- **FastCGI:** A protocol used to send execution work to PHP-FPM.
+- **Nginx:** A web server that serves files or forwards PHP requests.
+- **Observability:** Understanding system state from logs, metrics, and traces.
+
 # Where the web server ends and PHP begins
 
 The web server terminates HTTP/TLS, serves static files, applies request limits and routing, and forwards PHP execution. PHP-FPM executes PHP.
@@ -84,38 +103,28 @@ Unix sockets suit services on one host and need correct filesystem ownership. TC
 
 Trust forwarded IP/protocol headers only from explicitly trusted proxies. Align web-server upstream timeouts with FPM request limits and the endpoint's service objective.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Apache, Nginx, and FastCGI">
-<p class="lesson-diagram-title">Concept map: Apache, Nginx, and FastCGI</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Correcting the Apache/Nginx comparison</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Apache with FPM</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Nginx with FPM</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Unix versus TCP</span></div>
-</div>
-</div>
+<details><summary>What does a 502 between Nginx and PHP-FPM mean?</summary><p>Nginx received no valid FastCGI response; inspect the socket, service, timeout, and logs before page logic.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Correcting the Apache/Nginx comparison” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Apache is not universally “one process per connection.” Its active MPM determines the model: prefork: multiple non-threaded processes. worker: processes containing threads. event: threaded, with improved keep-alive handling. Nginx workers drive event loops and can manage many connections with few processes. That does not make application execution asynchronous: an active PHP request still occupies an FPM worker. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Correcting the Apache/Nginx comparison” with “Apache with FPM”. Why does neither replace the other in “Apache, Nginx, and FastCGI”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Correcting the Apache/Nginx comparison”: Apache is not universally “one process per connection.” Its active MPM determines the model: prefork: multiple non-threaded processes. worker: processes containing threads. event: threaded, with improved keep-alive handling. Nginx workers drive event loops and can manage many connections with few processes. That does not make application execution asynchronous: an active PHP request still occupies an FPM worker. For “Apache with FPM”: .htaccess is useful when hosting does not grant main configuration access. On a server you control, central VirtualHost configuration with AllowOverride None avoids per-directory checks and scattered policy. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Nginx with FPM”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Where possible, forwarding only the front controller /index.php reduces the execution surface. Keep .env, vendor/, and executable uploads outside the public document root. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Unix versus TCP” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Unix sockets suit services on one host and need correct filesystem ownership. TCP is common across containers or hosts and must remain on a private, firewalled network. Correctness and observability matter more than simplistic performance claims. SCRIPT_FILENAME identifies the script to PHP. A wrong value can yield “Primary script unknown” or expose unintended paths. Trust forwarded IP/protocol headers only from… Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+curl -sS -D - http://localhost/index.php -o NUL
+~~~
+
+**Success criterion:** You see application status and headers, while a static file bypasses PHP. A missing route exposes no internal filesystem path.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Define ownership of TLS, HTTP/2, compression, and static files. Tune request/response buffering, timeouts, and body limits by endpoint. Bind SCRIPT_FILENAME to trusted paths, prevent path-info confusion, and add security headers in one clear layer without conflicting duplication.
+
+### Try it yourself
+
+Test static, PHP, a large upload, and a missing path and identify the responding layer.

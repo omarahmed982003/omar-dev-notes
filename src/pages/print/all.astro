@@ -1,10 +1,12 @@
 ---
 import { getCollection, render } from 'astro:content';
+import foundationsCurriculum from '../../data/foundations-curriculum.json';
+const foundationsOrder = ['programming-basics', ...foundationsCurriculum.flatMap(group => [group.guide, ...group.lessons])];
 
 const sectionOrder = ['programming-basics', 'cpp', 'php', 'php-runtime', 'oop', 'auth', 'database'];
 const sectionNames = {
 	ar: {
-		'programming-basics': 'أساسيات البرمجة والويب',
+		'programming-basics': 'أساسيات الكمبيوتر والبرمجة والشبكات',
 		cpp: 'لغة C++',
 		php: 'لغة PHP',
 		'php-runtime': 'تشغيل PHP والإنتاج',
@@ -13,7 +15,7 @@ const sectionNames = {
 		database: 'قواعد البيانات وPDO',
 	},
 	en: {
-		'programming-basics': 'Programming and web fundamentals',
+		'programming-basics': 'Computer, programming, and networking fundamentals',
 		cpp: 'The C++ language',
 		php: 'The PHP language',
 		'php-runtime': 'PHP runtime and production',
@@ -23,12 +25,15 @@ const sectionNames = {
 	},
 };
 
+const isLesson = (id) => /\/\d[^/]*$/.test(id) && !/\/loops-competitive\/(?:02-competitive-programming|03-conditions-codeforces)$/.test(id);
 const docs = (await getCollection('docs'))
 	.map((entry) => {
 		const locale = entry.id.startsWith('en/') ? 'en' : 'ar';
 		const normalizedId = locale === 'en' ? entry.id.slice(3) : entry.id;
 		const section = normalizedId.split('/')[0];
-		return { entry, locale, section, order: entry.data.sidebar?.order ?? 999 };
+		const stage = section === 'programming-basics' ? foundationsOrder.indexOf(normalizedId) : 0;
+		const fileNumber = Number(normalizedId.split('/').at(-1)?.match(/^\d+/)?.[0] ?? 999);
+		return { entry, locale, section, stage, order: entry.data.sidebar?.order ?? fileNumber };
 	})
 	.filter((item) => sectionOrder.includes(item.section))
 	.sort((a, b) => {
@@ -36,11 +41,11 @@ const docs = (await getCollection('docs'))
 		if (localeDifference) return localeDifference;
 		const sectionDifference = sectionOrder.indexOf(a.section) - sectionOrder.indexOf(b.section);
 		if (sectionDifference) return sectionDifference;
-		return a.order - b.order || a.entry.data.title.localeCompare(b.entry.data.title);
+		return a.stage - b.stage || a.order - b.order || a.entry.data.title.localeCompare(b.entry.data.title);
 	});
 
 const renderedDocs = await Promise.all(
-	docs.map(async (item) => ({ ...item, ...(await render(item.entry)) })),
+ docs.map(async (item) => ({ ...item, ...(await render(item.entry)) })),
 );
 
 const groups = [
@@ -52,8 +57,11 @@ const groups = [
 		id: section,
 		name: sectionNames[group.locale][section],
 		items: renderedDocs.filter((item) => item.locale === group.locale && item.section === section),
+		lessonCount: docs.filter((item) => item.locale === group.locale && item.section === section && isLesson(item.entry.id)).length,
 	})),
 }));
+
+const lessonsPerLanguage = docs.filter(({ entry, locale }) => locale === 'ar' && isLesson(entry.id)).length;
 
 const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).format(new Date());
 ---
@@ -201,13 +209,13 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 		</style>
 	</head>
 	<body>
-		<main>
+		<main data-document-count={docs.length} data-total-documents={docs.length}>
 			<section class="cover" dir="rtl">
 				<div class="cover-mark">&lt;/&gt;</div>
 				<div class="eyebrow">Omar Dev Notes · Complete Edition</div>
 				<h1>مرجع البرمجة وتطوير الويب الكامل</h1>
 				<p class="cover-lead">
-					كل محتوى الدوكس الحالي في كتاب واحد: 105 دروس بالعربية والإنجليزية، من أساسيات
+					كل محتوى الدوكس الحالي في كتاب واحد: {lessonsPerLanguage} درسًا لكل لغة، بالعربية والإنجليزية، من أساسيات
 					الكمبيوتر وC++ إلى PHP والتشغيل والأمان وقواعد البيانات.
 				</p>
 				<div class="cover-meta">
@@ -228,7 +236,7 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 									<li>
 										<a href={'#' + group.locale + '-' + section.id}>{section.name}</a>
 										<span>
-											— {Math.max(section.items.length - 1, 0)}
+											— {section.lessonCount}
 											{group.locale === 'ar' ? ' درسًا' : ' lessons'}
 										</span>
 									</li>
@@ -255,7 +263,7 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 							<section class="section-cover" id={group.locale + '-' + section.id}>
 								<div class="section-number">{String(sectionIndex + 1).padStart(2, '0')}</div>
 								<div class="eyebrow">
-									{group.locale === 'ar' ? 'المسار' : 'Track'} · {Math.max(section.items.length - 1, 0)}
+									{group.locale === 'ar' ? 'المسار' : 'Track'} · {section.lessonCount}
 									{group.locale === 'ar' ? ' درسًا' : ' lessons'}
 								</div>
 								<h2>{section.name}</h2>
@@ -279,6 +287,7 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 					))}
 				</div>
 			))}
+		<span id="print-complete" hidden></span>
 		</main>
 		<script is:inline>
 			document.querySelectorAll('details.quiz-answer').forEach((details) => {

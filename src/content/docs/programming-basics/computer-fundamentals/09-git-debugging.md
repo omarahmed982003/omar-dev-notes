@@ -1,59 +1,38 @@
 ---
-title: 9. Git وDebugging والاختبارات الأساسية
-description: Repository وCommit وBranch وMerge وConflict ومنهج تشخيص الخطأ وبناء اختبارات تمنع رجوعه.
+title: "اقرأ رسالة الخطأ واختبر نتيجتك"
+description: "اقرأ رسالة الخطأ واختبر نتيجتك"
 sidebar:
-  order: 9
+  order: 16
+prev: {"link":"/programming-basics/computer-fundamentals/08-first-program/","label":"اكتب أول برنامج واحفظه وشغّله"}
+next: {"link":"/programming-basics/computer-fundamentals/09-values-and-calculations/","label":"القيم والمتغيرات والحساب"}
 ---
 
-## Git يحفظ تاريخ Snapshots
+هتتعرف على ثلاث أفكار تساعدك أثناء التعلم: فهم الخطأ، وتجربة النتيجة، وحفظ تاريخ التغييرات. مش مطلوب تثبيت Git أو حفظ أوامره في هذه المرحلة.
 
-Repository تحتوي تاريخ المشروع. Working Tree هي الملفات الحالية، Staging Area تختار ما يدخل Commit، وCommit لقطة لها Parent ورسالة وهوية. Git لا يفهم “ميزة” تلقائيًا؛ أنت تختار تغييرات مترابطة وتكتب رسالة تشرح السبب.
+## الخطأ معلومة نستخدمها
 
-```text
-Working tree -- git add --> Index -- git commit --> Repository history
-```
+Debugging يعني البحث عن سبب سلوك غير متوقع وإصلاحه. ابدأ بالسؤال: ماذا توقعت وماذا ظهر؟ لا تغير عدة أشياء معًا؛ وقتها لن تعرف أي تغيير أصلح المشكلة.
 
-`git status` أول أمر قبل التعديل وبعده. استخدم `git diff` لمراجعة غير المضاف و`git diff --staged` لمراجعة ما سيُحفظ.
+في مثال الجمع `2 + 3` المتوقع5. لو كتبت `2 - 3` فالبرنامج يعمل ويعرض-1. ده خطأ منطقي: التعليمات مكتوبة بصياغة صحيحة لكنها لا تحقق المطلوب. الحل إعادة علامة الجمع، وليس إعادة تثبيت المتصفح.
 
-## Branch وMerge
+## جرّب قراءة رسالة خطأ واحدة
 
-Branch اسم متحرك يشير إلى Commit. إنشاء Branch رخيص لأنه لا ينسخ المشروع كاملًا. Merge يجمع تاريخين، وFast-forward يحرك المؤشر عندما لا يوجد تفرع. Rebase يعيد تشغيل Commits فوق Base جديدة ويغير هوياتها؛ لا تعِد كتابة تاريخ مشترك بلا تنسيق.
+اعمل نسخة من `hello.html` باسم `error-practice.html`. في النسخة فقط احذف علامة التنصيص الأخيرة من `"Hello!"`، واحفظ وأعد التحميل. قد ترى صفحة فارغة لأن صياغة JavaScript غير صحيحة؛ هذا Syntax error، أي خطأ في قواعد الكتابة.
 
-## Conflict
+في Edge أو Chrome على Windows افتح أدوات المطور من قائمة المتصفح ثم More tools → Developer tools، واختر Console. هذه لوحة تعرض رسائل البرنامج والأخطاء؛ مش مطلوب كتابة أو لصق أي أوامر فيها. راجع الرسالة التي تشير إلى ملفك وسطره؛ النص الدقيق يختلف حسب المتصفح. أعد علامة التنصيص واحفظ وأعد التحميل، فتظهر Hello! من جديد. أغلق اللوحة بعد التجربة.
 
-Conflict لا يعني أن Git تعطل؛ يعني أنه لا يستطيع اختيار النتيجة الصحيحة. اقرأ الطرفين والسياق، ابنِ النسخة المقصودة، شغّل الاختبارات، ثم أضف الملف المكتمل. لا تحذف Markers فقط دون فهم السلوك.
+لو طلبت مساعدة، أرسل اسم الملف والسطر ونص الخطأ والمتوقع وما جرّبته. راجع المحتوى قبل إرساله حتى لا تشارك بيانات شخصية. احتفظ بالأصل السليم لتقدر تقارن بالنسخة التجريبية.
 
-## Remote وPull Request
+## الاختبار سؤال له نتيجة متوقعة
 
-Remote نسخة أخرى من Repository. `fetch` يجلب المراجع دون دمج، بينما `pull` يجلب ثم يدمج أوRebase حسب الإعداد. Pull Request مساحة مراجعة وليست بديلًا عن Commits واضحة واختبارات ناجحة.
+Testing يعني تجربة البرنامج للتحقق من سلوكه. مش لازم تبدأ بمكتبة اختبارات. في `hello.html` غيّر الرسالة إلى `Test 1`، واحفظ وأعد التحميل. المتوقع ظهور نفس النص. أعد الرسالة الأولى واختبرها من جديد. المقارنة بين المتوقع والفعلي اختبار يدوي مفهوم؛ لاحقًا نضيف حالات الأعداد والحدود.
 
-لا تضع Passwords أوAPI Keys في Git. حذفها من Commit لاحق لا يبطل السر؛ دوّره ونظف التاريخ عند الحاجة.
+نجاح حالة واحدة لا يثبت صحة كل الحالات. وبعد إصلاح خطأ، أعد الحالة التي كشفته؛ هذا يمنعك من نسيانها عند تعديل لاحق. كتابة اختبارات آلية وأنواعها موضوع يأتي بعد تعلم الدوال وتنظيم البرامج.
 
-## Debugging بمنهج علمي
+## لماذا يوجد Git؟
 
-1. أعد المشكلة بمدخل ثابت.
-2. اكتب Expected وActual.
-3. حدد آخر نقطة كانت صحيحة.
-4. اجمع Evidence من Logs وDebugger وTests.
-5. ضع فرضية واحدة واختبرها بتغيير صغير.
-6. أصلح السبب وأضف Regression Test.
+Git أداة تحفظ تاريخ تغييرات ملفات المشروع بحيث تراجع ماذا تغير وتعود لنسخة سابقة عند الحاجة. الحفظ في المحرر يحدث الملف الحالي؛ Git يمكنه الاحتفاظ بنقاط مختارة من تاريخه. GitHub خدمة يمكن استضافة مشاريع Git عليها؛ الأداة والخدمة مش نفس الشيء.
 
-`git bisect` يستطيع البحث الثنائي في التاريخ إذا عرفت Commit جيدة وأخرى سيئة، بشرط وجود طريقة تميّز النجاح من الفشل.
+Git لا يضمن أن الكود صحيح ولا يستبدل النسخة الاحتياطية المستقلة. لا تدخل كلمات السر في تاريخ المشروع. يكفي تعرف فائدته الآن؛ الفروع والدمج والأوامر تتعلمها عندما تبني مشروعًا يحتاج إدارة تغييراته.
 
-## أنواع الاختبارات
-
-- Unit: منطق صغير سريع ومعزول.
-- Integration: تفاعل مكونات مثل Database أوFilesystem.
-- End-to-end: رحلة مستخدم عبر النظام.
-- Regression: يثبت أن عطلًا معروفًا لن يعود.
-
-الاختبار الجيد يرتب Arrange–Act–Assert، وله سبب فشل واحد واضح، ولا يعتمد على وقت أوشبكة عشوائية بلا تحكم.
-
-## تأكد من فهمك
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين Working Tree وStaging Area؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Working Tree كل التعديلات الحالية، والـStaging Area الاختيار المحدد للـCommit التالي.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>ماذا تفعل بعد حل Conflict وقبل Commit؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> راجع النتيجة كاملة، شغّل الاختبارات، تأكد من غياب Markers، ثم Stage للملف المقصود.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>لماذا لا يكفي حذف Secret من آخر Commit؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> القيمة قد تبقى في التاريخ والنسخ والـLogs؛ يجب تدويرها ثم معالجة التاريخ والانتشار.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>ما قيمة Regression Test؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> يعيد الحالة التي كشفت العطل ويفشل إذا عاد السبب في تغيير لاحق.</div></details></section>
-</div>
+**راجع نفسك:** قبل الإصلاح كانت2−3=-1، وبعده2+3=5. ماذا تسجل؟ الخطأ كان اختيار عملية خاطئة، والتغيير إعادة +، والدليل ظهور5. حفظ نسخة باسم «نهائي جدًا2» لا يشرح هذا التاريخ مثل سجل تغييرات منظم.

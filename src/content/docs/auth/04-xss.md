@@ -5,6 +5,19 @@ sidebar:
   order: 4
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Sanitizer:** أداة بتحلل HTML غير موثوق وبتشيل الوسوم والخصائص غير المسموحة، مع الحفاظ على التنسيق المسموح؛ ودي غير أدوات فحص ذاكرة C++.
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+- **Cookie:** قيمة صغيرة يحفظها المتصفح ويرسلها مع الطلبات المناسبة.
+- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
 ## ما XSS؟
 
 تحدث Cross-Site Scripting عندما تُفسر بيانات غير موثوقة ككود داخل المتصفح.
@@ -80,40 +93,26 @@ message.textContent = untrustedValue;
 
 CSP طبقة تقليل ضرر وليست بديلًا عن encoding وsanitization.
 
-## خريطة الدرس
+## سيناريو أمني
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الحماية من XSS">
-<p class="lesson-diagram-title">خريطة مفاهيم: الحماية من XSS</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>ما XSS؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>HTML text وattributes</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>URL context</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>JavaScript وJSON</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>عندما تريد السماح بـHTML</span></div>
-</div>
-</div>
+<details><summary>أين نعمل encoding؟</summary><p>وقت الإخراج وبحسب السياق: HTML أو attribute أو URL أو JavaScript؛ encoding واحد لا يصلح لكل مكان.</p></details>
 
-## تأكد من فهمك
+## تدريب تهديد
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «ما XSS؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تحدث Cross-Site Scripting عندما تُفسر بيانات غير موثوقة ككود داخل المتصفح. Reflected: ترجع payload مباشرة في نفس الاستجابة، مثل قيمة بحث. Stored: تُحفظ في قاعدة البيانات ثم تُعرض لضحايا آخرين. DOM-based: JavaScript في الصفحة ينقل بيانات إلى sink خطير مثل innerHTML. النتائج قد تشمل سرقة بيانات متاحة للصفحة، تنفيذ أفعال بحساب المستخدم، تعديل الواجهة أو التصيد. HttpOnly يحمي قراءة Cookie فقط، ولا يمنع تنفيذ request من… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «ما XSS؟» و«HTML text وattributes». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الحماية من XSS»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «ما XSS؟»: تحدث Cross-Site Scripting عندما تُفسر بيانات غير موثوقة ككود داخل المتصفح. Reflected: ترجع payload مباشرة في نفس الاستجابة، مثل قيمة بحث. Stored: تُحفظ في قاعدة البيانات ثم تُعرض لضحايا آخرين. DOM-based: JavaScript في الصفحة ينقل بيانات إلى sink خطير مثل innerHTML. النتائج قد تشمل سرقة بيانات متاحة للصفحة، تنفيذ أفعال بحساب المستخدم، تعديل الواجهة أو التصيد. HttpOnly يحمي قراءة Cookie فقط، ولا يمنع تنفيذ request من… أما «HTML text وattributes»: ضع attribute بين quotes. لا تسمح للمستخدم بتحديد اسم attribute أو event handler. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «URL context». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> رمّز قيمة المعامل بـrawurlencode ثم رمّز الرابط كـHTML عند إدخاله في attribute: لا يكفي encoding لمنع javascript: scheme. حلّل URL وطبّق allow-list للبروتوكول والمضيف عند الروابط الخارجية. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «JavaScript وJSON» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الأفضل عدم إدخال نصوص مباشرة في inline JavaScript. إذا لزم نقل بيانات، استخدم JSON بخصائص hex: في DOM استخدم textContent بدل innerHTML للنص: وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+**السيناريو:** يحفظ المهاجم تعليقًا يحتوي وسمًا أو معالج حدث كي ينفّذ JavaScript عند فتح الصفحة لاحقًا.
+
+**اختبار المنع:** أدخل نصًا يحوي <code>&lt;script&gt;</code> ومحاولة داخل سمة HTML، ثم اعرضه في كل سياق تستخدمه الصفحة.
+
+**النتيجة المتوقعة:** يظهر النص كنص فقط، ولا ينفذ أي حدث، وتظل سياسة CSP طبقة دفاع إضافية لا بديلًا للترميز حسب السياق.
+
+### مرجع التحقق
+
+- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+
+## اربط النقاط ببعض
+
+DOM XSS يبدأ من source غير موثوق يصل إلى sink مثل innerHTML أو eval؛ output encoding على الخادم وحده لا يكفي. Trusted Types يقلل sinks الخطرة في المتصفحات الداعمة، وCSP قوية تستخدم nonces أو hashes بدل allowlist واسعة. لا تخلط sanitization للسماح بـHTML مع encoding لعرض النص.
+
+### جرّب بنفسك
+
+تتبع قيمة من location إلى DOM sink ثم استبدل sink أو طبق policy.

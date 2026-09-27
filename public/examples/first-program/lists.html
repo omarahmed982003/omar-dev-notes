@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Lists and functions</title>
+<pre id="output"></pre>
+<script>
+const prices = [10, 20, 30];
+
+function discountedPrice(price, percent) {
+  return price * (1 - percent / 100);
+}
+
+let total = 0;
+for (const price of prices) {
+  total = total + discountedPrice(price, 10);
+}
+
+document.querySelector("#output").textContent = total;
+</script>
+</html>

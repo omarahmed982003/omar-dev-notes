@@ -1,9 +1,30 @@
 ---
-title: 11. Real-time communication and webhooks
-description: Polling, long polling, SSE, WebSockets, webhooks, and choosing the smallest suitable model.
+title: "Poll or receive a server stream"
+description: "Poll or receive a server stream"
 sidebar:
-  order: 12
+  order: 27
+prev: {"link":"/en/programming-basics/33-browser-isolation/","label":"Resource loading and window isolation"}
+next: {"link":"/en/programming-basics/30-webhook-delivery/","label":"Receive a webhook and handle repeated delivery"}
 ---
+
+
+## Run polling, then streaming
+
+In the [lab](/en/programming-basics/32-local-network-lab/), open Network:
+
+1. Click Poll three times: request, read time, wait briefly, repeat. Expect three times and three `/proxy-clock` requests.
+2. Clear the Network display and click Receive three events. **SSE, Server-Sent Events**, carries text events from server to browser: one `/proxy-events` request contains events1,2,3 before the example closes it.
+3. Browser `EventSource` opens the channel; `onmessage` receives events and `close()` stops it. Without explicit closure it may reconnect after interruption. The complete client and server are in the downloadable lab file.
+
+**Compare:** polling asks repeatedly even without new data; streaming keeps a connection. WebSocket, not implemented in this exercise, permits both peers to send. [SSE explanation](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
+
+## Before the details
+
+Choose an update channel by data direction, frequency, and tolerated delay. Polling, SSE (Server-Sent Events, an HTTP-based server-to-browser text-event stream), WebSocket, and webhooks are not a ranking; each fits a different communication shape.
+
+**Polling** asks periodically; **long polling** holds a request until an event or deadline and then repeats. **SSE, Server-Sent Events**, streams text events from server to browser. **WebSocket** is a persistent bidirectional message channel. A **webhook** is a server request notifying another server about an event.
+
+**Heartbeat** messages test connection liveness. **Backpressure** slows production when consumption cannot keep up. **Horizontal scaling** adds service instances to share work.
 
 ## Communication models
 
@@ -19,6 +40,8 @@ WebSockets add connection state, heartbeat, backpressure, and scaling concerns. 
 
 ## Server-Sent Events
 
+The following fragment sends one event from a PHP (a programming language commonly used for server-side web processing) handler after its opening tag; it is not a complete streaming server. event names the event, data supplies content, and a blank line ends the event. X-Accel-Buffering asks Nginx not to buffer this response. flush attempts to push output, but other buffers and proxies also matter. The browser's **EventSource** interface normally implements reconnection; the server must retain data needed to honor Last-Event-ID.
+
 ```php
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
@@ -29,25 +52,7 @@ echo 'data: ' . json_encode(['id' => 42, 'status' => 'paid']) . "\n\n";
 flush();
 ```
 
-Browsers reconnect automatically. Event IDs and `Last-Event-ID` can support resume. Long streams can occupy FPM workers, so validate the server architecture and timeouts.
-
-## Webhook receiver
-
-1. Read the raw body.
-2. Verify an HMAC signature and timestamp.
-3. Reject replay outside a time window.
-4. persist the event ID to deduplicate.
-5. Acknowledge quickly and enqueue heavy work.
-
-```php
-$expected = hash_hmac('sha256', $timestamp . '.' . $rawBody, $secret);
-if (!hash_equals($expected, $signature)) {
-    http_response_code(401);
-    exit;
-}
-```
-
-Senders retry failed deliveries, so idempotency is required.
+Browsers reconnect automatically. Event IDs and `Last-Event-ID` can support resume. Long streams can occupy FPM (FastCGI Process Manager, managing PHP request workers) workers, so validate the server architecture and timeouts.
 
 ## Operations
 
@@ -56,38 +61,15 @@ Senders retry failed deliveries, so idempotency is required.
 - Authenticate connections and authorize every channel or event.
 - Monitor reconnect rate, queue lag, and delivery failures.
 
-## Lesson map
+## Practical problems
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Real-time communication and webhooks">
-<p class="lesson-diagram-title">Concept map: Real-time communication and webhooks</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Communication models</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Server-Sent Events</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Webhook receiver</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Operations</span></div>
-</div>
-</div>
+<details><summary>When is SSE simpler than WebSocket?</summary><p>When a browser only needs a continuing server-to-client stream. SSE is one-way HTTP (Hypertext Transfer Protocol, the rules for web requests and responses) and includes reconnection behavior.</p></details>
 
-## Check your understanding
+<details><summary>How should a webhook receiver authenticate the sender?</summary><p>Verify a signature over the raw body with a secret, check the timestamp window, and deduplicate by event ID.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Communication models” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> | Pattern | Direction | Good fit | |---|---|---| | Polling | Client asks periodically | Infrequent updates and simplicity | | Long polling | A request waits for an event | Broad compatibility and lower latency | | SSE | Server → browser | Text notifications and feeds | | WebSocket | Persistent two-way | Chat, games, collaboration | | Webhook | Server → server | Notify another system | WebSockets add connection… In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Communication models” with “Server-Sent Events”. Why does neither replace the other in “Real-time communication and webhooks”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Communication models”: | Pattern | Direction | Good fit | |---|---|---| | Polling | Client asks periodically | Infrequent updates and simplicity | | Long polling | A request waits for an event | Broad compatibility and lower latency | | SSE | Server → browser | Text notifications and feeds | | WebSocket | Persistent two-way | Chat, games, collaboration | | Webhook | Server → server | Notify another system | WebSockets add connection… For “Server-Sent Events”: Browsers reconnect automatically. Event IDs and Last-Event-ID can support resume. Long streams can occupy FPM workers, so validate the server architecture and timeouts. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Webhook receiver”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Read the raw body. Verify an HMAC signature and timestamp. Reject replay outside a time window. persist the event ID to deduplicate. Acknowledge quickly and enqueue heavy work. Senders retry failed deliveries, so idempotency is required. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Operations” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Limit connection count, message rate, and size. Use heartbeat and detect dead peers. Authenticate connections and authorize every channel or event. Monitor reconnect rate, queue lag, and delivery failures. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>Why must webhook handling be idempotent?</summary><p>A sender may retry after a timeout even if processing succeeded. Repeated delivery must not repeat the business effect.</p></details>
+
+
+## Next step
+
+After completing this practice, continue with [Receive a webhook and handle repeated delivery](/en/programming-basics/30-webhook-delivery/).

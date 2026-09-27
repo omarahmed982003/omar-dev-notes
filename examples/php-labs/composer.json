@@ -1,0 +1,15 @@
+{
+  "name": "omar/lesson-labs",
+  "description": "Executable examples for Omar Programming Library",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.4",
+    "ext-pdo": "*",
+    "ext-pdo_sqlite": "*",
+    "ext-sodium": "*",
+    "ext-mbstring": "*"
+  },
+  "autoload": { "psr-4": { "Lessons\\": "src/" } },
+  "scripts": { "test": "php tests.php" }
+}

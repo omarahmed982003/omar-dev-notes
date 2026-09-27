@@ -6,6 +6,17 @@ description: "Text encoding, conversions, and math functions often meet in real 
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **Unicode:** A standard that assigns consistent numbers to characters and symbols.
+- **UTF-8:** A common encoding that stores Unicode numbers as bytes.
+
+
 ## Characters, text, and encodings
 
 Text encoding, conversions, and math functions often meet in real problems. Know what a value represents before casting or calculating.
@@ -35,7 +46,7 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Text encoding, casts, and math">
 <p class="lesson-diagram-title">Concept map: Text encoding, casts, and math</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Unicode code point</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Code units</span></div>
@@ -99,3 +110,11 @@ Prefer redesigning the types over scattering casts. Every narrowing conversion n
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Reject it or use complex arithmetic when required; do not disguise NaN as a valid result.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+The C++ standard library does not provide complete grapheme processing; use a Unicode library for case folding, normalization, or segmentation. <code>dynamic_cast</code> needs a polymorphic base and RTTI, while C-style casts hide several conversion kinds. Inspect integer promotions before arithmetic on small types.
+
+### Try it yourself
+
+Test Arabic and emoji text and compare bytes, code points, and graphemes with a suitable library.

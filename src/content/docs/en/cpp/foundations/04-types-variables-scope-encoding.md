@@ -6,6 +6,19 @@ description: "A type defines representation, valid operations, and range. A vari
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Unicode:** A standard that assigns consistent numbers to characters and symbols.
+- **UTF-8:** A common encoding that stores Unicode numbers as bytes.
+- **Scope:** The region of code in which a name or variable is visible.
+- **Boolean:** A logical value with only two states: true or false.
+
+
 ## Types and variables
 
 A type defines representation, valid operations, and range. A variable combines a name, type, value, lifetime, and visibility.
@@ -39,7 +52,7 @@ constexpr int daysPerWeek{7};
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Types, variables, scope, and text encoding">
 <p class="lesson-diagram-title">Concept map: Types, variables, scope, and text encoding</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Meaning of the value</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Choose the type</span></div>
@@ -150,3 +163,11 @@ The output is `2` then `10`. Avoid unnecessary shadowing because it makes review
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> After input validation, use a documented-width type such as <code>const std::int64_t visitors{value};</code> instead of assuming <code>int</code> is wide enough.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+A reference aliases an existing object and is not normally null, while a pointer is an address value that can be null or reassigned. enum class avoids name leakage and implicit integer conversion. Prefer a sized view such as <code>std::span</code> when passing contiguous data.
+
+### Try it yourself
+
+Write one API with pointer, reference, and span variants and state each contract.

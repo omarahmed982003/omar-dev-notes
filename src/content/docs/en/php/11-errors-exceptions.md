@@ -5,6 +5,39 @@ sidebar:
   order: 11
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## Failures do not all mean the same thing
+
+A programming bug, invalid user input, an unavailable dependency, and an expected domain rejection such as “insufficient funds” need different handling. A giant `try/catch` that turns everything into one message hides the cause and often returns the wrong HTTP status.
+
+An exception says a function cannot complete its normal result. `throw` leaves the current path and searches for a compatible `catch` until the application's global boundary.
+
+```php
+function withdraw(int $balanceCents, int $amountCents): int
+{
+    if ($amountCents <= 0) {
+        throw new InvalidArgumentException('Amount must be positive');
+    }
+
+    if ($amountCents > $balanceCents) {
+        throw new DomainException('Insufficient funds');
+    }
+
+    return $balanceCents - $amountCents;
+}
+```
+
+Do not catch an exception merely to return `null` and erase evidence. Catch it where code can make a real decision: perform a safe retry, map a domain failure to a response, or log protected detail and return a generic message. Use `finally` for cleanup that must happen on both success and failure.
+
 ## Error or Exception?
 
 Both `Exception` and `Error` implement `Throwable`. Exceptions often represent operational or domain failure; `Error` includes engine, type, and programming failures that should not all be converted into success.
@@ -67,40 +100,38 @@ The global handler is a safety net, not a replacement for handling expected fail
 - Redact passwords, tokens, and sensitive bodies.
 - Retry only transient failures and only with idempotent behavior.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Errors and exceptions">
-<p class="lesson-diagram-title">Concept map: Errors and exceptions</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Error or Exception?</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Domain exceptions</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Reporting policy</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Global boundary</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Rules</span></div>
-</div>
-</div>
+<details><summary>1. When does DomainException fit?</summary><p>When input is technically valid but a domain rule rejects the action, such as withdrawing more than the balance.</p></details>
 
-## Check your understanding
+<details><summary>2. What is wrong with <code>catch (Throwable) { return null; }</code>?</summary><p>It hides bugs and infrastructure failure behind ordinary absence. Handle known cases and let a global boundary log unexpected failure safely.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Error or Exception?” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Both Exception and Error implement Throwable. Exceptions often represent operational or domain failure; Error includes engine, type, and programming failures that should not all be converted into success. finally always runs and is useful for releasing resources. Never leave a catch block empty. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Error or Exception?” with “Domain exceptions”. Why does neither replace the other in “Errors and exceptions”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Error or Exception?”: Both Exception and Error implement Throwable. Exceptions often represent operational or domain failure; Error includes engine, type, and programming failures that should not all be converted into success. finally always runs and is useful for releasing resources. Never leave a catch block empty. For “Domain exceptions”: The type carries machine-readable meaning that an outer layer can map to 409 or another contract. Do not branch on message text. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Reporting policy”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Enable E_ALL and visible errors in development. In production keep display_errors=Off, log_errors=On, and return a generic message plus request ID. A browser stack trace can expose paths, secrets, and SQL. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Global boundary” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The global handler is a safety net, not a replacement for handling expected failures close to their context. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Where does finally help?</summary><p>For cleanup required on success and failure, such as closing a file, without replacing the original exception.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Where should an exception be caught?</summary><p>At a layer able to recover, translate it into a useful result, or log and terminate at a boundary.</p></details>
+
+<details><summary>Why not show a stack trace to users?</summary><p>It may expose paths, secrets, and internals; return a safe message and log details privately.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php error-lab.php
+~~~
+
+**Success criterion:** An expected failure becomes an explicit domain result; an unexpected failure reaches the central handler once with a correlation ID and is not swallowed.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+<code>Throwable</code> covers Error and Exception, while finally performs cleanup even with return or throw. Convert warnings only at boundaries whose contract you understand. In long-running workers, handling must prevent process loss or next-message contamination according to policy, with one log event.
+
+### Try it yourself
+
+Test success, domain failure, and unexpected error and prove cleanup runs.

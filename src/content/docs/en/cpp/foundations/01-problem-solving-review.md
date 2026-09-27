@@ -6,6 +6,16 @@ description: "Before writing C++, stabilize the solution logic: define inputs an
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **Loop:** A structure that repeats instructions according to a condition.
+
+
 ## Problem analysis before code
 
 Before writing C++, stabilize the solution logic: define inputs and output, write the steps, model decisions, and dry-run the algorithm. The language implements the reasoning; it does not replace it.
@@ -35,7 +45,7 @@ END IF
 
 <div class="lesson-diagram" role="img" aria-label="From problem analysis to a verifiable result">
 <p class="lesson-diagram-title">From problem analysis to a verifiable result</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node start"><span>Start</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node input"><span>Read input</span></div>
@@ -94,6 +104,83 @@ Partition inputs into equivalent classes instead of choosing only comfortable sa
 
 When investigating a logic error, preserve the failing input, state the expected result, record the actual result, and trace only the variables that influence the wrong decision. Change one hypothesis at a time; random edits destroy evidence.
 
+
+## Apply the problem-solving method on practice platforms
+
+## Competitive programming
+
+Competitive programming trains constraint analysis, algorithm choice, and fast correct implementation. The judge is a measurement tool, not a substitute for understanding.
+
+## Statements, constraints, and complexity
+
+- Read input, output, and constraints before samples.
+- Translate constraints into acceptable complexity; n=10^5 usually rules out O(n²).
+- Solve samples by hand, then add custom cases.
+- After Wrong Answer, inspect boundaries, types, rounding, and interpretation.
+- State time and memory complexity after solving.
+
+## Example: Elephant and ceiling division
+
+```cpp
+// Elephant: minimum moves of length at most 5
+int moves = (distance + 4) / 5; // integer ceiling
+```
+
+### Complete runnable submission
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    int distance{};
+    if (!(std::cin >> distance) || distance < 0) {
+        return 1;
+    }
+
+    const int moves = (distance + 4) / 5;
+    std::cout << moves << '\n';
+}
+```
+
+For input `12`, the output is `3`: two moves of length 5 and a final move of length 2. Time and auxiliary memory are both `O(1)`. The program prints no prompt such as `Enter distance` because an online judge compares output exactly. The validation helps during local use, although the original problem normally guarantees valid input.
+
+## The Online Judge workflow
+
+The judge compiles submitted source code with a documented compiler and options, runs the executable against hidden tests under time and memory limits, and compares actual output with expected output through a checker. `Compilation Error` means the source did not build. `Wrong Answer` means it ran but produced incorrect output. `Runtime Error` covers failures such as invalid access or division by zero. `Time Limit Exceeded` and `Memory Limit Exceeded` identify exhausted resource limits.
+
+## Samples, submissions, and random changes
+
+- Passing samples does not prove correctness.
+- Do not start with maximum difficulty; build a consistent practice ladder.
+
+## Platforms and problem patterns
+
+Codeforces emphasizes contests, ratings, and broad problem sets. LeetCode often emphasizes interview-oriented data-structure patterns. Begin with implementation, arithmetic, and conditions, then add loops and containers. After each problem record the idea, the bug, complexity, and a missed test case.
+
+The practice set covers: ceiling division in 617A and 1A, `min` and remainder in 581A, character handling in 281A, parity in 4A and 959A, formula derivation in 486A, three-way comparison in 835A, guaranteed outcomes in 1173A, odd/even block mapping in 318A, and geometric case analysis in 459A.
+
+Read an editorial only after a genuine attempt, then close it and derive the method again on a different example.
+
+## Lesson map
+
+<div class="lesson-diagram" role="img" aria-label="Concept map: Competitive programming and practice platforms">
+<p class="lesson-diagram-title">Concept map: Competitive programming and practice platforms</p>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>Problem statement</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Input and constraints</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node process"><span>Algorithm and complexity</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node decision"><span>Submit to the judge</span></div>
+<span class="diagram-arrow" aria-hidden="true">→</span>
+<div class="diagram-node output"><span>Verdict, diagnosis, and correction</span></div>
+</div>
+</div>
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">
@@ -114,3 +201,11 @@ When investigating a logic error, preserve the failing input, state the expected
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Test each position as largest, ties, negatives, and type boundaries, with expected results written first.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+After drawing the solution, state a loop invariant and a termination argument instead of relying on examples. Convert the division example into a complete C++ program with zero, negative, and boundary tests, then compare its trace with the prediction.
+
+### Try it yourself
+
+Introduce a compiling logic defect and prove a boundary test catches it.

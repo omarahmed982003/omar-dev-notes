@@ -1,15 +1,22 @@
 ---
-title: 4. URL والمنافذ وHTTP
+title: "عنوان الويب والمنافذ وبروتوكول HTTP"
 description: تشريح الرابط، معنى Port وSocket، نطاقات المنافذ، وبروتوكول HTTP.
 sidebar:
-  order: 4
+  order: 12
+prev: {"link":"/programming-basics/20-transport-diagnostics/","label":"إغلاق الاتصال وتشخيص حجم الحزم"}
+next: {"link":"/programming-basics/21-url-encoding/","label":"الحروف والرموز داخل عنوان الويب"}
 ---
+
+
+## قبل التفاصيل
+
+قبل التفاصيل: الرابط يحدد **ماذا** تريد و**أين** تطلبه، والمنفذ يحدد البرنامج الذي سيستقبل الاتصال على الجهاز. أما HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب) فيحدد شكل الحوار بين العميل والخادم.
 
 ## HTTP
 
-**HTTP = Hypertext Transfer Protocol**، وهو بروتوكول طبقة التطبيق الذي يحدد طريقة تبادل رسائل request وresponse حول resources. HTTP ليس اتصال الشبكة نفسه؛ يعمل فوق وسائل نقل مثل TCP أو QUIC.
+**HTTP = Hypertext Transfer Protocol**، يعني قواعد الحوار بين برامج التطبيق. **Request — طلب** رسالة يسأل بها العميل عن مورد أو عملية، و**Response — رد** رسالة النتيجة. **Resource — مورد** شيء له عنوان، زي صفحة أو صورة أو بيانات منتج. HTTP ليس اتصال الشبكة نفسه؛ يعمل فوق وسائل نقل مثل TCP (Transmission Control Protocol؛ نقل بايتات بترتيب مع معالجة الفقد، مع احتمال فشل الاتصال) أو QUIC (اسم بروتوكول نقل فوق UDP يضيف تدفقات موثوقة وحماية اتصال).
 
-HTTP في أصله عديم الحالة: كل request رسالة مستقلة. استمرار تسجيل الدخول أو السلة يحتاج آلية إضافية مثل Cookies/Sessions/Tokens.
+HTTP في أصله عديم الحالة: كل request رسالة مستقلة. استمرار تسجيل الدخول أو السلة يحتاج معلومة تربط الطلبات. **Cookie** قيمة صغيرة يحفظها المتصفح ويرسلها مع الطلبات المناسبة. **Session — جلسة** بيانات يحتفظ بها التطبيق عن تفاعل المستخدم، و**Token — رمز اعتماد** قيمة يقدمها العميل لإثبات إذن أو هوية. هنفصلها في درس الرسائل.
 
 ## تشريح URL
 
@@ -21,42 +28,42 @@ scheme                  host   port    path          query      fragment
 
 | الجزء | المعنى |
 |---|---|
-| Scheme | البروتوكول/طريقة الوصول مثل `http` و`https` |
-| User info | موجود نحويًا في بعض URIs لكنه غير مناسب لكلمات المرور |
+| Scheme (طريقة الوصول في بداية العنوان، مثل https) | البروتوكول/طريقة الوصول مثل `http` و`https` |
+| User info | جزء مستخدم وكلمة مرور يسمح به شكل بعض معرّفات الموارد، لكنه غير مناسب لحفظ الأسرار |
 | Hostname | اسم المضيف مثل `example.com` |
-| Port | الخدمة على الجهاز؛ يُحذف إذا استُخدم الافتراضي |
-| Path | المورد داخل الموقع |
+| Port (منفذ منطقي برقم يميز جهة استقبال في بروتوكول النقل) | الخدمة على الجهاز؛ يُحذف إذا استُخدم الافتراضي |
+| Path (مسار المورد داخل العنوان، مثل /products) | المورد داخل الموقع |
 | Query | أزواج إضافية بعد `?` |
-| Fragment | موضع محلي بعد `#` ولا يُرسل عادة إلى الخادم |
+| Fragment (جزء بعد # يستخدمه العميل محليًا، مثل موضع عنوان في الصفحة) | موضع محلي بعد `#` ولا يُرسل عادة إلى الخادم |
 
 :::danger
-لا تضع كلمة مرور أو token أو بيانات حساسة في URL. قد تظهر في Browser History وLogs وAnalytics وReferer.
+لا تضع كلمة مرور أو token أو بيانات حساسة في URL (Uniform Resource Locator؛ عنوان يحدد موردًا وطريقة الوصول إليه). قد تظهر في تاريخ التصفح، وسجلات الخادم، وأدوات تحليل الزيارات. حقل `Referer` في بعض الطلبات قد ينقل عنوان الصفحة السابقة حسب سياسة المتصفح.
 :::
 
 ## ما المنفذ؟
 
-عنوان IP يحدد الواجهة/الجهاز على الشبكة، والمنفذ يحدد خدمة منطقية داخل نظام التشغيل. رقم المنفذ 16-bit من `0` إلى `65535`.
+عنوان IP (Internet Protocol؛ قواعد عنونة الحزم وتوجيهها بين الشبكات، وعنوان IP رقم يحدد واجهة في هذا السياق) يحدد الواجهة/الجهاز على الشبكة، والمنفذ يحدد خدمة منطقية داخل نظام التشغيل. رقم المنفذ يُكتب باستخدام 16 بت، والبت خانة قيمتها صفر أو واحد؛ يعني 2¹⁶ احتمالًا من `0` إلى `65535`.
 
-- `0–1023`: System/Well-Known Ports.
-- `1024–49151`: User/Registered Ports.
-- `49152–65535`: Dynamic/Private Ports وفق نطاق IANA؛ قد تختلف نطاقات المنافذ المؤقتة فعليًا بين الأنظمة.
+- `0–1023`: منافذ خدمات معروفة، اسمها System أو Well-Known.
+- `1024–49151`: منافذ يمكن تسجيلها لخدمات، اسمها User أو Registered.
+- `49152–65535`: نطاق Dynamic/Private — منافذ ديناميكية أو خاصة؛ النطاق 49152–65535 غير مخصص لخدمات مسجلة لدى IANA، وغالبًا تختار منه الأنظمة منافذ مؤقتة للاتصالات للاستخدام الديناميكي أو الخاص. التقسيم صادر عن **IANA، Internet Assigned Numbers Authority**، الجهة المنسقة لسجلات أرقام ومعرّفات الإنترنت. نطاق المنافذ المؤقتة الفعلي قد يختلف حسب النظام.
 
 | الخدمة | المنفذ الشائع |
 |---|---:|
-| FTP control | 21 |
-| SSH | 22 |
-| SMTP | 25 |
-| DNS | 53 |
+| FTP (File Transfer Protocol؛ بروتوكول نقل ملفات) control | 21 |
+| SSH (Secure Shell؛ بروتوكول اتصال آمن للتحكم في جهاز بعيد) | 22 |
+| SMTP (Simple Mail Transfer Protocol؛ بروتوكول إرسال البريد بين الأنظمة) | 25 |
+| DNS (Domain Name System؛ نظام يجيب عن أسئلة أسماء النطاقات، ومنها عناوينها) | 53 |
 | HTTP | 80 |
-| HTTPS | 443 |
-| MySQL | 3306 |
-| PostgreSQL | 5432 |
+| HTTPS (Hypertext Transfer Protocol Secure؛ طلبات ويب عبر اتصال محمي بالتشفير والتحقق من هوية الطرف الآخر) | 443 |
+| MySQL، برنامج لإدارة قواعد البيانات | 3306 |
+| PostgreSQL، برنامج لإدارة قواعد البيانات | 5432 |
 
-المنفذ الشائع convention/configuration وليس حماية. يمكن تشغيل HTTP محليًا على `8000` أو `8080`.
+المنفذ الشائع اتفاق وإعداد، مش وسيلة حماية. يمكن تشغيل HTTP محليًا على `8000` أو `8080`.
 
 ## Socket وConnection
 
-Socket endpoint يمكن تبسيطه إلى protocol + IP + port. اتصال TCP يُميز غالبًا بهذه الرباعية:
+**Socket — نقطة اتصال برمجية** واجهة يستخدمها البرنامج للإرسال والاستقبال. لو بنتكلم عن عنوان نقطة شبكة، نلخصه ببروتوكول النقل وعنوان IP والمنفذ؛ مثل TCP مع 203.0.113.8 والمنفذ443. اتصال TCP يُميز غالبًا بهذه الرباعية:
 
 ```text
 (client IP, client port, server IP, server port)
@@ -67,9 +74,13 @@ Socket endpoint يمكن تبسيطه إلى protocol + IP + port. اتصال TC
 
 ## مثال PHP محلي
 
+ده تطبيق اختياري بعد تثبيت PHP حسب [تجهيز المعمل](/php/00-lab-setup/). أنشئ مجلد تدريب، واحفظ داخله ملف `hello.php` بمحتوى `<?php echo 'Hello';`. علامة `<?php` تبدأ كود PHP، و`echo` تعرض النص. افتح الطرفية داخل المجلد، ثم شغّل:
+
 ```bash
 php -S localhost:8000
 ```
+
+الخيار `-S` يبدأ خادم التطوير المحلي. اترك الطرفية مفتوحة وافتح العنوان التالي في المتصفح؛ المتوقع كلمة `Hello`. `localhost` اسم جهازك نفسه. أوقف الخادم بـCtrl+C عند الانتهاء؛ الخادم ده للتجربة المحلية.
 
 في `http://localhost:8000/hello.php`:
 
@@ -80,40 +91,15 @@ php -S localhost:8000
 
 عدم كتابة المنفذ في HTTPS يعني عادة 443، وفي HTTP يعني 80؛ لا يعني عدم وجود منفذ.
 
-## خريطة الدرس
+## مسائل عملية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: URL والمنافذ وHTTP">
-<p class="lesson-diagram-title">خريطة مفاهيم: URL والمنافذ وHTTP</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>HTTP</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>تشريح URL</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>ما المنفذ؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Socket وConnection</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>مثال PHP محلي</span></div>
-</div>
-</div>
+<details><summary>هل يرسل المتصفح الجزء <code>#section</code> إلى الخادم؟</summary><p>لا. الـfragment للاستخدام داخل المتصفح عادة، بينما يُرسل path وquery string (معاملات بعد علامة ? في العنوان، مثل name=Omar).</p></details>
 
-## تأكد من فهمك
+<details><summary>الخدمة تعمل على <code>localhost:8080</code> لكن الرابط بلا منفذ لا يصل إليها. لماذا؟</summary><p>لأن HTTP يستخدم 80 وHTTPS يستخدم 443 افتراضيًا. يجب كتابة <code>:8080</code> ما دامت الخدمة تستمع عليه.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «HTTP» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> HTTP = Hypertext Transfer Protocol، وهو بروتوكول طبقة التطبيق الذي يحدد طريقة تبادل رسائل request وresponse حول resources. HTTP ليس اتصال الشبكة نفسه؛ يعمل فوق وسائل نقل مثل TCP أو QUIC. HTTP في أصله عديم الحالة: كل request رسالة مستقلة. استمرار تسجيل الدخول أو السلة يحتاج آلية إضافية مثل Cookies/Sessions/Tokens. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «HTTP» و«تشريح URL». لماذا لا يغني أحدهما عن الآخر داخل موضوع «URL والمنافذ وHTTP»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «HTTP»: HTTP = Hypertext Transfer Protocol، وهو بروتوكول طبقة التطبيق الذي يحدد طريقة تبادل رسائل request وresponse حول resources. HTTP ليس اتصال الشبكة نفسه؛ يعمل فوق وسائل نقل مثل TCP أو QUIC. HTTP في أصله عديم الحالة: كل request رسالة مستقلة. استمرار تسجيل الدخول أو السلة يحتاج آلية إضافية مثل Cookies/Sessions/Tokens. أما «تشريح URL»: | الجزء | المعنى | |---|---| | Scheme | البروتوكول/طريقة الوصول مثل http وhttps | | User info | موجود نحويًا في بعض URIs لكنه غير مناسب لكلمات المرور | | Hostname | اسم المضيف مثل example.com | | Port | الخدمة على الجهاز؛ يُحذف إذا استُخدم الافتراضي | | Path | المورد داخل الموقع | | Query | أزواج إضافية بعد ? | | Fragment | موضع محلي بعد # ولا يُرسل عادة إلى الخادم | :::danger لا تضع كلمة مرور أو token أو بيانات… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «ما المنفذ؟». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عنوان IP يحدد الواجهة/الجهاز على الشبكة، والمنفذ يحدد خدمة منطقية داخل نظام التشغيل. رقم المنفذ 16-bit من 0 إلى 65535. 0–1023: System/Well-Known Ports. 1024–49151: User/Registered Ports. 49152–65535: Dynamic/Private Ports وفق نطاق IANA؛ قد تختلف نطاقات المنافذ المؤقتة فعليًا بين الأنظمة. | الخدمة | المنفذ الشائع | |---|---:| | FTP control | 21 | | SSH | 22 | | SMTP | 25 | | DNS | 53 | | HTTP | 80 | | HTTPS | 443 | |… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Socket وConnection» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Socket endpoint يمكن تبسيطه إلى protocol + IP + port. اتصال TCP يُميز غالبًا بهذه الرباعية: يستخدم العميل عادة منفذًا مؤقتًا، بينما يستمع الخادم على منفذ معروف. لذلك يمكن لآلاف العملاء الاتصال بالمنفذ 443 نفسه دون أن تختلط اتصالاتهم. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>هل المنفذ 443 يعني أن الاتصال مشفر حتمًا؟</summary><p>لا. الرقم اتفاق شائع؛ TLS (Transport Layer Security؛ قواعد حماية الاتصال بالتشفير والتحقق) الفعلي هو ما ينشئ التشفير. يمكن لبرنامج غير مشفر أن يستمع على 443 بإعداد خاطئ.</p></details>
+
+
+## الخطوة التالية
+
+كمّل في [الحروف والرموز داخل عنوان الويب](/programming-basics/21-url-encoding/) بعد تنفيذ التجربة هنا.

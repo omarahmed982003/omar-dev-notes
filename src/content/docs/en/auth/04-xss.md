@@ -5,6 +5,24 @@ sidebar:
   order: 4
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Sanitizer:** An HTML sanitizer parses untrusted markup and removes disallowed elements and attributes while preserving permitted formatting.
+- **URL:** The complete address of a resource such as a page or API endpoint.
+- **UTF-8:** A common encoding that stores Unicode numbers as bytes.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## Beginner bridge
+
+XSS is a context confusion: text supplied as data reaches a browser position where it is interpreted as HTML, an attribute, a URL, CSS, or JavaScript. The correct defense depends on that final context, so one universal escaping function cannot be safe everywhere.
+
+Prefer APIs that create text nodes or set safe properties, apply context-specific output encoding at the last responsible moment, and treat HTML sanitization as a specialized operation. Content Security Policy limits impact but does not repair unsafe rendering.
+
 XSS occurs when untrusted data is interpreted as browser code. It may be reflected in one response, stored for later victims, or introduced by DOM code using a dangerous sink.
 
 ```php
@@ -22,40 +40,26 @@ If users must author HTML, use a maintained allow-list sanitizer; regex is not a
 
 Template auto-escaping, CSP, Trusted Types, secure cookies, and correct MIME types provide defense in depth. CSP is not a substitute for encoding and sanitization.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: XSS protection">
-<p class="lesson-diagram-title">Concept map: XSS protection</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>XSS occurs when untrusted data is interpreted as</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Use this for HTML text and quoted safe</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Prefer JSON rather than string concatenation for JavaScript</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>If users must author HTML, use a maintained</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Template auto-escaping, CSP, Trusted Types, secure cookies, and</span></div>
-</div>
-</div>
+<details><summary>Where should encoding happen?</summary><p>At output, for the exact HTML, attribute, URL, or JavaScript context; one encoder does not fit all.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “XSS occurs when untrusted data is interpreted as” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> XSS occurs when untrusted data is interpreted as browser code. It may be reflected in one response, stored for later victims, or introduced by DOM code using a dangerous sink. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “XSS occurs when untrusted data is interpreted as” with “Use this for HTML text and quoted safe”. Why does neither replace the other in “XSS protection”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “XSS occurs when untrusted data is interpreted as”: XSS occurs when untrusted data is interpreted as browser code. It may be reflected in one response, stored for later victims, or introduced by DOM code using a dangerous sink. For “Use this for HTML text and quoted safe”: Use this for HTML text and quoted safe attributes. For a URL query value, apply rawurlencode first and HTML-encode the final attribute. Encoding does not make a javascript: scheme safe; validate protocols and hosts. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Prefer JSON rather than string concatenation for JavaScript”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Prefer JSON rather than string concatenation for JavaScript data, with JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT. In DOM code, prefer textContent over innerHTML. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “If users must author HTML, use a maintained” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> If users must author HTML, use a maintained allow-list sanitizer; regex is not an HTML parser. Avoid untrusted data in scripts, styles, comments, tag/attribute names, and event handlers. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An attacker stores a comment containing markup or an event handler so JavaScript runs when the page is opened later.
+
+**Negative test:** Submit text containing <code>&lt;script&gt;</code> and an attribute-context attempt, then render it in every context the page uses.
+
+**Expected result:** It is displayed only as text, no handler runs, and CSP remains a defense-in-depth layer rather than a substitute for contextual encoding.
+
+### Verification source
+
+- [OWASP XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+
+## Connect the ideas
+
+DOM XSS flows from an untrusted source into sinks such as innerHTML or eval; server encoding alone is insufficient. Trusted Types can restrict dangerous sinks, and strong CSP uses nonces or hashes rather than broad allowlists. Sanitizing allowed HTML differs from encoding plain text.
+
+### Try it yourself
+
+Trace a value from location to a DOM sink, then replace the sink or enforce a policy.

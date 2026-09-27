@@ -5,6 +5,17 @@ sidebar:
   order: 8
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **CLI:** A text-based interface controlled by typed commands.
+
+
 ## The SAPI changes the environment
 
 PHP may run through CLI, FPM/FastCGI, or an Apache module. The same code can load different `php.ini` files, extensions, users, and environment values.
@@ -48,38 +59,28 @@ Development can show detailed errors and load Xdebug. Production should hide err
 
 Use meaningful exit codes, timeouts, logging, signal handling for workers, and a lock when duplicate execution is unsafe. `set_time_limit(0)` does not stop the operating system or orchestrator from terminating a process.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: PHP CLI, php.ini, and extensions">
-<p class="lesson-diagram-title">Concept map: PHP CLI, php.ini, and extensions</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>The SAPI changes the environment</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Configuration and extensions</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Environment policy</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>CLI programs</span></div>
-</div>
-</div>
+<details><summary>Why can CLI and Web PHP behave differently?</summary><p>They may use different SAPIs, ini files, extensions, and users; inspect each environment directly.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “The SAPI changes the environment” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> PHP may run through CLI, FPM/FastCGI, or an Apache module. The same code can load different php.ini files, extensions, users, and environment values. When code works in a terminal but not through HTTP, compare the executable, SAPI, loaded configuration, process user, and environment. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “The SAPI changes the environment” with “Configuration and extensions”. Why does neither replace the other in “PHP CLI, php.ini, and extensions”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “The SAPI changes the environment”: PHP may run through CLI, FPM/FastCGI, or an Apache module. The same code can load different php.ini files, extensions, users, and environment values. When code works in a terminal but not through HTTP, compare the executable, SAPI, loaded configuration, process user, and environment. For “Configuration and extensions”: php --ini shows the main file and scanned conf.d directory. Later files may override earlier values. Some directives cannot change at runtime. Declare extension requirements in Composer and run: The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Environment policy”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Development can show detailed errors and load Xdebug. Production should hide errors, log them safely, enable OPcache, set resource limits, and remove unnecessary extensions. The distributed development/production ini files are starting points, not complete application policy. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “CLI programs” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use meaningful exit codes, timeouts, logging, signal handling for workers, and a lock when duplicate execution is unsafe. set_time_limit(0) does not stop the operating system or orchestrator from terminating a process. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php --ini
+~~~
+
+**Success criterion:** Identify the CLI configuration file, then run <code>php -m</code> and confirm the required extension exists in that same execution environment.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+INI modes determine whether a setting changes in php.ini, per-directory configuration, or runtime. Compare <code>php --ini</code> with FPM configuration to avoid editing CLI only. A PECL extension must match PHP ABI, thread-safety mode, and platform; inspect startup errors after upgrades.
+
+### Try it yourself
+
+Prove CLI and FPM load the intended version, ini file, and extension.

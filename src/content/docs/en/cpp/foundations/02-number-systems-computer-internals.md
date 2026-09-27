@@ -6,6 +6,15 @@ description: "Number systems explain how values are represented; computer archit
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Cache:** A temporary copy that reduces waiting and repeated work.
+
+
 ## Values and numeral systems
 
 Number systems explain how values are represented; computer architecture explains where a program lives and how it moves from storage to execution.
@@ -33,7 +42,7 @@ Number systems explain how values are represented; computer architecture explain
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Number systems and computer internals">
 <p class="lesson-diagram-title">Concept map: Number systems and computer internals</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Decimal value</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Binary bits</span></div>
@@ -110,3 +119,11 @@ Input devices, displays, network adapters, and storage controllers communicate t
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> No, but it can reduce slow storage paging under memory pressure and improve overall throughput.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+Endianness controls byte order for multi-byte values and does not reverse written bit order inside a byte. IEEE-754 splits floating values into sign, exponent, and fraction with special values. A pointer is a virtual address, not a physical-slot number.
+
+### Try it yourself
+
+Inspect bytes for an integer and float on your machine and interpret them without assuming portability.

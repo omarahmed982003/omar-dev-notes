@@ -5,6 +5,23 @@ sidebar:
   order: 5
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **Queue:** A line of background jobs waiting to be processed.
+- **Worker:** A background process that takes jobs from a queue and runs them.
+
+
+- **OPcache:** Memory that keeps compiled PHP instructions for later requests.
+- **PHP-FPM:** A process manager that runs PHP workers for a web server.
+- **FastCGI:** A protocol used to send execution work to PHP-FPM.
+- **Nginx:** A web server that serves files or forwards PHP requests.
+- **Log:** A timestamped record of an application event.
+
 # PHP-FPM is not an HTTP server
 
 PHP-FPM is PHP's primary **FastCGI Process Manager**. A trusted web server sends it FastCGI requests; FPM manages PHP processes and returns responses.
@@ -73,38 +90,29 @@ Monitor active/idle processes, listen queue, slow traces, and `max children reac
 
 Use graceful reloads during deployment. `fastcgi_finish_request()` can flush the response before brief follow-up work, but it still occupies a worker; durable or heavy tasks belong in a queue worker.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: PHP-FPM and process management">
-<p class="lesson-diagram-title">Concept map: PHP-FPM and process management</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Master, workers, and pools</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Process-manager modes</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Capacity from measurements</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Operational settings</span></div>
-</div>
-</div>
+<details><summary>Why not raise FPM workers without calculation?</summary><p>They can exhaust memory and overload CPU or databases; size from process memory, workload, and downstream limits.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Master, workers, and pools” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The master reads pool configuration and controls lifecycle. A worker normally executes one PHP request at a time. A pool groups workers under a user/group, listener, limits, and PHP settings. Separate applications into pools and OS identities where isolation matters. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Master, workers, and pools” with “Process-manager modes”. Why does neither replace the other in “PHP-FPM and process management”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Master, workers, and pools”: The master reads pool configuration and controls lifecycle. A worker normally executes one PHP request at a time. A pool groups workers under a user/group, listener, limits, and PHP settings. Separate applications into pools and OS identities where isolation matters. For “Process-manager modes”: static avoids spawn latency but reserves memory. dynamic is a common balance. ondemand helps low-traffic pools at the cost of cold starts. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Capacity from measurements”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Estimate: Leave headroom for the operating system, web server, OPcache, and other services. Do not divide RAM by memory_limit; that limit is not the worker's typical resident set. Arrival rate also matters. At 100 requests/s and a 200 ms average service time, average concurrency is roughly 20 workers. Peaks and tail latency need additional headroom, while excessive workers can overload the database. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Operational settings” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Monitor active/idle processes, listen queue, slow traces, and max children reached. Keep status endpoints private. Use graceful reloads during deployment. fastcgi_finish_request() can flush the response before brief follow-up work, but it still occupies a worker; durable or heavy tasks belong in a queue worker. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+curl -sS -o NUL -w "status=%{http_code} total=%{time_total}
+" http://localhost/health
+~~~
+
+**Success criterion:** Under controlled load the health check remains responsive and worker count stays bounded; correlate delay with the FPM queue rather than guessing.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Expose the FPM status page and slowlog only on a protected internal path to inspect active/idle workers, listen queue, and slow requests. Measure memory per child under load and reserve headroom. In containers, do not let autoscaling hide bad max_children, and align graceful termination with platform deadlines.
+
+### Try it yourself
+
+Correlate queue growth with slowlog and RSS before changing worker count.

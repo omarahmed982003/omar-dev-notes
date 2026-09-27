@@ -6,6 +6,19 @@ sidebar:
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Compiler:** المترجم: برنامج يحوّل كود C++ إلى ملف يقدر الكمبيوتر يشغّله.
+- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Scope:** النطاق: المكان اللي يقدر الكود داخله يشوف اسمًا أو متغيرًا.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+
+
 ## لماذا يحتاج كود C++ إلى ترجمة؟
 
 المعالج ينفذ تعليمات آلة خاصة بمعماريته، بينما نكتب C++ بصياغة مفهومة للبشر. يحول Toolchain البرنامج إلى ملف مناسب لنظام التشغيل والمعالج المستهدف. لا يقوم برنامج واحد بكل العمل بالضرورة؛ كلمة «Compiler» تستخدم أحيانًا للواجهة التي تنسق مجموعة مراحل وأدوات.
@@ -248,7 +261,7 @@ Linker: matches the required symbol with its definition
 
 <div class="lesson-diagram" role="img" aria-label="مراحل تحويل برنامج C++ من المصدر إلى عملية تعمل">
 <p class="lesson-diagram-title">من Source Code إلى Running Process</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node input"><span>Source + Headers</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Preprocessor</span></div>
@@ -275,3 +288,11 @@ Linker: matches the required symbol with its definition
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>هل التحسين يستطيع تغيير سلوك برنامج سليم؟ وماذا عن Undefined Behavior؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يجب أن يحافظ على السلوك الملحوظ المطلوب لبرنامج ذي سلوك معرّف. عند Undefined Behavior لا تقدم اللغة الضمان نفسه، وقد تبدو نتيجة التحسين غريبة.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>صنّف: Header مفقود، متغير غير معرّف، دالة بلا تعريف، مكتبة DLL مفقودة، صيغة مساحة خاطئة.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Header في Preprocessing، المتغير في Semantic analysis، الدالة في Linking، المكتبة في Loading، وصيغة المساحة Logic error أثناء الاختبار.</div></details></section>
 </div>
+
+## اربط النقاط ببعض
+
+قسّم دراسة الدرس إلى preprocessing/compilation، ثم object files/linking، ثم loading/runtime. استخدم خيار حفظ الـpreprocessed source، و<code>nm</code> أو أداة المنصة لفحص symbols، و<code>objdump</code> لفحص sections. أضف ODR وtemplate instantiation كسببين شائعين لأخطاء linking المعقدة.
+
+### جرّب بنفسك
+
+احتفظ بثلاثة artifacts من برنامج واحد واربط كل artifact بمرحلة وخطأ محتمل.

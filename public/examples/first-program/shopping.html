@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopping list project</title>
+<style>li { overflow-wrap: anywhere; }</style>
+<h1>Shopping list</h1>
+<p><label for="name">Item name</label><br><input id="name"></p>
+<p><label for="quantity">Whole quantity (1 to 100)</label><br><input id="quantity" inputmode="numeric" value="1"></p>
+<button id="add">Add item</button>
+<button id="remove">Remove last item</button>
+<button id="save">Save</button>
+<button id="load">Load saved list</button>
+<ol id="list"></ol>
+<p id="status" role="status"></p>
+<script>
+const key = "foundations-shopping-v1";
+const status = document.querySelector("#status");
+let items = [];
+
+function renderList() {
+  const list = document.querySelector("#list");
+  list.textContent = "";
+  for (const item of items) {
+    const row = document.createElement("li");
+    row.textContent = item;
+    list.append(row);
+  }
+}
+
+function addItem() {
+  const name = document.querySelector("#name").value.trim();
+  const quantityText = document.querySelector("#quantity").value.trim();
+  const quantity = Number(quantityText);
+  if (name === "" || name.length > 60 || quantityText === "" || !Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
+    status.textContent = "Enter a short name and a whole quantity from 1 to 100.";
+    return;
+  }
+  if (items.length >= 20) {
+    status.textContent = "The list is full: at most 20 items.";
+    return;
+  }
+  items.push(quantity + " x " + name);
+  renderList();
+  status.textContent = "Added. Save to keep this change.";
+}
+
+function removeLastItem() {
+  if (items.length === 0) {
+    status.textContent = "The list is already empty.";
+    return;
+  }
+  items.pop();
+  renderList();
+  status.textContent = "Removed. Save to keep this change.";
+}
+
+function saveList() {
+  try {
+    localStorage.setItem(key, JSON.stringify(items));
+    status.textContent = "Saved " + items.length + " items on this browser.";
+  } catch (error) {
+    status.textContent = "Not saved. Your list is still on screen; keep a separate copy before closing.";
+    console.warn(error.message);
+  }
+}
+
+function loadList() {
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved === null) {
+      status.textContent = "No saved list yet. Current list unchanged.";
+      return;
+    }
+    const restored = JSON.parse(saved);
+    if (!Array.isArray(restored) || restored.length > 20) {
+      throw new Error("Invalid saved list.");
+    }
+    for (const item of restored) {
+      if (typeof item !== "string" || item.trim() === "" || item.length > 80) {
+        throw new Error("Invalid saved item.");
+      }
+    }
+    items = restored;
+    renderList();
+    status.textContent = "Loaded " + items.length + " items.";
+  } catch (error) {
+    status.textContent = "Cannot load the saved list. Current list unchanged.";
+    console.warn(error.message);
+  }
+}
+
+document.querySelector("#add").addEventListener("click", addItem);
+document.querySelector("#remove").addEventListener("click", removeLastItem);
+document.querySelector("#save").addEventListener("click", saveList);
+document.querySelector("#load").addEventListener("click", loadList);
+renderList();
+</script>
+</html>

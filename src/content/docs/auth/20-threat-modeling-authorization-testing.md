@@ -5,6 +5,17 @@ sidebar:
   order: 20
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+
+
 ## ابدأ بالأصول وحدود الثقة
 
 Threat Model ليست قائمة ثغرات عامة. ارسم النظام وحدد الأصول: Credentials وSessions وTokens وبيانات المستخدم وسجلات التدقيق. ثم حدد الجهات: مستخدم، Admin، خدمة داخلية، مزود هوية ومهاجم. كل انتقال بين Browser وAPI وIdentity Provider وDatabase هو Trust Boundary يحتاج تحققًا مستقلًا.
@@ -59,3 +70,23 @@ Application -- query ---> User / tenant database
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>متى قد نعيد 404 بدل 403؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> عندما كشف وجود المورد لمستخدم غير مصرح له يعد تسريبًا، مع الاحتفاظ بسبب الرفض في السجل الداخلي.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل Session Fixation إلى Control واختبار.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> جدد Session ID بعد الدخول وأبطل القديم، ثم اختبر أن القديم لا يعمل والجديد يحمل الصلاحية الصحيحة.</div></details></section>
 </div>
+
+## تدريب تهديد
+
+**السيناريو:** تغطي الاختبارات المسار الطبيعي فقط، بينما يسمح مسار فرعي بتنفيذ العملية نفسها دون فحص الصلاحية.
+
+**اختبار المنع:** حوّل كل أصل وحدّ ثقة في النموذج إلى اختبار سماح واختبار منع، ثم كررها على REST والمهام الخلفية.
+
+**النتيجة المتوقعة:** كل عملية حساسة لها دليل نجاح للفاعل المسموح ودليل رفض للفاعل غير المسموح عبر جميع نقاط الدخول.
+
+### مرجع التحقق
+
+- [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling)
+
+## اربط النقاط ببعض
+
+طبق STRIDE كعدسة لا checklist: spoofing وtampering وrepudiation وinformation disclosure وdenial of service وelevation ترتبط بأصل وحد ثقة. حوّل كل abuse case إلى test أو control ومالك، وأعد المراجعة عند تغير data flow أو هوية أو طرف خارجي.
+
+### جرّب بنفسك
+
+اختر flow واحدًا واكتب تهديدًا واختبارًا ومالكًا لكل فئة تنطبق.

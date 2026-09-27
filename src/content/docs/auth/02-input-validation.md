@@ -5,6 +5,16 @@ sidebar:
   order: 2
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+
+
 ## Validation ليست Sanitization
 
 - **Validation:** هل القيمة تطابق شروطنا؟ لا يفترض أن يغيّرها.
@@ -79,38 +89,26 @@ if ($order === null) {
 
 طبّق allow-list للـenums والفرز وأسماء الحقول. لا يمكن حماية SQL أو HTML بمجرد Sanitization عام؛ استخدم Prepared Statements وOutput Encoding.
 
-## خريطة الدرس
+## سيناريو أمني
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: التحقق من المدخلات والفلترة">
-<p class="lesson-diagram-title">خريطة مفاهيم: التحقق من المدخلات والفلترة</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Validation ليست Sanitization</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>filter_var</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>filter_input وfilter_input_array</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>قواعد المجال أهم من شكل النوع</span></div>
-</div>
-</div>
+<details><summary>هل validation يغني عن output encoding؟</summary><p>لا؛ validation يفرض عقد الإدخال، وencoding يعتمد على سياق الإخراج لمنع تفسير البيانات ككود.</p></details>
 
-## تأكد من فهمك
+## تدريب تهديد
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Validation ليست Sanitization» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Validation: هل القيمة تطابق شروطنا؟ لا يفترض أن يغيّرها. Normalization: توحيد تمثيل مشروع، مثل trim أو تحويل case عند الحاجة. Sanitization: حذف/تغيير محارف لصنع قيمة أخرى؛ قد يخفي الخطأ ويفسد البيانات. Output Encoding: تحويل القيمة عند إخراجها لسياق HTML/URL/JS، وليس عند الإدخال. المسار المقترح: لا تحاول «تنظيف كل المدخلات» مرة واحدة ثم تعتبرها آمنة لكل مكان. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Validation ليست Sanitization» و«filter_var». لماذا لا يغني أحدهما عن الآخر داخل موضوع «التحقق من المدخلات والفلترة»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Validation ليست Sanitization»: Validation: هل القيمة تطابق شروطنا؟ لا يفترض أن يغيّرها. Normalization: توحيد تمثيل مشروع، مثل trim أو تحويل case عند الحاجة. Sanitization: حذف/تغيير محارف لصنع قيمة أخرى؛ قد يخفي الخطأ ويفسد البيانات. Output Encoding: تحويل القيمة عند إخراجها لسياق HTML/URL/JS، وليس عند الإدخال. المسار المقترح: لا تحاول «تنظيف كل المدخلات» مرة واحدة ثم تعتبرها آمنة لكل مكان. أما «filter_var»: تحقق باستخدام <code>=== false</code>؛ القيمة الصحيحة قد تكون 0. وFILTER_DEFAULT يعني FILTER_UNSAFE_RAW، فلا يفعل تنظيفًا سحريًا. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «filter_input وfilter_input_array». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> filter_input() يقرأ المصدر الخارجي الأصلي حسب SAPI، وقد يختلف عن قيمة عدّلتها داخل $_GET أو $_POST. اختبر بيئة التشغيل. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «قواعد المجال أهم من شكل النوع» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> بريد صالح نحويًا لا يعني أنه يملك الحساب. وOrder ID صحيح كعدد لا يعني أن المستخدم يملك الطلب. طبّق allow-list للـenums والفرز وأسماء الحقول. لا يمكن حماية SQL أو HTML بمجرد Sanitization عام؛ استخدم Prepared Statements وOutput Encoding. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+**السيناريو:** يرسل العميل قيمة تبدو رقمية لكنها خارج النطاق أو تحتوي محارف إضافية كي تعبر فحصًا سطحيًا.
+
+**اختبار المنع:** جرّب قيمة سالبة وقيمة أكبر من الحد وقيمة مثل <code>12x</code> في الحقل نفسه.
+
+**النتيجة المتوقعة:** تُرفض الحالات الثلاث برسالة عامة وموحّدة، ولا يصل أي منها إلى منطق العمل أو قاعدة البيانات.
+
+### مرجع التحقق
+
+- [OWASP Input Validation Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html)
+
+## اربط النقاط ببعض
+
+Canonicalization تسبق validation عندما توجد تمثيلات متعددة، لكن لا تفك أو تطبع القيمة مرات غير محدودة. تحقق من nested arrays والعمق والعدد والحجم، لا الحقول المفردة فقط. في الملفات افحص upload status والحجم والتوقيع/MIME والمحتوى، واستخدم allowlist للقيم المعروفة.
+
+### جرّب بنفسك
+
+اختبر encoding مزدوجًا وarray عميقة وملفًا باسم وصيغة متعارضين.

@@ -5,6 +5,12 @@ sidebar:
   order: 5
 ---
 
+## Beginner bridge
+
+A schema is an executable statement of allowed data: types, nullability, keys, uniqueness, and relationships. Application validation improves messages, while database constraints protect every writer, including scripts and future services.
+
+Indexes are workload-specific copies that accelerate selected reads at the cost of space and write work. Migrations must remain compatible with old and new application versions during deployment; use expand, migrate data, switch readers and writers, then contract in a later release.
+
 Protect invariants in the database as well as application code. Use `NOT NULL`, `UNIQUE`, `CHECK`, foreign keys, and appropriate types. Store money as integer minor units or an appropriate decimal type, not binary float; define a timezone policy.
 
 Indexes speed lookup, join, and ordering at the cost of storage and write work:
@@ -32,40 +38,43 @@ Migrations should be versioned, reviewed, automated, and tested with realistic d
 
 Keep schema migrations distinct from development/reference seeds, make seeds idempotent, and never copy production personal data into fixtures.
 
-## Lesson map
+## Lesson-specific problems
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Schema, indexes, and migrations">
-<p class="lesson-diagram-title">Concept map: Schema, indexes, and migrations</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Protect invariants in the database as well as</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Indexes speed lookup, join, and ordering at the</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Column order matters</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Use EXPLAIN and, when supported, actual-analysis plans</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Migrations should be versioned, reviewed, automated, and tested</span></div>
-</div>
-</div>
+<details><summary>Why not index every column?</summary><p>Indexes consume space and slow writes; design for real queries and inspect execution plans.</p></details>
 
-## Check your understanding
+<details><summary>How do you deploy a risky migration safely?</summary><p>Use expand/migrate/contract: add compatible structure, move data, update code, and remove old structure later.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Protect invariants in the database as well as” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Protect invariants in the database as well as application code. Use NOT NULL, UNIQUE, CHECK, foreign keys, and appropriate types. Store money as integer minor units or an appropriate decimal type, not binary float; define a timezone policy. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Protect invariants in the database as well as” with “Indexes speed lookup, join, and ordering at the”. Why does neither replace the other in “Schema, indexes, and migrations”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Protect invariants in the database as well as”: Protect invariants in the database as well as application code. Use NOT NULL, UNIQUE, CHECK, foreign keys, and appropriate types. Store money as integer minor units or an appropriate decimal type, not binary float; define a timezone policy. For “Indexes speed lookup, join, and ordering at the”: Indexes speed lookup, join, and ordering at the cost of storage and write work: The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Column order matters”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Column order matters. Indexes must be chosen for measured query patterns, not added to every column. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Use EXPLAIN and, when supported, actual-analysis plans” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use EXPLAIN and, when supported, actual-analysis plans. Test production-like volumes and monitor slow queries and latency percentiles. Watch for N+1, unnecessary SELECT *, deep OFFSET pagination, casts/functions blocking indexes, and excessive round trips. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+## Cumulative project: inventory that cannot oversell
+
+Design <code>products</code>, <code>orders</code>, and <code>order_items</code>, then implement one purchase transaction through PDO. The database must protect rules that remain true even when application code is wrong: positive quantities, valid foreign keys, and unique order identifiers.
+
+### Concurrent scenario
+
+1. Begin a transaction and read the product row using the lock appropriate for your engine.
+2. Reject the operation when stock is below requested quantity.
+3. Create the order and its items, update stock, and commit.
+4. Roll back every change on failure; never leave an empty order or a deduction without an order.
+
+### Deterministic verification data
+
+~~~text
+initial_stock=5
+buyer_A_requests=4
+buyer_B_requests=4
+expected_successes=1
+expected_final_stock=1
+expected_negative_stock_rows=0
+~~~
+
+Run both purchases concurrently several times. Two successes or negative stock proves a real race condition, not a cosmetic test failure.
+
+### Measure the index and migration
+
+Save <code>EXPLAIN</code> output for lookup by <code>user_id, created_at</code> before and after the index, recording estimated or examined rows instead of claiming it “became faster.” Apply the migration through expand/migrate/contract: add compatible structure, backfill in resumable batches, switch reads and writes, and defer old-field removal to a later release after proving it is unused.
+
+### Acceptance criteria
+
+- Every client value is passed as a prepared parameter.
+- Integration tests prove commit, rollback, and the two-buyer race.
+- Constraints reject impossible states inside the database.
+- A rollback or roll-forward plan exists, and backup restoration is tested rather than assumed.

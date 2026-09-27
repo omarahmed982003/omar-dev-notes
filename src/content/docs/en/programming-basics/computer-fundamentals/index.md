@@ -1,27 +1,26 @@
 ---
-title: Computer & Programming Fundamentals
-description: A progressive path through data flow, hardware, processors, memory, operating systems, terminals, and Git.
+title: "Using your computer"
+description: "Start with windows, files, safe program use, data representation, and the parts of your computer. Each lesson ends in something you can explain or try."
 sidebar:
   order: 0
 ---
 
-# Computer & Programming Fundamentals
+Start with windows, files, safe program use, data representation, and the parts of your computer. Each lesson ends in something you can explain or try.
 
-This section builds the system from the inside out: how data moves, what each physical component does, how the OS manages programs and memory, how information is represented, and how developers use terminals, Git, debugging, and tests.
 
-## Lesson map
+After saving and finding a file confidently, continue to [programming fundamentals and practice](/en/programming-basics/programming-practice/). The later internals section investigates how execution works in more depth.
 
-1. [**Learning roadmap and study rules**](./01-learning-roadmap/) — Active learning, review, practice, and measurable progress.
-2. [**Computers, data, and the processing cycle**](./02-computers-data-processing/) — Input, processing, output, storage, and a practical data journey.
-3. [**Hardware components and the motherboard**](./03-hardware-architecture/) — Buses, storage, I/O, drivers, power, and cooling.
-4. [**CPU, GPU, and parallel processing**](./04-cpu-gpu/) — Instruction execution, cores, threads, caches, and workload differences.
-5. [**RAM, virtual memory, and buffers**](./05-ram-memory-buffers/) — Pages, MMU, stack, heap, allocation, buffering, and backpressure.
-6. [**Operating systems: structure, types, and operation**](./06-operating-systems/) — Kernels, system calls, processes, scheduling, files, drivers, and OS families.
-7. [**Binary, programming languages, and algorithms**](./03-binary-languages-algorithms/) — Number/text representation, language levels, and executable programs.
-8. [**Terminal, files, permissions, and environment**](./05-os-terminal-files-git/) — Shells, paths, permissions, environment variables, streams, and exit codes.
-9. [**Git, debugging, and testing fundamentals**](./09-git-debugging/) — History, branches, merging, evidence-based diagnosis, and tests.
-10. [**Technology fields, AI, and the engineering mindset**](./04-tech-fields-ai-engineering-mindset/) — Specializations, tools, constraints, and trade-offs.
+## Follow the sequence and practice each step
 
-:::tip[Recommended order]
-Follow the numbers if you are new. To close a specific gap, read its focused lesson and then return to the processing-cycle overview to connect it to the full system.
-:::
+- [Start here: from using a computer to your first program](/en/programming-basics/computer-fundamentals/01-learning-roadmap/)
+- [Windows, pointing, and typing](/en/programming-basics/computer-fundamentals/01-using-your-computer/)
+- [Files, folders, and saving](/en/programming-basics/computer-fundamentals/02-files-and-folders/)
+- [Programs, installation, and safe use](/en/programming-basics/computer-fundamentals/03-programs-installation-safety/)
+- [How a computer turns input into a result](/en/programming-basics/computer-fundamentals/02-computers-data-processing/)
+- [How computers represent numbers and text](/en/programming-basics/computer-fundamentals/02-binary-data-representation/)
+- [Images, sound, and size units](/en/programming-basics/computer-fundamentals/18-media-and-units/)
+- [The computer components you use](/en/programming-basics/computer-fundamentals/03-hardware-architecture/)
+- [The processor and executing instructions](/en/programming-basics/computer-fundamentals/04-cpu-gpu/)
+- [Memory and saving: where did your work go?](/en/programming-basics/computer-fundamentals/05-ram-memory-buffers/)
+- [The operating system, programs, and files](/en/programming-basics/computer-fundamentals/06-operating-systems/)
+- [The internet, browser, and address](/en/programming-basics/computer-fundamentals/07-internet-browser-basics/)

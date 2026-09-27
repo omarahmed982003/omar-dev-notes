@@ -1,10 +1,21 @@
 ---
-title: "14. Condition and formula problems"
+title: "Archived reference: condition and formula problems"
 sidebar:
   order: 14
-description: "Conditional problems train translation from story text into equations and exclusive cases. The main difficulty is usually boundaries, not typing if."
+description: "An archived copy of the problems now integrated into the if and else lesson."
 tableOfContents: true
 ---
+
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Unicode:** A standard that assigns consistent numbers to characters and symbols.
+- **Loop:** A structure that repeats instructions according to a condition.
+- **Function:** A named, reusable block of code with one defined job.
+
 
 ## From a problem statement to cases and formulas
 
@@ -224,7 +235,7 @@ Extract the input and output, write the cases and formulas, choose types from th
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Conditions and Codeforces exercises">
 <p class="lesson-diagram-title">Concept map: Conditions and Codeforces exercises</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Inputs and constraints</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Mutually exclusive cases</span></div>
@@ -273,3 +284,11 @@ Extract the input and output, write the cases and formulas, choose types from th
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A vertical side, a horizontal side, or a 45-degree diagonal where <code>abs(dx) == abs(dy)</code>. Any other slanted case is impossible.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+Turn samples into automated tests, then add boundaries, case transitions, and random inputs checked against a trusted slow solution. Record problem source and constraints because formula correctness depends on them; passing samples is not a proof.
+
+### Try it yourself
+
+Choose one problem and test every point where a branch or formula changes.

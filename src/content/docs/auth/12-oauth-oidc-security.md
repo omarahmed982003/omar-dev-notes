@@ -5,6 +5,28 @@ sidebar:
   order: 12
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Scope:** نطاق التفويض: اسم صلاحية يطلبها التطبيق أو يحصل عليها، زي orders:read لقراءة الطلبات؛ ولسه لازم نتحقق إن المستخدم يملك الطلب.
+
+
+- **Authorization:** التحقق من الصلاحية: تحديد العمليات المسموح للهوية تنفذها.
+- **XSS:** هجوم يحاول تشغيل JavaScript غير موثوق داخل صفحة المستخدم.
+- **CSRF:** هجوم يدفع متصفح مستخدم مسجل الدخول لإرسال طلب لم يقصده.
+- **JWT:** صيغة Token موقعة؛ التوقيع يكشف التعديل لكنه لا يشفر المحتوى تلقائيًا.
+- **OAuth:** بروتوكول تفويض يمنح تطبيقًا صلاحية محددة من غير تسليمه كلمة سر المستخدم.
+- **OIDC:** طبقة هوية فوق OAuth تضيف طريقة موحدة لمعرفة من سجل الدخول.
+- **Secret:** قيمة حساسة مثل مفتاح API أو كلمة مرور خدمة ولازم تبقى خارج الكود.
+
 # طبقات حماية مختلفة
 
 لا تستبدل `state` و`nonce` وPKCE ببعضها عشوائيًا:
@@ -120,40 +142,26 @@ Bearer token قابل لإعادة الاستخدام من أي حامل. للأ
 استخدم مكتبة OIDC/OAuth مجرّبة وموفر هوية ناضج. البروتوكول يبدو redirects وHTTP parameters، لكن صحة الربط بين browser session وissuer وclient وredirect والتوكين هي الجزء الأمني الصعب.
 :::
 
-## خريطة الدرس
+## سيناريو أمني
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: أمان OAuth وOIDC">
-<p class="lesson-diagram-title">خريطة مفاهيم: أمان OAuth وOIDC</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Callback آمن</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Redirect URIs</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مكان التوكينات في تطبيق Browser</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Bearer مقابل Sender-constrained</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Access وRefresh lifecycle</span></div>
-</div>
-</div>
+<details><summary>ليه لازم نتحقق من state وnonce؟</summary><p>state يربط response بالطلب ويقاوم CSRF، وnonce يربط ID token بالتدفق ويقاوم replay.</p></details>
 
-## تأكد من فهمك
+## تدريب تهديد
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Callback آمن» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تسجل query كاملة لأن callback قد يحتوي code. ضع Referrer-Policy: no-referrer وتجنب third-party scripts في صفحة callback. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Callback آمن» و«Redirect URIs». لماذا لا يغني أحدهما عن الآخر داخل موضوع «أمان OAuth وOIDC»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Callback آمن»: لا تسجل query كاملة لأن callback قد يحتوي code. ضع Referrer-Policy: no-referrer وتجنب third-party scripts في صفحة callback. أما «Redirect URIs»: سجل HTTPS URI كاملة وطابقها حرفيًا؛ لا تستخدم wildcard للإنتاج. اسمح loopback/custom URI وفق قواعد native apps الرسمية فقط. لا تجعل callback open redirect يأخذ next=https://evil.example. بعد callback استخدم destination مخزنة server-side أو allowlist لمسارات داخلية. اربط المعاملة بالـissuer لتجنب mix-up عندما يدعم Client أكثر من Authorization Server. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «مكان التوكينات في تطبيق Browser». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Backend for Frontend هذا الاختيار يقلل وصول JavaScript إلى التوكينات. طبّق CSRF protection وSameSite مناسبًا وsession rotation. Browser-only client إذا كان التوكين داخل المتصفح، فضّل memory على storage دائم طويل العمر. localStorage متاح لأي JavaScript داخل origin؛ XSS يستطيع سرقته. CSP وTrusted Types وتقليل third-party scripts دفاعات مهمة لكنها لا تجعل التخزين آمنًا مطلقًا. لا تضع token في URL أو history أو logs أو… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Bearer مقابل Sender-constrained» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Bearer token قابل لإعادة الاستخدام من أي حامل. للأنظمة الأعلى حساسية يمكن ربط التوكين بعميل عبر mTLS أو DPoP، لكن ذلك يزيد التعقيد ولا يلغي التحقق من audience/scope أو حماية الجهاز. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+**السيناريو:** يغيّر المهاجم redirect URI أو يعيد <code>state</code> من معاملة قديمة لخلط جلسات الدخول.
+
+**اختبار المنع:** جرّب redirect URI قريبًا لكنه غير مطابق، وstate غير موجود، وstate سبق استهلاكه.
+
+**النتيجة المتوقعة:** تُرفض الثلاثة، وتكون المطابقة حرفية ويُستهلك state مرة واحدة ويرتبط بمتصفح الطلب.
+
+### مرجع التحقق
+
+- [RFC 9700: OAuth 2.0 Security Best Current Practice](https://www.rfc-editor.org/rfc/rfc9700.html)
+
+## اربط النقاط ببعض
+
+دافع عن mix-up بتثبيت issuer وربط response بالـauthorization server المتوقع، وعن code injection بربط code بـstate/nonce/PKCE/session. Sender-constrained tokens مثل DPoP أو mTLS تقلل قيمة التوكين المسروق لكنها تحتاج replay cache وkey lifecycle. لا تسجل authorization code أو token.
+
+### جرّب بنفسك
+
+بدّل issuer داخل callback وأعد DPoP proof وتأكد من فشل الحالتين.

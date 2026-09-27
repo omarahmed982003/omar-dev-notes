@@ -5,6 +5,22 @@ sidebar:
   order: 3
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Cache:** A temporary copy that reduces waiting and repeated work.
+- **CLI:** A text-based interface controlled by typed commands.
+
+
+- **Composer:** PHP dependency manager that installs libraries and prepares autoloading.
+- **OPcache:** Memory that keeps compiled PHP instructions for later requests.
+- **Redis:** A fast in-memory store used for caches, sessions, and queues.
+
 # Avoid repeated parsing and compilation
 
 PHP normally parses source and compiles it to opcodes before execution. OPcache keeps compiled bytecode in shared memory so later requests can skip much of that work.
@@ -73,38 +89,28 @@ Preloading increases baseline memory, needs a process restart for code changes, 
 
 Install exact Composer dependencies, optimize the autoloader, test a separate release directory, switch releases atomically, then gracefully reload FPM. Composer's class map speeds file discovery; OPcache caches compiled bytecode. They optimize different stages.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: OPcache and preloading">
-<p class="lesson-diagram-title">Concept map: OPcache and preloading</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Production baseline</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Observe before tuning</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Preloading</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Deployment sequence</span></div>
-</div>
-</div>
+<details><summary>Does OPcache cache request results?</summary><p>No. It caches compiled bytecode; an application data cache stores computed or retrieved data.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Production baseline” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Treat the numbers as a starting point, not universal truth. Timestamp validation detects changed scripts according to revalidate_freq. With validation disabled, restart or gracefully reload FPM on every release. CLI OPcache is configured separately through opcache.enable_cli and may not help short commands. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Production baseline” with “Observe before tuning”. Why does neither replace the other in “OPcache and preloading”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Production baseline”: Treat the numbers as a starting point, not universal truth. Timestamp validation detects changed scripts according to revalidate_freq. With validation disabled, restart or gracefully reload FPM on every release. CLI OPcache is configured separately through opcache.enable_cli and may not help short commands. For “Observe before tuning”: Keep status data behind internal authorization because it can expose file paths. Watch cache_full, OOM/hash restarts, hit rate after warm-up, and the number of cached keys. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Preloading”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> PHP 7.4+ can execute a preload file once at server startup and keep loaded functions, classes, interfaces, and traits available: Preloading increases baseline memory, needs a process restart for code changes, and is useful only for persistent processes. Measure it rather than preloading everything. The PHP manual also notes that preloading is not supported on Windows. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Deployment sequence” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Install exact Composer dependencies, optimize the autoloader, test a separate release directory, switch releases atomically, then gracefully reload FPM. Composer's class map speeds file discovery; OPcache caches compiled bytecode. They optimize different stages. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php -d opcache.enable_cli=1 -r "var_export(opcache_get_status(false) !== false);"
+~~~
+
+**Success criterion:** The output is <code>true</code>. Then compare hits and misses before and after repeat load; enabling OPcache alone is not proof of improvement.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Measure memory consumption, interned strings, hit/miss, and wasted percentage instead of copying a size. Invalidation and timestamp policy must match atomic deployment. JIT does not speed every workload and is separate from the core OPcache benefit. Preloading persists for process lifetime and needs restart.
+
+### Try it yourself
+
+Collect metrics before and after repeated load and explain eviction or restart behavior.

@@ -6,6 +6,16 @@ description: "switch مناسب لاختيار فرع حسب قيمة منفصل
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Compiler:** المترجم: برنامج يحوّل كود C++ إلى ملف يقدر الكمبيوتر يشغّله.
+- **Scope:** النطاق: المكان اللي يقدر الكود داخله يشوف اسمًا أو متغيرًا.
+
+
 ## الاختيار بقيمة منفصلة
 
 switch مناسب لاختيار فرع حسب قيمة منفصلة واحدة. استخدمه عندما تكون الحالات ثابتة وواضحة، ويفضل if للنطاقات والشروط المركبة.
@@ -63,16 +73,21 @@ default: std::cout << "Unsupported operator";
 
 <div class="lesson-diagram" role="img" aria-label="كيف يختار switch الحالة وكيف يمنع break الانتقال">
 <p class="lesson-diagram-title">كيف يختار switch الحالة وكيف يمنع break الانتقال</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-decision">
 <div class="diagram-node input"><span>Selector</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="قارن" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>ابحث عن case</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="تطابق" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>نفّذ الحالة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="بعد التنفيذ" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>break؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="نعم" aria-hidden="true">→</span>
 <div class="diagram-node output"><span>اخرج / default</span></div>
+</div>
+<div class="diagram-branches">
+<p class="diagram-branch-label">فروع لا تظهر في الخط الرئيسي</p>
+<div class="diagram-node output"><span>لا case مطابق ← default</span></div>
+<div class="diagram-node danger"><span>لا break ← fall-through إلى الحالة التالية</span></div>
 </div>
 </div>
 
@@ -271,3 +286,11 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> العملية قيمة حرفية منفصلة تناسب switch، أما منع القسمة فيعتمد على Predicate وقت التشغيل وهو <code>right == 0.0</code>، لذلك تناسبه if.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+C++17 يسمح init-statement قبل selector لتضييق scope. مع enum class فعّل تحذير عدم تغطية الحالات، وقرر هل default مطلوب: حذفه قد يساعد compiler على كشف قيمة جديدة، بينما وجوده مناسب للمدخل الخارجي بعد validation.
+
+### جرّب بنفسك
+
+أضف قيمة enum جديدة وتأكد أن build أو test يكشف switch غير المكتملة.

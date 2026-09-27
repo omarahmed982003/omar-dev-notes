@@ -1,37 +1,38 @@
 ---
-title: 9. Git, debugging, and testing foundations
-description: Repositories, commits, branches, merges, conflicts, evidence-based debugging, and regression tests.
+title: "Read an error and test your result"
+description: "Read an error and test your result"
 sidebar:
-  order: 9
+  order: 16
+prev: {"link":"/en/programming-basics/computer-fundamentals/08-first-program/","label":"Write, save, and run your first program"}
+next: {"link":"/en/programming-basics/computer-fundamentals/09-values-and-calculations/","label":"Values, variables, and calculation"}
 ---
 
-## Git stores snapshot history
+Meet three ideas that support learning: diagnosing errors, checking results, and keeping change history. You do not need to install Git or memorize its commands yet.
 
-The repository stores project history. The working tree contains current files, the index stages the next snapshot, and a commit records it with parent, author, and message. Use `git status`, review `git diff`, and keep each commit coherent.
+## An error gives useful information
 
-## Branches, merging, and conflicts
+Debugging means finding and fixing the cause of unexpected behavior. Start with expected versus actual. Change one thing at a time so you know which change mattered.
 
-A branch is a movable name pointing to a commit. A merge combines histories; a fast-forward only moves a pointer. Rebase replays commits and changes their identities, so do not rewrite shared history without coordination.
+For `2 + 3`, expect 5. Writing `2 - 3` runs and displays -1. This is a logic error: valid instructions that do not meet the requirement. Restore addition rather than reinstalling the browser.
 
-A conflict means Git cannot choose the intended result. Read both sides and surrounding behavior, create the correct combined file, run tests, and only then stage it.
+## Read one error message
 
-## Remotes and pull requests
+Copy `hello.html` to `error-practice.html`. In that copy only, remove the final quote from `"Hello!"`, save, and reload. A blank page may result because JavaScript syntax is invalid: a syntax error means the writing rules were broken.
 
-`fetch` downloads remote references without integrating them. `pull` fetches and then merges or rebases according to configuration. A pull request supports review but does not replace clear commits and passing tests. Never commit credentials; deletion from a later commit does not invalidate the exposed secret.
+In Edge or Chrome on Windows, open the browser menu, then More tools → Developer tools, and select Console. This panel displays messages and errors; do not type or paste commands into it. Read the error pointing to your file and line; exact wording varies by browser. Restore the quote, save, and reload: Hello! returns. Close the panel afterward.
 
-## Evidence-based debugging
+When requesting help, include filename, line, error text, expected result, and what you tried. Inspect shared content for personal information. Keep the working original for comparison with your practice copy.
 
-Reproduce with fixed input, state expected and actual behavior, find the last known-correct point, gather logs and debugger evidence, test one hypothesis at a time, fix the cause, and add a regression test. `git bisect` can binary-search history when a reliable pass/fail test exists.
+## A test asks a question with an expected answer
 
-## Test levels
+In `hello.html`, change the message to `Test 1`, save, and reload. Compare the displayed text with that expectation, then restore and retest the first message. Numeric boundaries come later.
 
-Unit tests cover small logic, integration tests cover component boundaries, end-to-end tests cover user journeys, and regression tests preserve a previously failing case. A good test has controlled dependencies, a clear failure reason, and explicit arrange–act–assert structure.
+One passing example does not prove every case. After a fix, repeat the input revealing the error so it is not forgotten during later edits. Automated tests and their categories come after functions and program organization.
 
-## Check your understanding
+## Why Git exists
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>How do the working tree and index differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The working tree contains all current edits; the index contains the selected next commit.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>What follows conflict resolution before committing?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Review the result, remove markers through a real resolution, run tests, and stage the intended file.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why does deleting a secret in a later commit not solve exposure?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It remains in history, clones, and possibly logs; rotate it and remediate stored history and distribution.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>What does a regression test preserve?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The previously failing input and expected behavior so the defect cannot silently return.</div></details></section>
-</div>
+Git keeps a history of project-file changes so you can inspect changes and return to earlier versions when needed. Saving in an editor updates the current file; Git can retain selected points in its history. GitHub is a service that can host Git projects; tool and service are different.
+
+Git does not prove code correctness or replace an independent backup. Keep passwords out of project history. Knowing its purpose is enough now; learn commands, branches, and merging when managing changes in a project.
+
+**Check yourself:** Before the fix, 2−3 gave -1; afterward 2+3 gave 5. Record the wrong operation, the change back to +, and the observed 5. A filename such as “very-final-2” does not explain history as well as an organized change record.

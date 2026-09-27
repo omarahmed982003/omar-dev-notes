@@ -5,6 +5,18 @@ sidebar:
   order: 11
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+
+
 ## أي Cache؟
 
 - **OPcache:** PHP bytecode.
@@ -64,40 +76,37 @@ return json_decode($json, true, flags: JSON_THROW_ON_ERROR);
 - ما أقصى stale time؟
 - ماذا يحدث عند failure؟
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Data Caching وRedis">
-<p class="lesson-diagram-title">خريطة مفاهيم: Data Caching وRedis</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>أي Cache؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Cache-aside</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاتيح وTTL</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Cache stampede</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الفشل</span></div>
-</div>
-</div>
+<details><summary>إيه أصعب مشكلة في cache؟</summary><p>الإبطال والاتساق: لازم تحدد المفتاح والـTTL ومتى تحذف أو تحدث النسخة بعد تغيير المصدر.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «أي Cache؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> OPcache: PHP bytecode. HTTP cache: responses حسب HTTP semantics. Application/Data cache: نتائج queries أو حسابات. Local in-process: سريع لكنه غير مشترك وقد يختلف بين workers. Redis أداة شائعة للبيانات المشتركة، لكنه ليس مصدر الحقيقة تلقائيًا. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «أي Cache؟» و«Cache-aside». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Data Caching وRedis»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «أي Cache؟»: OPcache: PHP bytecode. HTTP cache: responses حسب HTTP semantics. Application/Data cache: نتائج queries أو حسابات. Local in-process: سريع لكنه غير مشترك وقد يختلف بين workers. Redis أداة شائعة للبيانات المشتركة، لكنه ليس مصدر الحقيقة تلقائيًا. أما «Cache-aside»: عند الكتابة حدّث database أولًا ثم احذف/حدّث cache وفق استراتيجية واضحة. توقع stale data خلال نافذة محددة. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «المفاتيح وTTL». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ضع namespace/version في المفتاح. أضف jitter للـTTL حتى لا تنتهي آلاف المفاتيح معًا. لا تجعل KEYS * جزءًا من request path. حدّد serialization format وحجمه. لا تخزن secret لمجرد أن Redis “داخلية”. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Cache stampede» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عند انتهاء key مشهورة قد تعيد عدة requests بناءها معًا. حلول: lock قصير مع timeout. stale-while-revalidate. probabilistic early refresh. single-flight داخل العملية. الـlock يجب أن تملك token فريدة وتحررها فقط إن كنت ما زلت المالك. لا تعتبر distributed lock حلًا بسيطًا لكل consistency. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+الناتج المحلي database=11 stale_cache=10 ثم obsolete_refill=rejected يوضح السباق. ده نموذج ترتيب أحداث؛ فحص TTL والانقطاع والحمل يحتاج Redis حقيقيًا.
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php cache-lab.php
+~~~
+
+**هدف تجربة التكامل الموسعة:** القراءة الأولى <code>source=db</code> والثانية <code>source=cache</code>، وفي الاختبار التسلسلي بعد التحديث تقرأ القيمة الجديدة وتتأكد من TTL؛ ده لا يثبت غياب القراءات القديمة أثناء التزامن.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+اختر Redis structure حسب العقد: string وhash وset وsorted set وstream ليست متبادلة. افهم eviction policy والحد الأقصى للذاكرة، وحدد أثر replication lag وfailover. Cache ليست مصدر الحقيقة؛ صمم stale tolerance وinvalidations وstampede lock وfallback عند غياب Redis.
+
+### جرّب بنفسك
+
+اقطع Redis أثناء الحمل وأثبت صحة البيانات حتى لو انخفض الأداء.
+
+
+## إعادة ملء الـcache ممكن تتسابق مع الحذف
+
+تتبّع الترتيب ده: القارئ A مايلقيش المفتاح ويقرأ 10 من قاعدة البيانات؛ الكاتب B يحفظ 11 ويحذف المفتاح؛ A يكمل ويحفظ 10 في cache. حذف المفتاح بعد commit إذن مش ضمان لقراءة حديثة. TTL بيحد بقاء القيمة بعد إدخالها، لكن مش بالضرورة عمرها كله لو قراءة قديمة اتأخرت قبل التخزين.
+
+لقرارات المخزون والدفع، اقرأ وطبّق القيود في قاعدة البيانات. للعرض، حدد مدة قدم مقبولة وحدًا لعمر القارئ؛ ممكن تستخدم مفاتيح بإصدار ومصدر موثوق للإصدار الحالي، أو فحص إصدارات منسق قبل نشر القيمة. القفل اللي انتهت مهلة ملكيته محتاج حماية بإصدار كمان. تدريب: أعد ترتيب الأحداث بعميلين توقفهما مؤقتًا؛ المتوقع إن النسخة الساذجة تعرض 10، وبعد الإصلاح تثبت منع نشر الإصدار القديم.

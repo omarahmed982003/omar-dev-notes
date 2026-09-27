@@ -5,6 +5,20 @@ sidebar:
   order: 16
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+- **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
 ## المهلة أول دفاع
 
 كل اتصال خارجي يحتاج Connect Timeout وTotal Timeout. من دونها قد تتراكم PHP Workers وهي تنتظر خدمة بطيئة حتى ينفد الـPool. Retry ليست بديلًا عن المهلة؛ استخدمها فقط لخطأ مؤقت وعملية آمنة أو Idempotent، مع Backoff وJitter وحد أقصى.
@@ -80,3 +94,27 @@ Health لا تعني أن Process موجودة فقط: راقب قدرتها ع�
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>كيف يختلف Bulkhead عن Circuit Breaker؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Bulkhead يعزل السعة، أما Circuit Breaker فيوقف الاستدعاء مؤقتًا عند نمط فشل.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>ماذا يجب أن يفعل Worker عند SIGTERM؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> يتوقف عن حجز عمل جديد، ينهي المهمة الحالية وفق المهلة، يغلق الموارد، ثم يخرج بكود واضح.</div></details></section>
 </div>
+
+## شغّل وتحقق
+
+الملف يشغّل اختبارات تكرار الأثر وrollback. اختبار circuit breaker يحتاج تنفيذ حالات closed/open/half-open وساعة قابلة للتحكم؛ ليس ضمن ادعاء نجاح الاختبار المحلي.
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php resilience-lab.php
+~~~
+
+**هدف تجربة التكامل الموسعة:** طلبان بالمفتاح idempotency نفسه ينتجان أثر عمل واحدًا، ويفتح circuit breaker بعد الحد ثم يختبر التعافي تدريجيًا.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+Retry يحتاج exponential backoff مع jitter وretry budget حتى لا يصنع عاصفة. Shutdown يوقف جلب jobs جديدة ثم يمنح الحالية deadline ويحرر lease. Distributed worker يحتاج ownership token أو fencing لمنع عامل قديم من الكتابة بعد فقد القفل، وbackpressure يجب أن تصل إلى المنتج.
+
+### جرّب بنفسك
+
+حاكِ عاملًا يفقد lease ثم يعود، وتأكد أن fencing يمنع الكتابة القديمة.

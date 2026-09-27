@@ -6,6 +6,18 @@ description: "C++ لغة مترجمة تمنح تحكمًا عاليًا بال�
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Compiler:** المترجم: برنامج يحوّل كود C++ إلى ملف يقدر الكمبيوتر يشغّله.
+- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Debugger:** أداة تتبّع الأخطاء: بتوقف البرنامج خطوة خطوة عشان تشوف القيم ومسار التنفيذ.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+
+
 ## ما لغة C++؟
 
 C++ لغة مترجمة تمنح تحكمًا عاليًا بالأداء والذاكرة. تعلّم بنية البرنامج وخط البناء أهم من ربط التعلم ببيئة تطوير واحدة.
@@ -60,7 +72,7 @@ int main() {
 
 <div class="lesson-diagram" role="img" aria-label="مراحل تحويل كود C++ إلى ملف تنفيذي">
 <p class="lesson-diagram-title">مراحل تحويل كود C++ إلى ملف تنفيذي</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node input"><span>Source .cpp</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Preprocessor</span></div>
@@ -184,3 +196,11 @@ g++ main.o calculator.o -o app
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ابدأ بأول رسالة مرتبطة بمصدرِك، أصلحها وأعد البناء؛ الأخطاء التالية قد تكون آثارًا متسلسلة.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+استخدم debugger لوضع breakpoint وفحص stack بدل إضافة prints فقط. فعّل AddressSanitizer وUndefinedBehaviorSanitizer في build تطويري، واجعل CMake أو build script يحفظ flags نفسها لكل الملفات. مدير الحزم يحل الاعتماد لكنه لا يعفيك من تثبيت النسخ ومراجعة المصدر.
+
+### جرّب بنفسك
+
+ابنِ البرنامج بتحذيرات وsanitizers ثم شخّص out-of-bounds متعمدًا.

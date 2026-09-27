@@ -5,6 +5,26 @@ sidebar:
   order: 10
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **TLS:** An encryption layer that protects data while it moves between two parties.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Token:** A value representing identity or permission without resending a password.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+
+
+- **Authentication:** Confirming that a user owns an identity.
+- **Authorization:** Deciding which actions an identity may perform.
+- **Encryption:** A reversible transformation requiring the correct key.
+- **JWT:** A signed token format; signing does not encrypt its contents.
+- **OAuth:** A delegation protocol granting limited access without sharing a password.
+- **OIDC:** An identity layer over OAuth that identifies who signed in.
+- **Secret:** A sensitive value such as an API key or service password.
+
 # The problem OAuth solves
 
 OAuth 2.0 is a delegated authorization framework. It lets a client obtain limited access to a resource server without receiving the resource owner's password.
@@ -75,40 +95,26 @@ Protect token responses with TLS and `Cache-Control: no-store`; never log them.
 
 OAuth is not authentication, JWT is only a token format, a client ID is not secret, and token validity never replaces object ownership and domain-policy checks.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: OAuth 2.0 concepts and tokens">
-<p class="lesson-diagram-title">Concept map: OAuth 2.0 concepts and tokens</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Four roles</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Client registration and types</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Scope and consent</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Access tokens</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Refresh tokens</span></div>
-</div>
-</div>
+<details><summary>Is an access token proof of application login?</summary><p>Not necessarily; it delegates API access. Use OIDC and a validated ID token for user identity.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Four roles” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Resource Owner: can grant access, often a user. Client: application requesting access. Authorization Server: issues tokens after authorization. Resource Server: protected API accepting access tokens. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Four roles” with “Client registration and types”. Why does neither replace the other in “OAuth 2.0 concepts and tokens”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Four roles”: Resource Owner: can grant access, often a user. Client: application requesting access. Authorization Server: issues tokens after authorization. Resource Server: protected API accepting access tokens. For “Client registration and types”: Registration commonly defines a public client_id, exact redirect URIs, allowed grants, and authentication methods. Public clients cannot keep a secret, including browser JavaScript and native apps. Confidential clients run on a backend capable of protecting credentials. Putting a client secret into a distributed application does not make it confidential. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Scope and consent”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Scopes describe requested capabilities: Use least privilege and clear capability names. Consent is the resource owner's approval experience, not a replacement for authorization-server policy. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Access tokens” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> An access token is a credential presented to a resource server. It can be opaque or a JWT; OAuth does not require one format. Restrict it by lifetime, audience/resource, and scope. An API must enforce both intended audience and permitted action. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** A client presents an access token meant for another service or lacking the required permission.
+
+**Negative test:** Send a token with the wrong audience, then a valid token without the required scope.
+
+**Expected result:** The first is rejected as invalid and the second as insufficient scope; an access token is not treated as proof of user login.
+
+### Verification source
+
+- [RFC 9700: OAuth 2.0 Security Best Current Practice](https://www.rfc-editor.org/rfc/rfc9700.html)
+
+## Connect the ideas
+
+A resource indicator or audience identifies the intended API and prevents a token for one service from working at another. Introspection supports opaque tokens or central decisions, while revocation invalidates a grant with a defined propagation delay. Consent does not replace least privilege, and scopes are not automatically internal roles.
+
+### Try it yourself
+
+Send a token from the same issuer but for another resource and confirm rejection.

@@ -5,6 +5,22 @@ sidebar:
   order: 9
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Scope:** نطاق التفويض: اسم صلاحية يطلبها التطبيق أو يحصل عليها، زي orders:read لقراءة الطلبات؛ ولسه لازم نتحقق إن المستخدم يملك الطلب.
+
+
+- **OAuth:** بروتوكول تفويض يمنح تطبيقًا صلاحية محددة من غير تسليمه كلمة سر المستخدم.
+- **OIDC:** طبقة هوية فوق OAuth تضيف طريقة موحدة لمعرفة من سجل الدخول.
+- **SAML:** معيار لتبادل بيانات تسجيل الدخول بين جهة هوية وخدمة.
+
 # الهوية الاتحادية ليست بروتوكولًا واحدًا
 
 **Federated Identity** علاقة ثقة تسمح لتطبيق بالاعتماد على جهة خارجية لإثبات هوية المستخدم. **Single Sign-On (SSO)** تجربة يستطيع فيها المستخدم الوصول إلى عدة تطبيقات بعد عملية دخول مركزية، لكنه قد يُنفذ داخل مؤسسة أو عبر اتحاد هويات.
@@ -87,40 +103,26 @@ Claims شائعة: `sub` و`iss` و`aud` و`exp` و`auth_time`، ومع scopes �
 
 ليس SAML “غير آمن لأنه قديم” ولا OIDC آمنًا تلقائيًا. الخطر في validation ناقص، trust غير مضبوط، redirect غير دقيق، أو مكتبة غير محدثة.
 
-## خريطة الدرس
+## سيناريو أمني
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Federated Identity وSSO وSAML وOIDC">
-<p class="lesson-diagram-title">خريطة مفاهيم: Federated Identity وSSO وSAML وOIDC</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>OAuth وOIDC وSAML</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>SAML Web Browser SSO</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>OpenID Connect</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>تحقق ID token</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>متى أختار ماذا؟</span></div>
-</div>
-</div>
+<details><summary>مين يثبت هوية المستخدم في federation؟</summary><p>Identity Provider يصادق المستخدم، وRelying Party يتحقق من assertion أو ID token ثم ينشئ جلسته.</p></details>
 
-## تأكد من فهمك
+## تدريب تهديد
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «OAuth وOIDC وSAML» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> | التقنية | الهدف الأساسي | النتيجة المعتادة | |---|---|---| | OAuth 2.0 | تفويض وصول عميل إلى Resource Server | Access token | | OpenID Connect | مصادقة مبنية فوق OAuth 2.0 | ID token + معلومات هوية | | SAML 2.0 | تبادل Assertions للهوية/الصفات، شائع في Enterprise SSO | SAML Response/Assertion XML | :::caution[التصحيح الأهم] OAuth وحده ليس بروتوكول Login. استخدام access token وendpoint عشوائي لاستنتاج هوية المستخدم… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «OAuth وOIDC وSAML» و«SAML Web Browser SSO». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Federated Identity وSSO وSAML وOIDC»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «OAuth وOIDC وSAML»: | التقنية | الهدف الأساسي | النتيجة المعتادة | |---|---|---| | OAuth 2.0 | تفويض وصول عميل إلى Resource Server | Access token | | OpenID Connect | مصادقة مبنية فوق OAuth 2.0 | ID token + معلومات هوية | | SAML 2.0 | تبادل Assertions للهوية/الصفات، شائع في Enterprise SSO | SAML Response/Assertion XML | :::caution[التصحيح الأهم] OAuth وحده ليس بروتوكول Login. استخدام access token وendpoint عشوائي لاستنتاج هوية المستخدم… أما «SAML Web Browser SSO»: الأطراف الرئيسية: Identity Provider (IdP): يصادق المستخدم ويصدر assertion. Service Provider (SP): التطبيق الذي يستهلك النتيجة وينشئ جلسة محلية. Assertion: XML موقّع يحوي subject وconditions وattributes. تدفق SP-initiated مبسط: التحقق يجب أن يشمل XML signature من شهادة IdP الموثوقة، Issuer، AudienceRestriction، Recipient/Destination، حدود الزمن، وInResponseTo عند استخدام request. امنع replay وسجل assertion ID. استخدم… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «OpenID Connect». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> OIDC يضيف طبقة هوية إلى OAuth. وجود openid داخل scope يحول الطلب إلى طلب OIDC: النواتج: ID token: موجه إلى الـClient ويخبره بنتيجة المصادقة. Access token: موجه إلى API/Resource Server؛ لا تستخدم ID token بدلًا منه. UserInfo endpoint: معلومات إضافية اختيارية باستخدام access token. Claims شائعة: sub وiss وaud وexp وauth_time، ومع scopes مناسبة قد تظهر name وemail. الـscope طلب لمجموعة claims/صلاحيات وليس ضمانًا أن كل… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «تحقق ID token» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> اكتشف metadata من issuer موثوق مسبقًا. تحقق من التوقيع عبر JWKS لهذا issuer. طابق iss حرفيًا وaud مع client_id. افحص exp وiat وnbf إن وُجد. طابق nonce مع المعاملة التي بدأت في المتصفح. طبّق قواعد azp عندما توجد جماهير متعددة. إذا استخدمت UserInfo، يجب أن يطابق sub قيمة ID token. email قابل للتغيير وقد لا يكون verified؛ استخدم iss + sub كمفتاح هوية خارجي ثابت. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+**السيناريو:** تصل استجابة هوية صحيحة التوقيع لكنها تخص Client أو جلسة تسجيل دخول مختلفة.
+
+**اختبار المنع:** اختبر <code>audience</code> مختلفًا و<code>nonce</code> قديمًا وredirect URI غير مسجل.
+
+**النتيجة المتوقعة:** تُرفض الحالات كلها، وتُربط الاستجابة بالطلب المحلي قبل إنشاء الجلسة.
+
+### مرجع التحقق
+
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## اربط النقاط ببعض
+
+في SAML تحقق من metadata وentity ID وDestination وAudience وInResponseTo والتوقيت والتوقيع في الموضع المتوقع لتجنب XML signature wrapping؛ لا تكتب XML security يدويًا. في OIDC استخدم discovery/JWKS الموثوقين وثبت issuer وclient ID وredirect URI واضبط clock skew بحد صغير.
+
+### جرّب بنفسك
+
+اختبر assertion موقعة لكن بعنصر مختلف وID token من issuer آخر.

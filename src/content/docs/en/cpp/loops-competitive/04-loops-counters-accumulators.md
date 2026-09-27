@@ -6,6 +6,17 @@ description: "A loop has initial state, a continuation condition, and an update.
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Token:** A value representing identity or permission without resending a password.
+- **Loop:** A structure that repeats instructions according to a condition.
+
+
 ## The parts of a loop
 
 A loop has initial state, a continuation condition, and an update. Choose while, for, or do-while according to the repetition model.
@@ -36,7 +47,7 @@ for (int i = 1; i <= n; ++i) {
 
 <div class="lesson-diagram" role="img" aria-label="The loop cycle and its initialization, bound, and update points">
 <p class="lesson-diagram-title">The loop cycle and its initialization, bound, and update points</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-cycle">
 <div class="diagram-node start"><span>Initialize</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Condition</span></div>
@@ -439,20 +450,29 @@ If `column` is initialized only once outside the outer loop, it reaches 5 after 
 
 ```cpp
 #include <iostream>
-#include <limits>
+#include <sstream>
+#include <string>
+
 int main() {
-    int choice{};
-    do {
+    std::string line;
+    while (true) {
         std::cout << "1. Continue\n0. Exit\nChoice: ";
-        if (!(std::cin >> choice)) {
-            std::cout << "Enter a numeric choice.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (!std::getline(std::cin, line)) {
+            if (std::cin.eof()) return 0;
+            std::cerr << "Input read failed\n";
+            return 1;
+        }
+        std::istringstream input(line);
+        int choice{};
+        char extra{};
+        if (!(input >> choice) || (input >> extra)) {
+            std::cout << "Enter one integer only.\n";
             continue;
         }
+        if (choice == 0) return 0;
         if (choice == 1) std::cout << "Continuing\n";
-        else if (choice != 0) std::cout << "Unknown choice\n";
-    } while (choice != 0);
+        else std::cout << "Unknown choice\n";
+    }
 }
 ```
 
@@ -494,3 +514,18 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The first row advances column past its limit. Reinitializing inside the outer loop gives every row a fresh complete column traversal.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+This lesson is extremely dense; study it in three units: loop construction/tracing, counters/accumulators/search, then nested loops/complexity. A range-based for visits elements directly. Resizing a container while iterating may invalidate the iterator, the position used to traverse it; see the [container lesson](/en/cpp/advanced/01-functions-containers-references/). Test each pattern before advancing.
+
+### Try it yourself
+
+Create three independent practice files instead of combining all examples into one program.
+
+
+## Test the menu’s input contract
+
+The full program uses a line parser so `abc`, an empty line, `1x`, and an out-of-range integer are rejected as whole inputs. Whitespace around one integer is accepted. Test the lines `abc`, `1`, `0`: an error is followed by `Continuing`, then exit. End input immediately, and again after `1`; both must exit without spinning. In the earlier do-while fragment, input is assumed valid. `continue` in do-while still checks the condition, so a failed extraction that leaves zero can accidentally exit. Use the complete loop when recovering from invalid input.
+
+Save as `menu.cpp` and compile with `g++ -std=c++17 -Wall -Wextra -pedantic menu.cpp -o menu`. Run `./menu` on Linux/macOS or `.\menu.exe` in PowerShell.

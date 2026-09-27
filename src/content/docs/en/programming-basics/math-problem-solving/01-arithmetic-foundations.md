@@ -1,8 +1,20 @@
 ---
-title: "Math foundations: remainder, ratios, averages, and powers"
-description: "Core arithmetic appears directly in programs: remainder, percentages, rates, averages, powers, roots, and precedence. Connect every formula to the problem meaning before calculating."
+title: "Ratios, averages, and powers"
+description: "Ratios, averages, and powers"
 tableOfContents: true
+prev: false
+next: {"link":"/en/programming-basics/math-problem-solving/07-division-and-precision/","label":"Division, remainders, and numerical precision"}
+sidebar:
+  order: 1
 ---
+
+Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+
+
+
+## One calculation with meaning
+
+Three notebooks at 20 cost `3×20=60`. A 10% discount is `60×10÷100=6`, leaving 54. **Try:** price 30 and quantity 2 still total 60. The power `2³` is `2×2×2=8`; `√25=5` because `5×5=25`. The percent sign in prose differs from a language’s remainder operator.
 
 ## Overview
 
@@ -14,7 +26,7 @@ Core arithmetic appears directly in programs: remainder, percentages, rates, ave
 - A percentage is a part per hundred; discount = price × rate ÷ 100.
 - A rate compares quantities with different units, such as km/hour.
 - Arithmetic mean is sum divided by count and is sensitive to outliers.
-- Use parentheses, powers, multiplication/division, then addition/subtraction; equal-precedence operations go left to right.
+- Use parentheses, powers, multiplication/division, then addition/subtraction; multiplication/division and addition/subtraction associate left to right. Powers and programming operators may associate differently; use parentheses to state intent.
 
 ## Worked example
 
@@ -29,24 +41,18 @@ For a price of 800 with a 15% discount, the discount is 120 and the final price 
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Math foundations: remainder, ratios, averages, and powers">
 <p class="lesson-diagram-title">Concept map: Math foundations: remainder, ratios, averages, and powers</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>Value and meaning</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Core concepts</span></div>
+<div class="diagram-node process"><span>Choose the operation</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Worked example</span></div>
+<div class="diagram-node process"><span>Calculate with units</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Test zero and boundaries</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Core arithmetic appears directly in programs: remainder, percentages, rates,</span></div>
+<div class="diagram-node output"><span>Interpret the result</span></div>
 </div>
 </div>
-
-## Integer division, number theory, and precision
-
-Integer division truncates the fractional part. For positive integers, `(count + size - 1) / size` computes ceiling division. Euclid's algorithm repeatedly replaces `(a, b)` with `(b, a % b)` to find the GCD; the LCM can then be derived carefully without overflowing intermediate values.
-
-Modular arithmetic models cycles such as clocks and parity. Floating-point results are approximate, so comparisons may require a tolerance chosen for the problem's scale.
 
 ## Check your understanding
 
@@ -69,6 +75,6 @@ Modular arithmetic models cycles such as clocks and parity. Floating-point resul
 </section>
 </div>
 
-## Summary
+## Next step
 
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.
+After completing this practice, continue with [Division, remainders, and numerical precision](/en/programming-basics/math-problem-solving/07-division-and-precision/).

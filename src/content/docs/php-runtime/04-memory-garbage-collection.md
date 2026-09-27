@@ -5,6 +5,22 @@ sidebar:
   order: 4
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+
+
+- **Array:** مصفوفة تجمع قيمًا تحت اسم واحد وتسمح بالوصول لها بمفاتيح.
+- **OPcache:** ذاكرة تحفظ نتيجة ترجمة PHP لتجنب تكرار العمل مع كل طلب.
+- **PHP-FPM:** مدير عمليات يشغّل عمال PHP لصالح خادم الويب.
+- **Redis:** مخزن سريع في الذاكرة يُستخدم للكاش والجلسات والطوابير.
+
 # كيف تمثل PHP القيم في الذاكرة؟
 
 محرك Zend يمثل قيمة PHP ببنية داخلية تسمى `zval` تحمل نوع القيمة وبياناتها. بعض البيانات المركبة مثل strings وarrays وobjects لها هياكل إضافية محسوبة المراجع.
@@ -119,40 +135,30 @@ printf(
 - افصل cache مشتركة مثل OPcache/Redis عن ذاكرة heap الخاصة بالطلب.
 - لا ترفع `memory_limit` قبل معرفة سبب الاستهلاك.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: ذاكرة PHP وGarbage Collection">
-<p class="lesson-diagram-title">خريطة مفاهيم: ذاكرة PHP وGarbage Collection</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Reference Counting</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Copy-on-write</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>References بعلامة &amp;</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>لماذا نحتاج Garbage Collector؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الذاكرة في PHP-FPM</span></div>
-</div>
-</div>
+<details><summary>ليه worker طويل العمر ممكن يزيد استهلاكه؟</summary><p>مراجع وcaches وcycles قد تبقى بين المهام؛ راقب الذاكرة وحرر الموارد وأعد تشغيل worker بحدود مدروسة.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Reference Counting» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> عندما لا يعود شيء يشير إلى قيمة محسوبة المراجع، يمكن تحريرها فورًا عادة. لكن refcount ليس “عدد المتغيرات” بصورة مطلقة؛ قد تتدخل temporaries وinterning وتحسينات المحرك، لذلك مخرجات debugging قد تبدو أعلى من المتوقع. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Reference Counting» و«Copy-on-write». لماذا لا يغني أحدهما عن الآخر داخل موضوع «ذاكرة PHP وGarbage Collection»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Reference Counting»: عندما لا يعود شيء يشير إلى قيمة محسوبة المراجع، يمكن تحريرها فورًا عادة. لكن refcount ليس “عدد المتغيرات” بصورة مطلقة؛ قد تتدخل temporaries وinterning وتحسينات المحرك، لذلك مخرجات debugging قد تبدو أعلى من المتوقع. أما «Copy-on-write»: عند الإسناد لا ينسخ PHP array أو string كبيرًا فورًا عادة؛ يشترك المتغيران في البيانات حتى يحاول أحدهما تعديلها: هذا يوفّر الذاكرة والوقت، لكنه يعني أن تعديل نسخة كبيرة قد يسبب memory spike لحظيًا. الكائنات تختلف: $a و$b يحملان handle للكائن نفسه. للحصول على كائن مستقل استخدم clone ونفّذ __clone() للنسخ العميق عند الحاجة. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «References بعلامة &amp;». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> المرجع في PHP alias إلى نفس متغير التخزين، وليس مؤشر C عام يمكن إجراء pointer arithmetic عليه. لا تستخدم &amp; كتحسين أداء؛ غالبًا يزيد التعقيد وقد يمنع تحسينات Copy-on-write. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «لماذا نحتاج Garbage Collector؟» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Reference counting وحده لا يحرر دورة تشير إلى نفسها: يسجل GC الحاويات المرشحة ويفحص الدورات دوريًا. يمكن طلب دورة جمع يدويًا: لا تستدعها بعد كل عملية. استخدمها في workers طويلة العمر فقط بعد القياس، مثل queue consumer ينشئ graphs كبيرة بين jobs. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+الملف يقارن بناء 100000 عنصر بمرور حسابي دون مصفوفة، ويطبع الذاكرة والذروة. الذروة تراكمية داخل العملية وقد لا تنخفض بعد unset؛ الأرقام تختلف حسب البناء والمخصص.
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php memory-lab.php
+~~~
+
+**هدف تجربة التكامل الموسعة:** يطبع السكربت الذاكرة الحالية والذروة لكل مرحلة، وتبقى الذروة تحت الميزانية المحددة للملف الكبير.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+Generator وstreaming يقللان working set عندما لا تحتاج كل البيانات معًا. في worker طويل العمر حرر مراجع وresources بين jobs وراقب growth لا لقطة واحدة. <code>memory_limit</code> ليس كل RSS لأن extensions وnative libraries وmapped files قد تقع خارجه.
+
+### جرّب بنفسك
+
+عالج 100 job وراقب RSS بعد كل عشرة لكشف retention.

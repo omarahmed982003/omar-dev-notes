@@ -333,6 +333,76 @@ samp {
 .diagram-node.success { --node-color: #22c55e; }
 .diagram-node.danger { --node-color: #ef4444; }
 .diagram-arrow { color: var(--sl-color-accent); font-size: 1.45rem; font-weight: 780; line-height: 1; }
+.diagram-arrow[data-label] {
+	display: inline-grid; place-items: center; gap: 0.12rem;
+	min-width: 3.25rem; font-size: 1.1rem;
+}
+.diagram-arrow[data-label]::before {
+	content: attr(data-label);
+	padding: 0.12rem 0.42rem;
+	border: 1px solid color-mix(in srgb, var(--sl-color-accent) 38%, transparent);
+	border-radius: 999px;
+	background: var(--docs-surface);
+	color: var(--sl-color-text-accent);
+	font-size: 0.68rem; font-weight: 760; line-height: 1.25;
+	white-space: nowrap;
+}
+.diagram-branches {
+	margin-block-start: 1rem;
+	padding-block-start: 0.85rem;
+	border-block-start: 1px dashed color-mix(in srgb, var(--sl-color-gray-4) 65%, transparent);
+}
+.diagram-branch-label {
+	grid-column: 1 / -1;
+	margin: 0;
+	color: var(--sl-color-gray-2);
+	font-size: 0.78rem; font-weight: 720; text-align: center;
+}
+
+/* A pipeline emphasizes ordered stages and numbers them. */
+.diagram-flow.diagram-pipeline { counter-reset: diagram-step; align-items: stretch; }
+.diagram-flow.diagram-pipeline .diagram-node {
+	counter-increment: diagram-step;
+	position: relative;
+	padding-top: 1.65rem;
+	border-radius: 0.65rem;
+}
+.diagram-flow.diagram-pipeline .diagram-node::before {
+	content: counter(diagram-step, decimal-leading-zero);
+	position: absolute; inset-block-start: 0.35rem; inset-inline-start: 0.55rem;
+	color: color-mix(in srgb, var(--node-color, var(--sl-color-accent)) 82%, white);
+	font: 760 0.68rem/1 ui-monospace, monospace; letter-spacing: 0.08em;
+}
+
+/* A concept map is a set of related cards, not a fake left-to-right process. */
+.diagram-flow.diagram-grid {
+	display: grid; grid-template-columns: repeat(3, minmax(9rem, 1fr));
+	min-width: 0; max-width: 48rem; margin-inline: auto;
+}
+.diagram-flow.diagram-grid .diagram-arrow { display: none; }
+.diagram-flow.diagram-grid .diagram-node {
+	min-width: 0; height: 100%; border-radius: 1rem;
+	border-inline-start-width: 0.35rem;
+}
+
+/* A cycle makes the return path visible instead of pretending it ends forever. */
+.diagram-flow.diagram-cycle {
+	position: relative; padding: 0.8rem 1rem 1.8rem;
+	border: 1px dashed color-mix(in srgb, var(--sl-color-accent) 48%, transparent);
+	border-radius: 999px;
+}
+.diagram-flow.diagram-cycle::after {
+	content: '↶';
+	position: absolute; inset-block-end: -0.35rem; inset-inline-start: 50%;
+	padding: 0 0.45rem; background: var(--docs-surface);
+	color: var(--sl-color-text-accent); font-size: 1.55rem; line-height: 1;
+}
+
+/* Decision flows alternate levels so questions read as branches, not stages. */
+.diagram-flow.diagram-decision { align-items: flex-start; }
+.diagram-flow.diagram-decision .diagram-node:nth-of-type(even) { margin-top: 2.25rem; }
+.diagram-flow.diagram-decision .diagram-arrow:nth-of-type(odd) { transform: rotate(18deg); }
+[dir='rtl'] .diagram-flow.diagram-decision .diagram-arrow:nth-of-type(odd) { transform: rotate(-18deg); }
 .diagram-branches {
 	display: grid; grid-template-columns: repeat(2, minmax(9rem, 1fr)); gap: 1rem;
 	max-width: 34rem; margin-inline: auto;
@@ -499,6 +569,22 @@ mobile-starlight-toc details {
 
 	.diagram-flow { min-width: 0; flex-direction: column; }
 	.diagram-flow .diagram-arrow { transform: rotate(90deg); }
+	.diagram-flow.diagram-grid { display: grid; grid-template-columns: 1fr; }
+	.diagram-flow.diagram-cycle { border-radius: 1.25rem; padding-bottom: 2.2rem; }
+	.diagram-flow.diagram-decision .diagram-node:nth-of-type(even) { margin-top: 0; }
+	.diagram-flow.diagram-decision .diagram-arrow:nth-of-type(odd),
+	[dir='rtl'] .diagram-flow.diagram-decision .diagram-arrow:nth-of-type(odd) { transform: rotate(90deg); }
+	.diagram-flow .diagram-arrow[data-label],
+	.diagram-flow.diagram-decision .diagram-arrow[data-label]:nth-of-type(odd),
+	[dir='rtl'] .diagram-flow.diagram-decision .diagram-arrow[data-label]:nth-of-type(odd) {
+		transform: none;
+		font-size: 0;
+	}
+	.diagram-flow .diagram-arrow[data-label]::after {
+		content: '↓';
+		font-size: 1.25rem;
+		line-height: 1;
+	}
 	.diagram-node { width: min(100%, 18rem); }
 	.diagram-branches { grid-template-columns: 1fr; }
 	.quiz-toolbar { align-items: stretch; flex-direction: column; }

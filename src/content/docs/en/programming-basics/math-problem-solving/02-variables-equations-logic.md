@@ -2,7 +2,27 @@
 title: "Variables, equations, and Boolean logic"
 description: "A variable names a value that may change, while an equation describes a relationship. Boolean logic turns problem rules into decisions a program can evaluate."
 tableOfContents: true
+prev: {"link":"/en/programming-basics/math-problem-solving/07-division-and-precision/","label":"Division, remainders, and numerical precision"}
+next: {"link":"/en/programming-basics/math-problem-solving/08-sets-relations/","label":"Sets, relations, and function inputs"}
+sidebar:
+  order: 3
 ---
+
+Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+
+
+## Test one logical statement
+
+Entry requires a ticket **and not being blocked**. Boolean values are `true` and `false`. `AND` requires both conditions; `NOT` reverses an answer.
+
+| Ticket? | Blocked? | Allowed? |
+|---|---|---|
+| No | No | No |
+| No | Yes | No |
+| Yes | No | Yes |
+| Yes | Yes | No |
+
+This **truth table** lists every input combination and its outcome. Explain the last row before learning symbols. Sets and relations follow in their own lesson.
 
 ## Overview
 
@@ -29,24 +49,18 @@ Loan eligibility might require an acceptable age AND sufficient income AND no ri
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Variables, equations, and Boolean logic">
 <p class="lesson-diagram-title">Concept map: Variables, equations, and Boolean logic</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>Knowns and unknown</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Core concepts</span></div>
+<div class="diagram-node process"><span>Write the relationship</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Worked example</span></div>
+<div class="diagram-node process"><span>Substitute values</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Evaluate the condition</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>A variable names a value that may change, while</span></div>
+<div class="diagram-node output"><span>Verify the solution</span></div>
 </div>
 </div>
-
-## Sets, functions, truth tables, and predicates
-
-A set contains unique elements. Union combines membership, intersection keeps shared elements, and difference removes one set from another. A function maps every element in its domain to one result; its range contains the results actually produced.
-
-Truth tables enumerate Boolean inputs. De Morgan's laws transform `!(A && B)` into `!A || !B` and `!(A || B)` into `!A && !B`. A predicate is a Boolean statement about a value. Universal and existential conditions correspond to operations such as “all elements” and “at least one element.”
 
 ## Check your understanding
 
@@ -69,6 +83,6 @@ Truth tables enumerate Boolean inputs. De Morgan's laws transform `!(A && B)` in
 </section>
 </div>
 
-## Summary
+## Next step
 
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.
+After completing this practice, continue with [Sets, relations, and function inputs](/en/programming-basics/math-problem-solving/08-sets-relations/).

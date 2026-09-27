@@ -5,6 +5,50 @@ sidebar:
   order: 12
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
+## Array في PHP أداة مرنة جدًا
+
+نفس نوع `array` ممكن يمثل قائمة مرتبة أوMap بمفاتيح أوRows جاية من قاعدة بيانات. المرونة دي مفيدة، لكنها تخليك مسؤول عن معرفة الشكل المتوقع.
+
+```php
+$prices = [1200, 2500, 800];
+$product = ['id' => 7, 'name' => 'Keyboard'];
+```
+
+في القائمة، المفاتيح غالبًا `0, 1, 2`. في الـMap، المفتاح له معنى زي `'name'`. بعض العمليات مثل `array_filter()` تحافظ على المفاتيح، ولذلك لو محتاج JSON List متصلة استخدم `array_values()` بعد الفلترة.
+
+الدوال `map` و`filter` و`reduce` مش هدفها تعمل الكود أقصر بأي ثمن:
+
+- `map`: حوّل كل عنصر إلى عنصر جديد.
+- `filter`: احتفظ بالعناصر اللي تحقق شرطًا.
+- `reduce`: اجمع القائمة في نتيجة واحدة.
+
+```php
+$positive = array_values(array_filter(
+    $prices,
+    static fn (int $price): bool => $price > 0,
+));
+
+$withTax = array_map(
+    static fn (int $price): int => (int) round($price * 1.14),
+    $positive,
+);
+
+$total = array_sum($withTax);
+```
+
+لو سلسلة التحويلات بقت محتاجة شرح طويل، Loop واضحة ممكن تكون أفضل. اختار الأسلوب اللي يوضح حركة البيانات ويخلي الأخطاء والأنواع ظاهرة.
+
 ## PHP array أكثر من نوع
 
 `array` في PHP خريطة مرتبة تستخدم كـlist أوmap. افحص شكلها عند حدود التطبيق بدل افتراض أن المفاتيح متتالية.
@@ -71,40 +115,38 @@ usort($orders, static fn ($a, $b) =>
 
 PHP arrays مرنة لكنها أثقل من packed binary structures. لا تستخدم `array_map` و`fetchAll` على ملايين العناصر. استخدم Generator أو pagination أو processing streaming.
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المصفوفات وأدوات التحويل">
-<p class="lesson-diagram-title">خريطة مفاهيم: المصفوفات وأدوات التحويل</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>PHP array أكثر من نوع</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>map وfilter وreduce</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Unpacking والدمج</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>الفرز</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الذاكرة</span></div>
-</div>
-</div>
+<details><summary>1. فلتر الأسعار الموجبة وحافظ على JSON List</summary><p>استخدم <code>array_filter()</code> ثم <code>array_values()</code> لإعادة ترقيم المفاتيح قبل <code>json_encode()</code>.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. map ولا filter لتطبيق ضريبة؟</summary><p><code>map</code> لأنها تحول كل سعر إلى سعر جديد. <code>filter</code> تختار عناصر ولا يفترض أن تغيّر معناها.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «PHP array أكثر من نوع» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> array في PHP خريطة مرتبة تستخدم كـlist أوmap. افحص شكلها عند حدود التطبيق بدل افتراض أن المفاتيح متتالية. array_is_list() يفرق list ذات مفاتيح 0..n-1 عن map. حذف عنصر من list لا يعيد الفهرسة تلقائيًا؛ استخدم array_values() عند الحاجة، خصوصًا قبل JSON. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «PHP array أكثر من نوع» و«map وfilter وreduce». لماذا لا يغني أحدهما عن الآخر داخل موضوع «المصفوفات وأدوات التحويل»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «PHP array أكثر من نوع»: array في PHP خريطة مرتبة تستخدم كـlist أوmap. افحص شكلها عند حدود التطبيق بدل افتراض أن المفاتيح متتالية. array_is_list() يفرق list ذات مفاتيح 0..n-1 عن map. حذف عنصر من list لا يعيد الفهرسة تلقائيًا؛ استخدم array_values() عند الحاجة، خصوصًا قبل JSON. أما «map وfilter وreduce»: هذه الأدوات مناسبة لتحويلات واضحة. loop عادية أفضل أحيانًا إذا احتجت عدة نتائج أو early exit أو أردت تجنب arrays وسيطة. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Unpacking والدمج». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في المفاتيح النصية تفوز القيمة اللاحقة عند unpacking. أما + بين arrays فيحافظ على قيمة الطرف الأيسر للمفتاح الموجود؛ لا تخلطهما بلا قصد. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «الفرز» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> sort()/rsort() يعيدان فهرسة القيم. asort()/arsort() يحافظان على المفاتيح. ksort()/krsort() يرتبان المفاتيح. usort() يستخدم comparator يعيد سالبًا/صفرًا/موجبًا. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. إمتى Loop أوضح من reduce؟</summary><p>لما التجميع له أكثر من حالة أوفشل أوSide Effect. الوضوح أهم من ضغط المنطق في Callback واحدة.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>ما الفرق بين <code>map</code> و<code>filter</code>؟</summary><p>map يحول كل عنصر ويحافظ عادة على العدد، بينما filter يختار عناصر وقد يقلل العدد.</p></details>
+
+<details><summary>لماذا قد تكون PHP array مكلفة للبيانات الكثيفة؟</summary><p>هي بنية hash مرنة تحمل metadata كبيرة؛ stream أو بنية أنسب قد توفر الذاكرة.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php arrays-lab.php
+~~~
+
+**معيار النجاح:** يثبت الاختبار شكل المصفوفة بعد map وfilter وreduce، ولا تتغير المصفوفة الأصلية إلا إذا كان ذلك جزءًا معلنًا من العقد.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+PHP array قد يحول بعض المفاتيح النصية الرقمية إلى integers، لذلك اختبر شكل المفاتيح بعد JSON أو input. <code>array_is_list</code> يفرق list عن map، وSPL structures قد تكون أوضح للqueue/heap. map/filter/reduce تنسخ بيانات وقد تزيد الذاكرة؛ قس قبل استخدامها على مجموعات كبيرة.
+
+### جرّب بنفسك
+
+اختبر مفاتيح 0 و"0" و"01" وقس الذاكرة قبل وبعد pipeline.

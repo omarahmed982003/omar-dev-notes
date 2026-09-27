@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Handle invalid saved data</title>
+<h1>Read a list</h1>
+<p><label for="data">JSON list of text items</label><br><textarea id="data" rows="4" cols="25">["milk","bread"]</textarea></p>
+<button id="read">Read</button>
+<p id="status" role="status"></p>
+<p id="output">No valid list yet.</p>
+<script>
+function readList() {
+  const status = document.querySelector("#status");
+  try {
+    const items = JSON.parse(document.querySelector("#data").value);
+    if (!Array.isArray(items) || items.length > 20) {
+      throw new Error("Expected a list with at most 20 items.");
+    }
+    for (const item of items) {
+      if (typeof item !== "string" || item.trim() === "" || item.length > 80) {
+        throw new Error("Each item must be nonempty text of at most 80 units.");
+      }
+    }
+    document.querySelector("#output").textContent = "Items: " + items.join(" / ");
+    status.textContent = "Read " + items.length + " items.";
+  } catch (error) {
+    status.textContent = "Cannot read this list. Check its format and items, then try again.";
+    console.warn(error.message);
+  }
+}
+document.querySelector("#read").addEventListener("click", readList);
+</script>
+</html>

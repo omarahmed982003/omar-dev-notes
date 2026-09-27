@@ -5,6 +5,35 @@ sidebar:
   order: 10
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## The problem appears when a project grows
+
+One small file can call a class `User`. A library or another module may define the same short name. A namespace gives each symbol a full address:
+
+```text
+App\Domain\User
+Vendor\Package\User
+```
+
+Think of two streets with the same name in different cities: the complete address removes ambiguity. A `use` statement creates a local alias; it does not load or copy the class.
+
+Autoloading solves another problem. When PHP first needs a class, an autoloader maps its fully qualified name to a file and includes it. Composer's PSR-4 mapping connects a namespace prefix to a directory:
+
+```text
+App\Domain\User → App\ maps to src/ → src/Domain/User.php
+```
+
+Names, paths, and letter case must agree, especially when code developed on Windows is deployed to a case-sensitive Linux filesystem.
+
 ## Why namespaces?
 
 Namespaces prevent name collisions and give code a logical identity independent of a filename.
@@ -41,7 +70,7 @@ A leading `\` is fully qualified. Imported names resolve through `use`; other qu
 {
   "autoload": {
     "psr-4": {
-      "App\\\\": "src/"
+      "App\\": "src/"
     }
   }
 }
@@ -66,40 +95,38 @@ PHP itself does not require a namespace to match a directory. PSR-4 and Composer
 - [PHP Namespaces](https://www.php.net/manual/en/language.namespaces.php)
 - [Composer PSR-4](https://getcomposer.org/doc/04-schema.md#psr-4)
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Namespaces and autoloading">
-<p class="lesson-diagram-title">Concept map: Namespaces and autoloading</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Why namespaces?</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Imports and aliases</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Composer and PSR-4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Organization rules</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>References</span></div>
-</div>
-</div>
+<details><summary>1. Alias two classes named User</summary><p>Import them as <code>DomainUser</code> and <code>SdkUser</code>, then instantiate each using an unambiguous local name.</p></details>
 
-## Check your understanding
+<details><summary>2. Why might a class load on Windows but fail on Linux?</summary><p>Check letter-case agreement among namespace, class name, directory, and filename. Linux filesystems are commonly case-sensitive.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Why namespaces?” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Namespaces prevent name collisions and give code a logical identity independent of a filename. Place namespace near the top after declare. A namespace does not load its file; an autoloader does. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Why namespaces?” with “Imports and aliases”. Why does neither replace the other in “Namespaces and autoloading”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Why namespaces?”: Namespaces prevent name collisions and give code a logical identity independent of a filename. Place namespace near the top after declare. A namespace does not load its file; an autoloader does. For “Imports and aliases”: A leading \ is fully qualified. Imported names resolve through use; other qualified names resolve relative to the current namespace. Imports are file-level compile-time declarations, not dynamic function-local operations. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Composer and PSR-4”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> App\Billing\InvoiceService normally maps to src/Billing/InvoiceService.php. Run composer dump-autoload after changing mappings. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Organization rules” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Prefer one main class per file. Match filename case because Linux filesystems are usually case-sensitive. Keep domain namespaces independent of a framework where practical. Put test namespaces in autoload-dev. Avoid side effects when a class file is loaded. :::caution PHP itself does not require a namespace to match a directory. PSR-4 and Composer define that mapping. ::: Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. What follows a PSR-4 mapping change?</summary><p>Run <code>composer dump-autoload</code> and verify class creation from a real entry point.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>What does a PSR-4 rule connect?</summary><p>A namespace prefix to a base directory; Composer maps the remaining class name to a path.</p></details>
+
+<details><summary>Why avoid putting every class in the global namespace?</summary><p>Names collide and ownership becomes unclear as the project and dependencies grow.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+composer dump-autoload -o
+~~~
+
+**Success criterion:** The command exits 0, then PHP resolves the fully qualified class without manual require calls or a naming collision.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Namespace resolution differs for fully qualified, relative, and unqualified names. Composer supports PSR-4, classmap, files, and autoload-dev for different needs. Use <code>composer dump-autoload -o</code> for production only after mappings are correct; optimization must not hide naming defects.
+
+### Try it yourself
+
+Break PSR-4 intentionally and diagnose namespace, path, and case.

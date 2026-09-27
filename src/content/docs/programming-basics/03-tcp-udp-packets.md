@@ -1,130 +1,136 @@
 ---
-title: 3. TCP وUDP والحزم
-description: المصافحة، Segments وPackets وFrames، ACK وإعادة الإرسال والتحكم في التدفق والازدحام.
+title: "نقل البيانات باستخدام TCP وUDP"
+description: افهم التغليف والمصافحة والترتيب وإعادة الإرسال، ومتى تحتاج TCP أو UDP أو QUIC.
 sidebar:
-  order: 3
+  order: 10
+prev: {"link":"/programming-basics/19-dns-protection/","label":"أخطاء البحث عن العناوين وحماية DNS"}
+next: {"link":"/programming-basics/20-transport-diagnostics/","label":"إغلاق الاتصال وتشخيص حجم الحزم"}
 ---
 
-## من البيانات إلى السلك
 
-تُغلّف البيانات أثناء نزولها خلال طبقات الشبكة:
+بعد أن أعاد DNS (Domain Name System؛ نظام يجيب عن أسئلة أسماء النطاقات، ومنها عناوينها) عنوان IP (Internet Protocol؛ قواعد عنونة الحزم وتوجيهها بين الشبكات، وعنوان IP رقم يحدد واجهة في هذا السياق)، نحتاج إلى نقل البيانات. المشكلة أن الشبكة قد تفقد أجزاء أو تؤخرها أو توصلها بترتيب مختلف. هنا تظهر مسؤوليات IP وTCP (Transmission Control Protocol؛ نقل بايتات بترتيب مع معالجة الفقد، مع احتمال فشل الاتصال) وUDP (User Datagram Protocol؛ نقل رسائل مستقلة بلا ضمان مدمج لوصولها أو ترتيبها).
+
+## رقم يحدد مكان البايت
+
+تخيل إرسال `ABCDEF`. بشكل مبسط جدًا، الجزء ABC يبدأ عند رقم100، والجزء DEF يبدأ عند103. **Sequence number — رقم تسلسلي** يحدد موضع البيانات في تدفق TCP، وليس رقم طلب شراء. لو المستقبل ينتظر103، يمكنه تأكيد ما قبله وطلب استكمال الناقص وفق البروتوكول.
+
+نجاح نقل البايتات لا يثبت نجاح العملية التجارية. **Idempotent — عملية لا تضاعف أثرها المقصود عند تكرارها** مثل «اجعل الحالة مغلقًا»؛ مختلفة عن «أضف10» التي تغيّر النتيجة كل مرة. افتكر الفرق لما نتكلم عن إعادة المحاولة.
+
+## من رسالة إلى إشارات
+
+لا تُرسل صفحة كبيرة كقطعة سحرية واحدة. تنزل البيانات خلال طبقات، وتضيف كل طبقة معلومات يحتاجها عملها:
 
 ```text
-HTTP Data
+HTTP data
+   ↓ + transport header
+TCP segment أو UDP datagram
+   ↓ + IP header
+IP packet
+   ↓ + local-link header
+Ethernet/Wi-Fi frame
    ↓
-TCP Segment أو UDP Datagram
-   ↓
-IP Packet
-   ↓
-Ethernet/Wi-Fi Frame
-   ↓
-Bits/Signals
+Bits أو signals
 ```
 
-كل طبقة تضيف Header. من المعلومات الممكنة: Source/Destination Ports في طبقة النقل، Source/Destination IP في طبقة الشبكة، Sequence Number وFlags في TCP، وTTL/Hop Limit في IP. لا توجد «Packet واحدة» دائمًا؛ المحتوى الكبير يُقسّم ويعاد تجميعه.
+تتضمن headers (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة) مثلًا ports (منفذ منطقي برقم يميز جهة استقبال في بروتوكول النقل) في طبقة النقل، وsource/destination IP في طبقة الشبكة، وsequence numbers وflags في TCP، وTTL (Time To Live؛ عمر النسخة المخزنة في DNS، وفي IPv4 حقل منفصل يحد عدد مرات تمرير الحزمة) أو hop limit في IP. تسمى الإضافة **encapsulation**، ويفك المستقبل الطبقات بالعكس.
 
-الـ **NIC** أو Network Interface Card تتعامل مع الاتصال المحلي وFrames والإشارات. الراوتر يختار القفزة التالية للحزمة، والـISP يربط شبكتك بالشبكات الأخرى.
+الـNIC (Network Interface Card؛ واجهة إرسال واستقبال البيانات على الشبكة) تتعامل مع الوصلة المحلية والـframes والإشارات. الراوتر يختار next hop للـpacket (حزمة: وحدة بيانات IP التي تُوجّه بين الشبكات)، والـISP (Internet Service Provider؛ شركة أو جهة توفر الاتصال بالإنترنت) يربط شبكتك بغيرها. راجع [الشبكة المحلية](/programming-basics/14-network-layers-lan-ethernet-arp/) لو محتاج تذكير بعنوان الوصلة المحلية MAC (Media Access Control؛ عنوان تستخدمه واجهة الشبكة للتواصل على الوصلة المحلية) ودور الراوتر.
 
-## TCP: Transmission Control Protocol
+## TCP: تدفق مرتب وموثوق
 
-TCP يقدم **تدفق bytes موثوقًا ومرتبًا** بين نقطتين. يبدأ عادة بمصافحة ثلاثية:
+يعرض TCP للتطبيق **byte stream (تتابع بايتات مرتب لا يحفظ تلقائيًا حدود رسائل التطبيق)** مرتبًا. يبدأ الاتصال عادة بمصافحة ثلاثية:
 
 ```text
 Client                         Server
-  | -------- SYN ------------> |
-  | <----- SYN + ACK ---------- |
-  | -------- ACK ------------> |
-  | ===== Application Data ===> |
+  | -------- SYN ------------> |  طلب بدء ومزامنة
+  | <----- SYN + ACK ---------- |  قبول وتأكيد
+  | -------- ACK ------------> |  تأكيد من العميل
+  | ===== Application data ===> |
 ```
 
-- `SYN`: طلب بدء ومزامنة Sequence Numbers.
-- `SYN-ACK`: قبول ومزامنة الطرف الثاني.
-- `ACK`: تأكيد الاستلام.
-- الاتصال يُعرّف بأربع قيم تقريبًا: source IP/port وdestination IP/port.
+يُميَّز الاتصال بأربع قيم: source IP وsource port وdestination IP وdestination port. لذلك يمكن لجهاز واحد فتح اتصالات كثيرة إلى الخادم نفسه.
 
-## الاعتمادية والترتيب
-
-يرقّم TCP الـbytes/segments، ويؤكد ما وصل باستخدام ACK. إذا لم يصل التأكيد في الوقت المتوقع أو استنتج المرسل فقدًا، يعيد الإرسال. يمكن أن تصل IP Packets بترتيب مختلف، بينما يعرض TCP للتطبيق stream مرتبًا.
+### كيف يخفي TCP الفقد وتغيير الترتيب؟
 
 ```text
-Send 1, 2, 3, 4
-Receive 1, 2, _, 4
-ACK indicates missing data
-Retransmit 3
-Application reads 1, 2, 3, 4
+المرسل:   1  2  3  4
+الوصول:   1  2  _  4
+الإجراء:  تأكيد ما وصل، ثم إعادة 3
+التطبيق:  1  2  3  4
 ```
 
+ترقّم sequence numbers البيانات، وتخبر acknowledgements المرسل بما وصل. إذا استنتج TCP فقدًا، يعيد الإرسال، ويحتفظ بالبيانات المتقدمة حتى يستطيع تقديم stream (تدفق بيانات متتابعة قد لا نعرف حجمه مقدمًا) مرتب للتطبيق.
+
 :::note
-ACK لا يعني أن تطبيق PHP أنهى العمل؛ يعني أن طبقة TCP استلمت البيانات المطلوبة.
+TCP ACK (Acknowledgment؛ إقرار باستلام بيانات وفق قواعد البروتوكول) يعني أن طبقة النقل استلمت البيانات المطلوبة؛ لا يعني أن PHP (اسم لغة برمجة تستخدم كثيرًا لمعالجة طلبات الويب على الخادم) حفظ الطلب في قاعدة البيانات أو أن العملية التجارية نجحت.
 :::
 
-## Flow Control وCongestion Control
+## نافذتان لمشكلتين مختلفتين
 
-- **Flow control:** يمنع المرسل من إغراق جهاز الاستقبال. يعلن المستقبل Receive Window عن المساحة المتاحة.
-- **Congestion control:** يمنع إغراق الشبكة. يحتفظ المرسل بـCongestion Window ويزيد السرعة تدريجيًا ويخفضها عند دلائل الفقد أو الازدحام.
-- حد الإرسال الفعلي يتأثر بالأصغر بين receive window وcongestion window.
+- **Flow control** يحمي المستقبل: يعلن receive window عن المساحة التي يستطيع استقبالها.
+- **Congestion control** يحمي الشبكة: يغيّر المرسل congestion window حسب مؤشرات الازدحام والفقد.
+- مقدار البيانات المسموح بوجوده في الطريق يتأثر بالأصغر من النافذتين.
 
-إذن فقد Packet لا يعالج فقط بإعادة الإرسال؛ يؤثر أيضًا في معدل الإرسال.
+إعادة الإرسال ليست مجانية؛ تزيد التأخير، وقد يدفع الفقد خوارزمية الازدحام إلى خفض معدل الإرسال.
 
-## UDP: User Datagram Protocol
+## UDP: datagrams مستقلة
 
-UDP يرسل Datagrams بلا اتصال تقليدي ولا يضمن بنفسه الوصول أو الترتيب أو منع التكرار. لذلك Header أبسط والحمل الإضافي أقل.
+يرسل UDP رسائل مستقلة من غير handshake (مصافحة: رسائل البداية للاتفاق على الاتصال) تقليدية، ولا يضمن بنفسه الوصول أو الترتيب أو منع التكرار. الـheader أبسط، لكن التطبيق أو بروتوكول أعلى هو الذي يقرر إن كان يحتاج تعويض هذه الخصائص.
 
 | الخاصية | TCP | UDP |
 |---|---|---|
-| Handshake تقليدي | نعم | لا |
-| ضمان الترتيب وإعادة الإرسال | يوفرهما | لا يوفرهما |
-| شكل البيانات | Byte stream | Datagrams مستقلة |
-| أمثلة | HTTP/1.1، HTTP/2، بريد، ملفات | DNS، صوت مباشر، ألعاب، بث |
-| السرعة | ليست ضمانًا؛ حمل أكبر | ليس دائمًا أسرع؛ حمل أقل |
+| شكل البيانات | Byte stream | Datagrams (رسالة مستقلة لها حدود في بروتوكول النقل) مستقلة |
+| اتصال ومصافحة تقليدية | نعم | لا |
+| ترتيب وإعادة إرسال مدمجان | نعم | لا |
+| أمثلة | HTTP/1.1 (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب) وHTTP/2، بريد، نقل ملفات | DNS، ألعاب، وسائط حية |
 
-HTTP/3 يعمل فوق **QUIC المبني على UDP**، لكن QUIC نفسه يضيف الاعتمادية والتشفير والتحكم؛ لذلك «UDP غير موثوق» لا يعني أن التطبيق المبني فوقه يجب أن يظل غير موثوق.
+عبارة «UDP أسرع» تبسيط زائد. قد يقل حمله الإضافي، لكن الأداء يعتمد على الشبكة وما يبنيه التطبيق فوقه.
 
-## تدريب
+## أين يقع QUIC؟
 
-جرّب:
+HTTP/3 يستخدم **QUIC (اسم بروتوكول نقل فوق UDP يضيف تدفقات موثوقة وحماية اتصال) فوق UDP**. اختير UDP كقاعدة متاحة للنقل، ثم أضاف QUIC الاعتمادية، والتشفير، والتحكم في الازدحام، وتدفقات متعددة. لذلك استخدام UDP لا يجبر البروتوكول الأعلى على فقد البيانات.
+
+## تجربة عملية
 
 ```bash
 ping example.com
 tracert example.com
 ```
 
-على Linux/macOS استخدم `traceroute`. `ping` يستخدم ICMP لا TCP، لكنه يوضح زمن الذهاب والعودة والفقد التقريبي.
+على Linux وmacOS استخدم `traceroute` بدل `tracert`. نتيجة `ping` قد تبدو هكذا:
 
-## خريطة الدرس
+```text
+Reply from 93.184.216.34: time=42ms
+```
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: TCP وUDP والحزم">
-<p class="lesson-diagram-title">خريطة مفاهيم: TCP وUDP والحزم</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>من البيانات إلى السلك</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>TCP: Transmission Control Protocol</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>الاعتمادية والترتيب</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Flow Control وCongestion Control</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>UDP: User Datagram Protocol</span></div>
-</div>
-</div>
+- `ping` يستخدم ICMP (Internet Control Message Protocol؛ رسائل أخطاء وتشخيص في شبكة IP)، لا TCP ولا UDP.
+- `time=42ms` زمن ذهاب وعودة تقريبي، وليس زمن تحميل الصفحة.
+- غياب الرد لا يثبت أن الخادم متوقف؛ قد تكون رسائل ICMP محجوبة.
+- `tracert` يعرض القفزات المرئية نحو الوجهة، وقد تظهر `*` لأن بعض الأجهزة لا ترد.
+
+## أخطاء شائعة
+
+- الخلط بين segment (مقطع TCP يحمل جزءًا من تدفق البايتات) وpacket وframe؛ كل اسم يخص طبقة.
+- اعتبار TCP ACK نجاحًا لمنطق التطبيق.
+- افتراض أن TCP يمنع انقطاع الاتصال؛ هو يعالج فقدًا ضمن حدود، وقد يفشل الاتصال نهائيًا.
+- افتراض أن UDP سيئ دائمًا؛ هو أساس مناسب حين يضيف البروتوكول الأعلى ما يحتاجه.
+- اعتبار `ping` اختبارًا كاملًا لـHTTP؛ هما بروتوكولان مختلفان.
+
+## مسائل عملية
+
+<details><summary>دُفع المبلغ مرتين رغم استخدام TCP. لماذا لم يمنع TCP ذلك؟</summary><p>TCP يمنع تسليم bytes مكررة داخل الاتصال، لكنه لا يمنع العميل من إعادة HTTP request (طلب: رسالة يرسلها العميل ليطلب موردًا أو عملية) بعد انقطاع غامض. يحتاج التطبيق إلى idempotency key أو معاملة تمنع تكرار العملية التجارية.</p></details>
+
+<details><summary>وصلت packet رقم 4 قبل 3. ماذا يرى تطبيق يستخدم TCP؟</summary><p>يحتفظ TCP بالبيانات المتقدمة ويطلب أو ينتظر المفقود، ثم يقدم للتطبيق stream مرتبًا. الثمن هو تأخير القراءة حتى تكتمل الفجوة.</p></details>
+
+<details><summary>لماذا قد تختار لعبة UDP؟</summary><p>أحيانًا تصبح المعلومة القديمة بلا قيمة قبل أن تصل إعادة إرسالها. تستطيع اللعبة إرسال حالة أحدث وبناء سياسة الترتيب أو التعويض المناسبة لها بدل انتظار stream كامل.</p></details>
 
 ## تأكد من فهمك
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «من البيانات إلى السلك» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تُغلّف البيانات أثناء نزولها خلال طبقات الشبكة: كل طبقة تضيف Header. من المعلومات الممكنة: Source/Destination Ports في طبقة النقل، Source/Destination IP في طبقة الشبكة، Sequence Number وFlags في TCP، وTTL/Hop Limit في IP. لا توجد «Packet واحدة» دائمًا؛ المحتوى الكبير يُقسّم ويعاد تجميعه. الـ NIC أو Network Interface Card تتعامل مع الاتصال المحلي وFrames والإشارات. الراوتر يختار القفزة التالية للحزمة، والـISP يربط… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «من البيانات إلى السلك» و«TCP: Transmission Control Protocol». لماذا لا يغني أحدهما عن الآخر داخل موضوع «TCP وUDP والحزم»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «من البيانات إلى السلك»: تُغلّف البيانات أثناء نزولها خلال طبقات الشبكة: كل طبقة تضيف Header. من المعلومات الممكنة: Source/Destination Ports في طبقة النقل، Source/Destination IP في طبقة الشبكة، Sequence Number وFlags في TCP، وTTL/Hop Limit في IP. لا توجد «Packet واحدة» دائمًا؛ المحتوى الكبير يُقسّم ويعاد تجميعه. الـ NIC أو Network Interface Card تتعامل مع الاتصال المحلي وFrames والإشارات. الراوتر يختار القفزة التالية للحزمة، والـISP يربط… أما «TCP: Transmission Control Protocol»: TCP يقدم تدفق bytes موثوقًا ومرتبًا بين نقطتين. يبدأ عادة بمصافحة ثلاثية: SYN: طلب بدء ومزامنة Sequence Numbers. SYN-ACK: قبول ومزامنة الطرف الثاني. ACK: تأكيد الاستلام. الاتصال يُعرّف بأربع قيم تقريبًا: source IP/port وdestination IP/port. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «الاعتمادية والترتيب». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يرقّم TCP الـbytes/segments، ويؤكد ما وصل باستخدام ACK. إذا لم يصل التأكيد في الوقت المتوقع أو استنتج المرسل فقدًا، يعيد الإرسال. يمكن أن تصل IP Packets بترتيب مختلف، بينما يعرض TCP للتطبيق stream مرتبًا. :::note ACK لا يعني أن تطبيق PHP أنهى العمل؛ يعني أن طبقة TCP استلمت البيانات المطلوبة. ::: لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Flow Control وCongestion Control» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Flow control: يمنع المرسل من إغراق جهاز الاستقبال. يعلن المستقبل Receive Window عن المساحة المتاحة. Congestion control: يمنع إغراق الشبكة. يحتفظ المرسل بـCongestion Window ويزيد السرعة تدريجيًا ويخفضها عند دلائل الفقد أو الازدحام. حد الإرسال الفعلي يتأثر بالأصغر بين receive window وcongestion window. إذن فقد Packet لا يعالج فقط بإعادة الإرسال؛ يؤثر أيضًا في معدل الإرسال. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+1. رتّب الوحدات عند الإرسال: **بيانات التطبيق → segment/datagram → IP packet → frame.**
+2. ما الفرق بين flow control وcongestion control؟ **الأول يحمي المستقبل، والثاني يحمي الشبكة.**
+3. هل HTTP/3 غير موثوق لأنه فوق UDP؟ **لا؛ QUIC يضيف الاعتمادية والتشفير والتحكم المطلوب.**
+
+
+## الخطوة التالية
+
+كمّل في [إغلاق الاتصال وتشخيص حجم الحزم](/programming-basics/20-transport-diagnostics/) بعد تنفيذ التجربة هنا.

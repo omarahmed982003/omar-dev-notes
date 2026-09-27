@@ -5,6 +5,34 @@ sidebar:
   order: 16
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **Cache:** A temporary copy that reduces waiting and repeated work.
+- **Loop:** A structure that repeats instructions according to a condition.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## Modern does not mean “use every feature”
+
+Modern PHP features solve real problems, but selection starts with the project's declared minimum version and an actual need. PHP 8.4 syntax in a package claiming PHP 8.1 support fails during parsing before a runtime condition can help.
+
+Start with `composer.json` and CI:
+
+```json
+{
+  "require": {
+    "php": "^8.2"
+  }
+}
+```
+
+For each feature ask when it appeared, whether production/CI/developers run that version, whether it clarifies design, and how compatibility is tested. The timeline is not a checklist. `WeakMap` can attach metadata to object lifetime, and fibers underpin async libraries, but an ordinary CRUD application may never use either directly.
+
 ## Declare the minimum version
 
 Do not use a feature without declaring the runtime requirement and testing deployment:
@@ -125,7 +153,7 @@ A readonly class makes declared instance properties readonly and prevents dynami
 ## Attributes and reflection — PHP 8+
 
 ```php
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_FUNCTION)]
 final readonly class RequiresRole
 {
     public function __construct(public string $role) {}
@@ -133,6 +161,10 @@ final readonly class RequiresRole
 
 #[RequiresRole('admin')]
 function deleteUser(int $id): void {}
+
+$attribute = (new ReflectionFunction('deleteUser'))
+    ->getAttributes(RequiresRole::class)[0]->newInstance();
+echo $attribute->role; // admin
 ```
 
 Attributes are structured metadata; they do not enforce authorization until application or framework code reads and applies them.
@@ -187,40 +219,38 @@ Other additions include `array_first()`, `array_last()`, `#[NoDiscard]`, constan
 - [PHP 8.5](https://www.php.net/releases/8.5/en.php)
 - [Supported versions](https://www.php.net/supported-versions.php)
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Modern PHP 8.0–8.5">
-<p class="lesson-diagram-title">Concept map: Modern PHP 8.0–8.5</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Declare the minimum version</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Attributes and reflection — PHP 8+</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Property hooks and asymmetric visibility — PHP 8.4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Lazy objects — PHP 8.4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Pipe operator — PHP 8.5</span></div>
-</div>
-</div>
+<details><summary>1. A project supports PHP 8.2. Can it use property hooks?</summary><p>No; they require 8.4. Raise the supported runtime through a migration or keep compatible design.</p></details>
 
-## Check your understanding
+<details><summary>2. When is WeakMap useful?</summary><p>When metadata should disappear with an object's lifetime and the metadata store must not keep that object alive.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Declare the minimum version” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Do not use a feature without declaring the runtime requirement and testing deployment: Run composer check-platform-reqs during deployment. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Declare the minimum version” with “Attributes and reflection — PHP 8+”. Why does neither replace the other in “Modern PHP 8.0–8.5”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Declare the minimum version”: Do not use a feature without declaring the runtime requirement and testing deployment: Run composer check-platform-reqs during deployment. For “Attributes and reflection — PHP 8+”: Attributes are structured metadata; they do not enforce authorization until application or framework code reads and applies them. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Property hooks and asymmetric visibility — PHP 8.4”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Hooks customize get/set behavior while asymmetric visibility controls who may read and write. Prefer named methods for complex domain operations. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Lazy objects — PHP 8.4” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Reflection supports lazy ghosts and proxies that initialize when state is observed. They primarily support DI containers and ORMs; understand identity, initialization triggers, cloning, and serialization before direct use. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Does a fiber provide parallel CPU execution?</summary><p>No. It supports cooperative suspension within a thread; a scheduler or event loop coordinates resumption.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Should a feature be used only because it is new?</summary><p>No. Tie it to a problem, declare the minimum PHP version, and verify production and tooling support.</p></details>
+
+<details><summary>What does readonly provide?</summary><p>It makes non-reassignment intent explicit, but does not make an entire object graph deeply immutable.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php modern-features-lab.php
+~~~
+
+**Success criterion:** Tests cover valid and invalid enum values, readonly mutation, and an unmatched match expression; use each feature because it strengthens the contract, not because it is new.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Read by the project minimum PHP version: stable usable features, migration/deprecations, then features available only after a platform upgrade. Run CI on the lowest and highest supported versions and use PHPCompatibility or equivalent analysis. An 8.5 example cannot live in code claiming 8.1 support.
+
+### Try it yourself
+
+Create a compatibility matrix for each example and name the fallback on the minimum version.

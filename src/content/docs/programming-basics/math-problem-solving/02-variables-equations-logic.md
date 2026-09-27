@@ -2,7 +2,27 @@
 title: "المتغيرات والمعادلات والمنطق البولياني"
 description: "المتغير اسم لقيمة قد تتغير، والمعادلة تصف علاقة بين قيم. المنطق البولياني يحول شروط المسألة إلى قرارات يمكن للبرنامج تقييمها."
 tableOfContents: true
+prev: {"link":"/programming-basics/math-problem-solving/07-division-and-precision/","label":"القسمة والباقي ودقة الحساب"}
+next: {"link":"/programming-basics/math-problem-solving/08-sets-relations/","label":"المجموعات والعلاقات ومدخلات الدالة"}
+sidebar:
+  order: 3
 ---
+
+استخدم القسم بعد [القيم والقرارات والحلقات](/programming-basics/computer-fundamentals/10-decisions-and-repetition/). ارجع للحساب حسب الحاجة؛ الرسوم والتعقيد والبرمجة الديناميكية توسعات لاحقة وليست شروطًا لأول برنامج.
+
+
+## جملة منطقية نجربها
+
+الدخول مسموح لو معاك تذكرة **ومش محظور**. المنطق البولياني يستخدم نتيجتين: `true` صحيح و`false` غير صحيح. `AND` معناها لازم الشرطان، و`NOT` تعكس الإجابة.
+
+| تذكرة؟ | محظور؟ | مسموح؟ |
+|---|---|---|
+| لا | لا | لا |
+| لا | نعم | لا |
+| نعم | لا | نعم |
+| نعم | نعم | لا |
+
+ده **جدول حقيقة**: كل تركيبات المدخلات ونتيجتها. اشرح الصف الأخير قبل متابعة الرموز. المجموعات والعلاقات لها درس مستقل بعد تثبيت القرار البسيط.
 
 ## الفكرة العامة
 
@@ -29,34 +49,24 @@ tableOfContents: true
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المتغيرات والمعادلات والمنطق البولياني">
 <p class="lesson-diagram-title">خريطة مفاهيم: المتغيرات والمعادلات والمنطق البولياني</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>المعطيات والمجهول</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم الأساسية</span></div>
+<div class="diagram-node process"><span>اكتب العلاقة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال تطبيقي</span></div>
+<div class="diagram-node process"><span>عوّض القيم</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>تصحيح مفاهيم وأخطاء شائعة</span></div>
+<div class="diagram-node decision"><span>قيّم الشرط</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>المتغير اسم لقيمة قد تتغير، والمعادلة تصف علاقة بين</span></div>
+<div class="diagram-node output"><span>تحقق من الحل</span></div>
 </div>
 </div>
-
-## المجموعات والعلاقات والدوال
-
-المجموعة عناصر فريدة بلا اعتماد ضروري على الترتيب. الـSubset مجموعة تقع عناصرها كلها داخل أخرى. يجمع Union العناصر الموجودة في أي من المجموعتين، ويحتفظ Intersection بالعناصر المشتركة، ويزيل Difference عناصر مجموعة من أخرى.
-
-العلاقة مجموعة أزواج تربط عناصر. يمكن أن تكون انعكاسية أو متناظرة أو متعدية. أما الدالة فتربط كل عنصر من Domain بنتيجة واحدة في Codomain، وتسمى القيم الناتجة فعليًا Range. يظهر هذا الفرق في تصميم APIs والتحقق من أن لكل مدخل صالح نتيجة محددة.
 
 ## Truth Tables وImplication
 
 يسجل Truth Table نتيجة التعبير لكل تركيب من القيم المنطقية. يكون `A && B` صحيحًا فقط عندما يصح الاثنان، و`A || B` صحيحًا عندما يصح أحدهما على الأقل، وXOR صحيحًا عندما يختلفان.
 
 العبارة `A -> B` تكون خاطئة فقط عندما يصح A وتفشل B. لا تخلطها بعلاقة سببية؛ إنها صياغة منطقية. وتقول قوانين De Morgan إن نفي `A && B` يساوي `!A || !B`، ونفي `A || B` يساوي `!A && !B`.
-
-## Predicates وQuantifiers
-
-الـPredicate عبارة تعتمد على قيمة مثل `isEven(x)`. يعني «لكل» أن الشرط ينجح لكل عنصر، ويعني «يوجد» أن عنصرًا واحدًا على الأقل يحققه. تقابلها في البرمجة عمليات مثل `all_of` و`any_of` وفحوص القوائم.
 
 ## تأكد من فهمك
 
@@ -79,6 +89,6 @@ tableOfContents: true
 </section>
 </div>
 
-## خلاصة
+## الخطوة التالية
 
-افهم العلاقة بين الفكرة ومدخلاتها ونتيجتها، ثم اختبرها بحالات عادية وحدّية وغير صالحة. القدرة على التفسير والتطبيق أهم من حفظ الصياغة.
+كمّل في [المجموعات والعلاقات ومدخلات الدالة](/programming-basics/math-problem-solving/08-sets-relations/) بعد تنفيذ التجربة هنا.

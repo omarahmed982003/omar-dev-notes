@@ -1,8 +1,16 @@
 ---
-title: "Applied math, measurement, graphs, and prime numbers"
-description: "Applied mathematics connects numbers to units and representations. Conversion, rounding, coordinates, graphs, and primes are practical tools rather than isolated formulas."
+title: "Measurement, units, and prime numbers"
+description: "Measurement, units, and prime numbers"
 tableOfContents: true
+prev: {"link":"/en/programming-basics/math-problem-solving/10-greedy-dynamic-programming/","label":"Choose between greedy steps and saved results"}
+next: {"link":"/en/programming-basics/math-problem-solving/11-counting-probability/","label":"Sequences, counting, and probability"}
+sidebar:
+  order: 12
 ---
+
+Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+
+
 
 ## Overview
 
@@ -29,26 +37,18 @@ To test 29, try prime divisors up to √29≈5.38: 2, 3, and 5. None divides it,
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Applied math, measurement, graphs, and prime numbers">
 <p class="lesson-diagram-title">Concept map: Applied math, measurement, graphs, and prime numbers</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Overview</span></div>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>Quantity + unit</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Core concepts</span></div>
+<div class="diagram-node process"><span>Convert to the required unit</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Worked example</span></div>
+<div class="diagram-node process"><span>Represent as point or graph</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Corrections and common mistakes</span></div>
+<div class="diagram-node decision"><span>Control rounding and error</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Applied mathematics connects numbers to units and representations. Conversion,</span></div>
+<div class="diagram-node output"><span>Interpret the result</span></div>
 </div>
 </div>
-
-## Sequences, counting, probability, and graphs
-
-Arithmetic sequences add a fixed difference, while geometric sequences multiply by a fixed ratio. A recurrence defines terms from earlier terms and must include base cases.
-
-The multiplication principle counts independent stages. Permutations consider order; combinations do not. Probability begins with a sample space and events. Pseudorandom generators are deterministic and ordinary generators must not protect secrets.
-
-A graph contains vertices and edges. Edges may be directed or weighted. Paths connect vertices, cycles revisit a vertex, and a tree is connected and acyclic. Graphs model networks, routes, dependencies, and social relationships.
 
 ## Check your understanding
 
@@ -71,6 +71,11 @@ A graph contains vertices and edges. Edges may be directed or weighted. Paths co
 </section>
 </div>
 
-## Summary
+## Next step
 
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.
+
+After completing this practice, continue with [Sequences, counting, and probability](/en/programming-basics/math-problem-solving/11-counting-probability/).
+
+
+
+After completing this practice, continue with [Draw relationships and search for a path](/en/programming-basics/math-problem-solving/12-graphs-and-search/).

@@ -6,170 +6,191 @@ interface Props {
 const { locale } = Astro.props;
 const isArabic = locale === 'ar';
 
+// Count lesson files at build time so homepage numbers cannot become stale.
+const docModules = import.meta.glob('../content/docs/**/*.{md,mdx}');
+const trackSlugs = ['programming-basics', 'cpp', 'php', 'php-runtime', 'oop', 'auth', 'database'] as const;
+
+const countLessons = (track: (typeof trackSlugs)[number], language: 'ar' | 'en') => {
+	const prefix = language === 'ar'
+		? `../content/docs/${track}/`
+		: `../content/docs/en/${track}/`;
+
+	return Object.keys(docModules).filter((path) => {
+		if (!path.startsWith(prefix)) return false;
+		if (track === 'cpp' && /\/loops-competitive\/(?:02-competitive-programming|03-conditions-codeforces)\.(?:md|mdx)$/.test(path)) return false;
+		return !/\/(?:index|networking-next|programming-practice)\.(?:md|mdx)$/.test(path);
+	}).length;
+};
+
+const lessonCounts = Object.fromEntries(
+	trackSlugs.map((track) => [track, countLessons(track, locale)]),
+) as Record<(typeof trackSlugs)[number], number>;
+const totalLessons = trackSlugs.reduce((total, track) => total + countLessons(track, locale), 0);
+
 const content = isArabic
 	? {
-			eyebrow: 'مسار تعلّم ثنائي اللغة',
-			title: 'تعلّم PHP كنظام متكامل، لا كأوامر منفصلة.',
+			eyebrow: 'مكتبة لتعلّم البرمجة',
+			title: 'افهم البرمجة خطوة بخطوة، من غير ما تحفظ كلام مش فاهمه.',
 			description:
-				'ابدأ من رحلة الطلب عبر الويب، ثم أتقن اللغة وOOP وقواعد البيانات والأمان، وصولًا إلى تشغيل تطبيق PHP بكفاءة في الإنتاج.',
-			primary: { label: 'ابدأ بالأساسيات', href: '/programming-basics/' },
-			secondary: { label: 'استكشف PHP', href: '/php/' },
-			download: { label: 'تحميل الدوكس PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
+				'ابدأ باستخدام الكمبيوتر وحفظ الملفات، ثم اكتب أول برنامج واختر لغة تكمل بها. أقسام التوسع واضحة ومنفصلة عن طريق البداية.',
+			primary: { label: 'ابدأ من الصفر', href: '/programming-basics/' },
+			secondary: { label: 'شوف كل المسارات', href: '#learning-paths' },
+			download: { label: 'نزّل نسخة PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
-				{ value: '102', label: 'درسًا عمليًا' },
-				{ value: '7', label: 'مسارات مترابطة' },
-				{ value: 'AR · EN', label: 'عربي وإنجليزي' },
+				{ value: String(totalLessons), label: 'درس' },
+				{ value: '7', label: 'مسارات' },
+				{ value: 'AR · EN', label: 'لغتان' },
 			],
-			flowTitle: 'رحلة الطلب',
-			flowLabel: 'من المتصفح إلى تطبيق PHP والعودة',
-			sectionTitle: 'اختر مسارك',
-			sectionDescription: 'اتبع الترتيب المقترح أو ادخل مباشرة إلى الموضوع الذي تحتاجه الآن.',
+			flowTitle: 'لو محتار تبدأ منين',
+			flowLabel: 'رحلة التعلّم المقترحة',
+			sectionTitle: 'اختار اللي محتاج تتعلّمه',
+			sectionDescription: 'لو لسه في البداية امشِ بالترتيب، ولو عندك أساس كويس ادخل على المسار اللي محتاجه مباشرة.',
 			lessonLabel: 'دروس',
 			paths: [
 				{
 					code: '01',
-					title: 'أساسيات البرمجة والويب',
-					description: 'أساسيات الكمبيوتر والرياضيات والمنطق وحل المشكلات، ثم الشبكات وHTTP ورحلة الطلب.',
+					title: 'أساسيات الكمبيوتر والبرمجة والشبكات',
+					description: 'اتعلم استخدام الجهاز، وابنِ برنامجًا يستقبل بيانات ويحفظها، ثم اتوسع في الرياضيات وداخل الكمبيوتر والشبكات.',
 					href: '/programming-basics/',
-					count: '24',
+					count: lessonCounts['programming-basics'],
 					level: 'البداية',
 					accent: 'blue',
 				},
 				{
-					code: 'C++',
-					title: 'لغة C++',
-					description: 'من حل المشكلات وأنظمة الأعداد إلى الـCompiler والأنواع والمعاملات والشروط والحلقات والمشروعات.',
+					code: '02',
+					title: 'البرمجة بلغة C++',
+					description: 'اتعلّم كتابة البرامج من أول القيم والمتغيرات لحد الشروط والتكرار وبناء مشروعات صغيرة.',
 					href: '/cpp/',
-					count: '16',
+					count: lessonCounts.cpp,
 					level: 'مبتدئ ← متوسط',
 					accent: 'orange',
 				},
 				{
-					code: 'PHP',
-					title: 'لغة PHP',
-					description: 'من الصياغة والأنواع والدوال إلى الملفات والجلسات وبناء طلب حقيقي.',
+					code: '03',
+					title: 'تطوير الويب بلغة PHP',
+					description: 'اتعلّم أساسيات اللغة واستخدمها في استقبال الطلبات والتعامل مع الملفات والجلسات.',
 					href: '/php/',
-					count: '16',
+					count: lessonCounts.php,
 					level: 'مبتدئ ← متوسط',
 					accent: 'violet',
 				},
 				{
-					code: 'OPS',
-					title: 'تشغيل PHP والإنتاج',
-					description: 'Composer وcURL وOPcache وPHP-FPM وNginx والإعدادات الآمنة.',
+					code: '04',
+					title: 'تشغيل تطبيقات PHP',
+					description: 'افهم الأدوات والخدمات اللي بتشغّل تطبيق PHP وتخليه أسرع وأكثر استقرارًا.',
 					href: '/php-runtime/',
-					count: '14',
+					count: lessonCounts['php-runtime'],
 					level: 'متوسط',
 					accent: 'cyan',
 				},
 				{
-					code: 'OOP',
-					title: 'البرمجة كائنية التوجه',
-					description: 'صمّم أصنافًا واضحة باستخدام التغليف والوراثة والواجهات والتركيب.',
+					code: '05',
+					title: 'تنظيم البرامج باستخدام الكائنات',
+					description: 'نظّم الكود في أجزاء واضحة تمثل البيانات والسلوك، واعرف إمتى تستخدم كل طريقة.',
 					href: '/oop/',
-					count: '8',
+					count: lessonCounts.oop,
 					level: 'متوسط',
 					accent: 'amber',
 				},
 				{
-					code: 'SEC',
-					title: 'الأمان والهوية والصلاحيات',
-					description: 'الجلسات وXSS وCSRF وJWT وOAuth وOIDC وسياسات الوصول.',
+					code: '06',
+					title: 'الأمان وتسجيل الدخول والصلاحيات',
+					description: 'احمِ المستخدم وبياناته، وحدد مين يقدر يدخل ومين يقدر ينفّذ كل عملية.',
 					href: '/auth/',
-					count: '19',
+					count: lessonCounts.auth,
 					level: 'متوسط ← متقدم',
 					accent: 'rose',
 				},
 				{
-					code: 'DB',
-					title: 'قواعد البيانات وPDO',
-					description: 'Prepared Statements وORM وTransactions وACID والفهارس والترحيلات.',
+					code: '07',
+					title: 'قواعد البيانات',
+					description: 'خزّن البيانات واقرأها وعدّلها بأمان، واتعلّم تنظمها عشان تفضل سريعة وواضحة.',
 					href: '/database/',
-					count: '5',
+					count: lessonCounts.database,
 					level: 'متوسط',
 					accent: 'green',
 				},
 			],
 		}
 	: {
-			eyebrow: 'A bilingual learning path',
-			title: 'Learn PHP as a complete system, not isolated syntax.',
+			eyebrow: 'A programming learning library',
+			title: 'Understand programming step by step, without memorizing what you do not understand.',
 			description:
-				'Follow a request across the web, then master the language, OOP, databases, security, and the production runtime that holds everything together.',
-			primary: { label: 'Start with the basics', href: '/en/programming-basics/' },
-			secondary: { label: 'Explore PHP', href: '/en/php/' },
+				'Start with using a computer and saving files, then write your first program and choose a language. Later reference sections are separate from the beginner route.',
+			primary: { label: 'Start from zero', href: '/en/programming-basics/' },
+			secondary: { label: 'See all tracks', href: '#learning-paths' },
 			download: { label: 'Download the complete PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
-				{ value: '102', label: 'practical lessons' },
+				{ value: String(totalLessons), label: 'practical lessons' },
 				{ value: '7', label: 'connected tracks' },
 				{ value: 'AR · EN', label: 'Arabic and English' },
 			],
-			flowTitle: 'Request journey',
-			flowLabel: 'From the browser to PHP and back',
-			sectionTitle: 'Choose your path',
-			sectionDescription: 'Follow the suggested order or jump directly to the topic you need.',
+			flowTitle: 'Not sure where to begin?',
+			flowLabel: 'Suggested learning journey',
+			sectionTitle: 'Choose what you need to learn',
+			sectionDescription: 'Follow the order if you are new, or open the track you need if you already know the basics.',
 			lessonLabel: 'lessons',
 			paths: [
 				{
 					code: '01',
-					title: 'Programming & web basics',
-					description: 'Computer basics, math, logic, problem solving, networking, HTTP, and request flow.',
+					title: 'Computer, programming, and networking fundamentals',
+					description: 'Learn computer use, build a program that reads and saves data, then explore mathematics, computer internals, and networks.',
 					href: '/en/programming-basics/',
-					count: '24',
+					count: lessonCounts['programming-basics'],
 					level: 'Start here',
 					accent: 'blue',
 				},
 				{
-					code: 'C++',
-					title: 'The C++ language',
-					description: 'Problem solving, number systems, the compiler, types, operators, decisions, loops, and projects.',
+					code: '02',
+					title: 'Programming with C++',
+					description: 'Write programs from values and variables through decisions, repetition, and small projects.',
 					href: '/en/cpp/',
-					count: '16',
+					count: lessonCounts.cpp,
 					level: 'Beginner → intermediate',
 					accent: 'orange',
 				},
 				{
-					code: 'PHP',
-					title: 'The PHP language',
-					description: 'Syntax, types, functions, files, sessions, and real request handling.',
+					code: '03',
+					title: 'Web development with PHP',
+					description: 'Learn the language and use it to handle requests, files, and user sessions.',
 					href: '/en/php/',
-					count: '16',
+					count: lessonCounts.php,
 					level: 'Beginner → intermediate',
 					accent: 'violet',
 				},
 				{
-					code: 'OPS',
-					title: 'PHP runtime & production',
-					description: 'Composer, HTTP clients, OPcache, PHP-FPM, Nginx, and safe configuration.',
+					code: '04',
+					title: 'Running PHP applications',
+					description: 'Understand the tools and services that keep a PHP application fast and reliable.',
 					href: '/en/php-runtime/',
-					count: '14',
+					count: lessonCounts['php-runtime'],
 					level: 'Intermediate',
 					accent: 'cyan',
 				},
 				{
-					code: 'OOP',
-					title: 'Object-oriented programming',
-					description: 'Design clear classes with encapsulation, inheritance, interfaces, and composition.',
+					code: '05',
+					title: 'Organizing programs with objects',
+					description: 'Organize code into clear parts that represent data and behavior, and learn when each approach helps.',
 					href: '/en/oop/',
-					count: '8',
+					count: lessonCounts.oop,
 					level: 'Intermediate',
 					accent: 'amber',
 				},
 				{
-					code: 'SEC',
-					title: 'Security, identity & access',
-					description: 'Sessions, XSS, CSRF, JWT, OAuth, OIDC, and authorization policies.',
+					code: '06',
+					title: 'Security, sign-in, and permissions',
+					description: 'Protect users and their data, then control who can enter and perform each action.',
 					href: '/en/auth/',
-					count: '19',
+					count: lessonCounts.auth,
 					level: 'Intermediate → advanced',
 					accent: 'rose',
 				},
 				{
-					code: 'DB',
-					title: 'Databases & PDO',
-					description: 'Prepared statements, ORM, transactions, ACID, indexes, and migrations.',
+					code: '07',
+					title: 'Databases',
+					description: 'Store, read, and update data safely, then organize it so it stays fast and clear.',
 					href: '/en/database/',
-					count: '5',
+					count: lessonCounts.database,
 					level: 'Intermediate',
 					accent: 'green',
 				},
@@ -213,36 +234,44 @@ const arrow = isArabic ? '←' : '→';
 
 		<div class="request-visual" role="img" aria-label={content.flowLabel}>
 			<div class="visual-topbar">
-				<div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
 				<span>{content.flowTitle}</span>
+				<strong>{isArabic ? 'رحلة تعلّم واضحة' : 'A clear learning journey'}</strong>
 			</div>
-			<div class="flow-line">
-				<span class="flow-number">01</span>
-				<code><b>GET</b> /learn/php</code>
-				<span class="flow-status">request</span>
-			</div>
-			<div class="flow-connector" aria-hidden="true"></div>
-			<div class="flow-line">
-				<span class="flow-number">02</span>
-				<code>DNS → TLS → Nginx</code>
-				<span class="flow-status">web</span>
-			</div>
-			<div class="flow-connector" aria-hidden="true"></div>
-			<div class="flow-line">
-				<span class="flow-number">03</span>
-				<code>PHP-FPM → Application</code>
-				<span class="flow-status">runtime</span>
-			</div>
-			<div class="flow-connector" aria-hidden="true"></div>
-			<div class="flow-line is-success">
-				<span class="flow-number">04</span>
-				<code><b>200</b> application/json</code>
-				<span class="flow-status">response</span>
-			</div>
+			{[
+				isArabic ? ['افهم الأساس', 'الكمبيوتر والمنطق'] : ['Learn the foundation', 'Computers and logic'],
+				isArabic ? ['حل المشكلة', 'قسّمها لخطوات'] : ['Solve the problem', 'Break it into steps'],
+				isArabic ? ['اكتب الكود', 'طبّق بإيدك'] : ['Write the code', 'Practice it yourself'],
+				isArabic ? ['ابنِ تطبيقًا', 'اربط الأجزاء'] : ['Build an application', 'Connect the pieces'],
+				isArabic ? ['شغّله بأمان', 'اختبر واحمِ البيانات'] : ['Run it safely', 'Test and protect data'],
+			].map((step, index) => (
+				<div class="flow-line">
+					<span class="flow-number">{String(index + 1).padStart(2, '0')}</span>
+					<div><b>{step[0]}</b><small>{step[1]}</small></div>
+				</div>
+			))}
 		</div>
 	</section>
 
-	<section class="learning-paths" aria-labelledby="paths-title">
+	<section class="study-method" aria-labelledby="method-title">
+		<div class="section-heading">
+			<div>
+				<p class="section-kicker">{isArabic ? 'طريقة المذاكرة' : 'How to study'}</p>
+				<h2 id="method-title">{isArabic ? 'كل درس له هدف واضح' : 'Every lesson has a clear purpose'}</h2>
+			</div>
+			<p>{isArabic ? 'مش مطلوب تحفظ كل حاجة من أول مرة. افهم الفكرة، جرّبها بإيدك، وبعدها راجع النتيجة وسبب أي خطأ.' : 'You do not need to memorize everything on the first pass. Understand the idea, try it, then review the result and any error.'}</p>
+		</div>
+		<div class="method-grid">
+			{[
+				isArabic ? ['01', 'افهم الفكرة', 'ابدأ بالمشكلة اللي الدرس بيحلها، وبعدها اتعرّف على المصطلحات واحدة واحدة.'] : ['01', 'Understand the idea', 'Start with the problem, then learn each new term one at a time.'],
+				isArabic ? ['02', 'جرّب بإيدك', 'اكتب المثال وغيّر فيه؛ التجربة بتثبت الفكرة أكتر من القراءة.'] : ['02', 'Try it yourself', 'Type the example and change it; practice makes the idea stick.'],
+				isArabic ? ['03', 'راجع النتيجة', 'قارن اللي حصل باللي توقعته، وافهم الخطأ بدل ما تنسخ الحل.'] : ['03', 'Review the result', 'Compare what happened with what you expected and understand errors.'],
+			].map((item) => (
+				<article><span>{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p></article>
+			))}
+		</div>
+	</section>
+
+	<section class="learning-paths" id="learning-paths" aria-labelledby="paths-title">
 		<div class="section-heading">
 			<div>
 				<p class="section-kicker">01 — 07</p>
@@ -455,102 +484,64 @@ const arrow = isArabic ? '←' : '→';
 	}
 
 	.request-visual {
-		direction: ltr;
 		overflow: hidden;
-		border: 1px solid rgb(148 163 184 / 22%);
+		padding: 1.1rem;
+		border: 1px solid var(--sl-color-hairline);
 		border-radius: 1.25rem;
-		background:
-			linear-gradient(180deg, rgb(15 23 42 / 98%), rgb(8 15 29 / 98%));
-		box-shadow: 0 30px 80px rgb(2 6 23 / 32%), inset 0 1px 0 rgb(255 255 255 / 7%);
-		color: #dbeafe;
-		text-align: left;
-		transform: perspective(900px) rotateY(-2deg);
+		background: color-mix(in srgb, var(--sl-color-bg-nav) 82%, transparent);
+		box-shadow: var(--docs-shadow);
 		transition: transform 220ms ease, box-shadow 220ms ease;
 	}
 
 	.request-visual:hover {
-		box-shadow: 0 34px 90px rgb(2 6 23 / 37%), inset 0 1px 0 rgb(255 255 255 / 8%);
-		transform: perspective(900px) rotateY(0) translateY(-3px);
+		box-shadow: 0 24px 55px rgb(2 6 23 / 14%);
+		transform: translateY(-3px);
 	}
 
 	.visual-topbar {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 0.9rem 1rem;
-		border-bottom: 1px solid rgb(148 163 184 / 14%);
-		color: #94a3b8;
-		font: 650 0.72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
+		gap: 1rem;
+		padding: .35rem .35rem 1rem;
+		border-bottom: 1px solid var(--sl-color-hairline);
+		color: var(--sl-color-gray-3);
+		font-size: .75rem;
+		font-weight: 700;
 	}
 
-	.window-dots {
-		display: flex;
-		gap: 0.38rem;
-	}
-
-	.window-dots i {
-		width: 0.52rem;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background: #fb7185;
-	}
-
-	.window-dots i:nth-child(2) { background: #fbbf24; }
-	.window-dots i:nth-child(3) { background: #34d399; }
+	.visual-topbar strong { color: var(--sl-color-white); font-size: .82rem; }
 
 	.flow-line {
 		display: grid;
-		grid-template-columns: 2rem 1fr auto;
+		grid-template-columns: 2.25rem 1fr;
 		align-items: center;
 		gap: 0.75rem;
-		margin: 0.85rem 1rem;
-		padding: 0.85rem;
-		border: 1px solid rgb(148 163 184 / 14%);
+		margin-top: .7rem;
+		padding: .7rem .75rem;
+		border: 1px solid var(--sl-color-hairline);
 		border-radius: 0.75rem;
-		background: rgb(15 23 42 / 72%);
+		background: color-mix(in srgb, var(--sl-color-accent) 3%, transparent);
 	}
 
-	.flow-line code {
-		overflow: hidden;
-		color: #dbeafe;
-		font: 600 clamp(0.74rem, 1.2vw, 0.86rem)/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.flow-line code b { color: #60a5fa; }
-	.flow-line.is-success code b { color: #34d399; }
+	.flow-line div { display: grid; gap: .12rem; }
+	.flow-line b { color: var(--sl-color-white); font-size: .9rem; }
+	.flow-line small { color: var(--sl-color-gray-3); font-size: .73rem; }
 
 	.flow-number {
-		color: #64748b;
-		font: 700 0.68rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+		display: grid;
+		width: 2.2rem;
+		height: 2.2rem;
+		place-items: center;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--sl-color-accent) 13%, transparent);
+		color: var(--sl-color-text-accent);
+		font-size: .68rem;
+		font-weight: 850;
 	}
 
-	.flow-status {
-		padding: 0.3rem 0.48rem;
-		border-radius: 999px;
-		background: rgb(37 99 235 / 15%);
-		color: #93c5fd;
-		font: 700 0.62rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
-	}
-
-	.is-success .flow-status {
-		background: rgb(16 185 129 / 14%);
-		color: #6ee7b7;
-	}
-
-	.flow-connector {
-		width: 1px;
-		height: 0.55rem;
-		margin: -0.85rem 0 -0.85rem 2.95rem;
-		background: linear-gradient(#334155, #60a5fa);
-	}
-
-	.learning-paths {
-		padding-top: 1rem;
-	}
+	.study-method,
+	.learning-paths { padding-top: 4rem; border-top: 1px solid var(--sl-color-hairline); }
 
 	.section-heading {
 		display: grid;
@@ -580,7 +571,7 @@ const arrow = isArabic ? '←' : '→';
 
 	.paths-grid {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
 	}
 
@@ -590,6 +581,22 @@ const arrow = isArabic ? '←' : '→';
 	}
 
 	.path-card:last-child .card-copy p { max-width: 72ch; }
+
+	.method-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		overflow: hidden;
+		margin-bottom: 4rem;
+		border: 1px solid var(--sl-color-hairline);
+		border-radius: 1rem;
+		background: color-mix(in srgb, var(--sl-color-bg-nav) 76%, transparent);
+	}
+
+	.method-grid article { padding: 1.35rem; }
+	.method-grid article + article { border-inline-start: 1px solid var(--sl-color-hairline); }
+	.method-grid article > span { color: var(--sl-color-accent); font-size: .7rem; font-weight: 850; }
+	.method-grid h3 { margin: .8rem 0 .45rem; color: var(--sl-color-white); font-size: 1.05rem; }
+	.method-grid p { margin: 0; color: var(--sl-color-gray-3); font-size: .86rem; line-height: 1.72; }
 
 	.path-card {
 		--path-accent: #60a5fa;
@@ -719,7 +726,7 @@ const arrow = isArabic ? '←' : '→';
 		.request-visual,
 		.request-visual:hover { transform: none; }
 		.paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		.path-card:last-child { grid-column: auto; min-height: 14.5rem; }
+		.path-card:last-child { grid-column: 1 / -1; min-height: 11.5rem; }
 	}
 
 	@media (max-width: 42rem) {
@@ -744,8 +751,7 @@ const arrow = isArabic ? '←' : '→';
 		.learning-stats { display: grid; grid-template-columns: repeat(3, 1fr); }
 		.learning-stats li { min-width: 0; padding: 0.7rem 0.55rem; text-align: center; }
 		.request-visual { border-radius: 1rem; }
-		.flow-line { grid-template-columns: 1.7rem 1fr; }
-		.flow-status { display: none; }
+		.flow-line { grid-template-columns: 2.2rem 1fr; }
 
 		.section-heading {
 			grid-template-columns: 1fr;
@@ -754,6 +760,9 @@ const arrow = isArabic ? '←' : '→';
 
 		.paths-grid { grid-template-columns: 1fr; }
 		.path-card { min-height: 13rem; }
+		.path-card:last-child { grid-column: auto; min-height: 13rem; }
+		.method-grid { grid-template-columns: 1fr; }
+		.method-grid article + article { border-inline-start: 0; border-top: 1px solid var(--sl-color-hairline); }
 	}
 
 	@media (prefers-reduced-motion: reduce) {

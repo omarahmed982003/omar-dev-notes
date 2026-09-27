@@ -1,13 +1,39 @@
 ---
-title: 12. تصميم APIs
+title: "تصميم واجهات تبادل البيانات"
 description: REST وRPC وGraphQL وتصميم الموارد والحالات والأخطاء والصفحات والإصدارات والعقود.
 sidebar:
-  order: 13
+  order: 29
+prev: {"link":"/programming-basics/30-webhook-delivery/","label":"استقبل إشعار خادم وتعامل مع تكراره"}
+next: {"link":"/programming-basics/16-http2-http3-quic/","label":"كيف يختلف HTTP/2 عن HTTP/3؟"}
 ---
+
+
+## عقد منتج واحد قبل أنواع الواجهات
+
+**API — واجهة برمجة التطبيقات** اتفاق يحدد كيف يطلب برنامج بيانات أو عملية. **العقد** وصف الطلبات المسموحة والردود. في [المعمل](/programming-basics/32-local-network-lab/) اختبر العقد الآتي على8766:
+
+| الطلب | الحالة | المحتوى |
+|---|---|---|
+| GET `/api/products/1` |200|id عدد، name نص، price عدد20، currency النصEGP|
+| GET `/api/products/2` |404|error.code يساوي NOT_FOUND|
+| GET `/api/products/abc` |400|error.code يساوي INVALID_ID|
+| POST `/api/products/1` |405|Allow يذكر GET وHEAD|
+
+`GET` يطلب قراءة، و`POST` يطلب معالجة لا يقبلها هذا المسار. الرد JSON: حقول لها أسماء وقيم، مثل كائن المنتج في مشروع المشتريات. افتح أول رابط بالمتصفح، ثم جرّب `curl.exe -i -X POST http://127.0.0.1:8766/api/products/1`. `-X` يحدد نوع الطلب.
+
+اكتب المتوقع قبل التشغيل. النجاح مش مجرد200: افحص نوع كل حقل ومعناه. هذا عقد قراءة محدود؛ إضافة منتج تحتاج عقدًا آخر يحدد المدخلات والتحقق والصلاحيات قبل المقارنة بين REST وRPC وGraphQL.
+
+## قبل التفاصيل
+
+API (Application Programming Interface؛ اتفاق يسمح لبرنامج بطلب بيانات أو عملية من مكوّن آخر) جيدة هي عقد يمكن للعميل توقعه، لا مجرد endpoints (عنوان يقدم عملية أو بيانات من التطبيق) تعمل اليوم. صمّم الموارد والحالات والأخطاء والصفحات والتوافق قبل أن تتكاثر الاعتمادات.
+
+**API، Application Programming Interface — واجهة برمجة تطبيقات** اتفاق على طلبات ونتائج يفهمها برنامج آخر. **Endpoint — نقطة وصول** عنوان وعملية محددة، مثل GET لطلب منتج. **العقد — Contract** يحدد الحقول وأنواعها والنتائج والأخطاء، بحيث يعرف العميل ماذا يرسل وكيف يتعامل مع الرد.
+
+**CRUD، Create Read Update Delete** إنشاء وقراءة وتعديل وحذف بيانات. **REST، Representational State Transfer** أسلوب تنظيم حول موارد وتمثيلاتها وقيود منها فصل العميل والخادم واستقلال الطلبات؛ مجرد وضع JSON (JavaScript Object Notation؛ صيغة نصية لترتيب البيانات في أسماء وقيم وقوائم) وراء عنوان مش كفاية ليكون التصميم REST كاملًا. **RPC، Remote Procedure Call** طلب تنفيذ عملية مسماة عن بعد. **GraphQL** لغة استعلام ونظام تنفيذ يسمح للعميل باختيار حقول ضمن وصف أنواع اسمه schema؛ **Resolver** كود يجلب قيمة حقل، وحدود complexity تمنع استعلامًا بالغ الكلفة.
 
 ## اختر الأسلوب حسب المشكلة
 
-- **REST:** موارد وعقود HTTP؛ مناسب لمعظم CRUD والـpublic APIs.
+- **REST:** موارد وعقود HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب)؛ مناسب لمعظم CRUD والـpublic APIs.
 - **RPC:** عمليات صريحة مثل `calculateShipping`؛ مناسب عندما يكون الفعل أهم من المورد.
 - **GraphQL:** العميل يحدد الحقول عبر schema؛ قوي للواجهات المتنوعة لكنه يحتاج حدود complexity وauthorization لكل resolver.
 
@@ -23,7 +49,7 @@ DELETE /api/orders/42
 ```
 
 - استخدم nouns متسقة.
-- أعد `201` مع `Location` عند الإنشاء، و`204` عندما لا يوجد body.
+- أعد `201` مع `Location` عند الإنشاء، و`204` عندما لا يوجد body (جسم الرسالة: المحتوى المرسل مثل نص صفحة أو بيانات طلب).
 - ميّز `400` parsing، `401` authentication، `403` permission، `404` absence، `409` conflict، و`422` validation وفق عقدك.
 - لا تجعل كل نتيجة `200`.
 
@@ -39,9 +65,13 @@ DELETE /api/orders/42
 }
 ```
 
-استخدم شكل خطأ ثابتًا، ولا تكشف stack trace أو SQL. معيار Problem Details يعرّف حقولًا قابلة للامتداد.
+استخدم شكل خطأ ثابتًا، ولا تكشف stack trace (سلسلة استدعاءات توضح أين مر التنفيذ عند الخطأ) أو SQL. معيار Problem Details يعرّف حقولًا قابلة للامتداد.
+
+**Problem Details** صيغة موحدة لوصف خطأ HTTP. في المثال type رابط لتعريف نوع الخطأ، وtitle وصف قصير، وstatus يكرر رمز الرد. errors وrequest_id حقول إضافية في عقدنا: الأول أخطاء المدخلات، والثاني معرّف تتبع الطلب. **Stack trace** قائمة مواضع التنفيذ وقت العطل، و**SQL** لغة أوامر قاعدة البيانات؛ لا ترسلهما للعميل كبديل لرسالة مفهومة.
 
 ## Pagination وFiltering
+
+**Pagination — تقسيم النتائج لصفحات** يمنع إرجاع آلاف السجلات مرة واحدة، و**Filtering — التصفية** يختار المطابق لشرط. **Cursor** علامة موضع لاستكمال القراءة وفق ترتيب ثابت، مثل تاريخ الطلب ومعرّفه، و**Offset** عدد العناصر المتخطاة. يحتاج المؤشر فحصًا وحدود وصول؛ إخفاؤه بترميز Base64 لا يجعله موثوقًا.
 
 ```text
 GET /api/orders?status=paid&limit=20&cursor=eyJpZCI6OTAwfQ
@@ -55,51 +85,31 @@ GET /api/orders?status=paid&limit=20&cursor=eyJpZCI6OTAwfQ
 - لا تغيّر معنى حقل قائم بصمت.
 - أعلن deprecation وموعد الإزالة.
 - اختبر consumers بعقود آلية.
-- يمكن وضع الإصدار في path أو header؛ الاتساق أهم من الاختيار.
+- يمكن وضع الإصدار في path (مسار المورد داخل العنوان، مثل /products) أو header (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة)؛ الاتساق أهم من الاختيار.
 
 ## العقد والتشغيل
 
-وثّق OpenAPI أو schema قابلة للاختبار، وأضف authentication، rate limits، idempotency للعمليات الحساسة، request IDs، timeouts وobservability. صمّم الـAPI للفشل الجزئي وإعادة المحاولة لا للمسار السعيد فقط.
+وثّق OpenAPI أو schema قابلة للاختبار، وأضف authentication، rate limits، idempotency للعمليات الحساسة، request IDs (معرّف يميز طلبًا لتتبع أحداثه)، timeouts وobservability. صمّم الـAPI للفشل الجزئي وإعادة المحاولة لا للمسار السعيد فقط.
 
 ## مراجع
 
 - [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
 - [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457)
 
-## خريطة الدرس
+## مسائل عملية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: تصميم APIs">
-<p class="lesson-diagram-title">خريطة مفاهيم: تصميم APIs</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>اختر الأسلوب حسب المشكلة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>موارد وHTTP</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Validation وProblem Details</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Pagination وFiltering</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>التوافق والإصدارات</span></div>
-</div>
-</div>
+<details><summary>متى نعيد <code>404</code> ومتى <code>403</code>؟</summary><p>404 لعدم وجود المورد، و403 لوجوده مع منع الوصول. أحيانًا تختار السياسة 404 لإخفاء وجود مورد حساس.</p></details>
 
-## تأكد من فهمك
+<details><summary>لماذا cursor pagination أنسب أحيانًا من offset؟</summary><p>تتعامل أفضل مع بيانات تتغير أثناء التصفح وتتجنب كلفة القفز لمسافات كبيرة، لكنها تحتاج ترتيبًا ثابتًا وcursor غير قابل للتلاعب.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «اختر الأسلوب حسب المشكلة» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> REST: موارد وعقود HTTP؛ مناسب لمعظم CRUD والـpublic APIs. RPC: عمليات صريحة مثل calculateShipping؛ مناسب عندما يكون الفعل أهم من المورد. GraphQL: العميل يحدد الحقول عبر schema؛ قوي للواجهات المتنوعة لكنه يحتاج حدود complexity وauthorization لكل resolver. الاسم لا يضمن الجودة. العقد الواضح، التوافق، الأمان والمراقبة أهم من الشعار. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «اختر الأسلوب حسب المشكلة» و«موارد وHTTP». لماذا لا يغني أحدهما عن الآخر داخل موضوع «تصميم APIs»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «اختر الأسلوب حسب المشكلة»: REST: موارد وعقود HTTP؛ مناسب لمعظم CRUD والـpublic APIs. RPC: عمليات صريحة مثل calculateShipping؛ مناسب عندما يكون الفعل أهم من المورد. GraphQL: العميل يحدد الحقول عبر schema؛ قوي للواجهات المتنوعة لكنه يحتاج حدود complexity وauthorization لكل resolver. الاسم لا يضمن الجودة. العقد الواضح، التوافق، الأمان والمراقبة أهم من الشعار. أما «موارد وHTTP»: استخدم nouns متسقة. أعد 201 مع Location عند الإنشاء، و204 عندما لا يوجد body. ميّز 400 parsing، 401 authentication، 403 permission، 404 absence، 409 conflict، و422 validation وفق عقدك. لا تجعل كل نتيجة 200. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Validation وProblem Details». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استخدم شكل خطأ ثابتًا، ولا تكشف stack trace أو SQL. معيار Problem Details يعرّف حقولًا قابلة للامتداد. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Pagination وFiltering» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ضع حدًا أقصى للصفحة. Cursor pagination أفضل غالبًا للبيانات الكبيرة المتغيرة، بينما offset أبسط للتنقل المحدود. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>هل كل تغيير يحتاج إصدار API جديدًا؟</summary><p>لا. الإضافات المتوافقة غالبًا لا تحتاجه، أما حذف حقل أو تغيير معناه فيحتاج خطة إصدار وترحيل واضحة.</p></details>
+
+## اختبر العقد عند التكرار والتغيير
+
+**Backward compatible — متوافق مع العملاء السابقين** يعني أن العميل القديم يظل يعمل حسب عقده. **Deprecation — إعلان الاستغناء التدريجي** يعطي مهلة انتقال قبل إزالة ميزة. **OpenAPI** صيغة لوصف نقاط الوصول والمدخلات والردود بحيث تقرأها الأدوات وتتحقق منها.
+
+**Idempotency-Key** معرّف يرسله العميل لعملية قابلة لإعادة المحاولة. الخادم يربطه بالمستخدم والعملية والمدخلات والنتيجة، ويمنع المعالجة المتزامنة المكررة أيضًا. مدة الاحتفاظ بالمفتاح جزء من العقد، مش ضمانًا أبديًا.
+
+**Rate limit** حد لعدد الطلبات في زمن، و**Quota** حصة استهلاك خلال فترة. عند الحد المناسب يرجع الخادم 429، ويمكن أن يرسل **Retry-After**، وقت الانتظار قبل إعادة المحاولة. **Observability — قابلية فهم التشغيل** استخدام السجلات والقياسات لتحديد ما حدث ولماذا.
+
+**تدريب محلول:** نفس المفتاح مع جسم مختلف: ارفض التعارض برسالة ورمز محددين في العقد، مثل 409، ولا تنفذ عملية جديدة بصمت. اختبر أيضًا أن إضافة حقل اختياري لا تكسر العميل القديم، وأن العميل لا يعتمد على ترتيب حقول JSON.

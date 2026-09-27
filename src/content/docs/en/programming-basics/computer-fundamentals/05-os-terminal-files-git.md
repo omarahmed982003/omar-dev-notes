@@ -1,43 +1,40 @@
 ---
-title: 8. Terminal, files, permissions, and environment
-description: Shells, paths, filesystem metadata, permissions, environment variables, pipes, exit codes, and safe command-line work.
+title: "Prepare your first program folder and editor"
+description: "Prepare a known location for code and a clear way to open it. Existing Notepad and a browser are sufficient; the practical steps use Windows."
 sidebar:
-  order: 8
+  order: 14
+prev: {"link":"/en/programming-basics/computer-fundamentals/03-binary-languages-algorithms/","label":"From an idea to steps and a program"}
+next: {"link":"/en/programming-basics/computer-fundamentals/08-first-program/","label":"Write, save, and run your first program"}
 ---
 
-## Terminal and shell
+Prepare a known location for code and a clear way to open it. Existing Notepad and a browser are sufficient; the practical steps use Windows.
 
-A terminal displays a text session; a shell parses commands, quoting, expansions, and pipes before starting processes. PowerShell, Bash, zsh, and `cmd.exe` use different syntax, so escaping rules should not be copied blindly between them.
+## Editor and runtime
 
-## Paths and working directory
+An editor lets you write and save text; we use Notepad. A runtime executes instructions; a browser can execute JavaScript. Notepad saves the code, while the browser runs it. Specialized code editors provide highlighting and suggestions later, but are not required for this experiment.
 
-An absolute path starts at a root or drive. A relative path is resolved from the current working directory; `.` means current and `..` means parent. A filename is not a complete path, and an extension does not prove content type.
+HTML (Hypertext Markup Language, a language describing page structure) describes page content and structure; it is not the programming language doing our calculations. A small `.html` file will contain JavaScript instructions for the browser. The next lesson explains its parts before you change them.
 
-Use tab completion and literal-path options for special characters. Before recursive deletion or movement, resolve and display the exact target.
+## Create the workspace
 
-## Files, directories, and metadata
+1. Open Documents, then your existing `FirstSteps` folder.
+2. Create a folder inside named `first-program`.
+3. Open a new Notepad document and temporarily type `Ready`.
+4. Use Save As inside `first-program` with filename `hello.html`. Choose All files so Notepad does not append `.txt`, and UTF-8 (Unicode Transformation Format with 8-bit units, encoding Unicode character numbers as bytes) encoding if offered.
+5. Show extensions and confirm `hello.html`, not `hello.html.txt`. Open it in your browser: expect Ready.
 
-A file is bytes plus metadata such as size, timestamps, owner, and permissions. A directory maps names to entries. A same-filesystem rename may update metadata quickly, while a cross-device move may copy and delete. A symbolic link refers to another path rather than copying its data.
+UTF-8 stores text including Arabic and other scripts. Selecting it preserves characters when the file is read. This step checks location and format; Ready is not yet a calculation program.
 
-## Users, groups, and permissions
+## Edit and run again
 
-Permissions determine read, write, and execution access. Unix commonly expresses owner/group/others bits; Windows uses detailed ACLs. Services should not run as root or administrator unnecessarily, and secret files should not be globally readable.
+Open the same file in Notepad, change Ready to `Ready 2`, and press Ctrl+S. In the browser reload with the button or Ctrl+R. Expect Ready 2. The browser cannot read an unsaved edit in Notepad: save, then reload.
 
-## Environment variables
+If old text remains, check the Notepad filename and browser path. If unexpected source appears, check Open with and the extension. Two identically named files in different folders often cause confusion.
 
-Environment variables are key-value configuration inherited by child processes. They are not a secret vault and may appear in process inspection, crash reports, or logs. Validate required values at startup and use a production secret manager.
+## What is a terminal?
 
-## stdin, stdout, stderr, and exit status
+A terminal is a window for typed commands instead of buttons. You will use one later with language tools. You do not need terminal commands now, or an author-specific folder such as `C:\my_docs`.
 
-Programs read standard input, emit normal data on standard output, diagnostics on standard error, and return a status code. Zero conventionally means success. Pipes connect one process's stdout to another's stdin; backpressure can make a fast producer wait for a slower consumer.
+**Ready to continue:** Display Ready 2 after saving and reloading, then identify the file’s location. You are ready to put real instructions into that file.
 
-Keep progress messages away from machine-readable stdout, quote paths with spaces, inspect help before bulk operations, and never expose secrets in command history or process arguments.
-
-## Check your understanding
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>How do a terminal and shell differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The terminal presents the session; the shell interprets commands and connects processes and streams.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>Why can a valid relative path fail?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It is resolved from the current working directory, which may differ from the script or project directory.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why separate stdout and stderr?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Machine-readable output remains clean while diagnostics can be displayed or logged independently.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Is an environment variable a secret vault?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> No. It is a configuration channel that can leak; use secret management, permissions, rotation, and log redaction.</div></details></section>
-</div>
+UTF-8 maps characters to bytes; the [number and text example](/en/programming-basics/computer-fundamentals/02-binary-data-representation/) explains the distinction.

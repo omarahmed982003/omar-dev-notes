@@ -5,6 +5,38 @@ sidebar:
   order: 13
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **URL:** The complete address of a resource such as a page or API endpoint.
+- **Unicode:** A standard that assigns consistent numbers to characters and symbols.
+- **UTF-8:** A common encoding that stores Unicode numbers as bytes.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## A visible character is not necessarily one byte
+
+A PHP string is bytes. Basic English can hide this fact because ASCII characters use one byte, while Arabic characters usually use multiple UTF-8 bytes and one user-visible symbol may contain several Unicode code points.
+
+```php
+$text = 'عمر';
+
+echo strlen($text), PHP_EOL;    // bytes
+echo mb_strlen($text), PHP_EOL; // characters under the encoding
+```
+
+Therefore `strlen()` and `$text[0]` are not general Unicode text operations. Use `mb_*`, and use suitable `intl` grapheme functions when user-visible clusters matter.
+
+```text
+Bytes → UTF-8 decoding → Code points → Grapheme clusters → Display
+```
+
+A regular expression is a small language that describes a pattern, not magic search. Start small, anchor a pattern when the entire value must match, and enable Unicode mode with `u` for UTF-8 text. Do not parse full HTML or a complex formal language with regex when a maintained parser exists.
+
 ## PHP strings are bytes
 
 ```php
@@ -42,38 +74,40 @@ Use explicit anchors, inspect `preg_last_error_msg()`, limit input size before c
 
 Pattern validity is not business validity. Apply domain rules after matching the shape.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Strings, Unicode, and regular expressions">
-<p class="lesson-diagram-title">Concept map: Strings, Unicode, and regular expressions</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>PHP strings are bytes</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Graphemes and normalization</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Contextual output</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Regular expressions</span></div>
-</div>
-</div>
+<details><summary>1. Why is strlen not a user-visible Arabic length?</summary><p>It counts bytes. Use <code>mb_strlen()</code> for characters or grapheme functions when one visible symbol can contain several code points.</p></details>
 
-## Check your understanding
+<details><summary>2. Match a complete order ID such as ORD-1234</summary><p>Use full-input anchors and exactly four digits, then test valid input, extra prefixes, and trailing newlines.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “PHP strings are bytes” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use UTF-8 consistently across HTTP, PHP, and the database. Prefer mb_strlen, mb_substr, and mb_strtolower for multilingual text. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “PHP strings are bytes” with “Graphemes and normalization”. Why does neither replace the other in “Strings, Unicode, and regular expressions”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “PHP strings are bytes”: Use UTF-8 consistently across HTTP, PHP, and the database. Prefer mb_strlen, mb_substr, and mb_strtolower for multilingual text. For “Graphemes and normalization”: A visible symbol may contain multiple code points. The intl extension provides grapheme functions and Normalizer: Normalize for a clear purpose such as search or uniqueness. Preserve original text when required; case folding is language-sensitive. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Contextual output”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use interpolation or sprintf for display, never SQL. Compare secret values with hash_equals() where timing-safe equality matters. Use htmlspecialchars for HTML text and rawurlencode for URL parameters. No universal sanitization function works for every context. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Regular expressions” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use explicit anchors, inspect preg_last_error_msg(), limit input size before complex patterns, avoid catastrophic backtracking, and choose a real parser for HTML or JSON. Pattern validity is not business validity. Apply domain rules after matching the shape. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Why cap input length before an expensive regex?</summary><p>To prevent excessive CPU or memory use from huge input or pathological backtracking.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Why can <code>strlen</code> miscount visible characters?</summary><p>It counts bytes, while one UTF-8 character may use several; use mbstring or grapheme-aware tools as needed.</p></details>
+
+<details><summary>Why is regex risky on long untrusted input?</summary><p>A poor pattern can trigger expensive backtracking; bound input, design carefully, and test adversarial cases.</p></details>
+
+## Run and verify
+
+The file distinguishes bytes/code points for ASCII, Arabic, and emoji and rejects a trailing newline in amounts. Performance testing another regex requires input bounds and separate measurement.
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php text-lab.php
+~~~
+
+**Extended integration exercise target:** ASCII, Arabic, and emoji cases pass using the appropriate length semantics; a catastrophic regex is bounded or redesigned.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Inspect <code>preg_*</code> errors and backtracking limits; do not accept a regex that can stall on attacker input. Normalize Unicode before identifier comparison when the domain requires it while preserving display data. Escaping is contextual across HTML text, attributes, URLs, and JavaScript.
+
+### Try it yourself
+
+Test a regex against long adversarial input and compare time with the normal case.

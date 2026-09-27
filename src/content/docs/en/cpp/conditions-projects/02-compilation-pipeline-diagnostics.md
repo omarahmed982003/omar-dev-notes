@@ -6,6 +6,18 @@ sidebar:
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Runtime:** The period when a program is actually running.
+- **Token:** A value representing identity or permission without resending a password.
+- **Function:** A named, reusable block of code with one defined job.
+
+
 ## Why C++ needs translation
 
 Processors execute machine instructions for a target architecture. C++ source uses a human-readable language, so a toolchain transforms it into a binary understood by the operating system and CPU. “Compiler” often names the driver that coordinates several distinct stages.
@@ -176,7 +188,7 @@ Treat warnings as findings. Enable strong warnings and prevent new ones from acc
 
 <div class="lesson-diagram" role="img" aria-label="C++ source-to-process build pipeline">
 <p class="lesson-diagram-title">From source code to a running process</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node input"><span>Source + Headers</span></div><span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Preprocessor</span></div><span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Tokens + AST + Semantics</span></div><span class="diagram-arrow" aria-hidden="true">→</span>
@@ -197,3 +209,11 @@ Treat warnings as findings. Enable strong warnings and prevent new ones from acc
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>Classify a missing header, undeclared name, missing function definition, missing DLL, and wrong area formula.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Preprocessing, semantic analysis, linking, loading, and logic testing respectively.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>Must optimization preserve a valid program's observable behavior, and what changes when the program has undefined behavior?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Optimization must preserve the required observable behavior of a program whose behavior is defined. Once undefined behavior occurs, the language no longer supplies that guarantee, so optimized results may appear surprising.</div></details></section>
 </div>
+
+## Connect the ideas
+
+Study the lesson in three passes: preprocessing/compilation, object files/linking, then loading/runtime. Save preprocessed source, inspect symbols with <code>nm</code> or the platform equivalent, and inspect sections with <code>objdump</code>. Include ODR and template instantiation as causes of difficult linker failures.
+
+### Try it yourself
+
+Keep three artifacts from one program and map each to a stage and possible failure.

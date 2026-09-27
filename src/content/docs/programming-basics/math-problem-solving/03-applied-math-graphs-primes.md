@@ -1,8 +1,16 @@
 ---
-title: "الرياضيات التطبيقية والقياس والرسوم والأعداد الأولية"
-description: "الرياضيات التطبيقية تربط الأرقام بوحدات وتمثيلات. التحويل والتقريب والإحداثيات والأعداد الأولية أدوات لحل مسائل عملية لا مجرد قوانين منفصلة."
+title: "القياس والوحدات والأعداد الأولية"
+description: "القياس والوحدات والأعداد الأولية"
 tableOfContents: true
+prev: {"link":"/programming-basics/math-problem-solving/10-greedy-dynamic-programming/","label":"اختَر بين الحل الجشع وحفظ النتائج"}
+next: {"link":"/programming-basics/math-problem-solving/11-counting-probability/","label":"المتتابعات والعد والاحتمال"}
+sidebar:
+  order: 12
 ---
+
+استخدم القسم بعد [القيم والقرارات والحلقات](/programming-basics/computer-fundamentals/10-decisions-and-repetition/). ارجع للحساب حسب الحاجة؛ الرسوم والتعقيد والبرمجة الديناميكية توسعات لاحقة وليست شروطًا لأول برنامج.
+
+
 
 ## الفكرة العامة
 
@@ -29,34 +37,18 @@ tableOfContents: true
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الرياضيات التطبيقية والقياس والرسوم والأعداد الأولية">
 <p class="lesson-diagram-title">خريطة مفاهيم: الرياضيات التطبيقية والقياس والرسوم والأعداد الأولية</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>الفكرة العامة</span></div>
+<div class="diagram-flow diagram-grid">
+<div class="diagram-node input"><span>كمية + وحدة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المفاهيم الأساسية</span></div>
+<div class="diagram-node process"><span>حوّل للوحدة المطلوبة</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال تطبيقي</span></div>
+<div class="diagram-node process"><span>مثّلها: نقطة أو رسم</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>تصحيح مفاهيم وأخطاء شائعة</span></div>
+<div class="diagram-node decision"><span>اضبط التقريب والخطأ</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>الرياضيات التطبيقية تربط الأرقام بوحدات وتمثيلات. التحويل والتقريب والإحداثيات</span></div>
+<div class="diagram-node output"><span>استنتج معنى النتيجة</span></div>
 </div>
 </div>
-
-## المتتابعات والعلاقات التكرارية
-
-يزيد الحد في المتتابعة الحسابية بمقدار ثابت، بينما يضرب في نسبة ثابتة في المتتابعة الهندسية. يمكن حساب الحد مباشرة بدل توليد كل الحدود عندما تتوفر الصيغة. أما Recurrence فتعرف الحد من حدود سابقة مثل Fibonacci، ويجب تحديد Base Cases حتى لا يستمر التعريف بلا نهاية.
-
-## مبدأ العد والتباديل والتوافيق
-
-إذا كان اختيار أول له `a` احتمالات ثم اختيار مستقل له `b` احتمالات فعدد التركيبات `a*b`. التبديل يهتم بالترتيب، بينما التوافق يختار عناصر من غير اعتبار ترتيبها. لا تحسب Factorial مباشرة للقيم الكبيرة من غير فهم حدود النوع وإمكانية تبسيط الصيغة.
-
-## أساسيات الاحتمالات
-
-فضاء العينة هو مجموعة النتائج الممكنة. احتمال الحدث عدد بين صفر وواحد. الحدثان مستقلان إذا لم يغير وقوع أحدهما احتمال الآخر. الاحتمال الشرطي يقيس وقوع A مع معرفة وقوع B. الأرقام العشوائية في البرامج غالبًا Pseudorandom وتحتاج Seed ومولدًا مناسبًا، ولا تستخدم مولدًا عاديًا لأسرار أمنية.
-
-## Graphs وTrees
-
-يتكون Graph من Vertices وEdges. قد تكون الحافة موجهة أو غير موجهة، وموزونة أو بلا وزن. الـPath سلسلة حواف، والـCycle يعود إلى نقطة سابقة. والـTree رسم متصل بلا دورات وله مسار وحيد بين أي عقدتين. تستخدم Graphs في الطرق والشبكات والتبعيات والعلاقات الاجتماعية.
 
 ## تأكد من فهمك
 
@@ -79,6 +71,11 @@ tableOfContents: true
 </section>
 </div>
 
-## خلاصة
+## الخطوة التالية
 
-افهم العلاقة بين الفكرة ومدخلاتها ونتيجتها، ثم اختبرها بحالات عادية وحدّية وغير صالحة. القدرة على التفسير والتطبيق أهم من حفظ الصياغة.
+
+كمّل في [المتتابعات والعد والاحتمال](/programming-basics/math-problem-solving/11-counting-probability/) بعد تنفيذ التجربة هنا.
+
+
+
+كمّل في [ارسم العلاقات وابحث عن طريق](/programming-basics/math-problem-solving/12-graphs-and-search/) بعد تنفيذ التجربة هنا.

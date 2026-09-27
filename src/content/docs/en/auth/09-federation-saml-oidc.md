@@ -5,6 +5,24 @@ sidebar:
   order: 9
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Session:** Temporary server-side state used to recognize a user across requests.
+- **Token:** A value representing identity or permission without resending a password.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+
+
+- **Authentication:** Confirming that a user owns an identity.
+- **Authorization:** Deciding which actions an identity may perform.
+- **OAuth:** A delegation protocol granting limited access without sharing a password.
+- **OIDC:** An identity layer over OAuth that identifies who signed in.
+- **SAML:** A standard for exchanging sign-in information between services.
+
 # Federation is not one protocol
 
 Federated identity lets an application rely on an external identity provider. Single Sign-On is the experience of reaching multiple applications after a central sign-in.
@@ -68,38 +86,26 @@ An email can change and may be unverified. Use the pair `iss + sub` as the stabl
 
 Choose OIDC for modern web/mobile login, SAML where enterprise federation requires it, and OAuth for delegated API access. Security depends on exact validation and trust configuration, not the protocol name alone.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Federated identity, SSO, SAML, and OIDC">
-<p class="lesson-diagram-title">Concept map: Federated identity, SSO, SAML, and OIDC</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Separate the protocols</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>SAML browser SSO</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>OpenID Connect</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Validate an ID token</span></div>
-</div>
-</div>
+<details><summary>Who authenticates the user in federation?</summary><p>The identity provider authenticates; the relying party validates the assertion or ID token and creates its session.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Separate the protocols” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> | Technology | Primary purpose | Typical result | |---|---|---| | OAuth 2.0 | delegated API authorization | access token | | OpenID Connect | authentication layered on OAuth | ID token and identity claims | | SAML 2.0 | XML identity/assertion exchange, common in enterprise SSO | SAML response/assertion | OAuth alone is not a login protocol. Inferring identity from an arbitrary access token endpoint creates unsafe… In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Separate the protocols” with “SAML browser SSO”. Why does neither replace the other in “Federated identity, SSO, SAML, and OIDC”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Separate the protocols”: | Technology | Primary purpose | Typical result | |---|---|---| | OAuth 2.0 | delegated API authorization | access token | | OpenID Connect | authentication layered on OAuth | ID token and identity claims | | SAML 2.0 | XML identity/assertion exchange, common in enterprise SSO | SAML response/assertion | OAuth alone is not a login protocol. Inferring identity from an arbitrary access token endpoint creates unsafe… For “SAML browser SSO”: The Identity Provider authenticates the user and issues an assertion. The Service Provider validates it and creates its own session. Validate the XML signature with trusted IdP metadata, issuer, audience restriction, recipient/destination, time conditions, and InResponseTo where applicable. Detect replay by assertion ID. Use a mature SAML library and safe XML parsing; do not implement XML signatures yourself. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “OpenID Connect”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The openid scope makes an OAuth authorization request an OIDC request: ID token: authentication result for the client. Access token: authorization credential for an API. UserInfo: optional additional claims obtained with an access token. Never substitute an ID token as the API's access token. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Validate an ID token” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Use metadata rooted in a preconfigured trusted issuer. Verify the signature with that issuer's JWKS. Exactly match iss and require the client ID in aud. Check expiration and relevant time claims. Match the transaction-specific nonce. Apply azp rules for multiple audiences. Require UserInfo sub to match the ID-token subject. An email can change and may be unverified. Use the pair iss + sub as the stable external… Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** A correctly signed identity response arrives for a different client or login transaction.
+
+**Negative test:** Test a different <code>audience</code>, a stale <code>nonce</code>, and an unregistered redirect URI.
+
+**Expected result:** All cases fail, and the response is bound to the local request before a session is created.
+
+### Verification source
+
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Connect the ideas
+
+For SAML, validate metadata, entity ID, Destination, Audience, InResponseTo, time, and the signature at the expected element to resist XML signature wrapping; do not hand-roll XML security. For OIDC, use trusted discovery/JWKS and pin issuer, client ID, redirect URI, and a small clock-skew allowance.
+
+### Try it yourself
+
+Test a signed assertion wrapping the wrong element and an ID token from another issuer.

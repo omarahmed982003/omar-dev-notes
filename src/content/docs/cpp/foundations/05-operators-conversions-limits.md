@@ -6,6 +6,16 @@ description: "العوامل تبني التعبيرات، والتحويلات 
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Unicode:** معيار بيعطي الحروف والرموز من لغات مختلفة أرقامًا موحدة.
+- **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
+
+
 ## التعبير والعامل والنتيجة
 
 العوامل تبني التعبيرات، والتحويلات تحدد النوع الذي تُحسب به النتيجة. افهم القواعد بدل الاعتماد على التجربة العشوائية.
@@ -96,7 +106,7 @@ double area = pi * radius * radius;
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المعاملات والتحويلات وحدود الأنواع">
 <p class="lesson-diagram-title">خريطة مفاهيم: المعاملات والتحويلات وحدود الأنواع</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Operands</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Promotions</span></div>
@@ -175,3 +185,11 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قد يحدث overflow أثناء ضرب int قبل الإسناد الواسع. صححه إلى <code>1LL * a * b</code> وتحقق من أن long long نفسه يكفي.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+ترتيب تقييم operands ليس دائمًا ترتيب كتابتها، فلا تعدل القيمة نفسها عدة مرات داخل expression. Signed overflow undefined behavior، بينما unsigned يلتف modulo. Bit shift على قيمة سالبة أو بعدد خارج المدى خطر؛ استخدم unsigned type وحقق عدد البتات.
+
+### جرّب بنفسك
+
+اختبر expression ذات side effects ثم أعد كتابتها إلى statements واضحة.

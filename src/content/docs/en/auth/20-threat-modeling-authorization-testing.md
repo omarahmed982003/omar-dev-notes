@@ -5,6 +5,17 @@ sidebar:
   order: 20
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Session:** Temporary server-side state used to recognize a user across requests.
+
+
 ## Assets and trust boundaries
 
 A threat model is not a generic vulnerability list. Identify assets—credentials, sessions, tokens, user data, and audit records—then actors such as users, administrators, internal services, identity providers, and attackers. Every browser, API, IdP, and database transition is a trust boundary requiring independent validation.
@@ -43,3 +54,23 @@ Revisit the model when adding an identity provider, webhook, role, tenant bounda
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>When can 404 be preferable to 403?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> When revealing the existence of an unauthorized resource is itself sensitive, while the internal denial reason remains audited.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn session fixation into a control and test.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Regenerate after login and invalidate the old ID; verify the old session fails and the new one has exactly the intended privileges.</div></details></section>
 </div>
+
+## Threat drill
+
+**Scenario:** Tests cover only the happy path while a secondary entry point performs the same action without an authorization check.
+
+**Negative test:** Turn every asset and trust boundary in the model into allow and deny tests, then repeat them across HTTP and background jobs.
+
+**Expected result:** Every sensitive action has evidence of success for the allowed actor and rejection for the disallowed actor at every entry point.
+
+### Verification source
+
+- [OWASP Threat Modeling](https://owasp.org/www-community/Threat_Modeling)
+
+## Connect the ideas
+
+Use STRIDE as a lens rather than a checklist: spoofing, tampering, repudiation, information disclosure, denial of service, and elevation map to assets and trust boundaries. Turn each abuse case into a test or control with an owner, and revisit the model when data flow, identity, or a third party changes.
+
+### Try it yourself
+
+Choose one flow and record a threat, test, and owner for each applicable category.

@@ -33,38 +33,48 @@ sidebar:
 
 إذا احتجت `instanceof` متكررًا أو setters كثيرة أو Service Locator، عد لمراجعة حدود الكائنات والعقود.
 
-## خريطة الدرس
+## مسائل مرتبطة بالدرس
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: قائمة مراجعة OOP">
-<p class="lesson-diagram-title">خريطة مفاهيم: قائمة مراجعة OOP</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>تمرين جامع</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>هل لكل class مسؤولية واضحة واسم من مجال</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>تصميم العقود والاعتماديات القابلة للاختبار</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>اختبار النجاح والفشل وتكرار العملية</span></div>
-</div>
-</div>
+<details><summary>ما أول سؤال عند مراجعة class كبيرة؟</summary><p>هل لها مسؤولية واحدة وسبب واحد منطقي للتغيير، أم تجمع تخزينًا وعرضًا وشبكة وقواعد عمل؟</p></details>
 
-## تأكد من فهمك
+<details><summary>كيف تكشف dependency مخفية؟</summary><p>ابحث عن <code>new</code> وخدمات global ووقت أو ملفات داخل المنطق؛ مرّر المتغير منها كاعتماد واضح.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «تمرين جامع» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> صمّم Checkout: Order يحمي حالته ولا يسمح بالدفع مرتين. PaymentGateway interface لها تنفيذ fake للاختبار. Receipt وMoney كـreadonly value objects. OrderService يستقبل gateway وrepository وclock بالـDI. أضف notification بالـcomposition لا بجعل Order ترث Email. اختبر نجاح الدفع، فشل المزود، والطلب المدفوع مسبقًا. إذا احتجت instanceof متكررًا أو setters كثيرة أو Service Locator، عد لمراجعة حدود الكائنات والعقود. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «تمرين جامع» و«هل لكل class مسؤولية واضحة واسم من مجال». لماذا لا يغني أحدهما عن الآخر داخل موضوع «قائمة مراجعة OOP»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «تمرين جامع»: صمّم Checkout: Order يحمي حالته ولا يسمح بالدفع مرتين. PaymentGateway interface لها تنفيذ fake للاختبار. Receipt وMoney كـreadonly value objects. OrderService يستقبل gateway وrepository وclock بالـDI. أضف notification بالـcomposition لا بجعل Order ترث Email. اختبر نجاح الدفع، فشل المزود، والطلب المدفوع مسبقًا. إذا احتجت instanceof متكررًا أو setters كثيرة أو Service Locator، عد لمراجعة حدود الكائنات والعقود. أما «هل لكل class مسؤولية واضحة واسم من مجال»: هل لكل class مسؤولية واضحة واسم من مجال المشروع؟ هل constructor ينتج object صالحًا؟ هل الـproperties محمية بأقل visibility؟ هل الوراثة تعبّر عن is-a حقيقية، أم composition أوضح؟ هل الواجهة صغيرة ويحتاجها المستدعي فعلًا؟ هل الـTrait صغيرة ولا تخفي dependencies؟ هل static state ستعقّد الاختبار أو workers طويلة العمر؟ هل readonly تحمي المرجع فقط أم نحتاج deep immutability؟ هل Magic Method تحسن API فعلًا أم تخفي typo؟… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «تصميم العقود والاعتماديات القابلة للاختبار». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قائمة أسئلة وتمرين يجمع التغليف والواجهات والتركيب والحقن والاختبار. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «اختبار النجاح والفشل وتكرار العملية» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قائمة أسئلة وتمرين يجمع التغليف والواجهات والتركيب والحقن والاختبار. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+## مشروع تراكمي: Checkout قابل للاختبار
+
+حوّل التمرين الجامع إلى مشروع صغير من أربع طبقات تعاون:
+
+- <code>Order</code> يحمي الانتقالات <code>draft → pending → paid</code> ويرفض الدفع مرتين.
+- <code>Money</code> كـreadonly value object يمنع اختلاف العملة والجمع غير الصحيح.
+- <code>PaymentGateway</code> و<code>OrderRepository</code> عقدان، مع Fake لكل منهما في الاختبار.
+- <code>CheckoutService</code> ينسق العملية ولا يملك قواعد الكيان ولا ينشئ الاعتمادات داخله.
+
+### اختبار القبول
+
+~~~text
+given draft order total=2999 EGP
+when fake gateway approves payment
+then order status=paid
+and repository saves once
+and receipt total=2999 EGP
+~~~
+
+أضف ثلاثة اختبارات فشل: رفض المزود، محاولة دفع طلب مدفوع، وتمرير <code>Money</code> بعملة مختلفة. النجاح ليس مجرد عدم ظهور Exception؛ اختبر الحالة النهائية وعدد مرات استدعاء المتعاونين.
+
+### مراجعة تصميم حادة
+
+لو اختبار وحدة لمنطق Checkout احتاج قاعدة بيانات أو شبكة، راجع فصل الاعتماديات. لكن اختبار التكامل مقصود منه تشغيل الحدود الحقيقية؛ استخدام قاعدة بيانات فيه صحيح وضروري لاكتشاف مشاكل SQL والمعاملات. وإذا احتاج <code>CheckoutService</code> إلى فحص أنواع متعددة بـ<code>instanceof</code>، فالعقد لا يعبّر عن السلوك. وإذا استطاع أي كود تغيير حالة الطلب مباشرة، فالـencapsulation شكلي.
+
+
+## أعد تنظيم Checkout خطوة خطوة
+
+شغّل `php checkout-lab.php` من [المختبر القابل للتنزيل](/php/00-lab-setup/). الناتج `checkout: approval, decline, duplicate, currency = PASS`. اقرأ الملف الكامل بالترتيب ده:
+
+1. `Money` يجمع المبلغ بأصغر وحدة صحيحة والعملة. المنشئ يرفض السالب والعملة غير المدعومة، والجمع يرفض اختلاف العملة وتجاوز حد العدد. المثال يقبل EGP وUSD فقط، ومابيحولش أسعار صرف.
+2. `Order` يملك الانتقالات draft→pending→paid. رفض الدفع الصريح يرجع pending→draft. إخفاء الحالة بـprivate يمنع المستدعي من اعتبار الطلب مدفوعًا بمجرد إسناد قيمة.
+3. `PaymentGateway` و`OrderRepository` و`Clock` و`Notifier` عقود للمتعاونين. حقنهم في المنشئ يعني تمرير الكائنات صراحة، بدل البحث عنها في خدمة global مخفية.
+4. `CheckoutService` ينسق النداءات. `Receipt` يحفظ النتيجة باستخدام Money وDateTimeImmutable غير قابلين للتغيير. الـfake بوابة تجريبية ترجع جوابًا متحكمًا فيه بلا شبكة، والساعة الثابتة تجعل الوقت قابلًا للتكرار.
+5. الاختبارات تفحص الحالة وعدد النداءات: الطلب المدفوع يُرفض قبل الاتصال بالبوابة ثانية، والرفض لا يحفظ ولا يرسل إشعارًا، واختلاف العملة يفشل حتى لو المبلغان صحيحان.
+
+ابدأ بدالة واحدة، واستخرج Money لما تتكرر قواعد العملة والمدى، ثم انقل قواعد الحالة إلى Order. أضف interface عندما تحتاج تستبدل اعتمادًا فعليًا. كده كل فصل له سبب، بدل إنشاء واجهة لكل class بلا احتياج.
+
+**تدريب فشل:** لو المزود وافق والحفظ فشل، هل المعاملة المحلية تلغي الدفع؟ لا. الـfake هنا لا ينفذ منع التكرار عند مزود حقيقي. التكامل يحتاج محاولة pending محفوظة، ومفتاح idempotency يدعمه المزود، ومصالحة للنتائج المجهولة، وoutbox للإشعارات. ما ترجعش timeout مبهم إلى draft ثم تدفع بمفتاح جديد. اختبر الحدود دي منفصلة على التخزين الحقيقي وبيئة المزود التجريبية.

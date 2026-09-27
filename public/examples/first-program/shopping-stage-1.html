@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopping list project</title>
+<style>li { overflow-wrap: anywhere; }</style>
+<h1>Shopping list</h1>
+<p><label for="name">Item name</label><br><input id="name"></p>
+<p><label for="quantity">Whole quantity (1 to 100)</label><br><input id="quantity" inputmode="numeric" value="1"></p>
+<button id="add">Add item</button>
+<ol id="list"></ol>
+<p id="status" role="status"></p>
+<script>
+const status = document.querySelector("#status");
+let items = [];
+
+function renderList() {
+  const list = document.querySelector("#list");
+  list.textContent = "";
+  for (const item of items) {
+    const row = document.createElement("li");
+    row.textContent = item;
+    list.append(row);
+  }
+}
+
+function addItem() {
+  const name = document.querySelector("#name").value.trim();
+  const quantityText = document.querySelector("#quantity").value.trim();
+  const quantity = Number(quantityText);
+  items.push(quantity + " x " + name);
+  renderList();
+  status.textContent = "Added to the current list.";
+}
+
+
+document.querySelector("#add").addEventListener("click", addItem);
+renderList();
+</script>
+</html>

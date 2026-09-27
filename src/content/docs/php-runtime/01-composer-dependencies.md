@@ -5,6 +5,19 @@ sidebar:
   order: 1
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+
+
+- **Namespace:** مساحة أسماء تمنع تعارض الأسماء بين أجزاء المشروع.
+- **Autoloading:** تحميل ملف الكلاس تلقائيًا عند استخدامه بدل include اليدوي.
+- **Composer:** مدير حزم PHP يثبت المكتبات ويجهز التحميل التلقائي.
+
 # Composer: مدير اعتماديات PHP
 
 Composer أداة تدير مكتبات المشروع وإصداراتها وتولّد Autoloader. هو لا يثبت “PHP نفسها”، بل يحل القيود الموجودة في `composer.json` ويضع الحزم غالبًا داخل `vendor/`.
@@ -103,40 +116,28 @@ composer audit
 
 بهذا تكون عملية اختيار الإصدارات منفصلة عن عملية نشرها، فلا يفاجئك إصدار جديد أثناء الإنتاج.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Composer وإدارة الاعتماديات">
-<p class="lesson-diagram-title">خريطة مفاهيم: Composer وإدارة الاعتماديات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>الملفان الأساسيان</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>install أم update؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Autoloading وPSR-4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>تثبيت إنتاجي آمن</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>سير عمل موصى به</span></div>
-</div>
-</div>
+<details><summary>ليه لازم ترفع composer.lock في التطبيق؟</summary><p>لتثبيت نفس الإصدارات المختبرة في كل بيئة؛ composer.json يصف القيود بينما lock يسجل الحل الفعلي.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «الملفان الأساسيان» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> composer.json: ما يحتاجه المشروع والقيود المسموحة والإعدادات والـscripts. composer.lock: الإصدارات الدقيقة التي حُلّت بالفعل، مع hashes وmetadata تجعل التثبيت قابلًا للتكرار. :::caution[تصحيح مهم] composer.lock لا “يتابع ما حدث” فقط؛ في التطبيقات يجب رفعه إلى Git لأنه يثبت الإصدارات الدقيقة. أما المكتبة المنشورة للآخرين فالمستهلك يحل اعتمادياتها ضمن مشروعه، لذلك lock الخاص بالمكتبة لا يتحكم في تثبيته. ::: عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «الملفان الأساسيان» و«install أم update؟». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Composer وإدارة الاعتماديات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «الملفان الأساسيان»: composer.json: ما يحتاجه المشروع والقيود المسموحة والإعدادات والـscripts. composer.lock: الإصدارات الدقيقة التي حُلّت بالفعل، مع hashes وmetadata تجعل التثبيت قابلًا للتكرار. :::caution[تصحيح مهم] composer.lock لا “يتابع ما حدث” فقط؛ في التطبيقات يجب رفعه إلى Git لأنه يثبت الإصدارات الدقيقة. أما المكتبة المنشورة للآخرين فالمستهلك يحل اعتمادياتها ضمن مشروعه، لذلك lock الخاص بالمكتبة لا يتحكم في تثبيته. ::: أما «install أم update؟»: | الأمر | مع وجود lock | النتيجة | |---|---|---| | composer install | يقرأ الإصدارات الدقيقة | تثبيت متكرر ومتوقع، وهو المناسب للـCI والإنتاج | | composer update | يعيد حل القيود | يغيّر composer.lock إلى أحدث إصدارات مسموحة | | composer update vendor/package | تحديث محدود | يقلل نطاق التغيير لكنه قد يحدّث اعتماديات مرتبطة | composer require يعدّل composer.json ويحدّث الـlock ويثبّت الحزمة عادة. الخيار --dev يضعها… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Autoloading وPSR-4». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> بعد تحديد Namespace إلى directory يشغّل Composer: ثم يكفي تحميل ملف واحد عند نقطة الدخول: في PSR-4 يجب أن يتوافق الاسم App\Billing\InvoiceService عادة مع: Linux حساس لحالة الأحرف؛ خطأ مثل invoiceService.php قد يعمل محليًا على Windows ثم يفشل في الإنتاج. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «تثبيت إنتاجي آمن» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> --no-dev يستبعد أدوات التطوير، لكنه لا يعني أن require-dev غير مهم أثناء الاختبار. --optimize-autoloader يحوّل قواعد PSR إلى class map محسّنة؛ استخدمه في الإنتاج لا أثناء التطوير المتغير بسرعة. يمكن استعمال --classmap-authoritative بعد الاختبار، لكنه يكسر الأصناف التي تُولّد وقت التشغيل إذا لم تدخل الخريطة. لا تستخدم --ignore-platform-reqs كحل دائم؛ قد تثبّت كودًا لا يدعمه إصدار PHP أو Extension على الخادم. راجع… وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+composer validate --strict
+~~~
+
+**معيار النجاح:** ينتهي الأمر بكود 0، ويطابق <code>composer.lock</code> القيود المعلنة ولا توجد حزمة مطلوبة غير مقفلة.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+افهم SemVer كعقد توافق لا ضمان جودة: <code>^</code> و<code>~</code> يفتحان نطاقات مختلفة، والـlock يثبت الاختيار الفعلي. تحقق من platform requirements وإضافات PHP، واضبط private repositories واعتمادياتها دون تخزين token. راجع scripts لأنها كود ينفذ أثناء Composer.
+
+### جرّب بنفسك
+
+اشرح لماذا install على lock يختلف عن update في production.

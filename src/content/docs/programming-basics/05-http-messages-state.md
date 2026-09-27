@@ -1,13 +1,20 @@
 ---
-title: 5. HTTP Request وResponse والحالة
-description: بنية رسائل HTTP وMethods وHeaders وBody وStatus Codes وCookies وSessions وTokens.
+title: "اقرأ طلب HTTP وردّه"
+description: "اقرأ طلب HTTP وردّه"
 sidebar:
-  order: 5
+  order: 14
+prev: {"link":"/programming-basics/21-url-encoding/","label":"الحروف والرموز داخل عنوان الويب"}
+next: {"link":"/programming-basics/22-http-state-and-updates/","label":"تذكّر المستخدم وحماية التعديلات"}
 ---
 
-## Request
 
-في HTTP/1.1 النصي يتكون الطلب من start line وheaders وسطر فارغ ثم body اختياري:
+## قبل التفاصيل
+
+قبل تفاصيل جلسة المستخدم ورمز دخوله، افصل بين **رسالة HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب) واحدة** وبين حالة المستخدم عبر عدة رسائل. الطلب يحمل نية العميل، والاستجابة تحمل نتيجة الخادم.
+
+## الطلب: العميل بيطلب إيه؟
+
+في HTTP/1.1 النصي يتكون الطلب من **Start line — سطر البداية**، ثم **Headers — حقول تصف الرسالة**، ثم سطر فارغ، ثم **Body — جسم الرسالة** لو فيه محتوى. ده مثال مكتوب للفهم، مش أمر تلصقه في الطرفية:
 
 ```http
 POST /api/orders?notify=1 HTTP/1.1
@@ -16,25 +23,29 @@ Accept: application/json
 Content-Type: application/json
 Authorization: Bearer ey...
 Cookie: session=abc123
-Content-Length: 29
+Content-Length: 27
 
 {"product_id":42,"count":2}
 ```
 
-- **Method:** نية الطلب.
-- **Target/Path + Query:** المورد والمعاملات.
-- **Version:** نسخة بروتوكول الرسالة.
-- **Headers:** metadata والتحكم.
-- **Body:** المحتوى، وليس موجودًا في كل طلب.
+- **Method — طريقة الطلب:** العملية المطلوبة؛ POST هنا يرسل طلب معالجة أو إنشاء.
+- **Target — هدف الطلب:** المسار `/api/orders` مع معاملات البحث `notify=1`، ومعناها هنا طلب إشعار وفق تصميم التطبيق.
+- **Version — الإصدار:** HTTP/1.1 يحدد نسخة طريقة الحوار.
+- **Headers — حقول الرسالة:** معلومات تصف المحتوى وطريقة التعامل معه؛ تسمى أحيانًا Metadata، أي بيانات عن البيانات.
+- **Body — الجسم:** بيانات الطلب نفسها؛ هنا رقم المنتج42 والكمية2.
 
-HTTP/2 وHTTP/3 يشفّران الرسائل بصيغة ثنائية وليست الأسطر النصية نفسها، لكن المعاني تبقى methods/fields/content.
+HTTP/2 وHTTP/3 يمثلان الرسائل بصيغة ثنائية بدل الأسطر النصية نفسها؛ التمثيل الثنائي غير التشفير الأمني، لكن معاني العملية وحقول الرسالة ومحتواها تظل نفسها.
+
+قبل الجدول: **Safe — قراءة لا يقصد بها تغيير حالة المورد**، زي جلب صفحة؛ تسجيل الزيارة في السجل لا يناقض المعنى. **Idempotent — تكرار نفس الطلب له نفس الأثر المقصود على المورد**: حذف مورد ثم إعادة حذفه لا يحذفه مرتين، لكن رمز الرد قد يختلف. الطلب ممكن يكون idempotent ويغيّر الحالة، زي PUT. والـ**Representation — تمثيل المورد** نسخة بيانات تصفه، مثل معلومات منتج بصيغة JSON (JavaScript Object Notation؛ صيغة نصية لترتيب البيانات في أسماء وقيم وقوائم).
+
+**JSON، JavaScript (لغة برمجة تستخدم مثلًا لتنفيذ تفاعل الصفحة داخل المتصفح) Object Notation** صيغة نصية لبيانات منظمة؛ `{"count":2}` يربط الاسم count بالقيمة 2. جسم المثال أعلاه 27 بايتًا بترميز UTF-8 (Unicode Transformation Format بوحدات 8 بت؛ ترميز أرقام رموز Unicode كبايتات)، من غير سطر جديد في نهايته. **Content-Length** يعد البايتات لا عدد الحروف؛ تغيير الجسم يحتاج إعادة حسابه. `Bearer ey...` قيمة توضيحية مختصرة وليست رمز دخول صالحًا.
 
 ## Methods
 
 | Method | الدلالة المعتادة | Safe؟ | Idempotent؟ |
 |---|---|---:|---:|
-| `GET` | جلب representation | نعم | نعم |
-| `HEAD` | مثل GET دون response content | نعم | نعم |
+| `GET` | جلب تمثيل المورد، مثل بيانات منتج | نعم | نعم |
+| `HEAD` | مثل GET لكن من غير جسم الرد | نعم | نعم |
 | `POST` | معالجة خاصة بالمورد/إنشاء شائعًا | لا | لا غالبًا |
 | `PUT` | استبدال الحالة الكاملة | لا | نعم |
 | `PATCH` | تعديل جزئي | لا | يعتمد على التصميم |
@@ -45,15 +56,15 @@ Safe وIdempotent دلالات يجب أن يحترمها التطبيق، ول�
 
 ## Headers شائعة
 
-- `Host`: اسم الموقع المطلوب، مهم مع Virtual Hosts.
+- `Host`: اسم الموقع المطلوب. **Virtual hosts — مواقع افتراضية** أسماء مواقع مختلفة يخدمها نفس الخادم، فيستخدم الاسم لاختيار الموقع.
 - `Accept`: أنواع الاستجابة المقبولة.
-- `Content-Type`: نوع body المرسل.
-- `Authorization`: بيانات اعتماد، مثل Bearer token.
-- `Cookie`: cookies المطابقة.
+- `Content-Type`: نوع جسم الرسالة المرسل.
+- `Authorization`: بيانات اعتماد. **Bearer token** رمز يكفي تقديمه كما هو لاستخدام الإذن المرتبط به، لذلك نحافظ على سريته.
+- `Cookie`: قيم صغيرة سبق أن حفظها المتصفح ويحق إرسالها إلى هذا العنوان.
 - `User-Agent`: معلومات العميل.
-- `Cache-Control`: سياسة Cache.
+- `Cache-Control`: سياسة **Cache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب) — التخزين المؤقت**: هل يمكن حفظ نسخة من الرد وإعادة استخدامها ومتى؟
 
-## Response
+## الرد: الخادم رجّع إيه؟
 
 ```http
 HTTP/1.1 201 Created
@@ -64,85 +75,27 @@ Cache-Control: no-store
 {"id":901,"status":"pending"}
 ```
 
-تتكون من protocol version وstatus code وreason phrase اختياري في HTTP/1.1، ثم headers وbody اختياري.
+سطر البداية يذكر الإصدار ورمز الحالة **Status code (رقم يصف نتيجة معالجة طلب HTTP)**، مثل201 بمعنى إنشاء مورد. عبارة `Created` وصف مقروء، لا نعتمد عليها بدل الرقم. بعدها حقول الرسالة وجسم اختياري. `Location` عنوان المورد الجديد، و`no-store` تطلب عدم تخزين الرد في مخزن HTTP مؤقت.
 
 | الفئة | المعنى | أمثلة |
 |---|---|---|
 | `1xx` | معلومات مؤقتة | `100 Continue` |
 | `2xx` | نجاح | `200 OK`, `201 Created`, `204 No Content` |
-| `3xx` | Redirect/Cache | `301`, `302`, `304` |
+| `3xx` | إعادة توجيه أو إعادة تحقق من نسخة مخزنة | `301`, `302`, `304` |
 | `4xx` | مشكلة في الطلب | `400`, `401`, `403`, `404`, `422` |
 | `5xx` | فشل جهة الخادم | `500`, `502`, `503` |
 
-`401` يعني غالبًا أن المصادقة مطلوبة أو غير صالحة، و`403` أن الطلب مفهوم لكن غير مسموح. لا تستخدم `200` لكل شيء؛ الحالة جزء من عقد الـAPI.
+`401` يعني غالبًا أن المصادقة مطلوبة أو غير صالحة، و`403` أن الطلب مفهوم لكن غير مسموح. لا تستخدم `200` لكل شيء؛ الحالة جزء من عقد الـAPI (Application Programming Interface؛ اتفاق يسمح لبرنامج بطلب بيانات أو عملية من مكوّن آخر).
 
-## Stateless لا يعني بلا حالة في التطبيق
+## مسائل عملية
 
-HTTP لا يتذكر تلقائيًا الطلب السابق. التطبيق يبني الاستمرارية بواسطة:
+<details><summary>ما الفرق بين <code>401</code> و<code>403</code>؟</summary><p>401 يعني أن الطلب يحتاج بيانات اعتماد صالحة، و403 يعني أن الخادم رفض الإذن؛ قد يكون الرفض بسبب الهوية أو قاعدة أخرى، فلا يثبت وحده أن المستخدم سجل الدخول.</p></details>
 
-- **Cookie:** قيمة يخزنها المتصفح ويرسلها حسب domain/path/security rules.
-- **Session:** بيانات server-side مرتبطة غالبًا بمعرّف في Cookie.
-- **Token:** credential يرسله العميل، شائع في APIs. ليس كل token JWT، وJWT ليس Session بديلًا تلقائيًا.
+<details><summary>كيف يكون HTTP stateless مع وجود تسجيل دخول؟</summary><p>كل طلب مستقل عند البروتوكول، لكن cookie أو token يحمل معرّفًا يسمح للتطبيق باسترجاع الحالة من مخزن بيانات الجلسات.</p></details>
 
-## مثال PHP
+<details><summary>هل يناسب GET عملية تحوّل رصيدًا؟</summary><p>لا. GET يفترض القراءة الآمنة وقد تعيد المتصفحات أو برامج فهرسة المواقع تشغيله. استخدم method تغيّر الحالة مع حماية وإعادة آمنة.</p></details>
 
-```php
-<?php
-declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
+## الخطوة التالية
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET') {
-    http_response_code(405);
-    header('Allow: GET');
-    echo json_encode(['error' => 'Method not allowed']);
-    exit;
-}
-
-$name = trim((string) ($_GET['name'] ?? 'زائر'));
-
-echo json_encode(
-    ['message' => "مرحبًا {$name}"],
-    JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR
-);
-```
-
-جرّب `curl -i "http://localhost:8000/hello.php?name=Omar"`، ثم افحص الطلب من Network في DevTools.
-
-## خريطة الدرس
-
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: HTTP Request وResponse والحالة">
-<p class="lesson-diagram-title">خريطة مفاهيم: HTTP Request وResponse والحالة</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Request</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Methods</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Headers شائعة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Response</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Stateless لا يعني بلا حالة في التطبيق</span></div>
-</div>
-</div>
-
-## تأكد من فهمك
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Request» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في HTTP/1.1 النصي يتكون الطلب من start line وheaders وسطر فارغ ثم body اختياري: Method: نية الطلب. Target/Path + Query: المورد والمعاملات. Version: نسخة بروتوكول الرسالة. Headers: metadata والتحكم. Body: المحتوى، وليس موجودًا في كل طلب. HTTP/2 وHTTP/3 يشفّران الرسائل بصيغة ثنائية وليست الأسطر النصية نفسها، لكن المعاني تبقى methods/fields/content. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Request» و«Methods». لماذا لا يغني أحدهما عن الآخر داخل موضوع «HTTP Request وResponse والحالة»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Request»: في HTTP/1.1 النصي يتكون الطلب من start line وheaders وسطر فارغ ثم body اختياري: Method: نية الطلب. Target/Path + Query: المورد والمعاملات. Version: نسخة بروتوكول الرسالة. Headers: metadata والتحكم. Body: المحتوى، وليس موجودًا في كل طلب. HTTP/2 وHTTP/3 يشفّران الرسائل بصيغة ثنائية وليست الأسطر النصية نفسها، لكن المعاني تبقى methods/fields/content. أما «Methods»: | Method | الدلالة المعتادة | Safe؟ | Idempotent؟ | |---|---|---:|---:| | GET | جلب representation | نعم | نعم | | HEAD | مثل GET دون response content | نعم | نعم | | POST | معالجة خاصة بالمورد/إنشاء شائعًا | لا | لا غالبًا | | PUT | استبدال الحالة الكاملة | لا | نعم | | PATCH | تعديل جزئي | لا | يعتمد على التصميم | | DELETE | إزالة المورد | لا | نعم دلاليًا | | OPTIONS | إمكانات الاتصال | نعم | نعم | Safe… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Headers شائعة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Host: اسم الموقع المطلوب، مهم مع Virtual Hosts. Accept: أنواع الاستجابة المقبولة. Content-Type: نوع body المرسل. Authorization: بيانات اعتماد، مثل Bearer token. Cookie: cookies المطابقة. User-Agent: معلومات العميل. Cache-Control: سياسة Cache. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Response» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تتكون من protocol version وstatus code وreason phrase اختياري في HTTP/1.1، ثم headers وbody اختياري. | الفئة | المعنى | أمثلة | |---|---|---| | 1xx | معلومات مؤقتة | 100 Continue | | 2xx | نجاح | 200 OK, 201 Created, 204 No Content | | 3xx | Redirect/Cache | 301, 302, 304 | | 4xx | مشكلة في الطلب | 400, 401, 403, 404, 422 | | 5xx | فشل جهة الخادم | 500, 502, 503 | 401 يعني غالبًا أن المصادقة مطلوبة أو غير صالحة،… وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+كمّل في [تذكّر المستخدم وحماية التعديلات](/programming-basics/22-http-state-and-updates/) بعد تنفيذ التجربة هنا.

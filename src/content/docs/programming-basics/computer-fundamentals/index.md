@@ -1,27 +1,26 @@
 ---
-title: أساسيات الكمبيوتر والبرمجة
-description: مسار متدرج من طريقة الدراسة ودورة البيانات إلى الهاردوير والمعالج والذاكرة ونظام التشغيل والطرفية وGit.
+title: "استخدام الكمبيوتر"
+description: "ابدأ بالنوافذ والملفات واستخدام البرامج بأمان، وبعدها تمثيل البيانات ومكونات الجهاز. كل درس فيه حاجة تقدر تجربها أو تشرح نتيجتها."
 sidebar:
   order: 0
 ---
 
-# أساسيات الكمبيوتر والبرمجة
+ابدأ بالنوافذ والملفات واستخدام البرامج بأمان، وبعدها تمثيل البيانات ومكونات الجهاز. كل درس فيه حاجة تقدر تجربها أو تشرح نتيجتها.
 
-يبني هذا القسم الصورة من الداخل إلى الخارج: كيف تتحرك البيانات، وما دور كل قطعة، وكيف يدير نظام التشغيل البرامج والذاكرة والملفات، ثم كيف تمثل البيانات وتستخدم الطرفية وGit وتختار مسارك التقني.
 
-## خريطة الدروس
+لما تقدر تحفظ ملف وتوصل له وتفهم المكونات الرئيسية، كمل [أساسيات البرمجة وتطبيقاتها](/programming-basics/programming-practice/). قسم داخل الكمبيوتر لاحقًا يتعمق في تنفيذ البرامج؛ مش مطلوب تدرسه كله علشان تبدأ.
 
-1. [**خريطة التعلّم وقواعد الدراسة**](./01-learning-roadmap/) — التعلم النشط، المراجعة، التطبيق وقياس التقدم.
-2. [**الكمبيوتر والبيانات ودورة المعالجة**](./02-computers-data-processing/) — Input وProcessing وOutput وStorage ورحلة بيانات عملية.
-3. [**مكوّنات الهاردوير واللوحة الأم**](./03-hardware-architecture/) — اللوحة الأم والناقلات والتخزين وI/O والتعريفات والطاقة والتبريد.
-4. [**CPU وGPU والمعالجة المتوازية**](./04-cpu-gpu/) — دورة تنفيذ التعليمة والأنوية والخيوط والـCaches والفرق بين نوعي المعالجة.
-5. [**RAM والذاكرة الافتراضية والـBuffers**](./05-ram-memory-buffers/) — Pages وMMU وStack وHeap والتخصيص والـBuffering والـBackpressure.
-6. [**نظام التشغيل: البنية والأنواع وطريقة العمل**](./06-operating-systems/) — Kernel وSystem Calls والعمليات والجدولة والملفات والتعريفات وأنواع الأنظمة.
-7. [**الثنائي ولغات البرمجة والخوارزميات**](./03-binary-languages-algorithms/) — تمثيل الأعداد والنصوص ومستويات اللغات وتحويل الخوارزمية إلى برنامج.
-8. [**الطرفية والملفات والصلاحيات والبيئة**](./05-os-terminal-files-git/) — Shell والمسارات والصلاحيات ومتغيرات البيئة وStreams وExit Codes.
-9. [**Git وDebugging والاختبارات الأساسية**](./09-git-debugging/) — التاريخ والفروع والدمج والتشخيص المبني على دليل والاختبارات.
-10. [**مجالات التقنية والذكاء الاصطناعي والعقلية الهندسية**](./04-tech-fields-ai-engineering-mindset/) — التخصصات والأدوات واختيار الحل على أساس القيود والمقايضات.
+## امشِ بالترتيب وطبّق كل خطوة
 
-:::tip[الترتيب المقترح]
-إذا كنت تبدأ من الصفر فاتبع الأرقام. أما إذا كان هدفك سد فجوة محددة، فابدأ بالدرس المتخصص ثم ارجع إلى دورة البيانات لتربط التفاصيل بالصورة العامة.
-:::
+- [ابدأ هنا: أساسيات الكمبيوتر والبرمجة](/programming-basics/computer-fundamentals/01-learning-roadmap/)
+- [النوافذ والماوس والكتابة](/programming-basics/computer-fundamentals/01-using-your-computer/)
+- [الملفات والمجلدات والحفظ](/programming-basics/computer-fundamentals/02-files-and-folders/)
+- [البرامج والتثبيت والاستخدام الآمن](/programming-basics/computer-fundamentals/03-programs-installation-safety/)
+- [كيف يحوّل الكمبيوتر المدخلات إلى نتيجة؟](/programming-basics/computer-fundamentals/02-computers-data-processing/)
+- [إزاي الكمبيوتر يمثل الأرقام والنصوص؟](/programming-basics/computer-fundamentals/02-binary-data-representation/)
+- [الصورة والصوت ووحدات الحجم](/programming-basics/computer-fundamentals/18-media-and-units/)
+- [مكونات الجهاز التي تستخدمها](/programming-basics/computer-fundamentals/03-hardware-architecture/)
+- [المعالج وتنفيذ التعليمات](/programming-basics/computer-fundamentals/04-cpu-gpu/)
+- [الذاكرة والحفظ: أين ذهب شغلك؟](/programming-basics/computer-fundamentals/05-ram-memory-buffers/)
+- [نظام التشغيل والبرامج والملفات](/programming-basics/computer-fundamentals/06-operating-systems/)
+- [الإنترنت والمتصفح والعنوان](/programming-basics/computer-fundamentals/07-internet-browser-basics/)

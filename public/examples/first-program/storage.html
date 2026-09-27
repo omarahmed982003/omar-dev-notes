@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Save and restore a list</title>
+<h1>My saved list</h1>
+<p><label for="items">One item per line (up to 20)</label><br><textarea id="items" rows="6" cols="25">milk
+bread</textarea></p>
+<button id="save">Save</button>
+<button id="load">Load saved list</button>
+<p id="status" role="status"></p>
+<script>
+const key = "foundations-list-v1";
+const editor = document.querySelector("#items");
+const status = document.querySelector("#status");
+
+function validateItems(items) {
+  if (!Array.isArray(items) || items.length > 20) {
+    throw new Error("Expected a list with at most 20 items.");
+  }
+  for (const item of items) {
+    if (typeof item !== "string" || item.trim() === "" || item.length > 80) {
+      throw new Error("Invalid list item.");
+    }
+  }
+}
+
+function saveList() {
+  try {
+    const items = [];
+    for (const line of editor.value.split("\n")) {
+      const item = line.trim();
+      if (item !== "") items.push(item);
+    }
+    validateItems(items);
+    localStorage.setItem(key, JSON.stringify(items));
+    status.textContent = "Saved " + items.length + " items on this browser.";
+  } catch (error) {
+    status.textContent = "Not saved. Keep your text; check item lengths, count, and browser storage permissions.";
+    console.warn(error.message);
+  }
+}
+
+function loadList() {
+  try {
+    const saved = localStorage.getItem(key);
+    if (saved === null) {
+      status.textContent = "No saved list yet. Your current text is unchanged.";
+      return;
+    }
+    const items = JSON.parse(saved);
+    validateItems(items);
+    editor.value = items.join("\n");
+    status.textContent = "Loaded " + items.length + " items.";
+  } catch (error) {
+    status.textContent = "Cannot load the saved list. Your current text is unchanged.";
+    console.warn(error.message);
+  }
+}
+
+document.querySelector("#save").addEventListener("click", saveList);
+document.querySelector("#load").addEventListener("click", loadList);
+</script>
+</html>

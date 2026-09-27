@@ -1,10 +1,22 @@
 ---
-title: "14. مسائل الشروط والصيغ"
+title: "مرجع محفوظ: مسائل الشروط والصيغ"
 sidebar:
   order: 14
-description: "مسائل الشروط تدربك على تحويل نص قصصي إلى معادلات وحالات حصرية. الصعوبة غالبًا في فهم الحدود، لا في كتابة if نفسها."
+description: "نسخة مرجعية محفوظة من المسائل التي أصبحت جزءًا من درس if وelse."
 tableOfContents: true
 ---
+
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Compiler:** المترجم: برنامج يحوّل كود C++ إلى ملف يقدر الكمبيوتر يشغّله.
+- **Unicode:** معيار بيعطي الحروف والرموز من لغات مختلفة أرقامًا موحدة.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
 
 ## تحويل نص المسألة إلى حالات ومعادلات
 
@@ -38,7 +50,7 @@ long long answer = (k <= oddCount)
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الشروط وتمارين Codeforces">
 <p class="lesson-diagram-title">خريطة مفاهيم: الشروط وتمارين Codeforces</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>المعطيات والقيود</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>حالات حصرية</span></div>
@@ -343,3 +355,11 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ضلع رأسي، ضلع أفقي، أو قطر مائل 45 درجة حيث <code>abs(dx) == abs(dy)</code>. أي حالة مائلة أخرى مستحيلة.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+حوّل sample tests إلى اختبار آلي، ثم أضف الحدود والانتقال بين الحالات وحالات عشوائية تقارن بصيغة بطيئة موثوقة. سجّل مصدر المسألة وقيودها لأن صحة الصيغة تعتمد على تلك القيود، ولا تعتمد على نجاح العينات كبرهان.
+
+### جرّب بنفسك
+
+اختر مسألة واختبر كل نقطة يتغير عندها branch أو formula.

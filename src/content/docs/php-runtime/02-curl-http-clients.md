@@ -5,6 +5,22 @@ sidebar:
   order: 2
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **DNS:** خدمة بتحوّل اسم الموقع إلى عنوان رقمي يقدر الجهاز يوصل له.
+- **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+- **TLS:** طبقة تشفير بتحمي البيانات وهي ماشية بين طرفين.
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+
+
 # من cURL إلى عميل HTTP موثوق
 
 مشروع cURL ينتج أداتين مختلفتين:
@@ -129,40 +145,28 @@ $data = json_decode(
 
 `curl_multi_*` يسمح بعدة عمليات نقل متزامنة دون thread لكل طلب. يفيد عندما تكون الاستدعاءات مستقلة، لكن يجب ضبط عدد الاتصالات وحدود API؛ التزامن غير المحدود ينقل الاختناق إلى الطرف الآخر.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: cURL وعملاء HTTP">
-<p class="lesson-diagram-title">خريطة مفاهيم: cURL وعملاء HTTP</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>دورة الطلب في PHP</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>إرسال JSON</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>TLS وRedirects</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Guzzle وPSR</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>المهلات وإعادة المحاولة</span></div>
-</div>
-</div>
+<details><summary>إيه الحدود الضرورية لأي HTTP client؟</summary><p>Connect timeout وtotal timeout وحد للحجم وسياسة redirect وTLS verification، مع retry للعمليات الآمنة فقط.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «دورة الطلب في PHP» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> افصل دائمًا بين: خطأ النقل: DNS أو اتصال أو timeout أو TLS؛ يظهر من curl_exec(). استجابة HTTP فاشلة: مثل 404 أو 500؛ الاتصال نجح لكن حالة الاستجابة ليست نجاحًا. محتوى غير صالح: مثل JSON تالف؛ عالجه عند فك الترميز. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «دورة الطلب في PHP» و«إرسال JSON». لماذا لا يغني أحدهما عن الآخر داخل موضوع «cURL وعملاء HTTP»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «دورة الطلب في PHP»: افصل دائمًا بين: خطأ النقل: DNS أو اتصال أو timeout أو TLS؛ يظهر من curl_exec(). استجابة HTTP فاشلة: مثل 404 أو 500؛ الاتصال نجح لكن حالة الاستجابة ليست نجاحًا. محتوى غير صالح: مثل JSON تالف؛ عالجه عند فك الترميز. أما «إرسال JSON»: لا تسجّل Authorization أو Cookies أو أجسامًا تحتوي بيانات شخصية. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «TLS وRedirects». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> :::danger[لا تعطّل التحقق] لا تستخدم CURLOPT_SSL_VERIFYPEER =&gt; false أو CURLOPT_SSL_VERIFYHOST =&gt; 0 في الإنتاج. أصلح CA bundle أو إعداد النظام؛ تعطيل التحقق يجعل الاتصال عرضة لـMan-in-the-Middle. ::: CURLOPT_FOLLOWLOCATION قد يرسل الطلب إلى وجهة أخرى. ضع حدًا بـCURLOPT_MAXREDIRS، ولا تسمح للمستخدم بتحديد URL حرًا في خدمة داخلية وإلا قد تنشئ SSRF. تحقّق من scheme والhost، وامنع عناوين الشبكة الداخلية وmetadata… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Guzzle وPSR» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Guzzle يقدم API أعلى مستوى ويدعم middleware وpromises وpooling. لكنه ليس “cURL بواجهة جميلة” بشكل مطلق؛ يختار Handler مناسبًا وقد يستخدم cURL أو PHP streams حسب البيئة. عقود PSR-7 تمثل Request/Response، وPSR-18 يعرّف واجهة عميل HTTP. الاعتماد على Interface يجعل اختبار الكود وتبديل العميل أسهل. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php http-client-lab.php
+~~~
+
+**معيار النجاح:** يطبع الاختبار <code>status=200</code> للنجاح، و<code>timeout_handled=yes</code> لخادم بطيء، ولا يعامل 500 كاستجابة ناجحة.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+افصل connect timeout عن TLS/read/total timeout، وانشر cancellation deadline عبر السلسلة. قبل جلب URL يقدمه مستخدم، امنع SSRF عبر scheme وhost وDNS/IP policy مع حماية من redirects وإعادة resolution. سجّل attempts وlatency/status دون token أو body حساس.
+
+### جرّب بنفسك
+
+اختبر URL يعيد redirect إلى private IP وخادمًا يفتح الاتصال ولا يرسل body.

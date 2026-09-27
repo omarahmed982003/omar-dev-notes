@@ -5,6 +5,22 @@ sidebar:
   order: 3
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+- **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
+
+
+- **Composer:** مدير حزم PHP يثبت المكتبات ويجهز التحميل التلقائي.
+- **OPcache:** ذاكرة تحفظ نتيجة ترجمة PHP لتجنب تكرار العمل مع كل طلب.
+- **Redis:** مخزن سريع في الذاكرة يُستخدم للكاش والجلسات والطوابير.
+
 # لماذا يعيد PHP العمل؟
 
 بدون OPcache يقرأ PHP الملف ويحلله ويحوّله إلى Opcodes عند التنفيذ. OPcache يحتفظ بالـbytecode المترجم في ذاكرة مشتركة لتستفيد منه الطلبات التالية، فيقل وقت parsing وcompilation.
@@ -101,38 +117,28 @@ foreach ($files as $file) {
 
 لا تخلط بين OPcache وComposer class map: الأول يخزّن bytecode، والثاني يسرّع **العثور على الملف** الذي يحتوي الصنف. استخدامهما معًا يعالج مرحلتين مختلفتين.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: OPcache وPreloading">
-<p class="lesson-diagram-title">خريطة مفاهيم: OPcache وPreloading</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>إعداد إنتاجي مبدئي</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المراقبة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Preloading</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>النشر الصحيح</span></div>
-</div>
-</div>
+<details><summary>هل OPcache يخزن نتيجة الـrequest؟</summary><p>لا؛ يخزن bytecode المترجم لتجنب parsing/compilation المتكرر، أما data cache فيخزن بيانات التطبيق.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «إعداد إنتاجي مبدئي» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> القيم ليست وصفة ثابتة. راقب عدد الملفات والذاكرة وhit rate وrestarts قبل تعديلها. مع validate_timestamps=1 يفحص OPcache تغيّر الملفات حسب revalidate_freq. مع validate_timestamps=0 لا يرى النشر الجديد حتى تعيد تشغيل FPM أو تستدعي reset بطريقة منضبطة. CLI له إعداد مستقل عادة عبر opcache.enable_cli، وتشغيله لسكربت قصير قد يضيف تكلفة بلا فائدة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «إعداد إنتاجي مبدئي» و«المراقبة». لماذا لا يغني أحدهما عن الآخر داخل موضوع «OPcache وPreloading»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «إعداد إنتاجي مبدئي»: القيم ليست وصفة ثابتة. راقب عدد الملفات والذاكرة وhit rate وrestarts قبل تعديلها. مع validate_timestamps=1 يفحص OPcache تغيّر الملفات حسب revalidate_freq. مع validate_timestamps=0 لا يرى النشر الجديد حتى تعيد تشغيل FPM أو تستدعي reset بطريقة منضبطة. CLI له إعداد مستقل عادة عبر opcache.enable_cli، وتشغيله لسكربت قصير قد يضيف تكلفة بلا فائدة. أما «المراقبة»: لا تعرض endpoint يحوي opcache_get_status() للعامة؛ قد يكشف paths ومعلومات تشغيلية. اجعله داخليًا ومحميًا. مؤشرات تحتاج انتباهًا: cache_full أو امتلاء الذاكرة. oom_restarts وhash_restarts. انخفاض hit rate بعد warm-up. عدد scripts قريب من max_cached_keys. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Preloading». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> من PHP 7.4 يمكن تشغيل ملف مرة عند بدء عملية الخادم لتحميل functions/classes/interfaces/traits في ذاكرة دائمة: التكلفة والمخاطر: يرفع الذاكرة الأساسية لكل بيئة تشغيل. أي تغيير في الكود المحمّل يحتاج restart؛ لا يكفي invalidation عادي. ترتيب الاعتماديات قد يهم إذا استخدمت require بدل opcache_compile_file(). لا يفيد تلقائيًا كل تطبيق؛ قِس قبل وبعد. Preloading غير مدعوم على Windows وفق دليل PHP، ومناسب أساسًا للعمليات… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «النشر الصحيح» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> انشر ملفات release جديدة في directory منفصل. ثبّت الاعتماديات بـComposer وولّد autoloader محسّنًا. شغّل الاختبارات وhealth checks. بدّل symlink/release atomically. أعد تحميل FPM gracefully حتى ترى workers الكود وpreload الجديد. لا تخلط بين OPcache وComposer class map: الأول يخزّن bytecode، والثاني يسرّع العثور على الملف الذي يحتوي الصنف. استخدامهما معًا يعالج مرحلتين مختلفتين. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php -d opcache.enable_cli=1 -r "var_export(opcache_get_status(false) !== false);"
+~~~
+
+**معيار النجاح:** الناتج <code>true</code>. بعد ذلك قارن hits وmisses قبل وبعد حمل متكرر، ولا تعتبر تفعيل OPcache وحده دليل تحسن.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+قس memory_consumption وinterned strings وhit/miss وwasted percentage لتحديد sizing بدل نسخ إعداد. Invalidation وtimestamp policy يجب أن تتوافق مع atomic deployment. JIT لا يسرع كل workload ويبقى منفصلًا عن فائدة OPcache الأساسية. Preloading يثبت classes داخل عمر العملية ويتطلب restart عند التغيير.
+
+### جرّب بنفسك
+
+اجمع metrics قبل وبعد حمل مكرر وفسر eviction أو restart.

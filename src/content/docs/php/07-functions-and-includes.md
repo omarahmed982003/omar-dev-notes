@@ -5,6 +5,39 @@ sidebar:
   order: 7
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
+## الدالة بتلم فكرة واحدة في اسم واضح
+
+لو حسبت السعر النهائي في خمس أماكن، أي تعديل في القاعدة محتاج خمس تعديلات وممكن تنسى واحد. الدالة Function بتجمع خطوات لها هدف واحد تحت اسم، وتستقبل مدخلات، وقد ترجع نتيجة.
+
+```php
+function calculateSubtotal(int $priceCents, int $quantity): int
+{
+    if ($priceCents < 0 || $quantity < 1) {
+        throw new InvalidArgumentException('Invalid order values');
+    }
+
+    return $priceCents * $quantity;
+}
+
+$subtotal = calculateSubtotal(1500, 3);
+```
+
+اقرأ توقيع الدالة كعقد: الاسم يشرح الفعل، والـParameters هي البيانات المطلوبة، و`int` بعد القوس هو نوع النتيجة. الدالة الجيدة مش مجرد كود اتنقل؛ لها مسؤولية واضحة، ومدخلاتها ظاهرة، ونتيجتها قابلة للاختبار.
+
+فرّق بين **Parameter** في تعريف الدالة و**Argument** وقت الاستدعاء. وابدأ بالتمرير بالقيمة؛ المرجع `&` استثناء يحتاج سببًا واضحًا لأنه يسمح للدالة تغير متغير المستدعي.
+
+ملفات `include` و`require` بتنظم الكود، لكنها مش بديل عن Functions وClasses وAutoloading. لما تضم ملفًا، الكود الموجود فيه بيتنفذ في اللحظة دي، وممكن يرجع قيمة أو يعرف دوالًا وأصنافًا.
+
 ## تعريف الدالة
 
 الدالة كتلة قابلة لإعادة الاستخدام تنفذ مهمة محددة. الدوال العادية في PHP ذات نطاق عام (مع مراعاة namespace)، ولا يمكنك إعلان دالتين بالاسم نفسه في النطاق نفسه للتعامل مع توقيعات مختلفة.
@@ -134,40 +167,38 @@ echo 'تم';
 
 `goto` يقفز إلى label داخل الملف والنطاق نفسه، ولا يجوز القفز إلى داخل loop أو switch. نادرًا ما يكون أوضح من دالة صغيرة أو `break` أو `continue`.
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الدوال والـ Callbacks وتضمين الملفات">
-<p class="lesson-diagram-title">خريطة مفاهيم: الدوال والـ Callbacks وتضمين الملفات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>تعريف الدالة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>التمرير بالقيمة والمرجع</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Variable functions وCallbacks</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Closure وuse وArrow Function</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>include وrequire</span></div>
-</div>
-</div>
+<details><summary>1. حوّل معادلة مكررة إلى دالة</summary><p>اعمل <code>calculateTotal(int $priceCents, int $quantity): int</code>، ارفض القيم السالبة أوQuantity أقل من 1، واختبر 1 و3 وقيمة غير صالحة.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. إيه مشكلة Reference Parameter غير الواضحة؟</summary><p>المستدعي قد يفتكر إن الدالة تحسب نتيجة فقط، بينما هي تغيّر متغيره. رجّع قيمة جديدة غالبًا أو سمّ الدالة بوضوح لو التعديل مقصود.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «تعريف الدالة» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الدالة كتلة قابلة لإعادة الاستخدام تنفذ مهمة محددة. الدوال العادية في PHP ذات نطاق عام (مع مراعاة namespace)، ولا يمكنك إعلان دالتين بالاسم نفسه في النطاق نفسه للتعامل مع توقيعات مختلفة. Parameters هي الأسماء في التعريف، وarguments هي القيم عند الاستدعاء. يمكن محاكاة حالات متعددة بقيم افتراضية وunion types وvariadics: فضّل return كي تكون الدالة قابلة للاختبار والتركيب، واترك echo لطبقة العرض. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «تعريف الدالة» و«التمرير بالقيمة والمرجع». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الدوال والـ Callbacks وتضمين الملفات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «تعريف الدالة»: الدالة كتلة قابلة لإعادة الاستخدام تنفذ مهمة محددة. الدوال العادية في PHP ذات نطاق عام (مع مراعاة namespace)، ولا يمكنك إعلان دالتين بالاسم نفسه في النطاق نفسه للتعامل مع توقيعات مختلفة. Parameters هي الأسماء في التعريف، وarguments هي القيم عند الاستدعاء. يمكن محاكاة حالات متعددة بقيم افتراضية وunion types وvariadics: فضّل return كي تكون الدالة قابلة للاختبار والتركيب، واترك echo لطبقة العرض. أما «التمرير بالقيمة والمرجع»: المرجع يغيّر متغير المستدعي، لذلك اجعله واضحًا ونادرًا. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Variable functions وCallbacks». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> استدعِ callback بعد التحقق بـ is_callable() إذا لم يكن النوع مضمونًا. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Closure وuse وArrow Function» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Arrow function تلتقط متغيرات النطاق الخارجي تلقائيًا بالقيمة وتحتوي expression واحدة. الدالة المجهولة العادية تستخدم use، ويمكن أن تلتقط بالمرجع. إعلان دالة داخل دالة ممكن، لكن الدالة الداخلية لا تُعلن إلا بعد تنفيذ الخارجية وتصبح في نطاق الدوال؛ تجنب هذا الأسلوب، واستخدم Closure بدلًا منه. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. require ولا include لملف الإعداد؟</summary><p>استخدم <code>require</code> لأن التطبيق لا يستطيع الاستمرار بشكل صحيح من غير الإعداد. لو المورد اختياري فعلًا، تعامل مع فشل <code>include</code> صراحة.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>متى يكون التمرير بالمرجع اختيارًا سيئًا؟</summary><p>حين يخفي أن الدالة تغيّر قيمة خارجها؛ إرجاع قيمة جديدة أوضح غالبًا وأسهل للاختبار.</p></details>
+
+<details><summary>ما الفرق العملي بين <code>include</code> و<code>require</code>؟</summary><p>فشل require يوقف التنفيذ، بينما include يصدر تحذيرًا وقد يستمر؛ استخدم require للملفات اللازمة للتطبيق.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php functions-lab.php
+~~~
+
+**معيار النجاح:** تنجح الدالة للحدود المعلنة وتفشل بوضوح خارجها، ويُحمّل الملف المطلوب مرة واحدة بلا اعتماد على working directory عارض.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+Named arguments ترتبط بأسماء parameters وقد تجعل إعادة التسمية breaking change. Variadics تجمع القيم وfirst-class callables تنقل callable بعقد أوضح. Recursion تحتاج base case وحد عمق. لا تبن include path من input، واستخدم autoload بدل سلسلة require يدوية في المشروع.
+
+### جرّب بنفسك
+
+اختبر callable وvariadic وrecursion بحد فشل واضح.

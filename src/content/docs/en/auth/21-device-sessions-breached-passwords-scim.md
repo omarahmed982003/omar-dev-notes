@@ -5,6 +5,20 @@ sidebar:
   order: 21
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **IP:** A numeric address that identifies a device or network interface.
+- **Session:** Temporary server-side state used to recognize a user across requests.
+- **Token:** A value representing identity or permission without resending a password.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+- **Function:** A named, reusable block of code with one defined job.
+
+
 ## Manageable session inventory
 
 For each session, store a server-side hash of its identifier, creation and last-use times, expiry, an approximate device label, and minimized IP metadata where operationally and legally justified. User-Agent data is mutable and does not prove device identity.
@@ -48,3 +62,23 @@ When `active=false`, block new login, revoke relevant sessions and tokens, remov
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why does SCIM not replace OIDC?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> SCIM manages account and group lifecycle; OIDC authenticates a user during login.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Why must deprovisioning be idempotent?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Providers retry requests; repetition must not duplicate deletion, transfer, or another dangerous side effect.</div></details></section>
 </div>
+
+## Threat drill
+
+**Scenario:** An administrator disables a user through SCIM while sessions remain active on several devices.
+
+**Negative test:** Deliver the disable event twice, then try every session, token refresh, and a login using a breached password.
+
+**Expected result:** Processing is idempotent, sessions and tokens are revoked within policy, and the breached password is rejected with privacy and abuse controls.
+
+### Verification source
+
+- [RFC 7644: SCIM Protocol](https://www.rfc-editor.org/rfc/rfc7644.html)
+
+## Connect the ideas
+
+Device binding is a risk signal rather than absolute truth because browsers and devices change. Show users session inventory, last activity, approximate location, and individual/global revocation. For SCIM, test PATCH, groups, idempotency, and out-of-order events, and make deprovisioning revoke sessions and tokens within a monitored SLO.
+
+### Try it yourself
+
+Send duplicate and delayed SCIM disable events and verify final state plus revocation.

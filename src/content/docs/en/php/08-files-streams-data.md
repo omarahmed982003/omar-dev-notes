@@ -5,6 +5,43 @@ sidebar:
   order: 8
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **TLS:** An encryption layer that protects data while it moves between two parties.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Loop:** A structure that repeats instructions according to a condition.
+
+
+A file is data on storage, not automatically a string in memory. The OS opens a resource, PHP reads or writes bytes, and the resource must be closed. Loading a huge file at once can exhaust memory; line-by-line processing keeps memory roughly bounded.
+
+```php
+$path = __DIR__ . '/orders.txt';
+$handle = fopen($path, 'rb');
+
+if ($handle === false) {
+    throw new RuntimeException("Cannot open {$path}");
+}
+
+try {
+    while (($line = fgets($handle)) !== false) {
+        echo rtrim($line), PHP_EOL;
+    }
+} finally {
+    fclose($handle);
+}
+```
+
+A stream is a common interface for flowing data from files, memory, networks, URLs, and processes. The handle returned by `fopen()` is not the content itself.
+
+Before writing, decide whether old data should be truncated, appended to, or preserved unless a new file can be created exclusively. Choosing `w` accidentally can erase a file as soon as it opens. Always check operation results; directory permission does not guarantee disk capacity or a complete write.
+
+## Streams, wrappers, contexts, and filters
+
 A stream is a common interface for flowing data from or to files, memory, networks, URLs, and processes.
 
 - A **wrapper** selects a protocol such as `file://`, `http://`, `ftp://`, `php://`, `data://`, or `zlib://`.
@@ -50,40 +87,57 @@ $data = json_decode($json, true, flags: JSON_THROW_ON_ERROR);
 
 Use `fputcsv()`, `fgetcsv()`, and `str_getcsv()` rather than splitting on commas, because CSV quoting may contain commas.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Files, streams, JSON, and CSV">
-<p class="lesson-diagram-title">Concept map: Files, streams, JSON, and CSV</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>A stream is a common interface for flowing</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>A wrapper selects a protocol such as file://,</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Do not enable allow_url_include</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Modes: r/r+ require an existing file; w/w+ truncate</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Use fwrite, fflush, flock, and fclose deliberately</span></div>
-</div>
-</div>
+<details><summary>1. What happens when an existing file is opened with <code>w</code>?</summary><p>Its content is truncated immediately. Use append, exclusive creation, or another mode that matches the required policy.</p></details>
 
-## Check your understanding
+<details><summary>2. Process a large file without loading it all</summary><p>Open it, call <code>fgets()</code> in a loop, handle read failure, and close the handle in <code>finally</code>.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “A stream is a common interface for flowing” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A stream is a common interface for flowing data from or to files, memory, networks, URLs, and processes. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “A stream is a common interface for flowing” with “A wrapper selects a protocol such as file://,”. Why does neither replace the other in “Files, streams, JSON, and CSV”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “A stream is a common interface for flowing”: A stream is a common interface for flowing data from or to files, memory, networks, URLs, and processes. For “A wrapper selects a protocol such as file://,”: A wrapper selects a protocol such as file://, http://, ftp://, php://, data://, or zlib://. A context supplies options such as timeouts and headers. A filter transforms data while it is read or written. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Do not enable allow_url_include”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Do not enable allow_url_include. For production HTTP, use a client that handles TLS, status codes, and retries. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Modes: r/r+ require an existing file; w/w+ truncate” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Modes: r/r+ require an existing file; w/w+ truncate or create; a/a+ append or create; x/x+ exclusively create; c/c+ create if absent without truncating. Add b for binary portability. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Why is <code>explode(',', $line)</code> not a CSV parser?</summary><p>A quoted field can contain commas. Use <code>fgetcsv()</code> or <code>str_getcsv()</code>.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Why not load a huge file entirely into memory?</summary><p>It may exceed the memory limit; stream or process it in bounded chunks.</p></details>
+
+<details><summary>What should follow a failed <code>json_decode</code>?</summary><p>Inspect the error or use <code>JSON_THROW_ON_ERROR</code>; do not treat silent null as valid data.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php stream-lab.php fixtures/large.csv
+~~~
+
+**Success criterion:** The row count matches the fixture and memory remains below budget; missing or unreadable input fails differently from an empty file.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+For safer replacement, write to a temporary file, flush/close, and rename appropriately for the platform; use locking for concurrent writers. Normalize paths and keep them inside an allowed directory to prevent traversal. Large JSON may need streaming, and encoding/CSV dialect is part of the contract.
+
+### Try it yourself
+
+Run two writers concurrently and prove readers never observe a partial file.
+
+
+## CSV round trip on PHP 8.4+
+
+Specify `escape: ''` explicitly: relying on the default escape parameter is deprecated from PHP 8.4. The empty value uses doubled quotes instead of PHP’s proprietary backslash escape. This complete program writes and reads a comma, quotes, a backslash, and Arabic, then verifies exact equality.
+
+```php
+<?php
+$handle = fopen('php://temp', 'w+');
+if ($handle === false) throw new RuntimeException('Cannot open stream');
+try {
+    $expected = ['a,b', 'say "hi"', 'back\\slash', 'عمر'];
+    if (fputcsv($handle, $expected, escape: '') === false) throw new RuntimeException('Write failed');
+    rewind($handle);
+    $actual = fgetcsv($handle, escape: '');
+    if ($actual !== $expected) throw new RuntimeException('CSV round-trip failed');
+    echo "CSV round-trip OK", PHP_EOL;
+} finally { fclose($handle); }
+```

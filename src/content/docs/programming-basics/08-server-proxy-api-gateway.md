@@ -1,26 +1,41 @@
 ---
-title: 8. Server وProxy وLoad Balancer وAPI Gateway
+title: "الخوادم الوسيطة وتوزيع الطلبات"
 description: الفرق العملي بين الخادم والوسيط وموازن الأحمال وبوابة APIs، ومسؤوليات كل طبقة ومخاطر الإعداد الخاطئ.
 sidebar:
-  order: 8
+  order: 22
+prev: {"link":"/programming-basics/07-server-side-path/","label":"رحلة الطلب داخل الخادم"}
+next: {"link":"/programming-basics/31-proxy-policies/","label":"توزيع الحمل وسياسات الوسيط"}
 ---
+
+
+
+## جرّب وسيطًا واحدًا
+
+في [المعمل المحلي](/programming-basics/32-local-network-lab/)، اضغط Through one proxy. المتصفح يطلب `/proxy` من8765؛ هذا الخادم يطلب المنتج من8766 ثم يرجع الرد. **Upstream — الخادم التالي الذي يطلب منه الوسيط** هو8766 هنا.
+
+في Network افتح رد `/proxy`: `X-Lab-Proxy: forwarded` يوضح المرور، و`X-Request-Id` و`X-Upstream-Request-Id` يحملان نفس القيمة لربط الطلبين. القيمة فريدة للتجربة؛ مش كلمة تحفظها. قارن سطري الطرفية بنفس المعرف. افهم هذا الطريق قبل توزيع العمل على عدة خوادم.
+
+## قبل التفاصيل
+
+كل طبقة أمام التطبيق يجب أن تحل مشكلة واضحة. زيادة proxies بلا حاجة تضيف نقاط فشل، بينما توزيع المسؤوليات الصحيح يحسن الأمان والتوسع.
 
 ## لماذا توجد طبقات أمام التطبيق؟
 
-يمكن للعميل الاتصال بتطبيق واحد مباشرة، لكن الأنظمة الحقيقية تحتاج TLS وحماية وتوزيع حمل وتوجيهًا ومراقبة وسياسات موحدة. لذلك توضع طبقات أمام التطبيق. قد يجمع منتج واحد أكثر من دور، لكن هذا لا يلغي الفرق بين المسؤوليات.
+يمكن للعميل الاتصال بتطبيق واحد مباشرة، لكن الأنظمة الحقيقية تحتاج TLS (Transport Layer Security؛ قواعد حماية الاتصال بالتشفير والتحقق) وحماية وتوزيع حمل وتوجيهًا ومراقبة وسياسات موحدة. لذلك توضع طبقات أمام التطبيق. قد يجمع منتج واحد أكثر من دور، لكن هذا لا يلغي الفرق بين المسؤوليات.
 
 ```text
-Client → DNS → CDN/WAF → Load Balancer → Reverse Proxy → API Gateway
+Client ⇄ DNS (name lookup only)
+Client → CDN/WAF → Load Balancer → Reverse Proxy → API Gateway
                                                         ├─ Identity
                                                         ├─ Orders
                                                         └─ Catalog → Cache / DB / Queue
 ```
 
-ليست كل الطبقات إلزامية. تطبيق صغير قد يستخدم Nginx كتأمين TLS وReverse Proxy أمام تطبيق واحد، بينما منظومة خدمات متعددة قد تحتاج Gateway.
+ليست كل الطبقات إلزامية. تطبيق صغير قد يستخدم Nginx كتأمين TLS وReverse Proxy (وسيط يستقبل الطلبات نيابة عن خوادم خلفه) أمام تطبيق واحد، بينما منظومة خدمات متعددة قد تحتاج Gateway.
 
 ## Forward Proxy
 
-يعمل **Forward Proxy** نيابة عن العميل. يعرف العميل أنه سيرسل اتصالاته إلى الوسيط، ثم يتصل الوسيط بالخارج باسمه. يُستخدم في شبكات الشركات لتطبيق سياسة خروج، وحجب وجهات، وتسجيل الاستخدام، أو التخزين المؤقت.
+يعمل **Forward Proxy (وسيط يستقبل اتصالًا أو طلبًا ويمرره لجهة أخرى)** نيابة عن العميل. يعرف العميل أنه سيرسل اتصالاته إلى الوسيط، ثم يتصل الوسيط بالخارج باسمه. يُستخدم في شبكات الشركات لتطبيق سياسة خروج، وحجب وجهات، وتسجيل الاستخدام، أو التخزين المؤقت.
 
 ```text
 Employees → Corporate Forward Proxy → Internet servers
@@ -33,40 +48,14 @@ Employees → Corporate Forward Proxy → Internet servers
 يعمل **Reverse Proxy** نيابة عن الخوادم. يطلب العميل نطاق التطبيق طبيعيًا، فيصل إلى وسيط يختار Upstream ويرسل إليه الطلب. من وظائفه:
 
 - TLS termination وتجديد الشهادات مركزيًا.
-- توجيه Paths أو Hosts إلى خدمات مختلفة.
-- Compression وCaching وحدود حجم الطلب.
-- إضافة Request ID وSecurity Headers.
+- توجيه Paths (مسار المورد داخل العنوان، مثل /products) أو Hosts إلى خدمات مختلفة.
+- Compression (ضغط: تمثيل نفس المحتوى ببيانات أقل في ضغط الويب المعتاد) وCaching وحدود حجم الطلب.
+- إضافة Request ID (معرّف يميز طلبًا لتتبع أحداثه) وSecurity Headers (حقول رد تضبط سلوك حماية في المتصفح حسب نوع كل حقل).
 - إخفاء العناوين الداخلية ومنع الوصول المباشر إليها.
 
 Nginx وHAProxy وEnvoy أمثلة تستطيع أداء بعض هذه الأدوار. الـReverse Proxy لا يصلح تلقائيًا أخطاء Validation والمصادقة والصلاحيات داخل التطبيق.
 
-## Load Balancer
-
-يوزع **Load Balancer** العمل بين نسخ متعددة لرفع السعة والتوافر:
-
-```text
-Load Balancer
-  ├─ App A: healthy
-  ├─ App B: healthy
-  └─ App C: unhealthy → removed by health check
-```
-
-قد يعمل في Layer 4 على TCP/UDP، أو Layer 7 ويفهم HTTP. من خوارزمياته Round Robin وLeast Connections وConsistent Hashing. ميّز بين **Liveness** التي تسأل هل العملية حية و**Readiness** التي تسأل هل تستطيع استقبال عمل الآن.
-
-إعادة المحاولة بلا حدود تضاعف الضغط على خدمة متعبة. اضبط Timeout وRetry Budget، واجعل العملية Idempotent أو استخدم Idempotency Key عندما يمكن تكرارها.
-
-## API Gateway
-
-الـ**API Gateway** نقطة دخول منظمة لواجهات عدة خدمات، ويركز على سياسات الـAPI. يمكنه:
-
-- مطابقة Routes وإصدارات `/v1` و`/v2`.
-- التحقق الأولي من Token وتمرير هوية موثوقة.
-- Rate Limits وQuotas حسب المستخدم أو التطبيق.
-- تحويل Protocol أو شكل Request/Response.
-- تجميع نتائج عدة خدمات لعميل محدد.
-- توحيد Metrics وTraces وAccess Logs.
-
-تبقى صلاحية الوصول إلى المورد داخل الخدمة المالكة للبيانات. ولا تضع كل Business Logic في الـGateway؛ وإلا يتحول إلى تطبيق مركزي ضخم وعنق زجاجة للنشر والاختبار.
+**Upstream** الخدمة التي يمرر إليها الوسيط الطلب، و**TLS termination** فك اتصال TLS عنده؛ الوصلة التالية تحتاج حماية مستقلة. **Request ID** قيمة تربط سجلات الطلب نفسه. **Compression** ضغط لتقليل الحجم، و**Validation** فحص أن المدخلات مناسبة قبل استخدامها.
 
 ## مقارنة الأدوار
 
@@ -75,28 +64,20 @@ Load Balancer
 | Server | الخدمة | كيف يعالج الطلب | تطبيق أو قاعدة بيانات |
 | Forward Proxy | العميل | هل وإلى أين يخرج الاتصال | شبكة شركة |
 | Reverse Proxy | الخوادم | لأي Upstream يمر الطلب | TLS وتوجيه النطاق |
-| Load Balancer | نسخ الخدمة | أي نسخة سليمة تستقبل الحمل | توزيع Workers |
-| API Gateway | منظومة APIs | أي API وهوية وسياسة تنطبق | مدخل Microservices |
+| Load Balancer | نسخ الخدمة | أي نسخة سليمة تستقبل الحمل | توزيع Workers (وحدة تنفيذ تتولى مهمة أو طلبًا؛ قد تكون عملية أو خيطًا حسب النظام) |
+| API Gateway (بوابة تجمع دخول عدة واجهات خدمة وتطبق سياسات مشتركة) | منظومة APIs | أي API وهوية وسياسة تنطبق | مدخل Microservices |
 
 قد يكون المنتج Reverse Proxy وLoad Balancer معًا، وقد تحتوي منصة Gateway على الدورين. راجع المسؤولية وحدود الثقة والفشل، لا اسم المنتج فقط.
 
-## العناوين الحقيقية والثقة
+## مسائل عملية
 
-يضيف الوسطاء `Forwarded` أو `X-Forwarded-For` و`X-Forwarded-Proto`. لا تثق بها من أي اتصال؛ يستطيع العميل تزويرها. امسح القيم غير الموثوقة عند الحافة، واضبط التطبيق على Trusted Proxies معروفة فقط.
+<details><summary>ما الفرق المركزي بين forward وreverse proxy؟</summary><p>الـforward proxy يعمل نيابة عن العملاء نحو الإنترنت؛ الـreverse proxy يقف أمام الخوادم ويتلقى طلبات العملاء نيابة عنها.</p></details>
 
-لا تمرر Authorization أو Cookies إلى Upstream غير مقصود، وحدد أحجام Headers وBody والمهل، واحم لوحة إدارة الـGateway، واستخدم TLS داخليًا عندما يتطلب Threat Model ذلك.
+<details><summary>لماذا لا نثق بأي <code>X-Forwarded-For</code>؟</summary><p>لأن العميل يستطيع تزويره. ثق فقط في header أعاد بناءه proxy موثوق، واضبط قائمة الـproxies الموثوقة.</p></details>
 
-## الفشل والمراقبة
+<details><summary>هل API gateway بديل لمنطق الصلاحيات داخل الخدمة؟</summary><p>لا. يمكنه تطبيق سياسات مشتركة، لكن الخدمة تظل مسؤولة عن قواعد الوصول الخاصة بمواردها.</p></details>
 
-كل طبقة تضيف زمنًا ونقطة فشل. شغّل أكثر من نسخة للطبقات الحرجة، واستخدم Health Checks واقعية، وانشر Configuration تدريجيًا مع Rollback. مرر Correlation/Trace ID وقس زمن كل Hop ومعدل الأخطاء ورفض Rate Limit وتشبع الاتصالات.
 
-`502 Bad Gateway` يعني غالبًا أن الوسيط لم يحصل على استجابة صالحة من Upstream، و`504 Gateway Timeout` يعني انتهاء مهلة الانتظار. اربط الرمز بسجلات الطرفين والـTrace قبل الحكم.
+## الخطوة التالية
 
-## تأكد من فهمك
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>لديك ثلاث نسخ متطابقة من تطبيق واحد. ما الطبقة المطلوبة أولًا، ولماذا لا تحتاج Gateway بالضرورة؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Load Balancer يختار نسخة سليمة ويوزع الحمل. Gateway مفيد لسياسات APIs أو خدمات متعددة، وليس شرطًا لمجرد تعدد النسخ.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا لا يجوز الثقة مباشرة في <code>X-Forwarded-For</code>؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> يستطيع العميل تزويره. تُقبل معلومات العنوان من Proxy موثوق يزيل القيم غير الموثوقة ويضيف ما رآه بنفسه.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>ما خطر وضع قواعد الطلبات والمخزون والأسعار كلها في Gateway؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> يتحول إلى Monolith مركزي وعنق زجاجة، وتتسرب ملكية المجال من الخدمات. احتفظ فيه بالسياسات المشتركة فقط.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>ظهر <code>504</code>. ما خطوات التشخيص؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> اتبع Trace ID، وقارن مهلة الوسيط بزمن Upstream، وافحص التشبع والخدمات التابعة، وحدد هل اكتمل العمل بعد قطع الاتصال قبل إعادة المحاولة.</div></details></section>
-</div>
+كمّل في [توزيع الحمل وسياسات الوسيط](/programming-basics/31-proxy-policies/) بعد تنفيذ التجربة هنا.

@@ -6,6 +6,16 @@ description: "Operators build expressions, and conversions determine the type us
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Boolean:** A logical value with only two states: true or false.
+- **Function:** A named, reusable block of code with one defined job.
+
+
 ## Expressions and operators
 
 Operators build expressions, and conversions determine the type used for evaluation. Learn the rules rather than relying on trial and error.
@@ -60,7 +70,7 @@ Use the conditional operator for one short value choice. Replace deeply nested t
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Operators, conversions, and type limits">
 <p class="lesson-diagram-title">Concept map: Operators, conversions, and type limits</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Operands</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Promotions</span></div>
@@ -160,3 +170,11 @@ const bool writable = (permissions & canWrite) != 0;
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The int multiplication can overflow before assignment. Use <code>1LL * a * b</code> and still confirm that long long covers the required range.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+Operand evaluation order is not always textual order, so do not modify one value several times in an expression. Signed overflow is undefined behavior while unsigned wraps modulo. Shifting negatives or by an out-of-range count is dangerous; use unsigned types and validate the count.
+
+### Try it yourself
+
+Test a side-effect-heavy expression and rewrite it as explicit statements.

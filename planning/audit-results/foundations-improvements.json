@@ -1,0 +1,425 @@
+{
+  "date": "2026-09-27",
+  "reviewedLessons": 59,
+  "currentLessons": 89,
+  "languages": [
+    "ar",
+    "en"
+  ],
+  "humanLearnerTrial": false,
+  "findings": [
+    {
+      "slug": "programming-basics/computer-fundamentals/01-learning-roadmap",
+      "originalFinding": "ذكر مترجم C++ وGit مبكرًا لا يخدم أول مهمة؛ يكفي تحديد الأدوات المطلوبة ثم تقديم الباقي وقت استخدامه.",
+      "action": "اختصار تجهيز البداية إلى الأدوات المطلوبة حاليًا وتأجيل أدوات اللغات وإدارة التاريخ لوقتها.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/01-learning-roadmap.md",
+      "currentSha256": "da276ce53ee8657e3d3047686e827ce43eab95a2516d6d3586141c623b8b80d5"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/01-using-your-computer",
+      "originalFinding": "مناسب للبداية؛ صورة واحدة لتمييز مؤشر الكتابة ومؤشر الماوس قد تساعد من لم يستخدم كمبيوترًا.",
+      "action": "مقارنة مرئية بين سهم الماوس وخط الكتابة، وتجربة تبين اختلاف موضع الضغط عن موضع الإدخال.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/01-using-your-computer.md",
+      "currentSha256": "a8eac1ee61ba07633584d4f6ca5ffaad95879a2f5eaf796da19b438811924ba7"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/02-files-and-folders",
+      "originalFinding": "جيد جدًا؛ فصل الضغط والنسخة الاحتياطية كتطبيقين صغيرين يجعل نهاية الدرس أهدأ.",
+      "action": "مهمتان منفصلتان للضغط وفكّه، ولنسخ ملف إلى وسيط آخر والتحقق من استقلال النسخة.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/02-files-and-folders.md",
+      "currentSha256": "4b440629ef76435ac2ce4097dc993a16abb31d3daaa3eedb41ac1f7e8bb03340"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/03-programs-installation-safety",
+      "originalFinding": "نصائح الأمان أكثر من التدريب عليها؛ أضف موقفًا يقارن طلب صلاحية طبيعيًا بطلب غير مناسب.",
+      "action": "موقف صلاحيات للكاميرا وجهات الاتصال، وتمرين يقارن فتح ملف بصلاحية المسؤول.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/03-programs-installation-safety.md",
+      "currentSha256": "11eea77267c17a3db28ee6619c32db783bbaa05ea7f50526d666c92657b4f7e6"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/02-computers-data-processing",
+      "originalFinding": "واضح ومناسب لحجمه؛ يفيده تمرين مستقل يجيب عنه المتعلم قبل رؤية الحل.",
+      "action": "تمرين تحويل حرارة قبل الحل، مع فصل البيانات عن التعليمات واختبار الصفر.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/02-computers-data-processing.md",
+      "currentSha256": "d1873fb8a3e9653955196d8c4e7014667ae283fb9c4085671bda465ca7938bb5"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/02-binary-data-representation",
+      "originalFinding": "بعد الثنائي يجمع Unicode وHex والصورة والصوت والضغط والوحدات؛ قسّم الرحلة إلى مراحل بتدريب بعد كل مرحلة.",
+      "action": "الحفاظ على تحويل5 إلى101 وإضافة توقفات للتطبيق، وفصل الصورة والصوت والوحدات في درس مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/02-binary-data-representation.md",
+      "currentSha256": "35d4f569e541e89fdae161803fbdf240845232a6918e538f1a80f1840db0243a"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/03-hardware-architecture",
+      "originalFinding": "فقرة واحدة تضم CPU وRAM وSSD وHDD بتوسعات طويلة؛ وزّعها على رسم جهاز وأمثلة منفصلة.",
+      "action": "تتبع ملف من التخزين إلى الذاكرة والمعالج والشاشة، وتعريف كل دور بجوار الرسم.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/03-hardware-architecture.md",
+      "currentSha256": "787ffb864957baf2bac4d9be23052a04099bd7f90ad199a80472ae4e070bcb58"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/04-cpu-gpu",
+      "originalFinding": "مثال GPU مختصر؛ مقارنة مهمة متسلسلة بمهمة مكررة على نقاط صورة أوضح من التعريف وحده.",
+      "action": "مقارنة خطوة تعتمد على سابقتها بعمليات إضاءة بكسلات مستقلة، مع تفسير تكلفة تجهيز العمل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/04-cpu-gpu.md",
+      "currentSha256": "08e308918f9f432b6887bfec1604b679515c887a4d576280025f8607e1500fa3"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/05-ram-memory-buffers",
+      "originalFinding": "تكرار التعريفات الطويلة للمكونات يقطع الشرح؛ استخدم تذكيرًا قصيرًا واربط بالدرس السابق.",
+      "action": "تقليل تكرار التوسعات الطويلة للاختصارات وإضافة تذكير قصير ورابط للمكونات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/05-ram-memory-buffers.md",
+      "currentSha256": "ebeafe2dd0f6d0a4b2932e3aee598f6a4b083b8651130864d1cf7a750fe4b73a"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/06-operating-systems",
+      "originalFinding": "مناسب؛ يمكن إضافة سؤال يميز رسالة امتلاء القرص عن رسالة رفض الصلاحية.",
+      "action": "مقارنة عملية بين المساحة غير الكافية والوصول المرفوض وخطوة تشخيص كل منهما.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/06-operating-systems.md",
+      "currentSha256": "edf95994ceef0d974d4e3460dd9411834be0bbc4579e5ac62535c196f66c86b4"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/07-internet-browser-basics",
+      "originalFinding": "DNS وTCP بتعريفاتهما الطويلة غير ضروريين هنا؛ يكفي الطلب والرد، ثم التفاصيل في الشبكات.",
+      "action": "تقديم رحلة طلب ورد قصيرة قبل أسماء آليات الشبكة، مع تعريف العميل والخادم عمليًا.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/07-internet-browser-basics.md",
+      "currentSha256": "725172beab92651c085ab6ea42bfd2a5ac953f4fd38c7d55e4419718585660b2"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/03-binary-languages-algorithms",
+      "originalFinding": "المثال واضح؛ أضف محاولة من المتعلم قبل عرض حل مسألة الباقي.",
+      "action": "تمرين عمر وحدود مدخلاته بإجابة مطوية: التحقق قبل القرار.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/03-binary-languages-algorithms.md",
+      "currentSha256": "f1bf0f0a0044bda9be00a4d1bddffacf31c3a948d468f23ec059a6e3299f27ba"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/05-os-terminal-files-git",
+      "originalFinding": "قوي عمليًا؛ تعريف UTF-8 الطويل يتكرر رغم شرح المقصود بجملة أبسط بعده.",
+      "action": "تقصير تكرار شرح الترميز وربطه بمثال سابق بدل إعادة توسعة الاسم في كل موضع.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/05-os-terminal-files-git.md",
+      "currentSha256": "5ef25320aa56ae910cc478174c40b6691033030f677fe9c0113542bce7d06c94"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/08-first-program",
+      "originalFinding": "يفيده توضيح بصري يحدد السطر الذي يتغير داخل القالب؛ الأساس الحالي واضح.",
+      "action": "عزل سطر الرسالة المطلوب تعديله وشرح علامات التنصيص والحفظ وإعادة التحميل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/08-first-program.md",
+      "currentSha256": "43da81d2b8fb93e4c3dd6fd5ca409564c857f5daabe415cf554de7337fd02d0d"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/09-values-and-calculations",
+      "originalFinding": "الانتقال إلى ReferenceError يسبق التدريب على قراءة لوحة الأخطاء؛ قدّم رابطًا وتذكيرًا عمليًا فور ظهوره.",
+      "action": "شرح Console وReferenceError قبل الحاجة إليهما، وربطهما بدرس الخطأ الذي أصبح أسبق.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/09-values-and-calculations.md",
+      "currentSha256": "25c4c66f57e9537f5b25d7af27e48bd3377386223ddcdebe88750096ccc520fb"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/10-decisions-and-repetition",
+      "originalFinding": "الشرط والحلقة فكرتان كبيرتان؛ ضع تدريب شرط مستقل قبل الانتقال إلى التكرار.",
+      "action": "تجربة شرط واحد من غير حلقة، واختبار17 و18 و19 قبل الانتقال للتكرار.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/10-decisions-and-repetition.md",
+      "currentSha256": "35497e12f3277264c1cfb65f26cd74c79293f3ad4ca9fab4eb053a6722a68d84"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/11-functions-and-lists",
+      "originalFinding": "يجمع القائمة والموضع وconst والدالة والمدخلات والنطاق وfor-of والعرض؛ ابدأ بدالة واحدة على عدد ثم اجمعها بالقائمة.",
+      "action": "ملف كامل لدالة تضاعف رقمًا واحدًا قبل اجتماع الدوال والقوائم والحلقات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/11-functions-and-lists.md",
+      "currentSha256": "d053f34d6790895d34887262ec363c6654383ac13d3b755ced406c7038f852cc"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/12-input-validation",
+      "originalFinding": "كتلة المثال تسبق تفسير عدة معاملات وخصائص؛ اعرض نسخة تقرأ خانة واحدة ثم أضف الفحوص بالتدريج.",
+      "action": "ملف إدخال بخانة واحدة قبل السعر والكمية، وشرح الرموز وأسباب ترتيب التحقق.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/12-input-validation.md",
+      "currentSha256": "85f226394b9fdf0df4f03ef7ba20522587266fe5ee6174da6df13e62596608cc"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/13-text-processing",
+      "originalFinding": "عمليات متعددة في المثال الأول؛ تمرين اسم وحده قبل قائمة الكلمات يقلل الحمل.",
+      "action": "ملف لتنظيف اسم واحد قبل المقارنة وتقسيم قائمة كلمات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/13-text-processing.md",
+      "currentSha256": "3ba47c1533be23724f585a22b5c39e1162a535e9a3308ee9ceca98101c08b7fd"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/14-runtime-errors",
+      "originalFinding": "JSON والاستثناء والتحقق وthrow تأتي قريبًا من بعضها؛ ابدأ بفشل قراءة واحد ثم أضف فحص النوع والحدود.",
+      "action": "ملف يشغّل فشل JSON واحدًا ويعالجه، ثم إصلاحه، قبل تحقق نوع القائمة وعناصرها.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/14-runtime-errors.md",
+      "currentSha256": "7fd444aeec0d4532359e3398fabb7b24f225cce60849aa6683ad56a2aac81cb9"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/15-saving-data",
+      "originalFinding": "النسخة المعدلة تحتاج خادمًا محليًا بلا خطوات تجهيزه هنا؛ المثال المنشور يتيح التجربة لكنه لا يكمل مسار بناء نسخة مستقلة.",
+      "action": "درس تجهيز خادم محلي كامل، ثم تجربة ملف بيانات مستقل تشمل الحفظ والقراءة والغياب والتلف.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/15-saving-data.md",
+      "currentSha256": "13703f8a2d900bf1e017abe04f2868c3f0ac5072d22d83af0ca07cd60329c64b"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/16-shopping-project",
+      "originalFinding": "الكود الكامل الطويل يسبق خطوات البناء، وتجهيز تشغيل النسخة المحلية غير مكتمل؛ قدّم مراحل قابلة للتشغيل قبل الحل الكامل.",
+      "action": "أربع نسخ تشغيل للمشروع قبل المصدر الكامل، ثم مثال كائن يفصل الاسم عن الكمية.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/16-shopping-project.md",
+      "currentSha256": "3d6d8d8e5c957e33c72132765c23f18e06033eaa0e6a8d0a47060b0e3107df16"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/09-git-debugging",
+      "originalFinding": "التدريب على أدوات الخطأ يأتي بعد دروس تحتاجه؛ انقل أساس قراءة Console قبل الإدخال والأخطاء.",
+      "action": "نقل الدرس بعد أول برنامج وقبل الحسابات، وتعديل اختباره ليستخدم ملفًا سبق شرحه.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/09-git-debugging.md",
+      "currentSha256": "5c706cfd6b56807a9c37832e569db6be0eff3aeba0fcd0510e9fbef8116165df"
+    },
+    {
+      "slug": "programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset",
+      "originalFinding": "المقدمة تقيم المشروع لكن قائمة الجاهزية ما زالت تركز على الحساب البسيط؛ اجمع معايير الإدخال والحفظ والدوال في قائمة واحدة.",
+      "action": "معيار جاهزية يشمل الدوال والقوائم والمدخلات والتحقق والأخطاء والحفظ والاسترجاع.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset.md",
+      "currentSha256": "3c4f6d4f655848dc44f8ceb9bfc4d33345f265a9138fd8d8557ab610ccc48195"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/01-arithmetic-foundations",
+      "originalFinding": "GCD وLCM والدقة تظهر بصياغة مكثفة قبل الأمثلة، وتُجمع موضوعات كثيرة؛ اجعل لكل فكرة مسألة ثم قاعدة ثم تدريبًا.",
+      "action": "مثال حسابي قبل المصطلحات، وفصل القسمة والباقي وGCD وLCM والدقة في درس تدرّج مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/01-arithmetic-foundations.md",
+      "currentSha256": "829b175e995b92d1dcb87721adfc75eaaace3b6f9a5684d84f34ad295a61c266"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/02-variables-equations-logic",
+      "originalFinding": "Domain وCodomain وRange والعلاقات تُذكر قبل تفسيرها، مع قفزة من الشروط للرياضيات المتقطعة؛ قدّم المثال قبل قائمة الأسماء.",
+      "action": "جدول قرار صغير أولًا، ثم درس منفصل للمجموعات والعلاقات والمجال والمدى مع مثال تربيع.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/02-variables-equations-logic.md",
+      "currentSha256": "149f7c9fbf080bbeb896dfb0f5fdbdf1116c88cddc50bdd67ced2af2238e1a8e"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/04-computational-thinking",
+      "originalFinding": "مثال الصراف مجرد تعداد مهام؛ تتبع مسألة واحدة من الطلب إلى حالات القبول والرفض أقوى.",
+      "action": "تتبع مطلب السحب إلى قبول ورفض وحدود واختبار تغير الرسوم، قبل تعديل التنفيذ.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/04-computational-thinking.md",
+      "currentSha256": "ab105b225c3a657c32544f80fd4a261c2b95cc545b4a3225a66c7c553ec9e2d1"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees",
+      "originalFinding": "يتوسع سريعًا إلى invariant وState Machine؛ أضف شجرة قرار فعلية لنفس المثال واجعل نموذج الحالات توسعًا لاحقًا.",
+      "action": "شجرة فعلية لنفس مثال أكبر ثلاثة أعداد، ونقل توسع الحالة السابقة بعد المثال.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees.md",
+      "currentSha256": "dd37d20e292e4acb1b2290660eadd31dd0f562d3117d20d7b60460e5aa682aff"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/06-flowcharts-loops-debugging",
+      "originalFinding": "ينتقل من التتبع إلى برهان invariant وvariant وBig O بسرعة؛ افصل التتبع عن إثبات الصحة والكلفة.",
+      "action": "الإبقاء على تتبع الحلقة اليدوي وفصل برهان الثبات والانتهاء ونمو الخطوات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/06-flowcharts-loops-debugging.md",
+      "currentSha256": "7c43d8f2c3699a35b2d9ebebfa620e774ff874157de868a3c4a8a9ee321f0504"
+    },
+    {
+      "slug": "programming-basics/08-problem-solving-algorithms",
+      "originalFinding": "يجمع هياكل البيانات والتعقيد والاستدعاء الذاتي وعدة أنماط ثم البرمجة الديناميكية؛ يحتاج سلسلة دروس وتمرينًا لكل أداة.",
+      "action": "فصل تنظيم البيانات والتعقيد عن أنماط الحل ثم الجشع والبرمجة الديناميكية، مع بقاء أمثلة العملاء والعملات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/08-problem-solving-algorithms.md",
+      "currentSha256": "9c28377273654d0c4e38baa5a0f8ce1200084f5eaf9a5eaa4a8072b5dd53dd4a"
+    },
+    {
+      "slug": "programming-basics/math-problem-solving/03-applied-math-graphs-primes",
+      "originalFinding": "متتابعات واحتمال وأولية ورسوم وBFS في صفحة واحدة؛ ينقصه رسم فعلي وتتبع الطابور خطوة بخطوة، وبعض الإحالات تحتاج تحديثًا دلاليًا.",
+      "action": "فصل القياس والأوليات عن العد والاحتمال وعن الرسوم، وإضافة رسم فعلي وجدول طابور وتصحيح رابط التعقيد.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/math-problem-solving/03-applied-math-graphs-primes.md",
+      "currentSha256": "3330a65ecb1f6ab9eb4aa9314e5bb393621a089ba7619de7bdae74f31d0d6efd"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/01-learning-roadmap",
+      "originalFinding": "يعيد نصائح البداية أكثر مما يهيئ لتعمق الكمبيوتر؛ اجعل الناتج خطة لفهم التنفيذ والذاكرة والأدوات تحديدًا.",
+      "action": "خريطة بنتائج قابلة للملاحظة: التنفيذ، ترجمة العنوان، ثم الملفات والتاريخ والاختبار.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/01-learning-roadmap.md",
+      "currentSha256": "da6ec41ad5af1bef29425ca7e5f098d8622de4b7381b8ff89326a36d3b1dfe1a"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/02-computers-data-processing",
+      "originalFinding": "المقاطعات وDMA والسجلات والصفحات تدخل سريعًا؛ قدم رحلة واحدة مرسومة ثم أضف الأجزاء الجديدة إليها.",
+      "action": "رسم لمسار فتح صورة وتعريف فك الترميز قبل المقاطعات ونقل البيانات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/02-computers-data-processing.md",
+      "currentSha256": "5df36b6f3dfcc073e8204fa59ad450fe3a079999702e5062869e2bca685a314d"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/03-hardware-architecture",
+      "originalFinding": "Socket وBus وSeek وPSU وغيرها بلا تفسير كاف في موضعها، والفقرات محملة باختصارات؛ قسمها حسب الوظيفة مع رسم للمكونات.",
+      "action": "تعريف Socket وBus وSeek وPSU بأدوار وأمثلة، قبل تفاصيل التوصيل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/03-hardware-architecture.md",
+      "currentSha256": "5811a5c1c5245158a822c00d01984dd64a0ee92b088de162133853af8305a2cc"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/04-cpu-gpu",
+      "originalFinding": "الجلب وفك التعليمات وVectors والتنبؤ والتوازي والكاش تظهر متتابعة؛ مثال تنفيذ تعليمتين ثم رسم للكاش يسبق بقية التوسع.",
+      "action": "تنفيذ تعليمتين بمثال5 ثم8، ورسم مستويات الكاش، وفصل العمل المتوازي في درس.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/04-cpu-gpu.md",
+      "currentSha256": "bf1f5937871d7a99d1fba0908673361a9a2c2a126fb8c6a530a3e82d0dc84348"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/05-ram-memory-buffers",
+      "originalFinding": "أكثر الدروس ازدحامًا: الذاكرة الافتراضية وStack وHeap وGC ومخازن النقل وDurability وZero-copy؛ افصله إلى وحدات متدرجة.",
+      "action": "تقسيم العناوين الافتراضية والحجز وعمر البيانات ومخازن النقل إلى ثلاثة دروس، ونقل التدريبات إلى موضوعها.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/05-ram-memory-buffers.md",
+      "currentSha256": "668aca245880abeacbe2af059b003d2ad92af4405b3da4392782819ef1d8e8ca"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/06-operating-systems",
+      "originalFinding": "النطاق كبير من النواة إلى الافتراضية وIPC؛ يحتاج تجربة مشاهدة عملية وخيوطها وحالاتها تربط التعريفات بالجهاز.",
+      "action": "تجربة قراءة عملية وخيوطها من Task Manager، مع توضيح ما لا يثبته عمود الحالة.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/06-operating-systems.md",
+      "currentSha256": "aa90f91e9c1ae999740c47a2edb92cfc857794c040bece90c5da4a5970c9bc9c"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/03-binary-languages-algorithms",
+      "originalFinding": "يجمع تمثيل البيانات بتنفيذ اللغات والمكتبات، ويكرر تعريفات قبل المثال؛ افصل التمثيل عن أدوات تحويل وتشغيل الكود.",
+      "action": "فصل تمثيل الأعداد والحروف عن تحويل الكود وتشغيله والمكتبات، مع نقل الشرح الإنجليزي الموازي.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/03-binary-languages-algorithms.md",
+      "currentSha256": "3fb7e8db74e6478d1f1627b882d73b72daa7b43613e2181565e7b758b4997b16"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/05-os-terminal-files-git",
+      "originalFinding": "شرح البيئة والصلاحيات والقنوات يسبق أول تجربة، ثم يُدخل cmd داخل PowerShell؛ ابدأ بالأوامر البسيطة وافصل تجربة القنوات.",
+      "action": "وضع إنشاء الملف وقراءته أولًا، وفصل القنوات والبيئة والصلاحيات، وفك صياغة cmd داخل PowerShell.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/05-os-terminal-files-git.md",
+      "currentSha256": "9bb4e18789a192fcfe0d3f8aaf39c2cce64307e68ca051251e1ee13a9ec657b7"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/09-git-debugging",
+      "originalFinding": "Branch وMerge وRebase وbisect تظهر قبل أول commit؛ ابدأ بالتجربة ثم أضف فرعًا وتعارضًا، وافصل الاختبارات عن تاريخ الملفات.",
+      "action": "أول commit قبل الفروع، وتمرين كامل لتعارض وفرع ودمج، وفصل الاختبارات في درس مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/09-git-debugging.md",
+      "currentSha256": "1168a85bcf48cf13c513c3be3382e619b426fa61a769851593507a392d1604ee"
+    },
+    {
+      "slug": "programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset",
+      "originalFinding": "تجربة أربعة مجالات في أسبوع غير مجهزة بأدوات وخطوات؛ حوّلها إلى اختيارات صغيرة محددة بمخرج واحد لكل اختيار.",
+      "action": "اختيارات صغيرة بأداة ومخرج محددين بدل تكليف أربعة مجالات في أسبوع.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset.md",
+      "currentSha256": "c4f59045abc4175243f05ed4e5804d1d063b54ff02530890d2e2b0e72c19bc26"
+    },
+    {
+      "slug": "programming-basics/01-web-and-request-flow",
+      "originalFinding": "أول درس شبكة يعرض DNS وTCP وQUIC وTLS وCDN وWAF وFPM؛ قدّم رحلة مختصرة أولًا، واضبط سياق Service Worker وبيئة curl.",
+      "action": "رحلة أولى قصيرة ورسم يفصل DNS عن HTTP، ونقل التفاصيل للخادم والمتصفح وتصحيح Service Worker وcurl.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/01-web-and-request-flow.md",
+      "currentSha256": "de72eecba1529d4e3f40dccad4a483beb7b4548af9b3abbb9b7c738c05755d01"
+    },
+    {
+      "slug": "programming-basics/14-network-layers-lan-ethernet-arp",
+      "originalFinding": "الطبقات وARP وVLAN وSTP وNDP كثيرة معًا؛ ارسم جهازين وراوترًا وتتبع إطارًا واحدًا قبل التوسع.",
+      "action": "رسم جهازين ومبدّل وراوتر وتتبع إطار محلي، ثم فصل تقسيم الشبكة ومنع الدوران.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/14-network-layers-lan-ethernet-arp.md",
+      "currentSha256": "d291b65d28ccb1e29f77c1c7c39bdd03bbf9bdb8bb10b85b4d6b5263f5169dbb"
+    },
+    {
+      "slug": "programming-basics/18-wifi-practical-basics",
+      "originalFinding": "يستفيد من نموذج تسجيل نتائج بسيط للقريب والبعيد وجهازين؛ التفاصيل الحالية غالبًا مفسرة في موضعها.",
+      "action": "ورقة تسجيل مقارنة لنفس الجهاز قريبًا وبعيدًا وجهاز ثانٍ، مع حدود الاستنتاج.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/18-wifi-practical-basics.md",
+      "currentSha256": "2a63bcb9ee2304b72f6e32392baf29e423db11224341dd0cf10e1316585f6665"
+    },
+    {
+      "slug": "programming-basics/15-addressing-dhcp-nat-routing-ipv6",
+      "originalFinding": "DHCP وNAT وCIDR والتوجيه وIPv6 في صفحة واحدة، وبعضها يسبق التعريف؛ قسّم العناوين الأساسية والحساب والتوسع للإصدار السادس.",
+      "action": "قراءة إعدادات الجهاز أولًا، وفصل حساب القناع عن التوجيه والإصدار السادس وشرح رسائل DHCP في سياقها.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/15-addressing-dhcp-nat-routing-ipv6.md",
+      "currentSha256": "07dcf1946d541aef682d0489db6291535c767a5183bc240f9defb01395b813d3"
+    },
+    {
+      "slug": "programming-basics/02-dns-and-ip",
+      "originalFinding": "تكرار توسيع الاختصارات وDNSSEC وDoH وDoT يجعل النهاية ثقيلة؛ اعرض لقطة نتيجة مشروحة ثم توسع الحماية.",
+      "action": "نتيجة lookup توضيحية مشروحة حقلًا بحقل، ثم نقل الفشل وحماية DNS إلى درس مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/02-dns-and-ip.md",
+      "currentSha256": "6f46723a1ecff8796a5993a2814826ca7532e178162922cf05324bf46c9405ac"
+    },
+    {
+      "slug": "programming-basics/03-tcp-udp-packets",
+      "originalFinding": "صحح تعريف Path في Path MTU، واشرح sequence numbers وidempotency وقت ظهورهما؛ فصل النقل عن التشخيص المتقدم يقلل الكثافة.",
+      "action": "مثال مواضع بايتات وتسلسلها، وتفسير أثر تكرار العملية، وتصحيح Path MTU وفصل التشخيص.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/03-tcp-udp-packets.md",
+      "currentSha256": "03c7a8c3a040eb2cf97f72157d4e1a682181fa3eded024239988b6cae2332435"
+    },
+    {
+      "slug": "programming-basics/04-url-ports-http",
+      "originalFinding": "تعريف Dynamic مأخوذ من سياق الصفحات لا المنافذ؛ قائمة البروتوكولات وIRI وIDNA تحتاج تدرجًا بدل جمعها مع أول URL.",
+      "action": "تصحيح المنافذ الديناميكية، وفصل ترميز الأحرف وتفاصيل العنوان عن أول URL.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/04-url-ports-http.md",
+      "currentSha256": "e72fb7f8d4cb5528af19007e8e88343a316058533124a332a63a0ee658d316b4"
+    },
+    {
+      "slug": "programming-basics/05-http-messages-state",
+      "originalFinding": "الجلسات وJWT وPHP والتفاوض والتعديل المتزامن توسع كبير؛ افصل قراءة الرسالة عن بناء الحالة وحماية التعديلات.",
+      "action": "فصل قراءة الرسالة عن تذكّر المستخدم والتعديل المشروط والمتزامن مع نقل مثال PHP.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/05-http-messages-state.md",
+      "currentSha256": "dd73d1ba8513e420c59222c86145f3b21e9414231acbfe8d99e1ac3fe9aa5452"
+    },
+    {
+      "slug": "programming-basics/06-https-tls-certificates",
+      "originalFinding": "التفاصيل الكثيرة للمصافحة والخوارزميات والإلغاء وALPN وmTLS تحتاج مسار توسع منفصلًا؛ جدول الشهادات نفسه جيد.",
+      "action": "الإبقاء على جدول DV/OV/EV المشروح وفصل المفاتيح والمصافحة والإلغاء والتوسعات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/06-https-tls-certificates.md",
+      "currentSha256": "4708a0d2d7d29bc2430fdffbbb85170721e535869b149c52f160235a4d0a917c"
+    },
+    {
+      "slug": "programming-basics/09-browser-rendering-devtools",
+      "originalFinding": "modules وdependency graph وasync تظهر بلا تجربة، ثم microtasks؛ اعرض صفحة صغيرة وتغييرًا مرئيًا وقياسًا واحدًا أولًا.",
+      "action": "صفحة كاملة تغيّر حجم نص وتقيس عرضه قبل تفاصيل التحميل والمهام، ونقل التفاصيل إلى درس مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/09-browser-rendering-devtools.md",
+      "currentSha256": "a1f6a99774e73492837142890e5a330de0c761af1308714ddbdf8d108a039e22"
+    },
+    {
+      "slug": "programming-basics/07-server-side-path",
+      "originalFinding": "طبقات كثيرة وشرح موازن الأحمال مكرر، والتمرين يفترض تجهيزًا لم يقدمه؛ ابدأ بخادم واحد ثم أضف وسيطًا بسبب واضح.",
+      "action": "طلب منتج من خادم محلي واحد أولًا، وربطه بسجل ورمز رد، وتقليل تكرار موازن الأحمال.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/07-server-side-path.md",
+      "currentSha256": "cd204350b193fb1947bfd6e3b9edb4f00293c6a480814a9d30a0be4f2c7c9203"
+    },
+    {
+      "slug": "programming-basics/08-server-proxy-api-gateway",
+      "originalFinding": "مصطلحات تشغيل كثيرة قبل شرحها، والرسم يضع DNS في خط المرور؛ فرّق رسم الاستعلام عن مسار HTTP وجرّب وسيطًا واحدًا.",
+      "action": "وسيط محلي عامل، ومقارنة معرّفات طرفيه، وفصل رسم سؤال DNS عن المرور ثم فصل السياسات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/08-server-proxy-api-gateway.md",
+      "currentSha256": "a87eb33799c348e186b33939f1cb1c278a0abba0407a05cbf767f4e1524c6fad"
+    },
+    {
+      "slug": "programming-basics/10-http-caching-compression",
+      "originalFinding": "مثال PHP يحيل إلى ملف آخر بدل إظهار الفكرة، ثم يقفز لوسوم ضعيفة وتحليل هيدرز؛ ابدأ بثلاثة طلبات زمنية واضحة 200 ثم استخدام نسخة ثم 304.",
+      "action": "تسلسل200 ثم نسخة صالحة ثم304، وأوامر طلب شرطي في المعمل، مع التفريق بين curl وكاش المتصفح.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/10-http-caching-compression.md",
+      "currentSha256": "fb7711b8ee1144c0aa7971fc4fb5626a6a8e0271c85749138e1b6b53d6074ca8"
+    },
+    {
+      "slug": "programming-basics/11-same-origin-cors",
+      "originalFinding": "ينقصه عميل وخادم محليان جاهزان لإظهار الرفض والسماح؛ CORP وCOEP وCOOP توسع غير ممهد داخل نفس الدرس.",
+      "action": "عميل وخادم على منفذين فعليين لإظهار المنع والسماح في المتصفح، وفصل سياسات العزل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/11-same-origin-cors.md",
+      "currentSha256": "cfdad07960f9a2bb9692bdb853e79d469faf7e577972c2ce083d2b8e7eb38e90"
+    },
+    {
+      "slug": "programming-basics/12-realtime-webhooks",
+      "originalFinding": "البث والتوقيع والطابور والمعاملة في درس واحد، والأمثلة جزئية؛ ابدأ بتحديث دوري عامل ثم SSE كامل ثم webhook مستقل.",
+      "action": "Polling ثم SSE يعملان بعميل وخادم كاملين، وإشعار webhook في درس مستقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/12-realtime-webhooks.md",
+      "currentSha256": "33f6cd44f345dd1234798428078b4966a6390561104b7d6dcb804525768cb2fb"
+    },
+    {
+      "slug": "programming-basics/13-api-design",
+      "originalFinding": "REST وRPC وGraphQL قبل بناء مورد واحد، وبعض لغة التشغيل تفترض خبرة؛ تتبع تصميم طلب منتج وردوده واختباراته بالكامل.",
+      "action": "عقد منتج محدد بحقول وأنواع وحالات200 و400 و404 و405 واختباراته قبل مقارنة أنماط الواجهات.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/13-api-design.md",
+      "currentSha256": "7f1417ce932149ea44063a1e5afc6c5c58e3f74b7013b86a05f6dd0e46d9ecd1"
+    },
+    {
+      "slug": "programming-basics/16-http2-http3-quic",
+      "originalFinding": "Frames وStreams وضغط الرؤوس و0-RTT تأتي سريعًا؛ رسم زمني لنفس ثلاثة طلبات عبر الإصدارات يوضح الفرق أكثر.",
+      "action": "مقارنة لنفس ثلاثة طلبات عند الفقد، وتعريف إطار البروتوكول والتدفق وحدود ضمانات النقل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/16-http2-http3-quic.md",
+      "currentSha256": "acea75de594c7c62acc72c57bbb5da7be6e0d3be2aae021a5cd217a33125ce9e"
+    },
+    {
+      "slug": "programming-basics/17-proxies-cdn-waf-observability",
+      "originalFinding": "تعريف Origin غير مناسب لسياق CDN، وp95 وToken Bucket وSpans غير مشروحة بما يكفي؛ افصل الكاش والحماية والمراقبة ووفّر بيئة للمشروع.",
+      "action": "تصحيح الخادم الأصلي، وفصل التوزيع والحماية والمراقبة، وأمثلة حسابية للحدود وp50/p95/p99 ومعمل لمعرفات الطلب والفشل.",
+      "evidence": "C:/my_docs/src/content/docs/programming-basics/17-proxies-cdn-waf-observability.md",
+      "currentSha256": "beaefd3b9b67f13dd29bb530ca0e1a213b6ce7ebee80966e0892e942dbe93355"
+    }
+  ]
+}

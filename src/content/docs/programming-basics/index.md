@@ -1,54 +1,40 @@
 ---
-title: أساسيات الكمبيوتر والبرمجة والشبكات
-description: "مسار يبدأ من الكمبيوتر والرياضيات والمنطق وحل المشكلات، ثم ينتقل إلى الشبكات والويب ورحلة الطلب."
+title: "أساسيات الكمبيوتر والبرمجة والشبكات"
+description: "اتعلم استخدام الكمبيوتر، وابنِ برنامجًا صغيرًا واختبره، وبعدها اتوسع في الرياضيات وداخل الكمبيوتر والشبكات."
 sidebar:
   order: 0
 ---
 
-# أساسيات الكمبيوتر والبرمجة والشبكات
+اتعلم استخدام الكمبيوتر، وابنِ برنامجًا صغيرًا واختبره، وبعدها اتوسع في الرياضيات وداخل الكمبيوتر والشبكات.
 
-ينقسم المسار إلى ثلاث مجموعات مترابطة: كيف يعمل الكمبيوتر وكيف تدرس البرمجة، ثم الرياضيات والمنطق وتصميم الحلول، ثم الشبكات والويب ورحلة الطلب كاملة. ابدأ بالترتيب إن كنت جديدًا، أو استخدم كل مجموعة كمرجع مستقل.
+## استخدام الكمبيوتر
 
-## 1. أساسيات الكمبيوتر والبرمجة
+[افتح القسم](/programming-basics/computer-fundamentals/)
 
-[ابدأ بمسار أساسيات الكمبيوتر](./computer-fundamentals/). ستدرس مكوّنات الكمبيوتر، دورة معالجة البيانات، النظام الثنائي، معنى لغة البرمجة، الخوارزميات، مجالات التقنية، وتأثير أدوات الذكاء الاصطناعي.
+تنشئ ملفات وتوصل لها، وتستخدم البرامج بأمان، وتفهم تمثيل البيانات ومكونات الجهاز.
 
-## 2. الرياضيات والمنطق وحل المشكلات
+## أساسيات البرمجة وتطبيقاتها
 
-[ابدأ بمسار الرياضيات وحل المشكلات](./math-problem-solving/). ستدرس الباقي والنسب والمتوسط والقوى، المتغيرات والمنطق، الإحداثيات، التفكير الحاسوبي، Pseudocode، أشجار القرار، Flowcharts، الحلقات والتصحيح.
+[افتح القسم](/programming-basics/programming-practice/)
 
-[التفكير البرمجي والخوارزميات](./08-problem-solving-algorithms/) يربط هذه الموضوعات باختيار بنية البيانات وتحليل Big O وبناء خوارزمية قابلة للاختبار.
+تتدرج من نتيجة واحدة لإدخال المستخدم والنصوص ومعالجة الفشل وحفظ البيانات ومشروع قائمة مشتريات.
 
-## 3. أساسيات الشبكات والويب
+## الرياضيات وحل المشكلات
 
-1. [الإنترنت والويب ودورة الطلب](./01-web-and-request-flow/) — Client/Server والرسم الكامل من المتصفح إلى التطبيق.
-2. [DNS وعناوين IP](./02-dns-and-ip/) — Local Cache وResolver وRoot وTLD وAuthoritative DNS.
-3. [TCP وUDP والحزم](./03-tcp-udp-packets/) — Handshake وACK والترتيب وإعادة الإرسال والتحكم في التدفق والازدحام.
-4. [URL والمنافذ وHTTP](./04-url-ports-http/) — أجزاء الرابط، Socket، المنافذ المشهورة، ومعنى HTTP.
-5. [HTTP Request وResponse والحالة](./05-http-messages-state/) — Methods وHeaders وBody وStatus Codes وCookies/Sessions/Tokens.
-6. [HTTPS وTLS والشهادات](./06-https-tls-certificates/) — التشفير المتماثل وغير المتماثل وHandshake وأنواع التحقق.
-7. [داخل الخادم: Load Balancer وNginx وPHP-FPM](./07-server-side-path/) — الملفات الثابتة والديناميكية وVirtual Hosts والتطبيق وقاعدة البيانات.
-8. [Server وProxy وLoad Balancer وAPI Gateway](./08-server-proxy-api-gateway/) — الأدوار وحدود الثقة والتوجيه والتوزيع وسياسات الـAPI.
-9. [كيف يعرض المتصفح الصفحة؟](./09-browser-rendering-devtools/) — DOM وCSSOM وLayout وPaint وDevTools.
-10. [HTTP Caching والضغط](./10-http-caching-compression/) — Cache-Control وETag وVary وgzip وBrotli.
-11. [Same-Origin Policy وCORS](./11-same-origin-cors/) — Origins وPreflight والـCredentials والإعداد الآمن.
-12. [الاتصال اللحظي وWebhooks](./12-realtime-webhooks/) — Polling وSSE وWebSocket وWebhooks.
-13. [تصميم APIs](./13-api-design/) — REST وRPC وGraphQL والأخطاء والصفحات والإصدارات.
-14. [طبقات TCP/IP والشبكة المحلية وEthernet وARP](./14-network-layers-lan-ethernet-arp/) — Encapsulation وFrames وMAC وSwitch وDefault Gateway.
-15. [DHCP وNAT وSubnetting وRouting وIPv6](./15-addressing-dhcp-nat-routing-ipv6/) — إعدادات الشبكة والعناوين الخاصة وCIDR واختيار المسار.
-16. [HTTP/2 وHTTP/3 وQUIC](./16-http2-http3-quic/) — Binary Framing وMultiplexing وStreams وتقليل Head-of-line Blocking.
-17. [CDN وWAF والمراقبة](./17-proxies-cdn-waf-observability/) — التخزين عند الحافة والحماية وLogs وMetrics وTracing.
+[افتح القسم](/programming-basics/math-problem-solving/)
 
-:::tip[طريقة المذاكرة]
-ابدأ بالرسم، ثم افتح أدوات المطور في المتصفح وتابع طلبًا حقيقيًا من تبويب Network. اربط كل حقل تراه بالدرس المناسب.
-:::
+تتعلم الحساب والمنطق حسب الحاجة، وتتدرب على وصف الحل وتتبع خطواته ومقارنة طرقه.
 
-## الخريطة المختصرة
+## داخل الكمبيوتر وأدوات التطوير
 
-```text
-URL → DNS → IP + Port → TCP/QUIC + TLS → HTTP Request
-    → CDN/WAF/Load Balancer → Web Server → PHP → Database
-    → HTTP Response → Browser
-```
+[افتح القسم](/programming-basics/computer-in-depth/)
 
-هذه خريطة تعليمية؛ بعض المراحل اختيارية، وقد تختصرها Cache أو وصلة مفتوحة مسبقًا.
+ترجع لتفاصيل الذاكرة والتنفيذ ونظام التشغيل والطرفية وتاريخ الملفات بعد كتابة برامج.
+
+## الشبكات والويب
+
+[افتح القسم](/programming-basics/networking-next/)
+
+تبدأ بالاتصال المحلي وWi-Fi، ثم العناوين وطلبات الويب والتشفير. موضوعات تطبيقات الخوادم في جزء لاحق.
+
+بعد مشروع البرمجة تقدر تبدأ [C++](/cpp/) أو [PHP](/php/)، وترجع لأقسام التعمق لما تقابل السؤال اللي بتجاوب عليه.

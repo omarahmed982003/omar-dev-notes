@@ -5,13 +5,13 @@ const routeId = String(Astro.locals.starlightRoute.id ?? '');
 const isEnglish = routeId === 'en' || routeId.startsWith('en/');
 const normalizedId = isEnglish ? routeId.replace(/^en\/?/, '') : routeId;
 const tracks = [
-	{ code: '01', slug: 'programming-basics', ar: 'أساسيات البرمجة والويب', en: 'Programming & Web Basics' },
-	{ code: 'C++', slug: 'cpp', ar: 'لغة C++', en: 'The C++ Language' },
-	{ code: 'PHP', slug: 'php', ar: 'لغة PHP', en: 'The PHP Language' },
-	{ code: 'OPS', slug: 'php-runtime', ar: 'تشغيل PHP والإنتاج', en: 'PHP Runtime & Production' },
-	{ code: 'OOP', slug: 'oop', ar: 'البرمجة كائنية التوجه', en: 'Object-Oriented Programming' },
-	{ code: 'SEC', slug: 'auth', ar: 'الأمان والهوية والصلاحيات', en: 'Security, Identity & Access' },
-	{ code: 'DB', slug: 'database', ar: 'قواعد البيانات وPDO', en: 'Databases & PDO' },
+	{ code: '01', slug: 'programming-basics', ar: 'أساسيات الكمبيوتر والبرمجة والشبكات', en: 'Computer, Programming & Networking Fundamentals' },
+	{ code: '02', slug: 'cpp', ar: 'البرمجة بلغة C++', en: 'Programming with C++' },
+	{ code: '03', slug: 'php', ar: 'تطوير الويب بلغة PHP', en: 'Web Development with PHP' },
+	{ code: '04', slug: 'php-runtime', ar: 'تشغيل تطبيقات PHP', en: 'Running PHP Applications' },
+	{ code: '05', slug: 'oop', ar: 'تنظيم البرامج باستخدام الكائنات', en: 'Organizing Programs with Objects' },
+	{ code: '06', slug: 'auth', ar: 'الأمان وتسجيل الدخول والصلاحيات', en: 'Security, Sign-in & Permissions' },
+	{ code: '07', slug: 'database', ar: 'قواعد البيانات', en: 'Databases' },
 ];
 const currentIndex = tracks.findIndex(
 	(track) => normalizedId === track.slug || normalizedId.startsWith(track.slug + '/'),

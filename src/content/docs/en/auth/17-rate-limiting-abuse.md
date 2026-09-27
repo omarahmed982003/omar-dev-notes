@@ -5,6 +5,16 @@ sidebar:
   order: 17
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **IP:** A numeric address that identifies a device or network interface.
+- **Token:** A value representing identity or permission without resending a password.
+
+
 ## Choose a key per operation
 
 IP alone is insufficient because users share NAT and attackers distribute traffic. Combine signals: account and network for login, contact and network for reset, key/tenant/endpoint for APIs, and user plus cost for expensive searches. Keep a global capacity limit.
@@ -23,38 +33,26 @@ CAPTCHA adds friction but is not complete proof of humanity. Trigger it from ris
 
 Define fail-open or fail-closed behavior when the limiter store is unavailable. A privileged login and a public read endpoint need different policy.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Rate limiting and abuse resistance">
-<p class="lesson-diagram-title">Concept map: Rate limiting and abuse resistance</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Choose a key per operation</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Algorithms</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Login abuse</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>login defenses</span></div>
-</div>
-</div>
+<details><summary>Is IP-only rate limiting enough?</summary><p>No. Shared addresses and botnets make IP only one signal; combine identity, device, route, and operation cost.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Choose a key per operation” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> IP alone is insufficient because users share NAT and attackers distribute traffic. Combine signals: account and network for login, contact and network for reset, key/tenant/endpoint for APIs, and user plus cost for expensive searches. Keep a global capacity limit. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Choose a key per operation” with “Algorithms”. Why does neither replace the other in “Rate limiting and abuse resistance”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Choose a key per operation”: IP alone is insufficient because users share NAT and attackers distribute traffic. Combine signals: account and network for login, contact and network for reset, key/tenant/endpoint for APIs, and user plus cost for expensive searches. Keep a global capacity limit. For “Algorithms”: Fixed windows are simple but burst at boundaries. Sliding windows are more precise and expensive. Token buckets allow controlled bursts; leaky buckets smooth output. Updates must be atomic in shared storage across servers. Return 429 Too Many Requests and an appropriate Retry-After without revealing account existence. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Login abuse”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Avoid permanent lockouts that let attackers deny access to victims. Use progressive delay, layered limits, breach-aware password policy, MFA/passkeys, and user notification for unusual activity. CAPTCHA adds friction but is not complete proof of humanity. Trigger it from risk signals and account for accessibility and privacy. Define fail-open or fail-closed behavior when the limiter store is unavailable. A… Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “login defenses” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Fixed/sliding windows, token buckets, login defenses, credential stuffing, CAPTCHA, and failure policy. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An attacker distributes login attempts across many IP addresses to evade a simple per-IP counter.
+
+**Negative test:** Send a burst against one account from different sources, then a legitimate request for another account.
+
+**Expected result:** The attack is delayed or blocked using account-aware signals while the other user still works; the defense does not become a global denial of service.
+
+### Verification source
+
+- [OWASP Denial of Service Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Denial_of_Service_Cheat_Sheet.html)
+
+## Connect the ideas
+
+A distributed limiter needs atomic shared state or an approximation-tolerant design, including clock skew and failover behavior. Trust X-Forwarded-For only from known proxies. Add cost-based limits for expensive work across account, device, and IP, while ensuring the defense does not become denial of service for legitimate users.
+
+### Try it yourself
+
+Run the limiter on two nodes and simulate shared-store loss plus IP rotation.

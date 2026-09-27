@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Read and validate input</title>
+<h1>Notebook cost</h1>
+<p><label for="price">Price (0 to 1000000)</label><br><input id="price" inputmode="decimal"></p>
+<p><label for="quantity">Quantity (1 to 1000)</label><br><input id="quantity" inputmode="numeric"></p>
+<button id="calculate">Calculate</button>
+<p id="output" role="status"></p>
+<script>
+const output = document.querySelector("#output");
+
+function calculate() {
+  const priceText = document.querySelector("#price").value.trim();
+  const quantityText = document.querySelector("#quantity").value.trim();
+  if (priceText === "" || quantityText === "") {
+    output.textContent = "Enter both values.";
+    return;
+  }
+  const price = Number(priceText);
+  const quantity = Number(quantityText);
+  if (!Number.isFinite(price) || !Number.isFinite(quantity)) {
+    output.textContent = "Enter numbers, such as 12.5 and 3.";
+    return;
+  }
+  if (price < 0 || price > 1000000 || !Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+    output.textContent = "Price: 0 to 1000000. Whole quantity: 1 to 1000.";
+    return;
+  }
+  output.textContent = "Total: " + price * quantity;
+}
+
+document.querySelector("#calculate").addEventListener("click", calculate);
+</script>
+</html>

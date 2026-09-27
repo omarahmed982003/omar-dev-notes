@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work with text</title>
+<h1>Names and tags</h1>
+<p><label for="name">Name</label><br><input id="name" value="  Omar  "></p>
+<p><label for="tags">Tags separated by commas</label><br><input id="tags" value="code, web, , art"></p>
+<button id="process">Process text</button>
+<p id="output" role="status"></p>
+<script>
+function processText() {
+  const name = document.querySelector("#name").value.trim();
+  const output = document.querySelector("#output");
+  if (name === "") {
+    output.textContent = "Enter a name.";
+    return;
+  }
+  const normalized = name.toLowerCase();
+  const parts = document.querySelector("#tags").value.split(",");
+  const tags = [];
+  for (const part of parts) {
+    const cleaned = part.trim();
+    if (cleaned !== "") {
+      tags.push(cleaned);
+    }
+  }
+  output.textContent = "Name: " + name
+    + " | Same as omar: " + (normalized === "omar")
+    + " | Contains mar: " + normalized.includes("mar")
+    + " | Tags: " + tags.join(" / ");
+}
+document.querySelector("#process").addEventListener("click", processText);
+</script>
+</html>

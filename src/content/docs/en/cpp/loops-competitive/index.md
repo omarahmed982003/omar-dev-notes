@@ -1,7 +1,7 @@
 ---
 pagefind: false
-title: 3. Loops & Competitive Programming
-description: Encoding, conversions, Codeforces problems, loops, counters, accumulators, and switch.
+title: 3. Encoding and loops
+description: Text encoding, conversions, loops, counters, accumulators, and repetition patterns.
 ---
 
-This group explains text encoding and conversions, shows how to analyze competitive programming constraints, and then covers loops, counters, accumulators, and nested repetition.
+This group explains text encoding and conversions, then covers loops, counters, accumulators, and nested repetition. Problem-statement and constraint analysis now belongs to the problem-solving lesson.

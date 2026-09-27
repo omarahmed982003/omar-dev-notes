@@ -5,6 +5,44 @@ sidebar:
   order: 6
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
+
+
+## التعبير يعني قيمة بيحسبها البرنامج
+
+التعبير **Expression** هو أي جزء كود ينتج قيمة. العدد `5` تعبير، والمتغير `$price` تعبير، و`$price * $quantity` تعبير، وحتى المقارنة `$age >= 18` تعبير نتيجته Boolean.
+
+```php
+$priceCents = 1500;
+$quantity = 3;
+$subtotal = $priceCents * $quantity;
+$getsFreeShipping = $subtotal >= 4000;
+```
+
+المعامل Operator هو الرمز اللي يحدد العملية، زي `+` و`*` و`===` و`&&`. المشكلة مش في حفظ الرموز، لكن في فهم الأنواع والأولوية. التعبير ده مثلًا صعب يتقري:
+
+```php
+$result = $a + $b * $c > 10 && $active;
+```
+
+الأقواس والأسماء الوسيطة توضح القصد:
+
+```php
+$calculated = $a + ($b * $c);
+$isEligible = ($calculated > 10) && $active;
+```
+
+ما تعتمدش على ذاكرتك في Operator Precedence داخل تعبير طويل. الأقواس مش بس للمحرك؛ هي رسالة للقارئ. وخلي بالك إن المقارنة المرنة `==` ممكن تحول الأنواع، بينما `===` تقارن النوع والقيمة معًا.
+
+قبل استخدام أي Operator اسأل: نوع القيم إيه؟ النتيجة المتوقعة نوعها إيه؟ وهل فيه قسمة على صفر أوOverflow أوFloat Precision أوShort Circuit ممكن يغير السلوك؟
+
 ## التعبير والأولوية
 
 كل ما ينتج قيمة يُعد expression. حتى الإسناد يعيد القيمة المسندة:
@@ -104,40 +142,38 @@ $slug = ' PHP 8.5 Released '
 
 يمرر `|>` ناتج اليسار كوسيط وحيد إلى callable في اليمين، فيجعل السلسلة تُقرأ من أعلى لأسفل. هذا المثال **لن يعمل على PHP 8.4 أو أقدم**.
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: التعبيرات والمؤثرات">
-<p class="lesson-diagram-title">خريطة مفاهيم: التعبيرات والمؤثرات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>التعبير والأولوية</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>الحساب والزيادة والإسناد</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>المقارنة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>المؤثرات المنطقية والنصوص والمصفوفات</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Error control والتنفيذ</span></div>
-</div>
-</div>
+<details><summary>1. توقع الناتج: <code>2 + 3 * 4</code></summary><p>الضرب له أولوية أعلى، فالناتج 14. اكتب <code>(2 + 3) * 4</code> لو القصد 20.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. ليه <code>$user !== null && $user->active</code> آمنة؟</summary><p>بسبب Short Circuit: لو الجزء الأول False، PHP مش هتقيّم الوصول للكائن في الجزء الثاني. مع ذلك Nullsafe قد تكون أوضح حسب المطلوب.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «التعبير والأولوية» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> كل ما ينتج قيمة يُعد expression. حتى الإسناد يعيد القيمة المسندة: الأقواس أفضل من حفظ جدول الأولوية. الفخ الأشهر: استخدم &amp;&amp; و|| عادة، وضع أقواسًا عندما يختلط أكثر من مؤثر. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «التعبير والأولوية» و«الحساب والزيادة والإسناد». لماذا لا يغني أحدهما عن الآخر داخل موضوع «التعبيرات والمؤثرات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «التعبير والأولوية»: كل ما ينتج قيمة يُعد expression. حتى الإسناد يعيد القيمة المسندة: الأقواس أفضل من حفظ جدول الأولوية. الفخ الأشهر: استخدم <code>&amp;&amp;</code> و<code>||</code> عادة، وضع أقواسًا عندما يختلط أكثر من مؤثر. أما «الحساب والزيادة والإسناد»: الإسنادات المختصرة: <code>+= -= *= /= %= = .= ??=</code>. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «المقارنة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> <code>==</code> مساواة مع تحويلات؛ <code>===</code> قيمة ونوع. <code>!=</code> و<code>&lt;&gt;</code> عدم مساواة، و<code>!==</code> عدم تطابق صارم. <code>&lt;=&gt;</code> للترتيب ويعيد -1 أو 0 أو 1. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «المؤثرات المنطقية والنصوص والمصفوفات» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> مؤثر <code>+</code> للمصفوفات union حسب المفاتيح ويحتفظ بقيمة اليسار عند تكرار المفتاح؛ ليس بديلًا مطابقًا لـ array_merge(). و<code>==</code> يقارن أزواج المفتاح/القيمة، أما <code>===</code> فيطلب أيضًا النوع والترتيب نفسه. إسناد object إلى متغير آخر يجعل المتغيرين يشيران عادة إلى الكائن نفسه؛ استخدم clone لنسخة كائن مستقلة، مع الانتباه للكائنات الداخلية. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. صحح مقارنة مدخل نصي بعدد</summary><p>بدل الاعتماد على <code>==</code>، تحقق من المدخل وحوله إلى <code>int</code> ثم استخدم <code>===</code> مع قيمة من نفس النوع.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>لماذا نكتب أقواسًا حتى لو عرفنا أولوية المؤثرات؟</summary><p>لجعل النية واضحة ومنع تغيّر المعنى عند إضافة جزء جديد أو مراجعة الكود.</p></details>
+
+<details><summary>ما خطر استخدام <code>==</code> مع مدخلات مختلفة الأنواع؟</summary><p>يجري تحويلًا ضمنيًا قد يجعل قيمًا مختلفة تبدو متساوية؛ استخدم <code>===</code> افتراضيًا حين يهم النوع.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php operators-lab.php
+~~~
+
+**معيار النجاح:** تطبع كل حالة operands والنتيجة والنوع، وتثبت الاختبارات الفرق بين <code>==</code> و<code>===</code> وبين <code>??</code> وtruthiness.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+Nullsafe operator يوقف السلسلة عند null ولا يعالج exception أو key مفقود. ضع أقواسًا عندما تختلط الأولويات ولا تعتمد على حفظ الجدول. عامل <code>@</code> يخفي العرض لا السبب ويصعب المراقبة؛ افحص return value أو exception بعقد واضح. ميزات الإصدار الجديد تحتاج minimum version واختبار compatibility.
+
+### جرّب بنفسك
+
+أعد كتابة expression معقدة إلى خطوات مسماة وقارن الأنواع والنتيجة.

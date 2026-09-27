@@ -1,0 +1,76 @@
+{
+  "pages": 1219,
+  "bytes": 59962326,
+  "parts": 15,
+  "evidence_pages": {
+    "binary": [
+      19,
+      20,
+      21,
+      133,
+      658,
+      659,
+      660,
+      769
+    ],
+    "local_network_lab": [
+      784,
+      828
+    ],
+    "staged_shopping": [
+      705
+    ],
+    "memory_translation": [
+      746,
+      760
+    ],
+    "input_validation": [
+      671,
+      687
+    ],
+    "text_processing": [
+      671,
+      691
+    ],
+    "saved_list": [
+      671,
+      701
+    ],
+    "shopping_project": [
+      671,
+      705
+    ],
+    "wifi_practice": [
+      783,
+      795
+    ],
+    "shopping_code": [
+      69,
+      707
+    ],
+    "certificates": [
+      189,
+      820
+    ],
+    "lists": [
+      47,
+      685
+    ],
+    "http_length": [
+      183,
+      815
+    ],
+    "english_binary_lesson": [
+      646,
+      657
+    ],
+    "english_certificates_lesson": [
+      783,
+      819
+    ],
+    "final_database_lesson": [
+      1205,
+      1217
+    ]
+  }
+}

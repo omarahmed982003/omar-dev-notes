@@ -6,6 +6,15 @@ description: "تفهم أنظمة الأعداد كيف تُمثّل القيم�
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+
+
 ## العدد وقاعدة تمثيله
 
 تفهم أنظمة الأعداد كيف تُمثّل القيم، وتفهم مكونات الحاسوب أين يعيش البرنامج وكيف ينتقل من التخزين إلى التنفيذ.
@@ -33,7 +42,7 @@ tableOfContents: true
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: أنظمة الأعداد ومكوّنات الكمبيوتر">
 <p class="lesson-diagram-title">خريطة مفاهيم: أنظمة الأعداد ومكوّنات الكمبيوتر</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>قيمة عشرية</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Binary Bits</span></div>
@@ -129,3 +138,11 @@ RAM متطايرة فتفقد محتواها عند انقطاع الطاقة، 
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا ترفع سرعة المعالج نفسها، لكنها تقلل اللجوء للتخزين البطيء عند ضغط الذاكرة وقد تحسن أداء النظام.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+Endianness يحدد ترتيب bytes متعددة داخل الذاكرة ولا يغير ترتيب البتات المكتوبة داخل byte. IEEE-754 يقسم floating value إلى sign وexponent وfraction مع قيم خاصة. العنوان pointer إلى موقع افتراضي لا «رقم الخانة الفيزيائية».
+
+### جرّب بنفسك
+
+افحص bytes لعدد صحيح وfloat على جهازك وفسرها دون افتراض portability.

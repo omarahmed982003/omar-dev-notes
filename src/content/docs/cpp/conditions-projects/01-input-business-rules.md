@@ -6,6 +6,15 @@ description: "قواعد العمل تتحول إلى شروط واضحة بعد
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
+
+
 ## من نص المتطلبات إلى شروط
 
 قواعد العمل تتحول إلى شروط واضحة بعد تسمية كل حقيقة مستقلة والتحقق من صحة المدخلات. افصل صلاحية البيانات عن قرار القبول.
@@ -36,16 +45,21 @@ bool eligible = validScore && score >= 60 && attendance >= 75;
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الإدخال وتحويل قواعد العمل إلى شروط">
 <p class="lesson-diagram-title">خريطة مفاهيم: الإدخال وتحويل قواعد العمل إلى شروط</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-decision">
 <div class="diagram-node input"><span>مدخل خام</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="parse" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Validation</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="صالح" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>حقائق Boolean مسماة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="قيّم" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Decision Table</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="قرار" aria-hidden="true">→</span>
 <div class="diagram-node output"><span>قبول أو سبب رفض واضح</span></div>
+</div>
+<div class="diagram-branches">
+<p class="diagram-branch-label">افصل فشل الإدخال عن رفض قاعدة العمل</p>
+<div class="diagram-node danger"><span>Parsing / validation فشل ← صحّح الإدخال</span></div>
+<div class="diagram-node output"><span>البيانات صالحة لكن الشرط لا يتحقق ← اذكر السبب</span></div>
 </div>
 </div>
 
@@ -132,3 +146,11 @@ int main() {
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> تسرد تركيبات الحقائق ونتيجة كل تركيب؛ إذا حصل الصف نفسه على نتيجتين أو بقي صف بلا نتيجة يظهر الغموض قبل تحويله إلى if.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+في تطبيق أكبر اجعل parsing يحول النص إلى type موثوق، وvalidation يثبت قواعد الشكل، وdomain service يقرر الأهلية. لا تكرر Boolean facts بين controller وواجهة وقاعدة بيانات؛ اجعل القرار في موضع واحد واختبره بجدول حالات.
+
+### جرّب بنفسك
+
+استخرج القرار إلى دالة نقية وتأكد أن واجهتين تستخدمان العقد نفسه.

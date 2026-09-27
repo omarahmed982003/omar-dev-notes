@@ -1,17 +1,30 @@
 ---
-title: Math, Logic & Problem Solving
-description: Programming math, Boolean logic, computational thinking, algorithms, flowcharts, loops, and debugging.
+title: "Math and problem solving"
+description: "Start with the arithmetic and logic a problem needs, then describe and trace a solution. Compare algorithms and explore applied mathematics after that."
+sidebar:
+  order: 0
 ---
 
-This section begins with the mathematics used in programs, then covers variables, logic, requirements analysis, pseudocode, decision trees, flowcharts, loops, and debugging. Practical examples connect each mathematical rule to a concrete algorithm step.
+Start with the arithmetic and logic a problem needs, then describe and trace a solution. Compare algorithms and explore applied mathematics after that.
 
-1. [Remainders, ratios, averages, and powers](./01-arithmetic-foundations/)
-2. [Variables, equations, and Boolean logic](./02-variables-equations-logic/)
-3. [Measurement, graphs, and prime numbers](./03-applied-math-graphs-primes/)
-4. [Computational thinking and requirements analysis](./04-computational-thinking/)
-5. [Algorithms, pseudocode, and decision trees](./05-algorithms-pseudocode-decision-trees/)
-6. [Flowcharts, loops, and debugging](./06-flowcharts-loops-debugging/)
+## Compare and explore
 
-## How to study this section
 
-Do not only read the result. Trace values by hand, then test below, at, and above each boundary. Draw the decision path before code and test one valid, one invalid, and one equality case for every rule.
+The later sections on growth rates, graph traversal, and dynamic programming build on lists, loops, and functions. Work through their traces after programming practice; they are not prerequisites for writing your first program.
+
+## Follow the sequence and practice each step
+
+- [Ratios, averages, and powers](/en/programming-basics/math-problem-solving/01-arithmetic-foundations/)
+- [Division, remainders, and numerical precision](/en/programming-basics/math-problem-solving/07-division-and-precision/)
+- [Variables, equations, and Boolean logic](/en/programming-basics/math-problem-solving/02-variables-equations-logic/)
+- [Sets, relations, and function inputs](/en/programming-basics/math-problem-solving/08-sets-relations/)
+- [Computational thinking and requirements analysis](/en/programming-basics/math-problem-solving/04-computational-thinking/)
+- [Algorithms, pseudocode, and decision trees](/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/)
+- [Flowcharts, loops, and debugging](/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/)
+- [Comparing algorithms and data structures](/en/programming-basics/08-problem-solving-algorithms/)
+- [Why does a loop work and stop?](/en/programming-basics/math-problem-solving/13-loop-reasoning/)
+- [Turn solution patterns into steps](/en/programming-basics/math-problem-solving/09-solution-patterns/)
+- [Choose between greedy steps and saved results](/en/programming-basics/math-problem-solving/10-greedy-dynamic-programming/)
+- [Measurement, units, and prime numbers](/en/programming-basics/math-problem-solving/03-applied-math-graphs-primes/)
+- [Sequences, counting, and probability](/en/programming-basics/math-problem-solving/11-counting-probability/)
+- [Draw relationships and search for a path](/en/programming-basics/math-problem-solving/12-graphs-and-search/)

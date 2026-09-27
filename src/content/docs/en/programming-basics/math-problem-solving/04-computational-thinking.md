@@ -2,7 +2,29 @@
 title: "Computational thinking and requirements analysis"
 description: "Computational thinking is a disciplined way to turn an unclear problem into components, rules, and steps that can be implemented and tested."
 tableOfContents: true
+prev: {"link":"/en/programming-basics/math-problem-solving/08-sets-relations/","label":"Sets, relations, and function inputs"}
+next: {"link":"/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/","label":"Algorithms, pseudocode, and decision trees"}
+sidebar:
+  order: 5
 ---
+
+Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+
+
+## Turn one requirement into tests
+
+ATM rule: “Allow a positive multiple of 50 no greater than the balance.” Assume a balance of 200 and no fees. **Constraints** are input limits.
+
+| Input | Expected | Rule exercised |
+|---|---|---|
+| 150 | Accept; 50 left | Normal case |
+| 200 | Accept; 0 left | Exact upper boundary |
+| 250 | Reject | Exceeds balance |
+| 0 or −50 | Reject | Must be positive |
+| 75 | Reject | Not a multiple of 50 |
+| Nonnumeric text | Reject before arithmetic | Input type |
+
+Separate reading, validation, then deduction/display. Rejection preserves balance. **Try:** adding a fixed fee of 10 makes withdrawal 200 invalid because total cost is 210. Update tests when the requirement changes.
 
 ## Overview
 
@@ -18,7 +40,7 @@ Computational thinking is a disciplined way to turn an unclear problem into comp
 
 ## Worked example
 
-For an ATM: separate card validation, PIN checking, operation selection, balance and daily-limit checks, withdrawal, balance update, and receipt generation.
+For an ATM (Automated Teller Machine): separate card validation, PIN (Personal Identification Number, a secret numeric authentication code) checking, operation selection, balance and daily-limit checks, withdrawal, balance update, and receipt generation.
 
 ## Corrections and common mistakes
 
@@ -27,7 +49,7 @@ For an ATM: separate card validation, PIN checking, operation selection, balance
 
 <div class="lesson-diagram" role="img" aria-label="Computational thinking from problem to testable solution">
 <p class="lesson-diagram-title">Computational thinking from problem to testable solution</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node input"><span>Requirements</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Decompose</span></div>
@@ -42,13 +64,11 @@ For an ATM: separate card validation, PIN checking, operation selection, balance
 </div>
 </div>
 
-## Complexity, solution patterns, and test design
+## Make a small requirement testable
 
-Best, average, and worst cases may perform different amounts of work. Time complexity tracks operation growth; space complexity tracks additional memory. A hash set may spend memory to reduce repeated searches.
+For our shopping list, “accept a quantity” is vague. Specify a whole number from 1 through 100. Split the work into reading text, rejecting an empty field, converting to a number, checking the bounds, and only then adding. Test 0, 1, 100, 101, and 2.5: only 1 and 100 pass. Separating these responsibilities makes the first failing step visible.
 
-Common patterns include brute force, simulation, frequency maps, prefix sums, two pointers, and greedy choice. Each depends on constraints and correctness reasoning rather than its name alone.
-
-Tests should cover equivalence classes, boundaries, empty and single-element input, duplicates, large values, invalid data, and overflow. Write the expected result independently before comparing program output.
+For comparisons of running cost and reusable solution patterns, continue later to [algorithm comparison](/en/programming-basics/08-problem-solving-algorithms/). Here the outcome is a clear problem statement and independently predicted tests.
 
 ## Check your understanding
 
@@ -70,7 +90,3 @@ Tests should cover equivalence classes, boundaries, empty and single-element inp
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Validate card/PIN, select amount, check balance and limit, dispense, update, and receipt. Test an amount exactly equal to balance or daily limit.</div></details>
 </section>
 </div>
-
-## Summary
-
-Connect the idea to its inputs and outcomes, then test normal, boundary, and invalid cases. Explanation and application matter more than memorized wording.

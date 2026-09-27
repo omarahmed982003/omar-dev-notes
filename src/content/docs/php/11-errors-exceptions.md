@@ -5,6 +5,41 @@ sidebar:
   order: 11
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
+## الخطأ مش كله نوع واحد
+
+فيه فرق بين Bug في الكود، ومدخل مستخدم غير صالح، وفشل خدمة خارجية، وحالة عمل متوقعة زي «الرصيد غير كافٍ». لو عاملنا كل الحالات بنفس الرسالة أو `try/catch` ضخمة، هنخفي السبب ومش هنعرف نرجع HTTP Status مناسب.
+
+الـException طريقة تقول: «الدالة ماقدرتش تكمل النتيجة الطبيعية». لما يحصل `throw`، التنفيذ يخرج من المسار الحالي ويدور على `catch` مناسب. لو مفيش، يوصل لحد التطبيق العام Global Boundary.
+
+```php
+function withdraw(int $balanceCents, int $amountCents): int
+{
+    if ($amountCents <= 0) {
+        throw new InvalidArgumentException('Amount must be positive');
+    }
+
+    if ($amountCents > $balanceCents) {
+        throw new DomainException('Insufficient funds');
+    }
+
+    return $balanceCents - $amountCents;
+}
+```
+
+ما تعملش Catch لمجرد إنك ترجع `null` وتنسى المشكلة. امسك الاستثناء في الطبقة اللي تعرف تضيف قرارًا: تعيد محاولة آمنة، تحول خطأ المجال إلى Response، أو تسجل التفاصيل وترجع رسالة عامة. واستخدم `finally` لتنظيف مورد لازم يتقفل سواء العملية نجحت أو فشلت.
+
 ## Error أم Exception؟
 
 كل من `Exception` و`Error` يطبقان `Throwable`. الاستثناء يمثل غالبًا فشلًا متوقعًا في العملية، بينما `Error` يشمل أخطاء لغة/نوع وتشغيل لا ينبغي تحويلها كلها إلى “نجاح”.
@@ -82,40 +117,38 @@ set_exception_handler(function (Throwable $e): void {
 - لا تسجل password أو token أو body كاملًا بلا تنقية.
 - أعد المحاولة فقط للأخطاء المؤقتة وبعملية idempotent.
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الأخطاء والاستثناءات">
-<p class="lesson-diagram-title">خريطة مفاهيم: الأخطاء والاستثناءات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Error أم Exception؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>استثناءات المجال</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Error reporting</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Global boundary</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>قواعد</span></div>
-</div>
-</div>
+<details><summary>1. إمتى ترمي DomainException؟</summary><p>لما الطلب صالح تقنيًا لكن مرفوض حسب قواعد المجال، زي سحب أكبر من الرصيد. مدخل بنوع أوصيغة غير صحيحة يناسبه InvalidArgumentException عند هذا الحد.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. إيه مشكلة <code>catch (Throwable) { return null; }</code>؟</summary><p>بيخفي Bugs وفشل البنية ويخلطهم مع «لا توجد نتيجة». عالج الحالات المعروفة، وسيب الحد العام يسجل غير المتوقع ويرجّع استجابة آمنة.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «Error أم Exception؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> كل من Exception وError يطبقان Throwable. الاستثناء يمثل غالبًا فشلًا متوقعًا في العملية، بينما Error يشمل أخطاء لغة/نوع وتشغيل لا ينبغي تحويلها كلها إلى “نجاح”. finally ينفذ سواء نجح المسار أو رُمي exception، لذلك يناسب تحرير resource. لا تستخدم catch فارغًا. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «Error أم Exception؟» و«استثناءات المجال». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الأخطاء والاستثناءات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «Error أم Exception؟»: كل من Exception وError يطبقان Throwable. الاستثناء يمثل غالبًا فشلًا متوقعًا في العملية، بينما Error يشمل أخطاء لغة/نوع وتشغيل لا ينبغي تحويلها كلها إلى “نجاح”. finally ينفذ سواء نجح المسار أو رُمي exception، لذلك يناسب تحرير resource. لا تستخدم catch فارغًا. أما «استثناءات المجال»: اجعل النوع يحمل معنى يمكن للطبقة العليا ترجمته إلى 409 أو رسالة مناسبة. لا تستخدم نص الرسالة لاتخاذ قرار برمجي. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Error reporting». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في التطوير: في الإنتاج: إظهار stack trace للمستخدم قد يكشف paths وأسرارًا وSQL. أعطِ المستخدم رسالة عامة وrequest ID، وسجّل التفاصيل في قناة محمية. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Global boundary» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الـhandler شبكة أمان، وليس بديلًا عن معالجة الفشل المتوقع قرب سياقه. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. فين تستخدم finally؟</summary><p>لتنظيف لازم يحصل في النجاح والفشل، زي قفل ملف أوإرجاع Resource، بشرط ألا يخفي Exception الأصلية.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>أين تمسك Exception؟</summary><p>في طبقة تستطيع اتخاذ قرار مفيد: التعافي أو التحويل إلى نتيجة مناسبة أو التسجيل ثم الإنهاء عند boundary.</p></details>
+
+<details><summary>لماذا لا نعرض stack trace للمستخدم؟</summary><p>قد يكشف مسارات وأسرارًا وتفاصيل داخلية؛ أعطِ المستخدم رسالة آمنة وسجّل التفاصيل داخليًا.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php error-lab.php
+~~~
+
+**معيار النجاح:** الحالة المتوقعة تُحوّل إلى نتيجة مجال واضحة، والخطأ غير المتوقع يصل إلى المعالج المركزي مرة واحدة مع correlation ID ولا يُبتلع.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+<code>Throwable</code> يجمع Error وException، وfinally ينفذ للتنظيف حتى مع return أو throw. حوّل warnings إلى exceptions فقط عند boundary تفهم عقده. في worker طويل العمر يجب أن يمنع المعالج سقوط العملية أو تلوث الرسالة التالية حسب السياسة، مع logging مرة واحدة.
+
+### جرّب بنفسك
+
+اختبر success وdomain failure وunexpected error وتأكد من cleanup.

@@ -5,6 +5,41 @@ sidebar:
   order: 5
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Loop:** A structure that repeats instructions according to a condition.
+
+
+## How does a program choose a path?
+
+So far, instructions could run in sequence. Real programs choose and repeat: show an account only when a user is authenticated, calculate a discount only when its rule is satisfied, and process every item in a list.
+
+This is **control flow**. A condition selects a branch; a loop repeats a block. Before writing an `if`, express the business rule as a true/false question. Condition order matters: if a grade check begins with `$score >= 50`, a score of 95 enters that broad branch before reaching the A rule.
+
+```php
+$score = 75;
+
+if ($score < 0 || $score > 100) {
+    $grade = 'invalid';
+} elseif ($score >= 90) {
+    $grade = 'A';
+} elseif ($score >= 75) {
+    $grade = 'B';
+} elseif ($score >= 50) {
+    $grade = 'C';
+} else {
+    $grade = 'F';
+}
+```
+
+Test exact boundaries such as 49, 50, 74, 75, 89, and 90. For every loop, identify the initial state, continuation condition, and update that moves toward termination. Missing one of them commonly creates an infinite loop.
+
+## `if`, `elseif`, and `else`
+
 ```php
 if ($score >= 90) {
     $grade = 'A';
@@ -78,40 +113,38 @@ unset($price);
 
 Always unset a reference variable after a by-reference `foreach`. Use `continue` to skip an iteration, `break` to leave a loop, and `break 2` for two nested levels.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Conditions and loops">
-<p class="lesson-diagram-title">Concept map: Conditions and loops</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Alternative if: </span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>switch historically uses loose comparison and falls through</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>match returns a value, compares strictly, has no</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>A while body may never run; do-while runs</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Always unset a reference variable after a by-reference</span></div>
-</div>
-</div>
+<details><summary>1. Predict grades at 49, 50, 75, and 90</summary><p>Trace branches from top to bottom. The boundaries should produce F, C, B, and A. A different result usually means branch order or a comparison boundary is wrong.</p></details>
 
-## Check your understanding
+<details><summary>2. Find the infinite loop</summary><p><code>$i = 0; while ($i &lt; 3) { echo $i; }</code> never updates <code>$i</code>. Add <code>$i++</code> and predict output before running it.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Alternative if: ” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Alternative if: ... endif; syntax is useful in templates. ?? checks existence/non-null like isset; the nullsafe operator is ?-&gt;. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Alternative if: ” with “switch historically uses loose comparison and falls through”. Why does neither replace the other in “Conditions and loops”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Alternative if: ”: Alternative if: ... endif; syntax is useful in templates. ?? checks existence/non-null like isset; the nullsafe operator is ?-&gt;. For “switch historically uses loose comparison and falls through”: switch historically uses loose comparison and falls through without break. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “match returns a value, compares strictly, has no”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> match returns a value, compares strictly, has no fall-through, and throws UnhandledMatchError when no arm/default matches. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “A while body may never run; do-while runs” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A while body may never run; do-while runs once before checking. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Choose switch or match</summary><p>Use <code>match</code> when you need a returned value, strict comparison, and no fall-through. Use <code>switch</code> deliberately in legacy code or multi-statement case flows.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>When is <code>match</code> preferable to <code>switch</code>?</summary><p>When you want strict comparison, an expression result, and no accidental fall-through.</p></details>
+
+<details><summary>How does a <code>while</code> loop become infinite?</summary><p>The condition-driving state never changes or no exit path is reached; verify progress on every iteration.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php control-flow-lab.php
+~~~
+
+**Success criterion:** Cases cover the minimum, below minimum, maximum, and above maximum, and each input reaches exactly one intended branch.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+<code>break</code> exits the current loop and <code>continue</code> advances to the next iteration; levels in nested loops require care. Alternative syntax can help templates. Every while loop needs a bound or provable progress, with zero-iteration and final-boundary tests.
+
+### Try it yourself
+
+Write a loop and test zero/one/many cases plus a guard against infinite execution.

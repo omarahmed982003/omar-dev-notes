@@ -1,9 +1,50 @@
 ---
-title: 8. كيف يعرض المتصفح الصفحة؟
+title: "كيف يعرض المتصفح الصفحة؟"
 description: Navigation وDOM وCSSOM وRender Tree وتنفيذ JavaScript واستخدام DevTools لفهم الأداء.
 sidebar:
-  order: 9
+  order: 18
+prev: {"link":"/programming-basics/23-tls-handshake-details/","label":"كيف يتفق الطرفان على اتصال مشفّر؟"}
+next: {"link":"/programming-basics/29-browser-scheduling/","label":"تحميل البرامج وترتيب مهام المتصفح"}
 ---
+
+
+## غيّر حجم نص وقِس عرضه
+
+احفظ المثال باسم `render.html`، أو [شغّله](/examples/first-program/render.html). **CSS** قواعد شكل الصفحة؛ `font-size` حجم الخط، و`px` وحدة بكسل CSS وليست وعدًا بنقطة مادية واحدة في كل شاشة. `span` جزء نص، و`style` يحدد شكله. الدالة `getBoundingClientRect()` تقرأ صندوق العنصر بعد التخطيط، و`width` عرضه.
+
+```html
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Measure a visible change</title>
+<p><span id="sample" style="font-size:16px;display:inline-block">Hello</span></p>
+<button id="grow">Grow text</button>
+<p id="output"></p>
+<script>
+function measure() {
+  const width = document.querySelector("#sample").getBoundingClientRect().width;
+  document.querySelector("#output").textContent = "Width: " + width + " CSS pixels";
+}
+function grow() {
+  document.querySelector("#sample").style.fontSize = "32px";
+  measure();
+}
+document.querySelector("#grow").addEventListener("click", grow);
+measure();
+</script>
+</html>
+```
+
+سجّل العرض الأول ثم اضغط الزر: النص يكبر من16 إلى32، والعرض المقاس يزيد. القيمة الدقيقة تعتمد على الخط والمتصفح، فلا نحفظ رقمًا ثابتًا. **DOM** تمثيل عناصر الصفحة، و**Layout — تخطيط** حساب مواضعها وأحجامها، و**Paint — رسم** تجهيز شكلها. تغيير الحجم يحتاج حسابًا جديدًا؛ مجرد تغيير لون لا يطلب نفس تغيّر الحجم.
+
+## قبل التفاصيل
+
+وصول ملف الصفحة مش نهاية الرحلة. **HTML، Hypertext Markup Language** يصف العناصر، زي عنوان وفقرة. **CSS، Cascading Style Sheets** يصف شكلها، زي اللون والحجم. **JavaScript (لغة برمجة تستخدم مثلًا لتنفيذ تفاعل الصفحة داخل المتصفح)** لغة تضيف حسابًا وتفاعلًا. هنشوف المتصفح يحوّل المحتوى والشكل لصورة على الشاشة، ونحدد سبب التأخير بدل تخمينه.
+
+**DOM، Document Object Model** تمثيل العناصر كشجرة: صفحة تحتوي عنوانًا وفقرات. **CSSOM، CSS Object Model** تمثيل قواعد التنسيق بعد قراءتها. **Pixel — بكسل** نقطة لون صغيرة على الشاشة، و**Render tree — شجرة العرض** المعلومات التي يحتاجها المتصفح لترتيب العناصر التي سيعرضها.
+
+في الرسم، decode يعني قراءة البايتات بحسب ترميز النص، وtokens أجزاء ذات معنى مثل بداية وسم، وparse تحليل هذه الأجزاء لبناء تمثيل منظم. الأسهم ترتيب تعليمي للمسؤوليات؛ المتصفح ممكن يعيد بعض الخطوات عندما تتغير الصفحة.
 
 ## من الاستجابة إلى Pixels
 
@@ -21,65 +62,36 @@ DOM + CSSOM -> Render Tree -> Layout -> Paint -> Composite
 
 CSS اللازمة للعرض قد تؤخر الرسم، وJavaScript التقليدية قد توقف تحليل HTML حتى تُحمّل وتنفّذ.
 
-## JavaScript والتحميل
-
-```html
-<script src="/app.js" defer></script>
-<script type="module" src="/main.js"></script>
-```
-
-`defer` يسمح باستمرار parsing وينفذ بعد اكتمال DOM وبالترتيب. الـmodules مؤجلة افتراضيًا ولها dependency graph. أما `async` فينفذ عند اكتمال التحميل دون ضمان ترتيب.
-
-تغيير layout بصورة متكررة داخل loop قد يسبب layout thrashing. اجمع القراءات ثم الكتابات، وحرّك العناصر غالبًا عبر `transform` عندما يناسب.
-
-## دورة حدث مبسطة
-
-JavaScript يعمل عادة على main thread مع event loop. المهام الطويلة تؤخر input والرسم. قس Largest Contentful Paint وInteraction to Next Paint وCumulative Layout Shift.
-
 ## DevTools
 
-1. افتح **Network** وفعّل Disable cache أثناء التجربة.
-2. راقب DNS وConnection وTLS وWaiting/TTFB وDownload.
-3. افحص headers والحجم المنقول ونوع البروتوكول.
+1. افتح **Network** وفعّل Disable cache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب) أثناء التجربة.
+2. راقب DNS (Domain Name System؛ نظام يجيب عن أسئلة أسماء النطاقات، ومنها عناوينها) وConnection وTLS (Transport Layer Security؛ قواعد حماية الاتصال بالتشفير والتحقق) وWaiting/TTFB (Time To First Byte؛ مدة الانتظار حتى وصول أول بايت من الرد بحسب أداة القياس) وDownload.
+3. افحص headers (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة) والحجم المنقول ونوع البروتوكول.
 4. استخدم **Performance** لتحديد long tasks وlayout وpaint.
 5. استخدم **Elements** لرؤية DOM والـcomputed styles.
 
 :::tip
-TTFB مرتفع قد يكون شبكة أو CDN أو PHP أو Database. اربط Network trace مع server logs وprofiling قبل تحديد السبب.
+TTFB مرتفع قد يكون شبكة أو CDN (Content Delivery Network؛ شبكة خوادم تقدم المحتوى من نقاط موزعة قرب المستخدمين) أو PHP (اسم لغة برمجة تستخدم كثيرًا لمعالجة طلبات الويب على الخادم) أو Database (قاعدة بيانات: تخزين منظم يمكن البحث فيه وتعديله بقواعد). اربط Network trace مع server logs (سجلات أحداث وتشخيص يكتبها البرنامج) وprofiling قبل تحديد السبب.
 :::
 
-## خريطة الدرس
+## مسائل عملية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: كيف يعرض المتصفح الصفحة؟">
-<p class="lesson-diagram-title">خريطة مفاهيم: كيف يعرض المتصفح الصفحة؟</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>من الاستجابة إلى Pixels</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>JavaScript والتحميل</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>دورة حدث مبسطة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>DevTools</span></div>
-</div>
-</div>
+<details><summary>لماذا قد تظهر الصفحة بلا تنسيق لحظة؟</summary><p>قد يصل HTML قبل CSS أو يتأخر stylesheet؛ يستطيع المتصفح بناء DOM لكنه يحتاج CSSOM لتنسيق الرسم.</p></details>
 
-## تأكد من فهمك
+<details><summary>أين تبحث عن ملف JavaScript أعاد 404؟</summary><p>ابدأ من Network لمعرفة URL (Uniform Resource Locator؛ عنوان يحدد موردًا وطريقة الوصول إليه) والحالة والمبادر، ثم Console لرؤية أثر فشل التحميل.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «من الاستجابة إلى Pixels» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> DOM: شجرة العناصر والمحتوى. CSSOM: القواعد المحللة التي تحدد الشكل. Layout: حساب الأحجام والمواقع. Paint: رسم النصوص والألوان والحدود. Composite: تركيب الطبقات لإظهار الإطار النهائي. CSS اللازمة للعرض قد تؤخر الرسم، وJavaScript التقليدية قد توقف تحليل HTML حتى تُحمّل وتنفّذ. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «من الاستجابة إلى Pixels» و«JavaScript والتحميل». لماذا لا يغني أحدهما عن الآخر داخل موضوع «كيف يعرض المتصفح الصفحة؟»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «من الاستجابة إلى Pixels»: DOM: شجرة العناصر والمحتوى. CSSOM: القواعد المحللة التي تحدد الشكل. Layout: حساب الأحجام والمواقع. Paint: رسم النصوص والألوان والحدود. Composite: تركيب الطبقات لإظهار الإطار النهائي. CSS اللازمة للعرض قد تؤخر الرسم، وJavaScript التقليدية قد توقف تحليل HTML حتى تُحمّل وتنفّذ. أما «JavaScript والتحميل»: defer يسمح باستمرار parsing وينفذ بعد اكتمال DOM وبالترتيب. الـmodules مؤجلة افتراضيًا ولها dependency graph. أما async فينفذ عند اكتمال التحميل دون ضمان ترتيب. تغيير layout بصورة متكررة داخل loop قد يسبب layout thrashing. اجمع القراءات ثم الكتابات، وحرّك العناصر غالبًا عبر transform عندما يناسب. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «دورة حدث مبسطة». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> JavaScript يعمل عادة على main thread مع event loop. المهام الطويلة تؤخر input والرسم. قس Largest Contentful Paint وInteraction to Next Paint وCumulative Layout Shift. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «DevTools» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> افتح Network وفعّل Disable cache أثناء التجربة. راقب DNS وConnection وTLS وWaiting/TTFB وDownload. افحص headers والحجم المنقول ونوع البروتوكول. استخدم Performance لتحديد long tasks وlayout وpaint. استخدم Elements لرؤية DOM والـcomputed styles. :::tip TTFB مرتفع قد يكون شبكة أو CDN أو PHP أو Database. اربط Network trace مع server logs وprofiling قبل تحديد السبب. ::: وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>هل <code>DOMContentLoaded</code> يعني أن كل الصور اكتملت؟</summary><p>لا. يعني أن HTML حُلّل وأن DOM جاهز؛ قد تظل الصور وموارد أخرى قيد التحميل.</p></details>
+
+## قِس ما يشعر به المستخدم
+
+**LCP، Largest Contentful Paint** وقت ظهور أكبر عنصر محتوى مناسب للقياس في الجزء المرئي. **INP، Interaction to Next Paint** يقيس تأخر الاستجابة المرئية لتفاعلات المستخدم خلال الزيارة. **CLS، Cumulative Layout Shift** يقيس مقدار تحرك العناصر بشكل غير متوقع. دي مقاييس مختلفة؛ تحميل سريع لا يمنع زرًا بطيئًا أو نصًا يقفز مكانه.
+
+**Main thread — خيط العمل الرئيسي** ينفذ كثيرًا من عمل الصفحة. **Event loop — دورة الأحداث** تنظم تنفيذ المهام. **Microtasks — مهام صغيرة مؤجلة** تُنفذ عند نقاط محددة بعد انتهاء التنفيذ الحالي وقبل فرصة العرض التالية؛ سلسلة لا تنتهي منها قد تؤخر الواجهة. مش لازم يحدث رسم بعد كل مهمة.
+
+**Layout thrashing** تكرار قراءة مواقع العناصر وتغييرها بشكل يجبر المتصفح على إعادة الحساب كثيرًا. اجمع القراءات ثم التغييرات عندما يناسب. **Accessibility — إتاحة الاستخدام** تشمل إمكانية قراءة المحتوى واستخدامه بلوحة المفاتيح وأدوات المساعدة.
+
+**تدريب وحل:** أكبر صورة تتأخر بينما HTML وصل بسرعة. افحص وقت بدء طلبها، حجمها، وأي كود يؤخر إظهارها. غيّر عاملًا واحدًا وقارن عدة تحميلات بنفس ظروف الشبكة. تحسن زمن الخادم وحده لا يثبت تحسن ظهور الصورة.
+
+## الخطوة التالية
+
+كمّل في [تحميل البرامج وترتيب مهام المتصفح](/programming-basics/29-browser-scheduling/) بعد تنفيذ التجربة هنا.

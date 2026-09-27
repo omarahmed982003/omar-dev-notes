@@ -5,6 +5,24 @@ sidebar:
   order: 2
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **DNS:** The service that translates a site name into a numeric network address.
+- **IP:** A numeric address that identifies a device or network interface.
+- **URL:** The complete address of a resource such as a page or API endpoint.
+- **TLS:** An encryption layer that protects data while it moves between two parties.
+- **API:** A defined interface through which one program requests data or actions from another.
+- **Token:** A value representing identity or permission without resending a password.
+- **Worker:** A background process that takes jobs from a queue and runs them.
+
+
+- **Log:** A timestamped record of an application event.
+
 # From cURL to a reliable HTTP client
 
 The cURL project produces the `curl` command-line tool and the `libcurl` transfer library. PHP's `ext-curl` binds PHP to libcurl. It is an outbound client, not a web server or a socket server.
@@ -107,40 +125,28 @@ PSR-7 models HTTP messages and PSR-18 defines a client interface. Depending on a
 - Limit response sizes and stream large bodies.
 - Use `curl_multi_*` or a client pool for bounded concurrency, never unbounded fan-out.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: cURL and HTTP clients">
-<p class="lesson-diagram-title">Concept map: cURL and HTTP clients</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>A complete request</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Sending JSON</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>TLS, redirects, and SSRF</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Guzzle and standards</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Production rules</span></div>
-</div>
-</div>
+<details><summary>What boundaries does an HTTP client need?</summary><p>Connection and total timeouts, size and redirect limits, TLS verification, and retries only for safe operations.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “A complete request” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Keep three failure classes separate: transport failure, non-successful HTTP response, and invalid response content. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “A complete request” with “Sending JSON”. Why does neither replace the other in “cURL and HTTP clients”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “A complete request”: Keep three failure classes separate: transport failure, non-successful HTTP response, and invalid response content. For “Sending JSON”: Never log authorization headers, cookies, or sensitive bodies. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “TLS, redirects, and SSRF”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Never disable peer or hostname verification in production. Repair the CA trust configuration instead. Redirects can move a request to a different destination, so set a maximum and validate destinations. Do not accept an arbitrary user-controlled URL in server-side fetching. Validate scheme and host and block internal, loopback, and metadata endpoints as required by the environment. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Guzzle and standards” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Guzzle offers middleware, promises, and pooling. It is not permanently tied to cURL; its handler can use cURL or PHP streams. PSR-7 models HTTP messages and PSR-18 defines a client interface. Depending on an interface improves replacement and testing. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php http-client-lab.php
+~~~
+
+**Success criterion:** The lab prints <code>status=200</code> for success and <code>timeout_handled=yes</code> for a slow server, and it never treats 500 as success.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Separate connect, TLS/read, and total timeouts and propagate cancellation deadlines. Before fetching a user-supplied URL, prevent SSRF with scheme, host, DNS/IP policy, redirect controls, and re-resolution. Record attempts, latency, and status without tokens or sensitive bodies.
+
+### Try it yourself
+
+Test a URL redirecting to a private IP and a server that connects but never sends a body.

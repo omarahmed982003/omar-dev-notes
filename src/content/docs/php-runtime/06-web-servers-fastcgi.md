@@ -5,6 +5,26 @@ sidebar:
   order: 6
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
+- **TCP:** طريقة نقل بتتأكد إن البيانات وصلت كاملة وبالترتيب.
+- **TLS:** طبقة تشفير بتحمي البيانات وهي ماشية بين طرفين.
+- **Proxy:** وسيط يستقبل الطلب ويمرره لجهة أخرى حسب قواعد محددة.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+
+
+- **PHP-FPM:** مدير عمليات يشغّل عمال PHP لصالح خادم الويب.
+- **FastCGI:** طريقة اتصال يرسل بها خادم الويب طلب التنفيذ إلى PHP-FPM.
+- **Nginx:** خادم ويب يقدم الملفات أو يمرر طلبات PHP.
+
 # أين ينتهي خادم الويب وتبدأ PHP؟
 
 خادم الويب يستقبل HTTP/TLS، يقدّم الملفات الثابتة، يطبق routing وحدود الطلب، ويرسل ملفات PHP إلى runtime. PHP-FPM ينفذ PHP؛ لا تجعل كل طلب، بما فيه الصور وCSS، يمر عبر التطبيق بلا داعٍ.
@@ -109,40 +129,28 @@ fastcgi_pass 127.0.0.1:9000;
 
 اجعل timeouts متناسقة: مهلة upstream في خادم الويب يجب ألا تخفي عملية PHP عالقة بلا حد، و`request_terminate_timeout` في FPM يجب أن يعكس SLA وطبيعة endpoint.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Apache وNginx وFastCGI">
-<p class="lesson-diagram-title">خريطة مفاهيم: Apache وNginx وFastCGI</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>تصحيح مقارنة Apache وNginx</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Apache</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Nginx مع PHP-FPM</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Unix socket أم TCP؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>معاملات FastCGI</span></div>
-</div>
-</div>
+<details><summary>ماذا يعني 502 بين Nginx وPHP-FPM؟</summary><p>لم يحصل Nginx على FastCGI response صالح؛ افحص socket والخدمة والمهلة والسجلات قبل كود الصفحة.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «تصحيح مقارنة Apache وNginx» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> قول “Apache process لكل connection” غير دقيق كقاعدة عامة. Apache يستخدم MPM واحدًا: prefork: عمليات بلا threads؛ مناسب لبعض التوافقات القديمة. worker: processes تحتوي threads. event: threaded ويعالج keep-alive بكفاءة أكبر. Nginx يعتمد workers تقود event loop غير متزامنة، فيخدم اتصالات كثيرة بعدد محدود من العمليات. لكن هذا لا يعني أن PHP نفسها تصبح async؛ كل طلب PHP يشغل FPM worker حتى ينتهي. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «تصحيح مقارنة Apache وNginx» و«Apache». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Apache وNginx وFastCGI»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «تصحيح مقارنة Apache وNginx»: قول “Apache process لكل connection” غير دقيق كقاعدة عامة. Apache يستخدم MPM واحدًا: prefork: عمليات بلا threads؛ مناسب لبعض التوافقات القديمة. worker: processes تحتوي threads. event: threaded ويعالج keep-alive بكفاءة أكبر. Nginx يعتمد workers تقود event loop غير متزامنة، فيخدم اتصالات كثيرة بعدد محدود من العمليات. لكن هذا لا يعني أن PHP نفسها تصبح async؛ كل طلب PHP يشغل FPM worker حتى ينتهي. أما «Apache»: يمكن تشغيل PHP تاريخيًا داخل Apache module، لكن فصل Apache عن PHP-FPM عبر FastCGI يعطي عزلًا وإدارة عمليات أوضح. .htaccess يسمح بإعدادات موزعة إذا كان AllowOverride مفعّلًا، لكنه يسبب filesystem checks ويجعل السياسة موزعة. في خادم تتحكم به، ضع القواعد في VirtualHost واضبط AllowOverride None. في shared hosting قد يكون .htaccess هو الخيار المتاح. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Nginx مع PHP-FPM». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> النمط الآمن لتطبيق Front Controller هو تمرير /index.php فقط عندما لا تحتاج تنفيذ ملفات PHP أخرى. يقلل هذا مساحة الخطأ: لا تضع .env أو vendor/ أو uploads القابلة للتنفيذ داخل public root. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Unix socket أم TCP؟» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Unix socket مناسب عندما يكون Nginx وFPM على الجهاز نفسه؛ راجع owner/group/mode. TCP مطلوب عادة عبر containers/hosts منفصلة؛ اربطه بشبكة خاصة وجدار ناري. الفرق الأدائي غالبًا أقل أهمية من صحة الإعداد والمراقبة، فلا تختَر بالشعارات. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+curl -sS -D - http://localhost/index.php -o NUL
+~~~
+
+**معيار النجاح:** ترى status وheaders من التطبيق، بينما يُخدم الملف الساكن بلا تمريره إلى PHP. المسار غير الموجود لا يكشف مسارًا داخليًا.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+حدد من يملك TLS وHTTP/2 والضغط والstatic files. اضبط request buffering وresponse buffering وtimeouts وحدود body حسب endpoint. اربط SCRIPT_FILENAME بمسار موثوق ولا تسمح path info بفتح ملف غير مقصود، وأضف security headers في طبقة واضحة دون تكرار متعارض.
+
+### جرّب بنفسك
+
+اختبر static وPHP وupload كبيرًا ومسارًا غير موجود واقرأ أي طبقة أجابت.

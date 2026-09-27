@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catch one failed read</title>
+<button id="read">Read invalid JSON</button>
+<p id="output"></p>
+<script>
+function readData() {
+  try {
+    const data = JSON.parse("[");
+    document.querySelector("#output").textContent = "Read successfully";
+  } catch (error) {
+    document.querySelector("#output").textContent = "Incomplete data. Try again.";
+  }
+}
+document.querySelector("#read").addEventListener("click", readData);
+</script>
+</html>

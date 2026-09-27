@@ -6,6 +6,19 @@ description: "Input and output are part of program design. Validate extraction, 
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Runtime:** The period when a program is actually running.
+- **Token:** A value representing identity or permission without resending a password.
+- **Loop:** A structure that repeats instructions according to a condition.
+- **Function:** A named, reusable block of code with one defined job.
+
+
 ## Reading input and writing output
 
 Input and output are part of program design. Validate extraction, understand cin versus getline, and distinguish build, runtime, and logic failures.
@@ -42,7 +55,7 @@ int main() {
 
 <div class="lesson-diagram" role="img" aria-label="Concept map: Input, source structure, errors, and the math library">
 <p class="lesson-diagram-title">Concept map: Input, source structure, errors, and the math library</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Input token</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Stream state</span></div>
@@ -128,3 +141,11 @@ Compile errors violate language rules; linker errors leave unresolved or duplica
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The compiler checks types, not runtime values; a negative real input is outside the function domain and produces NaN.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+<code>std::from_chars</code> separates parsing from locale and reports stop position and error without exceptions. Stream exceptions are optional and need a policy. File input adds open failure, EOF, and partial data, while locale can alter decimal parsing.
+
+### Try it yourself
+
+Read the same value through cin, from_chars, and a file and compare failure contracts.

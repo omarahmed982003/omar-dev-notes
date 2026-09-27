@@ -5,6 +5,17 @@ sidebar:
   order: 15
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
+- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
+
+
 ## القياس قبل التحسين
 
 ابدأ بأثر قابل للقياس: Endpoint بطيء، استهلاك CPU مرتفع، Memory Growth أو نسبة أخطاء زادت. لا تستنتج السبب من المتوسط وحده؛ افحص `p50` و`p95` و`p99` وحجم الطلب ومعدل المرور. التحسين بلا Baseline قد ينقل الكلفة إلى قاعدة البيانات أو الذاكرة بدل حلها.
@@ -69,3 +80,27 @@ Browser -> API span
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>ما الفرق بين SLI وSLO؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> SLI هو القياس، وSLO هو الهدف المحدد لهذا القياس خلال نافذة زمنية.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>كيف تحافظ على Trace واحدة بين خدمتين؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> حقن Trace Context في الطلب الصادر واستخراجه في الخدمة المستقبلة، ويفضل عبر Instrumentation موثوقة.</div></details></section>
 </div>
+
+## شغّل وتحقق
+
+العينة الثابتة تنتج p50=10ms وp95=100ms وp99=100ms؛ المتوسط 28ms. القياس الفعلي وتصدير trace تدريب منفصل على الخدمة.
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php profiling-lab.php
+~~~
+
+**هدف تجربة التكامل الموسعة:** قارن p50 وp95 وp99 قبل التغيير وبعده، واربط trace بعملية بطيئة؛ المتوسط وحده لا يحقق شرط القبول.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+أضف instrumentation حقيقيًا لـHTTP وdatabase وqueue وحدد exporter وresource attributes. Histogram يحتاج buckets مناسبة وتفسير quantiles من backend؛ لا تجمع percentiles حسابيًا. اربط تحسين flame graph بتغير SLI لا بمجرد انخفاض دالة واحدة.
+
+### جرّب بنفسك
+
+صدّر trace وmetric لخدمة تجريبية واربط span بارتفاع p95.

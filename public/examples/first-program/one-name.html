@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clean one name</title>
+<label>Name <input id="name" value="  Omar  "></label>
+<button id="clean">Clean</button>
+<p id="output"></p>
+<script>
+function cleanName() {
+  const original = document.querySelector("#name").value;
+  const cleaned = original.trim();
+  document.querySelector("#output").textContent = cleaned;
+}
+document.querySelector("#clean").addEventListener("click", cleanName);
+</script>
+</html>

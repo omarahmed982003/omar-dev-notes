@@ -5,6 +5,17 @@ sidebar:
   order: 22
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Session:** Temporary server-side state used to recognize a user across requests.
+- **Token:** A value representing identity or permission without resending a password.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+
+
 ## The authorization-request problem
 
 A normal authorization request passes through the browser with `client_id`, `redirect_uri`, `scope`, `state`, and possibly sensitive details. Signed or directly pushed requests reduce manipulation and leakage but do not replace PKCE, state, nonce, or exact redirect validation.
@@ -41,3 +52,23 @@ Document contacts, revocation authority, safe commands, evidence sources, commun
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>What does RAR add beyond a broad scope?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Structured transaction details that support more precise consent and policy decisions.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>What follows a leaked refresh token?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Revoke its family or grant, investigate reuse, contain the leak, rotate broader secrets if needed, and hunt suspicious use.</div></details></section>
 </div>
+
+## Threat drill
+
+**Scenario:** An attacker alters authorization parameters in the browser or replays a stolen token during incident response.
+
+**Negative test:** Change a parameter outside the protected request, then revoke a refresh-token family and try to use it again.
+
+**Expected result:** The server rejects parameters not bound to the protected request, detects replay, and revokes the family without issuing a new token.
+
+### Verification source
+
+- [RFC 9126: Pushed Authorization Requests](https://www.rfc-editor.org/rfc/rfc9126.html)
+
+## Connect the ideas
+
+Draw a sequence for browser, client, authorization server, and resource server, identifying parameters protected by PAR/JAR and validations at each party. Validate request-object issuer, audience, time, jti, signature, and replay protection. Run a token-incident tabletop covering detection, containment, revocation, evidence, and postmortem.
+
+### Try it yourself
+
+Replay the same request object and alter an external parameter, proving both replay and conflict are rejected.

@@ -5,6 +5,37 @@ sidebar:
   order: 6
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **API:** A defined interface through which one program requests data or actions from another.
+
+
+## An expression produces a value
+
+An **expression** is code that evaluates to a value. `5`, `$price`, `$price * $quantity`, and `$age >= 18` are all expressions. An operator such as `+`, `*`, `===`, or `&&` defines the operation.
+
+```php
+$priceCents = 1500;
+$quantity = 3;
+$subtotal = $priceCents * $quantity;
+$getsFreeShipping = $subtotal >= 4000;
+```
+
+The challenge is not memorizing symbols; it is understanding operand types, result types, and precedence. Rewrite dense expressions with parentheses and intermediate names:
+
+```php
+$calculated = $a + ($b * $c);
+$isEligible = ($calculated > 10) && $active;
+```
+
+Do not use a long expression as a memory test for precedence. Ask what each operand type is, what type the result should have, and whether division by zero, overflow, floating-point precision, or short-circuit evaluation changes behavior.
+
+## Expressions and precedence
+
 Every PHP expression has a value; assignment itself evaluates to the assigned value.
 
 ```php
@@ -48,40 +79,38 @@ $slug = ' PHP 8.5 Released '
 
 `|>` passes the left value as the single argument to the callable on the right. This syntax does not run on PHP 8.4 or earlier.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Expressions and operators">
-<p class="lesson-diagram-title">Concept map: Expressions and operators</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Pipe operator — PHP 8.5+</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Every PHP expression has a value; assignment itself</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Prefer parentheses over memorising precedence, and normally use</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Arithmetic operators are + - * / %</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Use <code>===</code>/<code>!==</code> when type matters</span></div>
-</div>
-</div>
+<details><summary>1. Predict <code>2 + 3 * 4</code></summary><p>Multiplication has higher precedence, so the result is 14. Write <code>(2 + 3) * 4</code> when the intended result is 20.</p></details>
 
-## Check your understanding
+<details><summary>2. Why is <code>$user !== null && $user->active</code> safe?</summary><p>Short-circuit evaluation skips the second operand when the first is false. A nullsafe access may be clearer depending on the desired result.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Pipe operator — PHP 8.5+” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> |&gt; passes the left value as the single argument to the callable on the right. This syntax does not run on PHP 8.4 or earlier. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Pipe operator — PHP 8.5+” with “Every PHP expression has a value; assignment itself”. Why does neither replace the other in “Expressions and operators”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Pipe operator — PHP 8.5+”: |&gt; passes the left value as the single argument to the callable on the right. This syntax does not run on PHP 8.4 or earlier. For “Every PHP expression has a value; assignment itself”: Every PHP expression has a value; assignment itself evaluates to the assigned value. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Prefer parentheses over memorising precedence, and normally use”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Prefer parentheses over memorising precedence, and normally use &amp;&amp; and ||. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Arithmetic operators are + - * / %” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Arithmetic operators are <code>+ - * / %</code>; assignments include <code>+= -= *= /= %= = .= ??=</code>. Prefix increment changes then returns; postfix returns then changes. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. Correct a string-to-number comparison</summary><p>Validate and convert external input to <code>int</code>, then use <code>===</code> with a value of the same type rather than relying on loose coercion.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>Why use parentheses even when precedence is known?</summary><p>They make intent explicit and protect meaning when code changes.</p></details>
+
+<details><summary>What is risky about <code>==</code> across input types?</summary><p>Coercion can make different values compare equal; prefer <code>===</code> when type matters.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php operators-lab.php
+~~~
+
+**Success criterion:** Each case prints operands, result, and type; tests demonstrate <code>==</code> versus <code>===</code> and <code>??</code> versus truthiness.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+The nullsafe operator stops a chain on null but does not handle exceptions or missing keys. Use parentheses when precedence mixes. The <code>@</code> operator hides symptoms rather than causes and harms observability; inspect return values or exceptions. New operators need a minimum version and compatibility test.
+
+### Try it yourself
+
+Rewrite a complex expression into named steps and compare types and results.

@@ -1,13 +1,42 @@
 ---
-title: 9. HTTP Caching والضغط
+title: "التخزين المؤقت وضغط بيانات الويب"
 description: Freshness وValidation وCache-Control وETag وVary وCDN وضغط gzip وBrotli.
 sidebar:
-  order: 10
+  order: 24
+prev: {"link":"/programming-basics/31-proxy-policies/","label":"توزيع الحمل وسياسات الوسيط"}
+next: {"link":"/programming-basics/11-same-origin-cors/","label":"السماح بقراءة البيانات بين المواقع"}
 ---
+
+
+## ثلاث لحظات لنفس النسخة
+
+**Cache — نسخة محفوظة لإعادة الاستخدام** تقلل طلب البيانات من جديد. في المعمل `/cache` يرد بوسم `ETag: "lesson-v1"`، أي اسم نسخة، و`Cache-Control: public, max-age=2`، أي السماح بالتخزين لمدة صلاحية ثانيتين.
+
+| اللحظة | ما يحدث؟ | النتيجة |
+|---|---|---|
+| أول طلب | لا توجد نسخة |200 مع المحتوى |
+| طلب عادي خلال الصلاحية | المتصفح قد يستخدم النسخة إن كانت سياسته تسمح | لا نحتاج تنزيل الجسم من الخادم |
+| بعد انتهاء الصلاحية | نسأل هل تغير وسم النسخة؟ |304 إذا لم تتغير، فنستخدم الجسم المحفوظ |
+
+جهّز [المعمل](/programming-basics/32-local-network-lab/) ثم نفّذ:
+
+```powershell
+curl.exe -i http://127.0.0.1:8766/cache
+Set-Content -LiteralPath cache-headers.txt -Value 'If-None-Match: "lesson-v1"' -Encoding ascii
+curl.exe -i -H "@cache-headers.txt" http://127.0.0.1:8766/cache
+```
+
+`Set-Content` يكتب رأس الطلب في ملف تدريب، و`-H "@cache-headers.txt"` يقرأه كما هو؛ ده يحافظ على علامات التنصيص في إصدارات PowerShell المختلفة.
+
+الأول200، والثاني304 بلا جسم. `If-None-Match` يرسل وسم النسخة الموجودة لدينا. curl لا يعمل مخزن متصفح هنا؛ الأمر الثاني **يحاكي سؤال التحقق** صراحة. في المتصفح افتح Network واترك Disable cache غير محددة، ولا تعتمد على Refresh وحده كطلب عادي؛ إعادة التحميل قد تفرض تحققًا. بعد ما تشرح التسلسل، اقرأ السياسات والضغط تحت.
+
+## قبل التفاصيل
+
+الـcache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب) يعيد استخدام نتيجة سابقة لتقليل الزمن والعمل. السؤال الآمن ليس «هل نخزن؟» فقط، بل من يستطيع التخزين، وكم المدة، وكيف نتحقق من التغيير.
 
 ## لماذا نخزن الاستجابة؟
 
-الـcache تقلل latency واستهلاك الشبكة والحمل على PHP وقاعدة البيانات. قد توجد نسخ في المتصفح أو proxy/CDN أو التطبيق، ولكل طبقة سياسة مستقلة.
+الـcache تقلل latency (زمن انتظار عملية واحدة) واستهلاك الشبكة والحمل على PHP (اسم لغة برمجة تستخدم كثيرًا لمعالجة طلبات الويب على الخادم) وقاعدة البيانات. قد توجد نسخ في المتصفح أو proxy (وسيط يستقبل اتصالًا أو طلبًا ويمرره لجهة أخرى)/CDN (Content Delivery Network؛ شبكة خوادم تقدم المحتوى من نقاط موزعة قرب المستخدمين) أو التطبيق، ولكل طبقة سياسة مستقلة.
 
 ## Freshness وValidation
 
@@ -17,36 +46,28 @@ ETag: "product-42-v7"
 Vary: Accept-Encoding, Accept-Language
 ```
 
-- `max-age` مدة freshness للعميل.
-- `s-maxage` يمكن أن يخصص shared caches.
+- `max-age` عمر صلاحية النسخة بالثواني؛ يسري على المخازن الخاصة والمشتركة ما لم تخصص سياسة أخرى.
+- `s-maxage` يحدد عمر النسخة في المخازن المشتركة ويتقدم فيها على max-age.
 - `private` يسمح بالتخزين الخاص ولا يسمح عادة لـCDN بالمشاركة.
 - `no-store` يطلب عدم التخزين.
 - `no-cache` لا يعني عدم التخزين؛ يعني إعادة التحقق قبل الاستخدام.
-- `Vary` يجعل مفتاح النسخة يعتمد على headers محددة.
+- `Vary` يجعل مفتاح النسخة يعتمد على headers (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة) محددة.
 
-بعد انتهاء freshness يرسل العميل `If-None-Match`. إذا لم يتغير المورد يعيد الخادم `304 Not Modified` بلا body. ويمكن استخدام `Last-Modified` و`If-Modified-Since` عندما يناسب.
+بعد انتهاء freshness يرسل العميل `If-None-Match`. إذا لم يتغير المورد يعيد الخادم `304 Not Modified` بلا body (جسم الرسالة: المحتوى المرسل مثل نص صفحة أو بيانات طلب). ويمكن استخدام `Last-Modified` و`If-Modified-Since` عندما يناسب.
 
 ## مثال PHP
 
 ```php
-$etag = '"' . hash('sha256', $json) . '"';
-header('Cache-Control: public, max-age=60');
-header("ETag: {$etag}");
-
-if (trim($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
-    http_response_code(304);
-    exit;
-}
-
-header('Content-Type: application/json; charset=utf-8');
-echo $json;
+<?php
+// Save inside the downloadable php-labs folder.
+require __DIR__ . '/http-router.php';
 ```
 
-لا تجعل بيانات مستخدم خاصة `public`، ولا تعتمد على query string عشوائي كسياسة invalidation.
+لا تجعل بيانات مستخدم خاصة `public`، ولا تعتمد على query string (معاملات بعد علامة ? في العنوان، مثل name=Omar) عشوائي كسياسة invalidation.
 
 ## الضغط
 
-gzip وBrotli يقللان الحجم النصي مثل HTML وCSS وJSON. طبّق الضغط غالبًا في Web Server/CDN، ولا تضغط صورًا مضغوطة أصلًا بلا قياس. يجب أن تراعي cache قيمة `Accept-Encoding` عادة عبر `Vary`.
+gzip وBrotli يقللان الحجم النصي مثل HTML (Hypertext Markup Language؛ لغة وصف بنية الصفحة وعناصرها) وCSS (Cascading Style Sheets؛ قواعد مظهر عناصر الصفحة) وJSON (JavaScript Object Notation؛ صيغة نصية لترتيب البيانات في أسماء وقيم وقوائم). طبّق الضغط غالبًا في Web Server (خادم ويب يستقبل طلبات الويب ويعيد ملفات أو يمرر العمل للتطبيق)/CDN، ولا تضغط صورًا مضغوطة أصلًا بلا قياس. يجب أن تراعي cache قيمة `Accept-Encoding` عادة عبر `Vary`.
 
 ## Checklist
 
@@ -60,40 +81,27 @@ gzip وBrotli يقللان الحجم النصي مثل HTML وCSS وJSON. طب�
 
 - [RFC 9111: HTTP Caching](https://www.rfc-editor.org/rfc/rfc9111)
 
-## خريطة الدرس
+## مسائل عملية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: HTTP Caching والضغط">
-<p class="lesson-diagram-title">خريطة مفاهيم: HTTP Caching والضغط</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>لماذا نخزن الاستجابة؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Freshness وValidation</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>مثال PHP</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>الضغط</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Checklist</span></div>
-</div>
-</div>
+<details><summary>لماذا لا نخزن صفحة الحساب في shared cache؟</summary><p>لأنها مخصصة لمستخدم وقد تتسرب لغيره. استخدم سياسة private/no-store المناسبة ولا تجعل CDN يشاركها.</p></details>
 
-## تأكد من فهمك
+<details><summary>ماذا يعني رد <code>304</code>؟</summary><p>أن النسخة المخزنة ما زالت صالحة وفق validator؛ لا يرسل الخادم body كاملًا ويستخدم العميل نسخته.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «لماذا نخزن الاستجابة؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الـcache تقلل latency واستهلاك الشبكة والحمل على PHP وقاعدة البيانات. قد توجد نسخ في المتصفح أو proxy/CDN أو التطبيق، ولكل طبقة سياسة مستقلة. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «لماذا نخزن الاستجابة؟» و«Freshness وValidation». لماذا لا يغني أحدهما عن الآخر داخل موضوع «HTTP Caching والضغط»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «لماذا نخزن الاستجابة؟»: الـcache تقلل latency واستهلاك الشبكة والحمل على PHP وقاعدة البيانات. قد توجد نسخ في المتصفح أو proxy/CDN أو التطبيق، ولكل طبقة سياسة مستقلة. أما «Freshness وValidation»: max-age مدة freshness للعميل. s-maxage يمكن أن يخصص shared caches. private يسمح بالتخزين الخاص ولا يسمح عادة لـCDN بالمشاركة. no-store يطلب عدم التخزين. no-cache لا يعني عدم التخزين؛ يعني إعادة التحقق قبل الاستخدام. Vary يجعل مفتاح النسخة يعتمد على headers محددة. بعد انتهاء freshness يرسل العميل If-None-Match. إذا لم يتغير المورد يعيد الخادم 304 Not Modified بلا body. ويمكن استخدام Last-Modified وIf-Modified-Since… العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «مثال PHP». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تجعل بيانات مستخدم خاصة public، ولا تعتمد على query string عشوائي كسياسة invalidation. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «الضغط» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> gzip وBrotli يقللان الحجم النصي مثل HTML وCSS وJSON. طبّق الضغط غالبًا في Web Server/CDN، ولا تضغط صورًا مضغوطة أصلًا بلا قياس. يجب أن تراعي cache قيمة Accept-Encoding عادة عبر Vary. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>متى نحتاج <code>Vary: Accept-Encoding</code>؟</summary><p>عندما تختلف الاستجابة حسب الترميز مثل gzip أو br، كي لا يعيد cache نسخة لا يستطيع العميل فكها.</p></details>
+
+## نسخة قديمة وقت التحديث أو العطل
+
+**stale — نسخة انتهى عمر استخدامها المباشر** لا يعني أنها تغيرت فعلًا، بل أنها تحتاج سياسة أو تحققًا قبل إعادة استخدامها. **stale-while-revalidate** يسمح ضمن مهلة محددة بإرجاع النسخة القديمة أثناء التحقق من تحديثها. **stale-if-error** يسمح، حسب السياسة والعميل، بنسخة قديمة عند عطل بدل إظهار الخطأ. ما نطبقش ده بلا حدود على قرارات أو بيانات شخصية حساسة.
+
+**Cache key — مفتاح النسخة** يحدد أي طلبات تشترك في الرد المحفوظ. إهمال مدخل يغيّر الرد قد يسبب **Cache poisoning — تلويث التخزين المؤقت**، بحيث تُحفظ نتيجة غير مناسبة ويأخذها آخرون. **Side channel — قناة تسريب جانبية** استنتاج سر من أثر مثل تغير حجم الرد؛ ضغط سر بجوار نص يتحكم فيه مهاجم قد يخلق هذا النوع من المخاطر.
+
+**تدريب وحل:** صفحة أسعار عامة لها نسختان عربية وإنجليزية وضغط مختلف. ميّز اللغة والضغط في سياسة النسخ، مثل Vary المناسب، ولا تشارك صفحة حساب شخصية بين المستخدمين. اختيار no-store للبيانات الحساسة يمنع التخزين المطلوب امتثاله؛ وجود Set-Cookie وحده لا يمنع كل مخزن مشترك تلقائيًا.
+
+## امشِ مع الطلب الشرطي خطوة خطوة
+
+افتح [المختبر المحلي](/php/00-lab-setup/)، وشغّل `php -S 127.0.0.1:8097 http-router.php`، وبعدها `php http-client-lab.php` في طرفية ثانية. اقرأ `http-router.php` و`src/Http.php`: المسار يقبل GET وHEAD فقط، يحسب ETag للتمثيل الحالي، يحلل قائمة وسوم، ويستخدم المقارنة الضعيفة مع If-None-Match. يعني `W/"abc"` ممكن يطابق `"abc"`، والنجمة `*` تطابق موردًا موجودًا. التقسيم عند كل فاصلة غلط لأن الوسم داخل التنصيص ممكن يحتوي فاصلة. تطابق GET/HEAD يرجع 304 بلا body، وHEAD غير المطابق يرجع 200 بالهيدرز بلا body. المثال بيرفض الطرق الأخرى بـ405؛ نقطة كتابة عامة تستخدم 412 عند فشل شرط If-None-Match. الهيدر غير الصحيح يرجع 400 حسب سياسة المثال.
+
+تدريب: ابعت وسمًا مختلفًا، ووسمًا ضعيفًا مطابقًا داخل قائمة، و`*`. المتوقع 200 ثم 304 ثم 304. الوسم يخص التمثيل المختار فعلًا؛ لو الضغط أو اللغة غيروا البايتات، اضبط استراتيجية النسخ وهيدرز Vary المناسبة.
+
+
+[RFC 9110, If-None-Match](https://httpwg.org/specs/rfc9110.html#field.if-none-match)

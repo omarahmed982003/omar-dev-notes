@@ -1,74 +1,40 @@
 ---
-title: 8. الطرفية والملفات والصلاحيات والبيئة
-description: Shell والمسارات والملفات والصلاحيات ومتغيرات البيئة وPipes وExit Codes والعمل الآمن من الطرفية.
+title: "جهّز مجلد أول برنامج ومحرره"
+description: "هتجهز مكانًا معلومًا للكود وطريقة واضحة لفتحه. كل المطلوب المفكرة والمتصفح الموجودان؛ التطبيق هنا على Windows."
 sidebar:
-  order: 8
+  order: 14
+prev: {"link":"/programming-basics/computer-fundamentals/03-binary-languages-algorithms/","label":"من فكرة إلى خطوات ثم برنامج"}
+next: {"link":"/programming-basics/computer-fundamentals/08-first-program/","label":"اكتب أول برنامج واحفظه وشغّله"}
 ---
 
-## Terminal وShell
+هتجهز مكانًا معلومًا للكود وطريقة واضحة لفتحه. كل المطلوب المفكرة والمتصفح الموجودان؛ التطبيق هنا على Windows.
 
-Terminal واجهة نصية تعرض الإدخال والإخراج، بينما Shell برنامج يقرأ الأوامر ويفسر الاقتباس والتوسعات والـPipes ثم يبدأ Processes. أمثلة: PowerShell وBash وzsh و`cmd.exe`. الأمر نفسه قد تختلف صياغته بين Shells، لذلك لا تنسخ Escaping من Bash إلى PowerShell بلا فهم.
+## محرر وأداة تشغيل
 
-## المسارات والـWorking Directory
+المحرر Editor يتيح كتابة النص وحفظه؛ هنستخدم Notepad. أداة التشغيل تنفذ التعليمات؛ المتصفح يستطيع تشغيل JavaScript. احنا مش بنشغّل الكود داخل المفكرة، بل نحفظ الملف بها ونفتحه بالمتصفح. محررات الكود المتخصصة تساعد لاحقًا بالتلوين واقتراحات الكتابة، لكنها ليست شرطًا للتجربة الأولى.
 
-المسار المطلق يبدأ من Root أوDrive، والنسبي يُفسر انطلاقًا من Current Working Directory. `.` يعني الحالي و`..` الأب. اسم الملف ليس هو Path، ووجود Extension لا يضمن نوع المحتوى الحقيقي.
+HTML (Hypertext Markup Language؛ لغة وصف بنية الصفحة وعناصرها) طريقة وصف محتوى صفحة وبنيتها، وليست لغة البرمجة التي سنحسب بها. ملف `.html` صغير سيكون حاوية لتعليمات JavaScript حتى ينفذها المتصفح. الدرس التالي سيشرح أجزاء الملف قبل تغييرها.
 
-```powershell
-Get-Location
-Get-ChildItem
-Set-Location C:\my_docs
-Get-Content .\package.json
-```
+## أنشئ مساحة العمل
 
-استخدم إكمال Tab و`-LiteralPath` عندما يحتوي الاسم محارف خاصة. قبل حذف أو نقل Recursive اطبع المسار المحلول وتأكد أنه داخل النطاق المقصود.
+1. افتح Documents ثم `FirstSteps` الذي أنشأته سابقًا.
+2. أنشئ داخله مجلدًا باسم `first-program`.
+3. افتح Notepad جديدًا واكتب مؤقتًا `Ready`.
+4. اختر Save As داخل `first-program` باسم `hello.html`. اختر All files في نوع الملف حتى لا تضيف المفكرة `.txt`، واختر UTF-8 (Unicode Transformation Format بوحدات 8 بت؛ ترميز أرقام رموز Unicode كبايتات) في الترميز إن ظهر الاختيار.
+5. أظهر الامتداد وتأكد أن الاسم `hello.html` وليس `hello.html.txt`. افتحه بالمتصفح: المتوقع ظهور Ready.
 
-## الملفات والمجلدات والMetadata
+UTF-8 طريقة لحفظ النص تدعم العربية وغيرها. اختيارها يحافظ على الحروف عند قراءة الملف. هذه الخطوة تختبر أن الملف محفوظ في المكان والصيغة الصحيحين؛ كلمة Ready ليست برنامج حساب بعد.
 
-الملف Bytes مع Metadata مثل الحجم والأوقات والمالك والصلاحيات. المجلد يربط أسماء بإدخالات. Rename داخل Filesystem نفسها قد يكون تعديل Metadata سريعًا، بينما النقل بين أقراص قد يعني Copy ثمDelete. Symbolic Link يشير إلى Path آخر ولا ينسخ البيانات.
+## دورة التعديل والتشغيل
 
-## Users وGroups وPermissions
+من المفكرة افتح الملف نفسه وعدّل Ready إلى `Ready 2`، واضغط Ctrl+S. في المتصفح اضغط زر إعادة التحميل أو Ctrl+R. المتوقع ظهور Ready 2. المتصفح لا يقرأ تعديلًا غير محفوظ من نافذة المفكرة؛ احفظ ثم أعد التحميل.
 
-الصلاحيات تقرر من يستطيع القراءة والكتابة والتنفيذ. على Unix تُفهم غالبًا كـowner/group/others، بينما Windows يستخدم ACLs أكثر تفصيلًا. لا تجعل ملفات الأسرار قابلة للقراءة لكل المستخدمين، ولا تشغّل Server بصلاحية Administrator/Root بلا حاجة.
+لو المتصفح يعرض النص القديم، راجع اسم الملف في عنوان المفكرة ومساره في المتصفح. لو يعرض مصدرًا مختلفًا، تأكد من Open with والامتداد. وجود نسختين باسم واحد في مجلدين سبب شائع للالتباس.
 
-Executable Permission لا تعني أن الملف آمن، وامتلاك Read لا يعني السماح بتنفيذ محتواه داخل التطبيق.
+## ما الطرفية باختصار؟
 
-## Environment Variables
+Terminal نافذة تتعامل معها بأوامر مكتوبة بدل الأزرار. ستستخدمها لاحقًا مع أدوات اللغة. مش مطلوب فتحها أو حفظ أوامرها الآن، ولا تحتاج مسارًا مثل `C:\my_docs` موجودًا عند صاحب الشرح.
 
-هي Key/Value يرثها Child Process عادة من Parent. مناسبة لإعدادات البيئة، لكنها ليست خزنة أسرار بذاتها وقد تظهر في Process inspection أوCrash reports أوLogs. استخدم Secret Manager للإنتاج، وتحقق من وجود القيم ونوعها وحدودها عند بدء التطبيق.
+**معيار الانتقال:** اعرض Ready 2 بعد حفظها وإعادة تحميل الملف، ثم حدد من الواجهة أين يوجد الملف. لو قدرت تعمل ده، أنت جاهز تضع أول تعليمات فعلية في نفس الملف.
 
-```powershell
-$env:APP_ENV = 'development'
-Get-ChildItem Env:APP_ENV
-```
-
-التغيير داخل Process لا يعدل الجهاز كله تلقائيًا ولا يغير Processes بدأت بالفعل.
-
-## stdin وstdout وstderr وExit Code
-
-البرنامج يقرأ من Standard Input ويكتب النتيجة العادية إلى Standard Output والتشخيص إلى Standard Error. Exit Code صفر يعني نجاحًا عادة، وغير الصفر يصنف الفشل. هذا يسمح للـShell وCI بالتعامل مع البرنامج دون تحليل نص بشري.
-
-```text
-producer stdout | consumer stdin
-errors ----------------> stderr
-status ----------------> exit code
-```
-
-Pipe تمرر Stream وليست ملفًا مؤقتًا بالضرورة. Backpressure قد تجعل المنتج ينتظر إذا كان المستهلك أبطأ. Redirection تغير وجهة Stream، لذلك لا تخلط Progress messages مع Output معد للمعالجة.
-
-## أوامر آمنة ومفيدة
-
-- اكتشف المكان والمحتوى قبل التعديل.
-- استخدم `--help` أو`Get-Help` واقرأ المعاملات.
-- اقتبس Paths التي تحتوي Spaces.
-- جرّب على ملف مؤقت قبل Bulk operation.
-- لا تمرر أسرارًا في Command line إذا كانت ستظهر في History أوProcess list.
-- افحص Exit Code وstderr في Scripts وCI.
-
-## تأكد من فهمك
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين Terminal وShell؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Terminal تعرض الجلسة، وShell تفسر الأوامر وتبدأ العمليات وتربط الـStreams.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا يفشل Relative Path أحيانًا رغم وجود الملف؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأنه يُفسر من Working Directory الحالية، وقد تختلف عن مجلد Script أوالمشروع.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>لماذا نفصل stdout عن stderr؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> حتى تظل البيانات القابلة للمعالجة نظيفة بينما يمكن عرض أوتسجيل التشخيص منفصلًا.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>هل Environment Variable خزنة أسرار؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لا؛ هي قناة إعداد وقد تتسرب. استخدم Secret Manager وصلاحيات وتدويرًا ومنعًا للتسجيل.</div></details></section>
-</div>
+UTF-8 طريقة تحويل الحروف إلى بايتات؛ [مثال الرقم والنص](/programming-basics/computer-fundamentals/02-binary-data-representation/) يوضح الفرق.

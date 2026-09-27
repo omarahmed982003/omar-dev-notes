@@ -1,9 +1,22 @@
 ---
-title: 5. HTTP messages and state
-description: Methods, fields, content, status codes, cookies, sessions, and tokens.
+title: "Read an HTTP request and response"
+description: "Read an HTTP request and response"
 sidebar:
-  order: 5
+  order: 14
+prev: {"link":"/en/programming-basics/21-url-encoding/","label":"Characters and encoding in web addresses"}
+next: {"link":"/en/programming-basics/22-http-state-and-updates/","label":"Remembering users and protecting updates"}
 ---
+
+
+## Read one message before tracing a session
+
+HTTP (Hypertext Transfer Protocol, the rules for web requests and responses) exchanges discrete request and response messages. A request method expresses intent, headers carry metadata, and an optional body carries a representation. The response status describes the protocol result; it should not be guessed from body text.
+
+HTTP being stateless means the protocol does not automatically remember an earlier request. Applications build continuity with cookies, server-side sessions, or tokens. That state needs independent expiry, integrity, privacy, and authorization rules.
+
+## Before the details
+
+Before sessions or tokens, separate **one HTTP message** from user state across messages. A request carries client intent; a response carries the server result.
 
 An HTTP/1.1 request contains a request line, header fields, a blank line, and optional content:
 
@@ -13,9 +26,15 @@ Host: shop.example
 Accept: application/json
 Content-Type: application/json
 Authorization: Bearer ey...
+Cookie: session=abc123
+Content-Length: 27
 
 {"product_id":42,"count":2}
 ```
+
+The example body is **27 UTF-8 (Unicode Transformation Format with 8-bit units, encoding Unicode character numbers as bytes) bytes**, with no trailing newline. Content-Length counts bytes, not visible characters. Bearer ey... is a placeholder credential, not a usable token. **JSON, JavaScript Object Notation**, is structured text mapping names such as count to values such as 2.
+
+A **safe** method requests no change to resource state; incidental logging is allowed. An **idempotent** method has the same intended state effect when repeated, although response codes may differ. DELETE can be idempotent without being safe. A **representation** is returned data describing a resource.
 
 GET retrieves, HEAD is GET without response content, POST performs resource-specific processing, PUT replaces, PATCH partially updates, DELETE removes, and OPTIONS describes communication options. Safe/idempotent semantics are contracts, not authorization. Never implement destructive work through GET.
 
@@ -29,55 +48,16 @@ Location: /api/orders/901
 
 Response classes are 1xx informational, 2xx success, 3xx redirection/cache, 4xx request/client error, and 5xx server error. 401 generally indicates missing/invalid authentication; 403 indicates understood but unauthorized.
 
-HTTP does not automatically remember an earlier request. Cookies are browser-stored values sent by matching rules; sessions are server-side state commonly linked by a cookie ID; tokens are client-sent credentials. Not every token is a JWT, and JWT does not automatically replace session design.
 
-```php
-<?php
-header('Content-Type: application/json; charset=utf-8');
+## Practical problems
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'GET') {
-    http_response_code(405);
-    header('Allow: GET');
-    echo json_encode(['error' => 'Method not allowed']);
-    exit;
-}
+<details><summary>How do <code>401</code> and <code>403</code> differ?</summary><p>401 means valid authentication is required; 403 means permission was refused; it does not prove the identity was known.</p></details>
 
-$name = trim((string) ($_GET['name'] ?? 'Guest'));
-echo json_encode(['message' => "Hello {$name}"], JSON_THROW_ON_ERROR);
-```
+<details><summary>How can HTTP be stateless while login persists?</summary><p>Each protocol request is independent, but a cookie or token supplies an identifier that lets the application recover state.</p></details>
 
-## Lesson map
+<details><summary>Should GET transfer account credit?</summary><p>No. GET is expected to be safe and may be repeated by browsers or crawlers. Use a state-changing method with protection and safe retry design.</p></details>
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: HTTP messages and state">
-<p class="lesson-diagram-title">Concept map: HTTP messages and state</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>An HTTP/1.1 request contains a request line, header</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>GET retrieves, HEAD is GET without response content,</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Response classes are 1xx informational, 2xx success, 3xx</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>HTTP does not automatically remember an earlier request</span></div>
-</div>
-</div>
 
-## Check your understanding
+## Next step
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “An HTTP/1.1 request contains a request line, header” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> An HTTP/1.1 request contains a request line, header fields, a blank line, and optional content: In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “An HTTP/1.1 request contains a request line, header” with “GET retrieves, HEAD is GET without response content,”. Why does neither replace the other in “HTTP messages and state”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “An HTTP/1.1 request contains a request line, header”: An HTTP/1.1 request contains a request line, header fields, a blank line, and optional content: For “GET retrieves, HEAD is GET without response content,”: GET retrieves, HEAD is GET without response content, POST performs resource-specific processing, PUT replaces, PATCH partially updates, DELETE removes, and OPTIONS describes communication options. Safe/idempotent semantics are contracts, not authorization. Never implement destructive work through GET. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Response classes are 1xx informational, 2xx success, 3xx”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Response classes are 1xx informational, 2xx success, 3xx redirection/cache, 4xx request/client error, and 5xx server error. 401 generally indicates missing/invalid authentication; 403 indicates understood but unauthorized. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “HTTP does not automatically remember an earlier request” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> HTTP does not automatically remember an earlier request. Cookies are browser-stored values sent by matching rules; sessions are server-side state commonly linked by a cookie ID; tokens are client-sent credentials. Not every token is a JWT, and JWT does not automatically replace session design. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+After completing this practice, continue with [Remembering users and protecting updates](/en/programming-basics/22-http-state-and-updates/).

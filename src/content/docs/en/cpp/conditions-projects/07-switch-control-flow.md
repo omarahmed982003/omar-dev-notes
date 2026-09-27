@@ -6,6 +6,16 @@ description: "switch selects a branch from one discrete value. Use it for clear 
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Runtime:** The period when a program is actually running.
+- **Scope:** The region of code in which a name or variable is visible.
+
+
 ## Selection by one discrete value
 
 switch selects a branch from one discrete value. Use it for clear constant cases; prefer if for ranges and compound predicates.
@@ -37,16 +47,21 @@ default: std::cout << "Unknown option\n";
 
 <div class="lesson-diagram" role="img" aria-label="How switch selects a case and break prevents fall-through">
 <p class="lesson-diagram-title">How switch selects a case and break prevents fall-through</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-decision">
 <div class="diagram-node input"><span>Selector</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="compare" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Match case</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="matched" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Run case</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="after body" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>break?</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="yes" aria-hidden="true">→</span>
 <div class="diagram-node output"><span>Exit / default</span></div>
+</div>
+<div class="diagram-branches">
+<p class="diagram-branch-label">Branches omitted by a purely linear picture</p>
+<div class="diagram-node output"><span>No matching case ← default</span></div>
+<div class="diagram-node danger"><span>No break ← fall through to next case</span></div>
 </div>
 </div>
 
@@ -214,3 +229,11 @@ Test `8 / 2`, `8 / 0`, `5 * 3`, and `5 ? 3`. These cover successful division, th
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> The operator is one discrete character, while rejecting a zero divisor is a runtime predicate, so each construct matches a different kind of decision.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+C++17 permits an init-statement before the selector to narrow scope. With enum class, enable warnings for unhandled cases and decide whether default is appropriate: omitting it can expose new enum values, while external input still needs validation and fallback.
+
+### Try it yourself
+
+Add an enum value and confirm the build or a test exposes an incomplete switch.

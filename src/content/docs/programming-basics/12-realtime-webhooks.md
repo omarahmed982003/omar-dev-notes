@@ -1,23 +1,46 @@
 ---
-title: 11. الاتصال اللحظي وWebhooks
-description: Polling وLong Polling وSSE وWebSocket وWebhooks وكيف تختار النمط المناسب.
+title: "اسأل دوريًا أو استقبل بثًا من الخادم"
+description: "اسأل دوريًا أو استقبل بثًا من الخادم"
 sidebar:
-  order: 12
+  order: 27
+prev: {"link":"/programming-basics/33-browser-isolation/","label":"سياسات تحميل الموارد وعزل النوافذ"}
+next: {"link":"/programming-basics/30-webhook-delivery/","label":"استقبل إشعار خادم وتعامل مع تكراره"}
 ---
+
+
+## شغّل السؤال الدوري ثم البث
+
+في [المعمل المحلي](/programming-basics/32-local-network-lab/) افتح Network:
+
+1. اضغط Poll three times. **Polling — سؤال دوري**: نرسل طلبًا، نقرأ الوقت، ننتظر قليلًا، ثم نكرر. تظهر ثلاثة أوقات وثلاثة طلبات `/proxy-clock`.
+2. امسح قائمة Network للعرض فقط، واضغط Receive three events. **SSE — Server-Sent Events** قناة يرسل فيها الخادم أحداثًا نصية للمتصفح. يظهر طلب `/proxy-events` واحد يحمل الأحداث1 و2 و3، ثم يغلق المثال الاتصال.
+3. `EventSource` أداة المتصفح لفتح هذه القناة؛ `onmessage` تتلقى رسالة، و`close()` تغلقها. من غير الإغلاق قد تعاود الأداة الاتصال بعد انقطاعه. الكود الكامل للعميل والخادم داخل ملف المعمل؛ لا تحتاج تخمين جزء مفقود.
+
+**قارن:** الأول يسأل مرارًا حتى لو لم يحدث جديد؛ الثاني يحتفظ باتصال ليستقبل. لم نجرب WebSocket هنا؛ قناته تسمح للطرفين بالإرسال. [شرح SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events).
+
+## قبل التفاصيل
+
+اختر قناة التحديث حسب اتجاه البيانات وتكرارها وتحمل التأخير. Polling وSSE (Server-Sent Events؛ إرسال أحداث نصية من الخادم للمتصفح عبر HTTP) وWebSocket وwebhooks ليست درجات أفضلية؛ كل منها يحل شكلًا مختلفًا من التواصل.
+
+**Polling — سؤال دوري**: المتصفح يسأل كل عدة ثوانٍ هل فيه جديد. **Long polling — سؤال ينتظر**: الخادم يحتفظ بالطلب حتى يأتي حدث أو تنتهي المهلة، ثم يعيد العميل السؤال. **SSE، Server-Sent Events** تدفق أحداث نصية من الخادم للمتصفح عبر HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب). **WebSocket** قناة مستمرة تسمح للطرفين بإرسال رسائل. **Webhook** طلب يرسله خادم لخادم آخر عند حدث، مثل تأكيد دفع.
 
 ## ليست كل التحديثات Request/Response تقليدية
 
 | النمط | الاتجاه | مناسب لـ |
 |---|---|---|
 | Polling | العميل يسأل دوريًا | تحديثات قليلة وحل بسيط |
-| Long Polling | طلب ينتظر حدثًا | توافق واسع مع latency أقل |
+| Long Polling | طلب ينتظر حدثًا | توافق واسع مع latency (زمن انتظار عملية واحدة) أقل |
 | SSE | Server → Browser | إشعارات وfeeds نصية |
 | WebSocket | اتجاهان مستمران | دردشة وألعاب وتعاون لحظي |
 | Webhook | Server → Server | إشعار نظام خارجي بحدث |
 
-اختيار WebSocket لمجرد أنه “لحظي” يضيف إدارة connections وheartbeat وbackpressure وتوسّع أفقي. ابدأ بأبسط نمط يحقق المطلوب.
+اختيار WebSocket لمجرد أنه “لحظي” يضيف إدارة connections وheartbeat وbackpressure (إبطاء المنتج عندما لا يستطيع المستهلك متابعة معدل البيانات) وتوسّع أفقي. ابدأ بأبسط نمط يحقق المطلوب.
+
+**Heartbeat** رسالة دورية لفحص بقاء الاتصال، و**Backpressure** إبطاء المنتج عندما لا يقدر المستهلك يلحق بالرسائل بدل تراكمها بلا حد. **التوسع الأفقي** إضافة نسخ خدمة لتوزيع الحمل.
 
 ## Server-Sent Events
+
+المقطع التالي يوضح صيغة حدث واحد داخل ملف PHP (اسم لغة برمجة تستخدم كثيرًا لمعالجة طلبات الويب على الخادم) بعد سطر البداية، وليس خادم بث كاملًا. حقل event اسم الحدث وdata بياناته؛ السطر الفارغ ينهي الحدث. X-Accel-Buffering يطلب من Nginx عدم تجميع الخرج في هذا المسار، وflush يحاول دفع الخرج؛ النتيجة تعتمد أيضًا على مخازن الإخراج وإعدادات الوسطاء:
 
 ```php
 header('Content-Type: text/event-stream');
@@ -29,27 +52,9 @@ echo 'data: ' . json_encode(['id' => 42, 'status' => 'paid']) . "\n\n";
 flush();
 ```
 
-SSE يعيد الاتصال تلقائيًا في المتصفح ويمكن استخدام `id` و`Last-Event-ID` للاستئناف. لا تشغل FPM workers بلا حدود؛ راجع بنية الخادم والمهلات قبل streams طويلة.
+SSE يعيد الاتصال تلقائيًا في المتصفح ويمكن استخدام `id` و`Last-Event-ID` للاستئناف. لا تشغل FPM (FastCGI Process Manager؛ مدير عمليات معالجة طلبات PHP) workers (وحدة تنفيذ تتولى مهمة أو طلبًا؛ قد تكون عملية أو خيطًا حسب النظام) بلا حدود؛ راجع بنية الخادم والمهلات قبل streams (تدفق بيانات متتابعة قد لا نعرف حجمه مقدمًا) طويلة.
 
-## Webhooks
-
-المستقبل يجب أن:
-
-1. يقرأ raw body.
-2. يتحقق من توقيع HMAC وtimestamp قبل parsing الموثوق.
-3. يرفض replay خارج نافذة زمنية.
-4. يسجل event ID ويمنع المعالجة المكررة.
-5. يعيد نجاحًا سريعًا ثم ينقل العمل الثقيل إلى queue.
-
-```php
-$expected = hash_hmac('sha256', $timestamp . '.' . $rawBody, $secret);
-if (!hash_equals($expected, $signature)) {
-    http_response_code(401);
-    exit;
-}
-```
-
-المُرسل يعيد المحاولة عند الفشل؛ لذلك idempotency ليست تحسينًا اختياريًا.
+**EventSource** واجهة المتصفح المعتادة لاستقبال SSE وإعادة الاتصال. حقل id يعطي الحدث معرّفًا؛ المتصفح يستطيع إرسال Last-Event-ID في إعادة الاتصال، لكن الخادم لازم يحتفظ بما يحتاجه لإعادة الأحداث. PHP-FPM (PHP FastCGI Process Manager؛ برنامج يدير عمليات PHP التي تستقبل عملًا من خادم الويب) يدير عمليات PHP؛ الاتصال الطويل قد يشغل عاملًا لمدة طويلة.
 
 ## التشغيل
 
@@ -58,38 +63,15 @@ if (!hash_equals($expected, $signature)) {
 - طبّق authentication عند الاتصال وauthorization لكل قناة/حدث.
 - راقب reconnect rate وqueue lag وdelivery failures.
 
-## خريطة الدرس
+## مسائل عملية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: الاتصال اللحظي وWebhooks">
-<p class="lesson-diagram-title">خريطة مفاهيم: الاتصال اللحظي وWebhooks</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>ليست كل التحديثات Request/Response تقليدية</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Server-Sent Events</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Webhooks</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>التشغيل</span></div>
-</div>
-</div>
+<details><summary>متى يكون SSE أبسط من WebSocket؟</summary><p>عندما يحتاج المتصفح تحديثات مستمرة من الخادم فقط؛ SSE أحادي الاتجاه ويعمل فوق HTTP مع إعادة اتصال مدمجة.</p></details>
 
-## تأكد من فهمك
+<details><summary>كيف يتحقق مستقبِل webhook من المرسل؟</summary><p>يتحقق من توقيع مبني على body الخام وsecret، مع timestamp وحد زمني، ثم يمنع التكرار بمعرّف الحدث.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «ليست كل التحديثات Request/Response تقليدية» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> | النمط | الاتجاه | مناسب لـ | |---|---|---| | Polling | العميل يسأل دوريًا | تحديثات قليلة وحل بسيط | | Long Polling | طلب ينتظر حدثًا | توافق واسع مع latency أقل | | SSE | Server → Browser | إشعارات وfeeds نصية | | WebSocket | اتجاهان مستمران | دردشة وألعاب وتعاون لحظي | | Webhook | Server → Server | إشعار نظام خارجي بحدث | اختيار WebSocket لمجرد أنه “لحظي” يضيف إدارة connections وheartbeat وbackpressure وتوسّع… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «ليست كل التحديثات Request/Response تقليدية» و«Server-Sent Events». لماذا لا يغني أحدهما عن الآخر داخل موضوع «الاتصال اللحظي وWebhooks»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «ليست كل التحديثات Request/Response تقليدية»: | النمط | الاتجاه | مناسب لـ | |---|---|---| | Polling | العميل يسأل دوريًا | تحديثات قليلة وحل بسيط | | Long Polling | طلب ينتظر حدثًا | توافق واسع مع latency أقل | | SSE | Server → Browser | إشعارات وfeeds نصية | | WebSocket | اتجاهان مستمران | دردشة وألعاب وتعاون لحظي | | Webhook | Server → Server | إشعار نظام خارجي بحدث | اختيار WebSocket لمجرد أنه “لحظي” يضيف إدارة connections وheartbeat وbackpressure وتوسّع… أما «Server-Sent Events»: SSE يعيد الاتصال تلقائيًا في المتصفح ويمكن استخدام id وLast-Event-ID للاستئناف. لا تشغل FPM workers بلا حدود؛ راجع بنية الخادم والمهلات قبل streams طويلة. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Webhooks». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> المستقبل يجب أن: يقرأ raw body. يتحقق من توقيع HMAC وtimestamp قبل parsing الموثوق. يرفض replay خارج نافذة زمنية. يسجل event ID ويمنع المعالجة المكررة. يعيد نجاحًا سريعًا ثم ينقل العمل الثقيل إلى queue. المُرسل يعيد المحاولة عند الفشل؛ لذلك idempotency ليست تحسينًا اختياريًا. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «التشغيل» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ضع حدودًا لعدد الاتصالات والرسائل والحجم. استخدم ping/heartbeat واكتشف الاتصالات الميتة. طبّق authentication عند الاتصال وauthorization لكل قناة/حدث. راقب reconnect rate وqueue lag وdelivery failures. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>لماذا يجب أن يكون webhook idempotent؟</summary><p>لأن المرسل قد يعيد المحاولة عند timeout حتى لو عولج الحدث؛ يجب ألا تكرر الإعادة الأثر التجاري.</p></details>
+
+
+## الخطوة التالية
+
+كمّل في [استقبل إشعار خادم وتعامل مع تكراره](/programming-basics/30-webhook-delivery/) بعد تنفيذ التجربة هنا.

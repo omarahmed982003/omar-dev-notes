@@ -5,6 +5,17 @@ sidebar:
   order: 4
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Worker:** A background process that takes jobs from a queue and runs them.
+
+
+- **OPcache:** Memory that keeps compiled PHP instructions for later requests.
+
 # How PHP represents values
 
 The Zend Engine represents a PHP value with an internal `zval`. Compound data such as strings, arrays, and objects can reference additional refcounted structures.
@@ -93,40 +104,30 @@ The `true` form reports memory obtained from the system and may exceed currently
 - Keep OPcache/shared caches conceptually separate from the request heap.
 - Profile before merely increasing `memory_limit`.
 
-## Lesson map
+## Operational problem
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: PHP memory and garbage collection">
-<p class="lesson-diagram-title">Concept map: PHP memory and garbage collection</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Reference counting and copy-on-write</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Objects and references</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Cyclic garbage</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Requests, workers, and measurement</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Practical reductions</span></div>
-</div>
-</div>
+<details><summary>Why can a long-lived worker grow in memory?</summary><p>References, caches, and cycles may survive jobs; monitor usage, release resources, and recycle workers by policy.</p></details>
 
-## Check your understanding
+## Run and verify
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Reference counting and copy-on-write” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> PHP generally delays copying large arrays and strings until one copy changes. This saves work, although the eventual write can produce a temporary memory spike. Do not interpret a debug refcount as a perfect number of source-level variables. Temporaries, interning, and engine details affect it. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Reference counting and copy-on-write” with “Objects and references”. Why does neither replace the other in “PHP memory and garbage collection”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Reference counting and copy-on-write”: PHP generally delays copying large arrays and strings until one copy changes. This saves work, although the eventual write can produce a temporary memory spike. Do not interpret a debug refcount as a perfect number of source-level variables. Temporaries, interning, and engine details affect it. For “Objects and references”: Both variables hold a handle to the same object. Use clone for a separate object and implement __clone() where nested mutable state needs copying. A PHP reference is an alias, not a general C pointer. Do not use &amp; as a performance trick. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Cyclic garbage”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Refcounting alone cannot free an unreachable cycle: The cyclic garbage collector records candidates and periodically detects unreachable cycles. gc_collect_cycles() can force a pass, but it should be a measured tool for long-running workers, not a call after every operation. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Requests, workers, and measurement” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Request-owned memory is normally released at request shutdown, while an FPM worker remains alive. Extensions, caches, or allocator fragmentation can keep its resident size high. pm.max_requests recycles workers, but does not replace fixing leaks in long-running code. The true form reports memory obtained from the system and may exceed currently used payload memory. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+The file compares a 100000-element array with a calculation without an array and prints memory/peak. Peak is cumulative within a process and need not fall after unset; values depend on the build and allocator.
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php memory-lab.php
+~~~
+
+**Extended integration exercise target:** The script prints current and peak memory for every stage, and peak memory stays below the budget set for the large fixture.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Generators and streaming reduce the working set when all data is not needed at once. In long-running workers, release references and resources between jobs and observe growth rather than one snapshot. <code>memory_limit</code> does not equal total RSS because extensions, native libraries, and mapped files may sit outside it.
+
+### Try it yourself
+
+Process 100 jobs and record RSS every ten to expose retention.

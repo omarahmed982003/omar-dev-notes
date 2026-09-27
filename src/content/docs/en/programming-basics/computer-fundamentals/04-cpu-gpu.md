@@ -1,53 +1,34 @@
 ---
-title: 4. CPU, GPU, and parallel processing
-description: CPU execution, cores and hardware threads, cache hierarchy, and why GPUs have a different architecture and workload.
+title: "The processor and executing instructions"
+description: "Understand what a processor does and how it relates to the program you opened. First distinguish data from instructions and recognize the basic component names."
 sidebar:
-  order: 4
+  order: 9
+prev: {"link":"/en/programming-basics/computer-fundamentals/03-hardware-architecture/","label":"The computer components you use"}
+next: {"link":"/en/programming-basics/computer-fundamentals/05-ram-memory-buffers/","label":"Memory and saving: where did your work go?"}
 ---
 
-## Inside a CPU
+Understand what a processor does and how it relates to the program you opened. First distinguish data from instructions and recognize the basic component names.
 
-The processor fetches, decodes, and executes instructions. A program counter identifies the next instruction, the control unit coordinates it, the ALU performs arithmetic and logic, and registers hold values closest to execution. Other units handle floating point, vectors, branches, and memory access.
+## Dependent steps or independent work?
 
-Modern CPUs pipeline instructions, predict branches, and execute independent work out of order. “One instruction per clock” is therefore an oversimplification, and GHz alone cannot predict performance.
+With a balance of 100, subtract 10 before computing tax on the new balance: the second step needs the first result. Brightening a million image pixels with the same independent rule can process many at once. A **pixel** is an image color point.
 
-## Cores, threads, clock, and IPC
+A CPU handles varied work and sequential decisions. A GPU is designed for many similar operations together. It is not always faster: transferring data and setting up work also cost time.
 
-A core can execute an independent instruction stream. A hardware thread shares some core resources; it is not a complete additional core. Clock rate counts cycles, while IPC measures useful instructions completed per cycle. Memory behavior, architecture, heat, and power limits matter as well.
+## From instruction to execution
 
-More cores help only when work can be divided. Serial sections and shared locks limit speedup.
+The CPU (Central Processing Unit, the main instruction-executing processor) is the main processor executing program instructions. In 12+8, the numbers are data, addition requests an operation, and the result can then be displayed. A worker following a checklist is a useful analogy, but the processor does not understand human intention or independently choose the right solution.
 
-## Registers and L1/L2/L3 caches
+A program on storage is not necessarily running. When opened, the operating system prepares it and the processor executes its instructions. Several windows do not each need an independent processor; the system distributes execution time.
 
-Registers are the smallest and fastest storage. L1 is tiny and very fast, L2 is larger, and L3 is larger again and often shared. Caches move cache lines, so contiguous access benefits from locality while random access causes more misses and RAM waits.
+## Where does the GPU fit?
 
-Cache coherence does not replace locks or atomic operations when threads mutate shared state.
+A GPU (Graphics Processing Unit, a processor suited to many similar operations across data) handles some repetitive work across many data items well, such as computing parts of an image. It is not a universally faster replacement for the CPU. Drawing, calculation, input, and saving cooperate; some devices integrate graphics processing into the same chip.
 
-## Why a GPU is different
+A powerful GPU is not required for addition programs or learning conditions. A slow-opening application does not prove that the CPU alone is inadequate; storage, memory, or software may be responsible.
 
-A CPU has fewer powerful cores optimized for low latency, branching, and general-purpose work. A GPU contains many simpler execution units designed to apply similar operations to large data sets. It excels at rendering, matrix work, machine learning, and scientific computation.
+## Observe
 
-Irregular branching and repeated small transfers can erase the advantage. A discrete GPU normally has separate VRAM; copying data, launching a kernel, and returning results all cost time.
+Open Calculator and Notepad and switch through the taskbar. Type a note, then calculate 3×4. Each application retains its work while the system lets you switch. This exercise does not reveal core count or internal scheduling; it distinguishes running applications from the device running them.
 
-## Integrated and discrete GPUs
-
-An integrated GPU usually shares system memory and power. A discrete GPU has its own VRAM, power budget, and cooling. Unified-memory APIs simplify programming but do not guarantee that physical data movement disappears.
-
-## Workload comparison
-
-| Workload | Typical choice | Reason |
-|---|---|---|
-| Web request and business rules | CPU | Branching, I/O, and latency |
-| Small compression task | CPU | GPU transfer cost dominates |
-| Large matrix multiplication | GPU | High data parallelism |
-| Rendering millions of pixels | GPU | Similar operation over many values |
-| Database transaction | CPU | Control, memory, and I/O heavy |
-
-## Check your understanding
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Why can a 3.5GHz CPU outperform a 4GHz CPU?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> IPC, architecture, caches, core count, power limits, and workload all affect completed work.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>How does a hardware thread differ from a core?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A thread shares execution resources within a core; it is not another complete physical core.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>When is a GPU a poor choice?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> For small, serial, heavily branching work or when data-transfer cost exceeds computation.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>How does locality improve speed?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Nearby access reuses cache lines; scattered access creates misses and waits for RAM.</div></details></section>
-</div>
+**Worked exercise:** Why would a faster CPU not fix a program that adds when it should subtract? It may only execute the wrong instruction faster. Correctness comes from the program’s design, not the component’s speed.

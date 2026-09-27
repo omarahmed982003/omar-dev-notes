@@ -5,6 +5,17 @@ sidebar:
   order: 12
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+
+
 ## لماذا Queue؟
 
 انقل العمل البطيء أو القابل لإعادة المحاولة خارج HTTP request: البريد، الصور، التقارير، مزامنة APIs. أعد الاستجابة بعد حفظ نية العمل بصورة موثوقة، لا بعد تشغيل background process عشوائي.
@@ -20,15 +31,17 @@ sidebar:
 أنظمة كثيرة تقدم **at-least-once**؛ قد تصل الرسالة مرتين. صمّم handler آمنة:
 
 ```php
-if ($processedJobs->contains($jobId)) {
-    return;
-}
+<?php
+require __DIR__ . '/bootstrap.php';
 
-$handler->handle($orderId);
-$processedJobs->record($jobId);
+$db = Lessons\connectInventory(':memory:');
+Lessons\initializeInventory($db);
+$first = Lessons\purchase($db, 'job-42', 1, 1, 2);
+$again = Lessons\purchase($db, 'job-42', 1, 1, 2);
+echo json_encode([$first, $again], JSON_THROW_ON_ERROR), PHP_EOL;
 ```
 
-يجب أن يكون تسجيل النتيجة وidempotency atomic قدر الإمكان. Transactional Outbox تربط تغيير database بإنشاء الحدث.
+يجب أن يكون تسجيل النتيجة وidempotency داخل معاملة واحدة وقيد فريد. Transactional Outbox تربط تغيير database بإنشاء الحدث.
 
 ## Retry
 
@@ -54,40 +67,37 @@ delay = min(cap, base * 2^attempt) + random_jitter
 
 اجعل المهمة المجدولة idempotent، امنع overlap بقفل له expiry، واستخدم timezone واضحة. الـscheduler يمكن أن ينشر jobs إلى queue بدل تنفيذ كل العمل في عملية واحدة.
 
-## خريطة الدرس
+## مسألة تشغيلية
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: Queues وWorkers وScheduling">
-<p class="lesson-diagram-title">خريطة مفاهيم: Queues وWorkers وScheduling</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>لماذا Queue؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Delivery وIdempotency</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Retry</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Worker lifecycle</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Cron وScheduler</span></div>
-</div>
-</div>
+<details><summary>ليه job لازم تكون idempotent؟</summary><p>لأن التسليم غالبًا at-least-once وقد يعيد worker المحاولة؛ تكرار الرسالة لا يجب أن يكرر الأثر التجاري.</p></details>
 
-## تأكد من فهمك
+## شغّل وتحقق
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «لماذا Queue؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> انقل العمل البطيء أو القابل لإعادة المحاولة خارج HTTP request: البريد، الصور، التقارير، مزامنة APIs. أعد الاستجابة بعد حفظ نية العمل بصورة موثوقة، لا بعد تشغيل background process عشوائي. أرسل IDs لا object graphs كاملة، وضع version للـpayload. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «لماذا Queue؟» و«Delivery وIdempotency». لماذا لا يغني أحدهما عن الآخر داخل موضوع «Queues وWorkers وScheduling»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «لماذا Queue؟»: انقل العمل البطيء أو القابل لإعادة المحاولة خارج HTTP request: البريد، الصور، التقارير، مزامنة APIs. أعد الاستجابة بعد حفظ نية العمل بصورة موثوقة، لا بعد تشغيل background process عشوائي. أرسل IDs لا object graphs كاملة، وضع version للـpayload. أما «Delivery وIdempotency»: أنظمة كثيرة تقدم at-least-once؛ قد تصل الرسالة مرتين. صمّم handler آمنة: يجب أن يكون تسجيل النتيجة وidempotency atomic قدر الإمكان. Transactional Outbox تربط تغيير database بإنشاء الحدث. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Retry». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> أعد المحاولة للأخطاء المؤقتة فقط: لا تعِد ValidationError أو credential مرفوضة بلا تغيير. بعد حد معين انقل الرسالة إلى Dead-Letter Queue مع سبب وتحقيق وتنبيه. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Worker lifecycle» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> timeout لكل job وI/O. memory limit وإعادة تدوير العملية. SIGTERM يوقف استقبال الجديد وينهي الحالي ضمن grace period. acknowledge بعد النجاح لا قبله. heartbeat وvisibility timeout أطول من job مع renewal عند الحاجة. راقب queue depth وage of oldest وprocessing latency وretry/DLQ rate. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+المثال يطبع طلبًا جديدًا ثم نفس الطلب مع duplicate=true. محاولات queue وdead-letter تحتاج وسيط رسائل وعاملًا في بيئة اختبار، وليست جزءًا من هذا البرنامج.
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php queue-demo.php
+~~~
+
+**هدف تجربة التكامل الموسعة:** تُعالج الرسالة الناجحة مرة، والفشل المؤقت يُعاد بحد أقصى، والرسالة الدائمة تصل إلى dead-letter مع correlation ID.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+Visibility timeout يجب أن يتجاوز المعالجة أو يتجدد حتى لا تظهر الرسالة لعامل ثانٍ. Ordering غالبًا مضمون داخل partition فقط. Poison message تحتاج retry محدودًا وdead-letter وتحقيقًا. Transactional outbox يربط تغيير قاعدة البيانات بنشر الحدث دون dual-write gap.
+
+### جرّب بنفسك
+
+حاكِ crash بعد commit وقبل ack وتأكد أن idempotency تمنع الأثر المكرر.
+
+
+## ليه إثبات التنفيذ داخل المعاملة؟
+
+احفظ المثال باسم `queue-demo.php` في [مجلد المختبر](/php/00-lab-setup/). الاستدعاء الأول ينشئ الطلب 1، والتاني يرجع نفس الطلب مع `duplicate: true`. افتح `src/Inventory.php`: إثبات التنفيذ بقيد فريد `(user_id, job_key)` وتغيير المخزون والطلب وحدث outbox بيتحفظوا في معاملة واحدة. نفس المفتاح بمدخلات مختلفة يُرفض. الفشل قبل commit يلغي الأربعة، وما تبعتش إقرار نجاح للـqueue إلا بعد commit. فحص «اتنفذ قبل كده؟» ثم تنفيذ الأثر منفصلين خطر: عاملان ممكن يعدّوا الفحص معًا.
+
+الـoutbox جدول بيحفظ أحداث هتتبعت بعد commit. الناشر ممكن يرسل ثم يتعطل قبل تسجيل الإرسال، فالتسليم لسه ممكن يتكرر. الدفع أو البريد خارج قاعدة البيانات محتاج مفتاح منع تكرار عند المزود أو إزالة التكرار عند المستقبِل؛ معاملة قاعدة البيانات مش هتلغي طلبًا لخدمة خارجية. شغّل `php tests.php inventory` لاختبار التكرار والفشل المتعمد. الاختبارات المحلية دي مش محاكاة لوسيط رسائل حقيقي أو عدة عمليات workers.

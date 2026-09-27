@@ -5,6 +5,20 @@ sidebar:
   order: 1
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
+- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
+- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Cookie:** قيمة صغيرة يحفظها المتصفح ويرسلها مع الطلبات المناسبة.
+- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
+- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+
+
 ## كيف تعمل الجلسة؟
 
 يحفظ الخادم البيانات، ويحمل المتصفح عادة Cookie تحتوي Session ID عشوائيًا. المعرّف **بيانات اعتماد**؛ من يسرقه قد ينتحل الجلسة حتى لو لم يعرف كلمة المرور.
@@ -90,40 +104,26 @@ session_write_close();
 
 لتسجيل الخروج: ابدأ الجلسة، امسح `$_SESSION`، احذف Cookie بنفس path/domain/options، ثم `session_destroy()`. أبطل كذلك refresh tokens والجلسات المسجلة في قاعدة البيانات إن وجدت.
 
-## خريطة الدرس
+## سيناريو أمني
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: حماية الجلسات">
-<p class="lesson-diagram-title">خريطة مفاهيم: حماية الجلسات</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>كيف تعمل الجلسة؟</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>إعداد البداية</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>تسجيل الدخول وتغيير الصلاحية</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>انتهاء خمول وعمر كلي</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Fingerprinting بحذر</span></div>
-</div>
-</div>
+<details><summary>ليه نغيّر session ID بعد login؟</summary><p>لمنع session fixation؛ أنشئ هوية جلسة جديدة ولا تقبل المعرّف الذي عرفه المهاجم.</p></details>
 
-## تأكد من فهمك
+## تدريب تهديد
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «كيف تعمل الجلسة؟» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> يحفظ الخادم البيانات، ويحمل المتصفح عادة Cookie تحتوي Session ID عشوائيًا. المعرّف بيانات اعتماد؛ من يسرقه قد ينتحل الجلسة حتى لو لم يعرف كلمة المرور. أهم المخاطر: Session Fixation: يجبر المهاجم الضحية على استخدام ID يعرفه، ثم ينتظر تسجيل الدخول. Session Hijacking: يسرق ID فعّالًا عبر XSS أو شبكة غير محمية أو Logs أو جهاز مخترق. Brute force: محاولة تخمين IDs ضعيفة؛ يجب أن يولدها PHP عشوائيًا ولا تنشئها بـuniqid().… عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «كيف تعمل الجلسة؟» و«إعداد البداية». لماذا لا يغني أحدهما عن الآخر داخل موضوع «حماية الجلسات»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «كيف تعمل الجلسة؟»: يحفظ الخادم البيانات، ويحمل المتصفح عادة Cookie تحتوي Session ID عشوائيًا. المعرّف بيانات اعتماد؛ من يسرقه قد ينتحل الجلسة حتى لو لم يعرف كلمة المرور. أهم المخاطر: Session Fixation: يجبر المهاجم الضحية على استخدام ID يعرفه، ثم ينتظر تسجيل الدخول. Session Hijacking: يسرق ID فعّالًا عبر XSS أو شبكة غير محمية أو Logs أو جهاز مخترق. Brute force: محاولة تخمين IDs ضعيفة؛ يجب أن يولدها PHP عشوائيًا ولا تنشئها بـuniqid().… أما «إعداد البداية»: Secure: لا ترسل الكوكي إلا عبر HTTPS. HttpOnly: يمنع JavaScript من قراءتها، لكنه لا يمنع XSS من تنفيذ أفعال باسم المستخدم. SameSite: يقلل الإرسال cross-site، وليس بديلًا مطلقًا عن CSRF token. use_strict_mode: يرفض Session ID غير مهيأ من الخادم. استدعِ session_start() قبل الإخراج. لا تمرر Session ID في URL لأنه يتسرب في History وLogs وReferer. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «تسجيل الدخول وتغيير الصلاحية». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> بعد إثبات كلمة المرور غيّر المعرّف قبل تثبيت حالة المصادقة الجديدة: غيّر المعرف عند login، ورفع الصلاحية، وتغيير كلمة المرور أو حدث أمني مهم. لا تغيّره في كل request دون تصميم؛ الطلبات المتوازية قد تتسابق. :::caution استخدام session_regenerate_id(true) لحذف التخزين القديم فورًا قد يسبب فقدًا على شبكات غير مستقرة أو مع AJAX المتزامن. الأنظمة الحساسة تستخدم انتقالًا زمنيًا وتمنع استخدام القديم بعد مهلة قصيرة ثم تترك… لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «انتهاء خمول وعمر كلي» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تعتمد على session.gc_maxlifetime وحده؛ GC تنظيف تخزين وليس سياسة وصول دقيقة. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+**السيناريو:** مهاجم حصل على معرّف جلسة قديم قبل تسجيل الدخول ويحاول إعادة استخدامه بعد نجاح تسجيل الدخول.
+
+**اختبار المنع:** سجّل الدخول، احفظ معرّف الجلسة الجديد، ثم أرسل طلبًا حساسًا بالمعرّف القديم من عميل منفصل.
+
+**النتيجة المتوقعة:** يُرفض المعرّف القديم، ولا تتغير بيانات الحساب، ويظهر معرّف جديد بعد المصادقة.
+
+### مرجع التحقق
+
+- [PHP session security](https://www.php.net/manual/en/session.security.php)
+
+## اربط النقاط ببعض
+
+في بيئة موزعة اجعل session store مركزيًا أو استخدم آلية إلغاء تصل لكل nodes، ولا تعتمد على ذاكرة worker. استخدم cookie prefixes المناسبة مثل <code>__Host-</code> عندما ينطبق العقد، واضبط Secure وHttpOnly وSameSite والمسار. الجلسة المعتمدة على Cookie ما زالت تحتاج CSRF defense للعمليات المتغيرة.
+
+### جرّب بنفسك
+
+ألغ جلسة من node وحاول استخدامها عبر node آخر ثم نفذ CSRF test.

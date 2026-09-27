@@ -5,6 +5,40 @@ sidebar:
   order: 7
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Scope:** The region of code in which a name or variable is visible.
+- **Loop:** A structure that repeats instructions according to a condition.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+## A function gives one idea a clear name
+
+If subtotal logic is copied into five places, one rule change needs five edits. A function groups steps with one purpose, accepts explicit inputs, and may return a result.
+
+```php
+function calculateSubtotal(int $priceCents, int $quantity): int
+{
+    if ($priceCents < 0 || $quantity < 1) {
+        throw new InvalidArgumentException('Invalid order values');
+    }
+
+    return $priceCents * $quantity;
+}
+
+$subtotal = calculateSubtotal(1500, 3);
+```
+
+Read the signature as a contract: the name states the action, parameters declare required data, and the trailing `int` declares the result. A parameter belongs to the definition; an argument is supplied at a call. Prefer value passing; a reference parameter is an exceptional choice because it can change caller state.
+
+`include` and `require` organize files but do not replace functions, classes, or autoloading. Inclusion executes that file at that point and can return a value or define symbols.
+
+## Defining a function
+
 Functions package reusable behaviour. PHP does not support declaring several global functions with the same name merely to overload signatures.
 
 ```php
@@ -50,38 +84,38 @@ include __DIR__ . '/partials/header.php';
 
 `goto label;` can jump to a label in the same file/scope, but cannot jump into a loop or switch. Small functions, `break`, and `continue` are usually clearer.
 
-## Lesson map
+## Progressive practice
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Functions, callbacks, and includes">
-<p class="lesson-diagram-title">Concept map: Functions, callbacks, and includes</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Including files</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Functions package reusable behaviour</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Parameters are names in the declaration; arguments are</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Closures explicitly capture with use and may capture</span></div>
-</div>
-</div>
+<details><summary>1. Extract a repeated formula</summary><p>Create <code>calculateTotal(int $priceCents, int $quantity): int</code>, reject negative prices and quantities below one, and test valid and invalid boundaries.</p></details>
 
-## Check your understanding
+<details><summary>2. What is risky about an unclear reference parameter?</summary><p>A caller may expect calculation only while the function mutates caller state. Prefer returning a new value, or make deliberate mutation unmistakable.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Including files” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> require failure raises an Error on modern PHP; include emits E_WARNING and normally continues. The _once variants prevent duplicate inclusion. An included file may return a value and inherits the scope at the include point. Use __DIR__ for stable paths, require_once for unique definitions, and Composer autoload for project classes. goto label; can jump to a label in the same file/scope, but cannot jump into a loop… In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Including files” with “Functions package reusable behaviour”. Why does neither replace the other in “Functions, callbacks, and includes”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Including files”: require failure raises an Error on modern PHP; include emits E_WARNING and normally continues. The _once variants prevent duplicate inclusion. An included file may return a value and inherits the scope at the include point. Use __DIR__ for stable paths, require_once for unique definitions, and Composer autoload for project classes. goto label; can jump to a label in the same file/scope, but cannot jump into a loop… For “Functions package reusable behaviour”: Functions package reusable behaviour. PHP does not support declaring several global functions with the same name merely to overload signatures. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Parameters are names in the declaration; arguments are”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Parameters are names in the declaration; arguments are supplied values. Prefer returning data over printing inside business functions. Passing by reference with &amp; mutates the caller’s variable, so use it deliberately. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Closures explicitly capture with use and may capture” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Closures explicitly capture with use and may capture by reference. Arrow functions capture outer variables automatically by value and contain one expression. Verify uncertain callbacks with is_callable(). Avoid nested named function declarations; use closures. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>3. require or include for essential configuration?</summary><p>Use <code>require</code> because the application cannot correctly continue without configuration. Treat truly optional inclusion failures explicitly.</p></details>
+
+## Lesson-specific problems
+
+<details><summary>When is pass-by-reference a poor choice?</summary><p>When it hides external mutation; returning a new value is often clearer and easier to test.</p></details>
+
+<details><summary>How do <code>include</code> and <code>require</code> differ?</summary><p>A failed require stops execution, while include warns and may continue; require essential files.</p></details>
+
+## Run and verify
+
+Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
+
+Execute this checkpoint inside the lesson environment:
+
+~~~bash
+php functions-lab.php
+~~~
+
+**Success criterion:** The function succeeds within its stated boundaries and fails clearly outside them; the required file loads once without relying on an accidental working directory.
+
+Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+
+## Connect the ideas
+
+Named arguments bind to parameter names and can make renaming a breaking change. Variadics collect values and first-class callables carry a clearer callable contract. Recursion needs a base case and depth limit. Never construct include paths from input; use autoloading in projects.
+
+### Try it yourself
+
+Test callable, variadic, and recursive paths with an explicit failure bound.

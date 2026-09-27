@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keep name and quantity separate</title>
+<pre id="output"></pre>
+<script>
+const product = { name: "milk", quantity: 3 };
+product.quantity = product.quantity + 1;
+document.querySelector("#output").textContent = product.name + ": " + product.quantity;
+</script>
+</html>

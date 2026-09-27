@@ -6,6 +6,16 @@ description: "النص والتحويلات والدوال الرياضية تل
 tableOfContents: true
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Unicode:** معيار بيعطي الحروف والرموز من لغات مختلفة أرقامًا موحدة.
+- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
+
+
 ## المحرف والنص والترميز
 
 النص والتحويلات والدوال الرياضية تلتقي كثيرًا في المسائل. المطلوب معرفة ما تمثله القيمة قبل تحويلها أو إجراء حساب عليها.
@@ -35,7 +45,7 @@ double root = value >= 0 ? std::sqrt(value) : 0.0;
 
 <div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: ترميز النص والتحويلات والرياضيات">
 <p class="lesson-diagram-title">خريطة مفاهيم: ترميز النص والتحويلات والرياضيات</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-grid">
 <div class="diagram-node input"><span>Unicode Code Point</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Code Units</span></div>
@@ -121,3 +131,11 @@ std::cout << static_cast<int>(letter) << '\n';
 <details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> ارفضها أو استخدم مجال الأعداد المركبة إن كان مطلوبًا؛ لا تحول NaN إلى نتيجة تبدو صحيحة.</div></details>
 </section>
 </div>
+
+## اربط النقاط ببعض
+
+C++ standard library لا تقدم معالجة grapheme كاملة؛ استخدم مكتبة Unicode متخصصة عندما تحتاج case folding أو normalization أو segmentation. <code>dynamic_cast</code> يحتاج polymorphic base وRTTI، وC-style cast يخفي أنواع تحويل متعددة. افحص integer promotions قبل الحساب على الأنواع الصغيرة.
+
+### جرّب بنفسك
+
+اختبر نصًا عربيًا وemoji وقارن bytes وcode points وgraphemes بأداة مناسبة.

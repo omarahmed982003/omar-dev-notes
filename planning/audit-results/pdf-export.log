@@ -1,0 +1,20 @@
+
+> my-docs@0.0.1 docs:pdf
+> node scripts/build-docs-pdf.mjs
+
+Exported cover: 0 documents
+Exported ar-programming-basics: 65 documents
+Exported ar-cpp: 20 documents
+Exported ar-php: 19 documents
+Exported ar-php-runtime: 18 documents
+Exported ar-oop: 9 documents
+Exported ar-auth: 23 documents
+Exported ar-database: 7 documents
+Exported en-programming-basics: 65 documents
+Exported en-cpp: 20 documents
+Exported en-php: 19 documents
+Exported en-php-runtime: 18 documents
+Exported en-oop: 9 documents
+Exported en-auth: 23 documents
+Exported en-database: 7 documents
+Created C:\my_docs\output\pdf\omar-dev-notes-complete.pdf from 322 documents in 14 sections.

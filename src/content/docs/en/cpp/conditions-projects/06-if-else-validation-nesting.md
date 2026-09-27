@@ -6,6 +6,16 @@ description: "if and else direct execution. Write conditions as readable rules a
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Boolean:** A logical value with only two states: true or false.
+
+
 ## How if chooses an execution path
 
 if and else direct execution. Write conditions as readable rules and reduce nesting through early validation and grouped logic.
@@ -40,16 +50,21 @@ if (score < 0 || score > 100) {
 
 <div class="lesson-diagram" role="img" aria-label="if/else flow: validate first, then choose one branch">
 <p class="lesson-diagram-title">if/else flow: validate first, then choose one branch</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-decision">
 <div class="diagram-node input"><span>Read value</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="validate" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Valid?</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="yes" aria-hidden="true">→</span>
 <div class="diagram-node decision"><span>Which range?</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="one branch" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Run branch</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
+<span class="diagram-arrow" data-label="return" aria-hidden="true">→</span>
 <div class="diagram-node output"><span>Return result</span></div>
+</div>
+<div class="diagram-branches">
+<p class="diagram-branch-label">Rejection and boundary paths</p>
+<div class="diagram-node danger"><span>Invalid ← reject before business rules</span></div>
+<div class="diagram-node output"><span>Shared boundary ← test equality explicitly</span></div>
 </div>
 </div>
 
@@ -109,6 +124,189 @@ if (age < 0 || age > 120) {
 }
 ```
 
+
+## Problems that apply conditions and formulas
+
+## Complete problem solutions
+
+Each solution below includes a complete program, the governing formula, boundary tests, and complexity. The goal is to derive the program rather than memorize it.
+
+### 959A Mahmoud and Ehab
+
+Only parity matters. An even `n` prints Mahmoud; an odd `n` prints Ehab.
+
+```cpp
+#include <iostream>
+int main() { int n{}; std::cin >> n; std::cout << (n % 2 == 0 ? "Mahmoud" : "Ehab") << '\n'; }
+```
+
+Trace `1` and `2`. Time and memory are `O(1)`. Simulating turns adds work without information.
+
+### 486A Calculating Function
+
+Every pair `-1 + 2`, `-3 + 4`, and so on contributes `1`. An odd `n` leaves one final negative term.
+
+```cpp
+#include <iostream>
+int main() {
+    long long n{}; std::cin >> n;
+    std::cout << (n % 2 == 0 ? n / 2 : -(n + 1) / 2) << '\n';
+}
+```
+
+`n=4` gives `2`; `n=5` gives `-3`. Use `long long`. The direct solution is `O(1)`.
+
+### 4A Watermelon
+
+Two positive even parts require an even weight greater than 2.
+
+```cpp
+#include <iostream>
+int main() {
+    int w{}; std::cin >> w;
+    std::cout << (w > 2 && w % 2 == 0 ? "YES" : "NO") << '\n';
+}
+```
+
+Test `2`, `3`, and `4`. Checking parity alone incorrectly accepts `2`. Complexity is `O(1)`.
+
+### 835A Key Races
+
+Compute each total once as `s * v + 2 * t`, then compare the two values.
+
+```cpp
+#include <iostream>
+int main() {
+    long long s{}, v1{}, v2{}, t1{}, t2{};
+    std::cin >> s >> v1 >> v2 >> t1 >> t2;
+    const long long first = s * v1 + 2 * t1;
+    const long long second = s * v2 + 2 * t2;
+    if (first < second) std::cout << "First\n";
+    else if (second < first) std::cout << "Second\n";
+    else std::cout << "Friendship\n";
+}
+```
+
+Test one win for each player and a tie. Complexity is `O(1)`. Do not repeat the formula in every branch.
+
+### 1173A Nauuo and Votes
+
+`+` is guaranteed only when `x > y + z`; the negative case is symmetric. A guaranteed tie requires `z == 0 && x == y`.
+
+```cpp
+#include <iostream>
+int main() {
+    long long x{}, y{}, z{}; std::cin >> x >> y >> z;
+    if (x > y + z) std::cout << "+\n";
+    else if (y > x + z) std::cout << "-\n";
+    else if (z == 0 && x == y) std::cout << "0\n";
+    else std::cout << "?\n";
+}
+```
+
+Test all four outputs. Complexity is `O(1)`. Comparing only `x` and `y` ignores uncertainty.
+
+### 318A Even Odds
+
+The odd half contains `(n + 1) / 2` values. Map `k` into that half or subtract its size and map into the even half.
+
+```cpp
+#include <iostream>
+int main() {
+    long long n{}, k{}; std::cin >> n >> k;
+    const long long oddCount = (n + 1) / 2;
+    std::cout << (k <= oddCount ? 2 * k - 1 : 2 * (k - oddCount)) << '\n';
+}
+```
+
+For `n=10`, test `k=5` and `k=6`. The formula is `O(1)` and avoids building the sequence.
+
+### 459A Pashmak and Garden
+
+Handle a vertical side, a horizontal side, a 45-degree diagonal, and the impossible case separately.
+
+```cpp
+#include <cstdlib>
+#include <iostream>
+int main() {
+    int x1{}, y1{}, x2{}, y2{}; std::cin >> x1 >> y1 >> x2 >> y2;
+    if (x1 == x2 && y1 != y2) {
+        const int d = std::abs(y1 - y2);
+        std::cout << x1 + d << ' ' << y1 << ' ' << x2 + d << ' ' << y2 << '\n';
+    } else if (y1 == y2 && x1 != x2) {
+        const int d = std::abs(x1 - x2);
+        std::cout << x1 << ' ' << y1 + d << ' ' << x2 << ' ' << y2 + d << '\n';
+    } else if (std::abs(x1 - x2) == std::abs(y1 - y2)) {
+        std::cout << x1 << ' ' << y2 << ' ' << x2 << ' ' << y1 << '\n';
+    } else std::cout << "-1\n";
+}
+```
+
+Test all four cases, including identical points. Complexity is `O(1)`.
+
+### 617A Elephant
+
+Ceiling division by 5 gives the minimum number of steps.
+
+```cpp
+#include <iostream>
+int main() { int x{}; std::cin >> x; std::cout << (x + 4) / 5 << '\n'; }
+```
+
+Test `1`, `5`, and `6`. Complexity is `O(1)`.
+
+### 581A Vasya the Hipster
+
+Different-color days equal `min(a,b)`; the remaining difference supplies same-color pairs.
+
+```cpp
+#include <algorithm>
+#include <cstdlib>
+#include <iostream>
+int main() {
+    int a{}, b{}; std::cin >> a >> b;
+    std::cout << std::min(a, b) << ' ' << std::abs(a - b) / 2 << '\n';
+}
+```
+
+For `3 7`, the result is `3 2`. Complexity is `O(1)`.
+
+### 281A Word Capitalization
+
+Change only the first character. Cast through `unsigned char` before calling `<cctype>`.
+
+```cpp
+#include <cctype>
+#include <iostream>
+#include <string>
+int main() {
+    std::string word; std::cin >> word;
+    if (!word.empty()) {
+        const auto first = static_cast<unsigned char>(word.front());
+        word.front() = static_cast<char>(std::toupper(first));
+    }
+    std::cout << word << '\n';
+}
+```
+
+This solves the problem's Latin-character input; it is not general Unicode case conversion. Work after input is `O(1)`.
+
+### 1A Theatre Square
+
+Apply ceiling division to both dimensions and multiply with `long long`.
+
+```cpp
+#include <iostream>
+int main() {
+    long long n{}, m{}, a{}; std::cin >> n >> m >> a;
+    const long long rows = (n + a - 1) / a;
+    const long long columns = (m + a - 1) / a;
+    std::cout << rows * columns << '\n';
+}
+```
+
+For `6 6 4`, the answer is `4`. Plain integer division undercounts whenever a remainder exists. Complexity is `O(1)`.
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">
@@ -137,3 +335,11 @@ if (age < 0 || age > 120) {
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Write <code>if (age == 18)</code>, enable warnings such as <code>-Wall -Wextra -Werror</code>, and test ages 17 and 18.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+After hand-written cases, add property-style checks for boundaries: output stays in range and a larger input cannot move to a lower class without an explicit rule. Use compiler warnings to expose constant conditions and unreachable branches.
+
+### Try it yourself
+
+Generate values around every boundary and prove no unintended gap or overlap exists.

@@ -1,55 +1,30 @@
 ---
-title: 5. RAM, virtual memory, and buffers
-description: Physical and virtual memory, stack and heap, paging, allocation, buffers, caches, queues, DMA, and durability.
+title: "Memory and saving: where did your work go?"
+description: "Distinguish active working space from saved files. Use your practice note; do not disconnect power to test memory."
 sidebar:
-  order: 5
+  order: 10
+prev: {"link":"/en/programming-basics/computer-fundamentals/04-cpu-gpu/","label":"The processor and executing instructions"}
+next: {"link":"/en/programming-basics/computer-fundamentals/06-operating-systems/","label":"The operating system, programs, and files"}
 ---
 
-## RAM and addresses
+Distinguish active working space from saved files. Use your practice note; do not disconnect power to test memory.
 
-RAM is fast volatile storage for active code and data. The CPU reads addresses, usually through cache lines. The memory controller, channels, frequency, bandwidth, and latency all influence performance.
+## Working desk and storage cabinet
 
-## Physical and virtual memory
+RAM (Random Access Memory, working memory for active program data and instructions) is memory used while programs run. Storage such as an SSD (Solid-State Drive, electronic storage without moving mechanical parts) or HDD (Hard Disk Drive, storage using rotating magnetic disks) retains files for longer. A desk and cabinet are useful analogies: take out work, then save its result. This describes roles, not the literal movement of every byte.
 
-Each process sees a private virtual address space. Memory is divided into pages; the MMU translates virtual addresses to physical frames through page tables managed by the kernel. This provides isolation, demand loading, and controlled sharing.
+Ordinary RAM loses its contents when power is removed. Successfully saved files normally remain on storage. Some applications autosave or recover work; do not rely on that without checking the feature and save location.
 
-A page fault can be a normal request to load a valid page. Swapping cold pages to storage is much slower than RAM, and thrashing occurs when the system spends more time moving pages than performing work.
+## Size units
 
-## Stack and heap
+A bit is a two-state value; a byte contains eight bits. File sizes use units such as KB, MB, and GB; you need not convert all of them yet. A short text file is usually smaller than a long video. Character count is not always byte count because some characters require multiple bytes.
 
-Stack frames normally hold call state and local values and disappear as calls return. The heap supports dynamically lived objects. Deep recursion can overflow a stack; heaps can suffer retention leaks, fragmentation, or out-of-memory failure. These are virtual address regions, not separate RAM chips.
+Adding RAM increases working space, not drive capacity. Deleting a stored file does not necessarily fix slowness caused by an application consuming memory.
 
-## Allocation, leaks, fragmentation, and OOM
+## Safe experiment
 
-An allocator manages blocks and reuses freed space. A leak keeps memory reachable or allocated after it is no longer useful. Fragmentation leaves unusable gaps or overhead. Observe resident and peak memory, not only theoretical object size. Garbage collection cannot correct an intentionally retained unbounded cache.
+Copy `note.txt` to `memory-practice.txt`. Open the copy, add a line, and save. Close and reopen it: the line remains. Next change a word without saving and close the file. If asked, discard changes only for this practice copy; reopening should show the last saved version. If the application automatically restores tabs, inspect the actual file opened from its folder rather than relying on a recovered tab.
 
-## Buffer, cache, queue, stream, and pool
+**Check yourself:** Closing is not saving, and minimizing is not closing. Save and reopen from the location to confirm your result. Later you will study memory management; now distinguish active work from the saved file.
 
-| Concept | Purpose |
-|---|---|
-| Buffer | Absorb rate differences or batch transfer |
-| Cache | Keep a reproducible copy to avoid repeated work |
-| Queue | Order work waiting for consumption |
-| Stream | Sequential flow whose final size may be unknown |
-| Pool | Reusable prepared resources |
-
-A cache can normally be dropped and rebuilt; unsent buffered data may be unique and must not be discarded.
-
-## Common buffers
-
-Input buffers collect events. File buffers reduce small system calls. Socket send and receive buffers decouple network and application rates. `stdout` may be line-buffered on a terminal and fully buffered when redirected. Ring buffers reuse fixed storage; double buffering prepares one frame while another is displayed.
-
-A buffer overflow writes beyond a boundary in an unsafe environment. Media underflow means consumption outran production. Backpressure prevents an unbounded producer from filling memory.
-
-## Flush, DMA, and zero-copy
-
-A library `flush` may move bytes only into the kernel, which can retain them in page cache, while the device may have another cache. Power-loss durability requires an explicit filesystem or database contract. DMA transfers blocks without CPU copying each byte. Zero-copy techniques reduce intermediate copies but do not mean data never moves.
-
-## Check your understanding
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Is every page fault fatal?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> No. A valid page may simply need loading; an invalid access fails when the kernel cannot resolve it.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>What is the essential buffer/cache difference?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A buffer holds data in transit; a cache retains a usually reproducible copy for speed.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why is swap not equivalent to more RAM?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Storage is far slower; swap may avoid immediate failure but can create severe latency and thrashing.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Why may flush not guarantee durability?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Data may remain in kernel or device caches; durable persistence needs an explicit sync and storage contract.</div></details></section>
-</div>
+Quick reminder: [memory, processing, and storage](/en/programming-basics/computer-fundamentals/03-hardware-architecture/). RAM holds current working data; storage retains files after closing.

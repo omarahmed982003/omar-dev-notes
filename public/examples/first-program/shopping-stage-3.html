@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shopping list project</title>
+<style>li { overflow-wrap: anywhere; }</style>
+<h1>Shopping list</h1>
+<p><label for="name">Item name</label><br><input id="name"></p>
+<p><label for="quantity">Whole quantity (1 to 100)</label><br><input id="quantity" inputmode="numeric" value="1"></p>
+<button id="add">Add item</button>
+<button id="remove">Remove last item</button>
+<ol id="list"></ol>
+<p id="status" role="status"></p>
+<script>
+const status = document.querySelector("#status");
+let items = [];
+
+function renderList() {
+  const list = document.querySelector("#list");
+  list.textContent = "";
+  for (const item of items) {
+    const row = document.createElement("li");
+    row.textContent = item;
+    list.append(row);
+  }
+}
+
+function addItem() {
+  const name = document.querySelector("#name").value.trim();
+  const quantityText = document.querySelector("#quantity").value.trim();
+  const quantity = Number(quantityText);
+  if (name === "" || name.length > 60 || quantityText === "" || !Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
+    status.textContent = "Enter a short name and a whole quantity from 1 to 100.";
+    return;
+  }
+  if (items.length >= 20) {
+    status.textContent = "The list is full: at most 20 items.";
+    return;
+  }
+  items.push(quantity + " x " + name);
+  renderList();
+  status.textContent = "Added to the current list.";
+}
+
+function removeLastItem() {
+  if (items.length === 0) {
+    status.textContent = "The list is already empty.";
+    return;
+  }
+  items.pop();
+  renderList();
+  status.textContent = "Removed from the current list.";
+}
+
+
+
+document.querySelector("#add").addEventListener("click", addItem);
+document.querySelector("#remove").addEventListener("click", removeLastItem);
+renderList();
+</script>
+</html>

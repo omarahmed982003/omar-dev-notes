@@ -5,6 +5,42 @@ sidebar:
   order: 16
 ---
 
+## قبل ما تبدأ
+
+ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+
+### كلمات جديدة في الدرس
+
+- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Proxy:** وسيط يستقبل الطلب ويمرره لجهة أخرى حسب قواعد محددة.
+- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
+- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
+- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+
+
+## الحديث مش معناه تستخدم كل ميزة
+
+ميزات PHP الحديثة بتحل مشاكل حقيقية، لكن اختيار الميزة يبدأ من نسخة PHP اللي المشروع يضمنها ومن المشكلة اللي بتحاول تحلها. كتابة Syntax من 8.4 في Package تعلن دعم 8.1 هتكسر التحميل قبل ما الكود يوصل لأي شرط.
+
+ابدأ دائمًا بـ`composer.json` وCI:
+
+```json
+{
+  "require": {
+    "php": "^8.2"
+  }
+}
+```
+
+وبعدها اسأل عن كل ميزة:
+
+1. ظهرت في أي إصدار؟
+2. هل بيئة Production وCI والمطورين على الإصدار ده؟
+3. هل الميزة توضح التصميم ولا بتخليه أصعب على الفريق؟
+4. هل فيه Migration أوStatic Analysis يكتشف عدم التوافق؟
+
+الخريطة الزمنية في الدرس مش قائمة لازم تستخدمها كلها. مثلًا `WeakMap` مفيدة لربط Metadata بعمر Object، وFibers أساس تبني عليه مكتبات Async، لكن تطبيق CRUD عادي غالبًا مش محتاج يستخدمهم مباشرة. اقرأ المثال علشان تعرف المشكلة التي تحلها الميزة قبل حفظ صياغتها.
+
 ## اكتب الحد الأدنى للإصدار
 
 لا تستخدم ميزة جديدة بلا إعلان requirement في `composer.json` واختبار بيئة النشر:
@@ -125,7 +161,7 @@ Readonly Class تجعل Instance Properties المعلنة Readonly وتمنع D
 ## Attributes وReflection — PHP 8+
 
 ```php
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_FUNCTION)]
 final readonly class RequiresRole
 {
     public function __construct(public string $role) {}
@@ -135,7 +171,8 @@ final readonly class RequiresRole
 function deleteUser(int $id): void {}
 
 $attribute = (new ReflectionFunction('deleteUser'))
-    ->getAttributes(RequiresRole::class)[0] ?? null;
+    ->getAttributes(RequiresRole::class)[0]->newInstance();
+echo $attribute->role; // admin
 ```
 
 Attributes metadata منظمة؛ لا تنفذ الحماية وحدها. framework أو كودك يجب أن يقرأها ويطبقها.
@@ -198,40 +235,38 @@ $published = clone($draft, ['status' => Status::Published]);
 - [PHP 8.5](https://www.php.net/releases/8.5/en.php)
 - [الإصدارات المدعومة](https://www.php.net/supported-versions.php)
 
-## خريطة الدرس
+## تدريب عملي متدرج
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: ميزات PHP الحديثة 8.0–8.5">
-<p class="lesson-diagram-title">خريطة مفاهيم: ميزات PHP الحديثة 8.0–8.5</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>اكتب الحد الأدنى للإصدار</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Attributes وReflection — PHP 8+</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Property Hooks وAsymmetric Visibility — PHP 8.4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Lazy Objects — PHP 8.4</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Pipe Operator — PHP 8.5</span></div>
-</div>
-</div>
+<details><summary>1. المشروع يدعم PHP 8.2. هل تستخدم Property Hooks؟</summary><p>لا، لأنها من 8.4. ارفع الحد الأدنى بعد خطة ترقية أو استخدم تصميمًا متوافقًا مع 8.2.</p></details>
 
-## تأكد من فهمك
+<details><summary>2. إمتى WeakMap أنسب من Array بمعرّف الكائن؟</summary><p>لما الـMetadata لازم تختفي تلقائيًا عند عدم وجود References للكائن، من غير ما التخزين نفسه يطيل عمره.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>اشرح «اكتب الحد الأدنى للإصدار» كأنك تراجع تطبيقًا حقيقيًا: ما الهدف وما أهم قيد يجب الانتباه له؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> لا تستخدم ميزة جديدة بلا إعلان requirement في composer.json واختبار بيئة النشر: استخدم composer check-platform-reqs أثناء النشر. الأمثلة التالية مميزة بالإصدار وليست كلها متاحة في PHP الأقدم. عمليًا، لا يكفي تنفيذ المسار الناجح؛ يجب توثيق الافتراضات والتحقق من القيم والحالات التي قد تكسر هذا السلوك.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>قارن بين «اكتب الحد الأدنى للإصدار» و«Attributes وReflection — PHP 8+». لماذا لا يغني أحدهما عن الآخر داخل موضوع «ميزات PHP الحديثة 8.0–8.5»؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> في «اكتب الحد الأدنى للإصدار»: لا تستخدم ميزة جديدة بلا إعلان requirement في composer.json واختبار بيئة النشر: استخدم composer check-platform-reqs أثناء النشر. الأمثلة التالية مميزة بالإصدار وليست كلها متاحة في PHP الأقدم. أما «Attributes وReflection — PHP 8+»: Attributes metadata منظمة؛ لا تنفذ الحماية وحدها. framework أو كودك يجب أن يقرأها ويطبقها. العلاقة بينهما أن الأول يحدد جانبًا من الحل، والثاني يكمل السلوك أو القيود اللازمة لتطبيقه بصورة صحيحة.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>افترض أن نظامًا تجاهل «Property Hooks وAsymmetric Visibility — PHP 8.4». ما العطل أو الخطر المتوقع، وكيف تصمم اختبارًا يكشفه؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الـhook تضيف سلوك get/set، والـasymmetric visibility تحدد من يقرأ ومن يكتب. لا تحول كل property إلى منطق مخفي؛ method مسماة أفضل للعملية المعقدة. لاكتشاف الخلل، اختبر مسارًا صحيحًا، وقيمة عند الحد، ومدخلًا غير صالح، ثم راقب النتيجة والآثار الجانبية والسجل بدل الاكتفاء بعدم ظهور Exception.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>حوّل «Lazy Objects — PHP 8.4» إلى قرار هندسي قابل للمراجعة. ما الذي ستوثقه وما الحالات التي ستختبرها؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> Reflection تدعم lazy ghost وlazy proxy لتأخير initialization حتى ملاحظة الحالة. الاستخدام الأساسي داخل DI containers وORMs؛ لا تبنِ proxy خاصة قبل الحاجة وفهم identity وserialization. وثّق سبب الاختيار والبدائل والحدود، واختبر الحالة العادية، والحد الأدنى والأقصى، والفشل الجزئي، وإعادة المحاولة أو التكرار إن كان السلوك يسمح بذلك.</div></details>
-</section>
-</div>
+<details><summary>3. هل Fiber معناها تنفيذ متوازي؟</summary><p>لا. هي Cooperative Suspension داخل Thread؛ الـEvent Loop أوالمكتبة تنظم الاستئناف، وهي ليست CPU Parallelism.</p></details>
+
+## مسائل مرتبطة بالدرس
+
+<details><summary>هل تستخدم ميزة حديثة لمجرد وجودها؟</summary><p>لا. اربطها بمشكلة واضحة وحدد minimum PHP version واختبر دعم بيئة الإنتاج والأدوات.</p></details>
+
+<details><summary>ما فائدة readonly؟</summary><p>تجعل نية عدم إعادة إسناد الحالة صريحة، لكنها لا تجعل كل object graph عميقًا غير قابل للتغيير.</p></details>
+
+## شغّل وتحقق
+
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+
+نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+
+~~~bash
+php modern-features-lab.php
+~~~
+
+**معيار النجاح:** تغطي الاختبارات enum صالحًا وغير صالح وreadonly mutation وmatch بلا فرع؛ استخدم الميزة لأنها تقوي العقد لا لأنها جديدة.
+
+دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+
+## اربط النقاط ببعض
+
+قسّم القراءة حسب minimum PHP version في مشروعك: stable usable features، ثم migration/deprecations، ثم ميزات لا تستخدمها إلا عند رفع المنصة. شغّل CI على أقل وأعلى إصدار مدعومين واستخدم PHPCompatibility أو تحليلًا مماثلًا. لا تجعل مثال 8.5 يعمل في ملف يدعي دعم 8.1.
+
+### جرّب بنفسك
+
+أنشئ compatibility matrix لكل مثال وحدد البديل في الإصدار الأدنى.

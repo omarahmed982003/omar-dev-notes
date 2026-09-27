@@ -5,6 +5,12 @@ sidebar:
   order: 7
 ---
 
+## Beginner bridge
+
+Magic methods hook language operations such as reading an inaccessible property, calling an unknown method, converting to a string, or serializing. They can support a precise abstraction, but broad dynamic behavior hides typos and weakens static analysis.
+
+Default cloning is shallow: the outer object is copied while referenced objects remain shared. Implement clone behavior only after deciding which nested identities should be shared, duplicated, or regenerated, and test that decision explicitly.
+
 PHP reserves names beginning with `__` for magic behaviour. Except for `__construct`, `__destruct`, and `__clone`, magic methods must be public.
 
 `__get/__set/__isset/__unset` intercept inaccessible properties. They support dynamic bags and proxies but weaken static analysis and hide typos. `__call/__callStatic` intercept inaccessible methods and should fail clearly for unknown names.
@@ -25,40 +31,8 @@ Invokable objects make small injectable strategies.
 
 `__debugInfo` can redact secrets from `var_dump`, but avoid logging sensitive objects. Prefer `__serialize/__unserialize` over legacy hooks and never unserialize untrusted data. Destructors are unsuitable for critical business commits; use explicit methods and `try/finally`.
 
-## Lesson map
+## Lesson-specific problems
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Magic methods and cloning">
-<p class="lesson-diagram-title">Concept map: Magic methods and cloning</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>PHP reserves names beginning with __ for magic</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>__get/__set/__isset/__unset intercept inaccessible properties</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Invokable objects make small injectable strategies</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>clone is shallow by default; nested object references</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>__debugInfo can redact secrets from var_dump, but avoid</span></div>
-</div>
-</div>
+<details><summary>What is risky about excessive <code>__get</code> and <code>__call</code>?</summary><p>They hide mistakes from static analysis and obscure the API; keep their contract narrow.</p></details>
 
-## Check your understanding
-
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “PHP reserves names beginning with __ for magic” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> PHP reserves names beginning with __ for magic behaviour. Except for __construct, __destruct, and __clone, magic methods must be public. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “PHP reserves names beginning with __ for magic” with “__get/__set/__isset/__unset intercept inaccessible properties”. Why does neither replace the other in “Magic methods and cloning”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “PHP reserves names beginning with __ for magic”: PHP reserves names beginning with __ for magic behaviour. Except for __construct, __destruct, and __clone, magic methods must be public. For “__get/__set/__isset/__unset intercept inaccessible properties”: __get/__set/__isset/__unset intercept inaccessible properties. They support dynamic bags and proxies but weaken static analysis and hide typos. __call/__callStatic intercept inaccessible methods and should fail clearly for unknown names. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Invokable objects make small injectable strategies”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Invokable objects make small injectable strategies. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “clone is shallow by default; nested object references” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> clone is shallow by default; nested object references stay shared. Implement __clone for selected mutable children. Do not clone ORM entities without understanding identity and Unit of Work. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>When is <code>__clone</code> needed?</summary><p>When nested objects need copying or identity must reset; default cloning is shallow.</p></details>

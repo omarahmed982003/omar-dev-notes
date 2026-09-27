@@ -1,11 +1,24 @@
 ---
-title: 4. URLs, ports, and HTTP
+title: "Web addresses, ports, and HTTP"
 description: URL anatomy, ports, sockets, ranges, and the role of HTTP.
 sidebar:
-  order: 4
+  order: 12
+prev: {"link":"/en/programming-basics/20-transport-diagnostics/","label":"Closing connections and diagnosing packet size"}
+next: {"link":"/en/programming-basics/21-url-encoding/","label":"Characters and encoding in web addresses"}
 ---
 
-HTTP is an application protocol defining request/response semantics for resources. It is not the network connection itself; it runs over transports such as TCP or QUIC. HTTP is stateless by default, so applications add cookies, sessions, or tokens for continuity.
+
+## Beginner bridge
+
+A URL (Uniform Resource Locator, an address identifying a resource and how to access it) identifies a resource and tells a client how to reach it. The scheme selects a protocol policy, the host selects a destination name, the port selects a listening service, and the path plus query identify the requested resource.
+
+Keep URL parsing separate from DNS (Domain Name System, a distributed system answering queries about domain names) and connection establishment. A syntactically valid URL may resolve to no address, connect to no service, or receive an HTTP (Hypertext Transfer Protocol, the rules for web requests and responses) error. Each stage has its own evidence and debugging tools.
+
+## Before the details
+
+Before the details: a URL says **what** you want and **where** to request it, a port selects the receiving program on that host, and HTTP defines the conversation.
+
+HTTP is an application protocol defining request/response semantics for resources. It is not the network connection itself; it runs over transports such as TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail) or QUIC (a UDP-based transport protocol adding reliable streams and protected communication). HTTP is stateless by default, so applications add cookies, sessions, or tokens for continuity.
 
 ```text
 https://example.com:443/products/42?currency=EGP#reviews
@@ -14,9 +27,11 @@ scheme  host        port path         query        fragment
 
 The fragment is normally browser-local and is not sent in the HTTP request. Never place passwords, tokens, or other secrets in URLs because history, logs, analytics, and referrers may expose them.
 
-A port is a 16-bit number from 0 to 65535 identifying a service in the operating system. Common values include FTP 21, SSH 22, SMTP 25, DNS 53, HTTP 80, HTTPS 443, MySQL 3306, and PostgreSQL 5432. A conventional port is configuration, not security.
+A TCP or UDP (User Datagram Protocol, independent messages without built-in delivery or ordering guarantees) port is a 16-bit number from 0 to 65535 identifying a service in the operating system. Common values include FTP (File Transfer Protocol) 21, SSH (Secure Shell, a protocol for secure remote access) 22, SMTP (Simple Mail Transfer Protocol, used for sending email between systems) 25, DNS 53, HTTP 80, HTTPS (HTTP carried over a TLS-protected connection) 443, MySQL 3306, and PostgreSQL 5432. A conventional port is configuration, not security.
 
-A socket endpoint can be simplified as protocol + IP + port. A TCP connection is distinguished by client IP/port and server IP/port, allowing many clients to share server port 443.
+A socket endpoint can be simplified as protocol + IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) + port. A TCP connection is distinguished by client IP/port and server IP/port, allowing many clients to share server port 443.
+
+For this optional practice, [install PHP](/en/php/00-lab-setup/), create a new practice folder, and save hello.php containing `<?php echo 'Hello';`. The opening tag starts PHP and echo displays text. Open a terminal in that folder and run:
 
 ```bash
 php -S localhost:8000
@@ -24,40 +39,17 @@ php -S localhost:8000
 
 In `http://localhost:8000/hello.php`, the scheme is HTTP, host is localhost, port is 8000, and path is `/hello.php`. Omitting a port means the scheme’s default, not “no port”.
 
-## Lesson map
+The browser should display Hello. localhost refers to your own computer; -S starts a development server. Keep its terminal open while testing and stop it with Ctrl+C afterward.
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: URLs, ports, and HTTP">
-<p class="lesson-diagram-title">Concept map: URLs, ports, and HTTP</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>HTTP is an application protocol defining request/response semantics</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>The fragment is normally browser-local and is not</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>A port is a 16-bit number from 0</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>A socket endpoint can be simplified as protocol</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>In http://localhost:8000/hello.php, the scheme is HTTP, host is</span></div>
-</div>
-</div>
+## Practical problems
 
-## Check your understanding
+<details><summary>Does the browser send <code>#section</code> to the server?</summary><p>No. The fragment is normally browser-local, while the path and query string are sent.</p></details>
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “HTTP is an application protocol defining request/response semantics” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> HTTP is an application protocol defining request/response semantics for resources. It is not the network connection itself; it runs over transports such as TCP or QUIC. HTTP is stateless by default, so applications add cookies, sessions, or tokens for continuity. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “HTTP is an application protocol defining request/response semantics” with “The fragment is normally browser-local and is not”. Why does neither replace the other in “URLs, ports, and HTTP”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “HTTP is an application protocol defining request/response semantics”: HTTP is an application protocol defining request/response semantics for resources. It is not the network connection itself; it runs over transports such as TCP or QUIC. HTTP is stateless by default, so applications add cookies, sessions, or tokens for continuity. For “The fragment is normally browser-local and is not”: The fragment is normally browser-local and is not sent in the HTTP request. Never place passwords, tokens, or other secrets in URLs because history, logs, analytics, and referrers may expose them. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “A port is a 16-bit number from 0”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A port is a 16-bit number from 0 to 65535 identifying a service in the operating system. Common values include FTP 21, SSH 22, SMTP 25, DNS 53, HTTP 80, HTTPS 443, MySQL 3306, and PostgreSQL 5432. A conventional port is configuration, not security. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “A socket endpoint can be simplified as protocol” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A socket endpoint can be simplified as protocol + IP + port. A TCP connection is distinguished by client IP/port and server IP/port, allowing many clients to share server port 443. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+<details><summary>A service works at <code>localhost:8080</code>, but a URL without a port fails. Why?</summary><p>HTTP defaults to 80 and HTTPS to 443. The URL must include <code>:8080</code> while the service listens there.</p></details>
+
+<details><summary>Does port 443 guarantee encryption?</summary><p>No. It is a convention; an actual TLS (Transport Layer Security, rules for establishing an authenticated protected connection) handshake creates encryption. A misconfigured plain service can listen on 443.</p></details>
+
+
+## Next step
+
+After completing this practice, continue with [Characters and encoding in web addresses](/en/programming-basics/21-url-encoding/).

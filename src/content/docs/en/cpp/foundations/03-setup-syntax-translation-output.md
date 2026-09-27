@@ -6,6 +6,20 @@ description: "C++ is a compiled language with strong performance and memory cont
 tableOfContents: true
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **Compiler:** A program that turns source code into a form the computer can run.
+- **Runtime:** The period when a program is actually running.
+- **Debugger:** A tool that pauses a program so you can inspect values and execution step by step.
+- **Token:** A value representing identity or permission without resending a password.
+- **Scope:** The region of code in which a name or variable is visible.
+- **Function:** A named, reusable block of code with one defined job.
+
+
 ## The C++ language
 
 C++ is a compiled language with strong performance and memory control. Understanding program structure and the build path matters more than depending on one IDE.
@@ -36,7 +50,7 @@ int main() {
 
 <div class="lesson-diagram" role="img" aria-label="The C++ source-to-executable pipeline">
 <p class="lesson-diagram-title">The C++ source-to-executable pipeline</p>
-<div class="diagram-flow">
+<div class="diagram-flow diagram-pipeline">
 <div class="diagram-node input"><span>Source .cpp</span></div>
 <span class="diagram-arrow" aria-hidden="true">→</span>
 <div class="diagram-node process"><span>Preprocessor</span></div>
@@ -140,3 +154,11 @@ String literals use double quotes; character literals use single quotes. `\n` in
 <details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Fix the earliest relevant diagnostic and rebuild; later messages may only be cascading consequences.</div></details>
 </section>
 </div>
+
+## Connect the ideas
+
+Use a debugger with breakpoints and stack inspection instead of relying only on prints. Enable AddressSanitizer and UndefinedBehaviorSanitizer in development, and use CMake or a build script to apply consistent flags. Package managers resolve dependencies but do not replace version pinning and review.
+
+### Try it yourself
+
+Build with warnings and sanitizers, then diagnose an intentional out-of-bounds access.

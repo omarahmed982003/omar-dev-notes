@@ -1,51 +1,45 @@
 ---
-title: "2. Computers, data, and the processing cycle"
-description: "A connected model of a computer receiving data, processing it, producing output, and storing results across hardware and software layers."
-tableOfContents: true
+title: "How a computer turns input into a result"
+description: "Connect your practical actions to data and instructions. You do not yet need to know the computer’s internal architecture."
 sidebar:
-  order: 2
+  order: 5
+prev: {"link":"/en/programming-basics/computer-fundamentals/03-programs-installation-safety/","label":"Programs, installation, and safe use"}
+next: {"link":"/en/programming-basics/computer-fundamentals/02-binary-data-representation/","label":"How computers represent numbers and text"}
 ---
 
-## A computer is a system, not one component
+Connect your practical actions to data and instructions. You do not yet need to know the computer’s internal architecture.
 
-Hardware is the physical machinery, software is instructions plus data, and the operating system manages resources and exposes controlled interfaces to programs. A computer does not understand intent; it executes precise instructions over data represented as bits.
+## Attempt before reading the example
 
-Distinguish raw **data**, interpreted **information**, a stored **program**, and a running **process** with memory, state, and resources.
+A temperature converter takes 20 Celsius and displays 68 Fahrenheit. Identify input, processing instructions, and output. Is 20 an instruction?
 
-## Input–Process–Output–Storage
+<details><summary>Show reasoning and answer</summary>
 
-1. **Input:** keyboard, file, network, camera, or sensor data.
-2. **Process:** validation, conversion, calculation, and decisions.
-3. **Output:** a display, file, network response, or control signal.
-4. **Storage:** temporary memory or persistent SSD/HDD state.
+Input: 20 with its Celsius unit. Instructions: multiply by 9, divide by 5, add 32. Output: 68 Fahrenheit. The input varies; the calculation steps are instructions. Zero Celsius gives 32 Fahrenheit.
 
-The stages may overlap. A video player receives chunks, decodes them, fills a buffer, and displays frames while later chunks are still arriving.
+</details>
 
-<div class="lesson-diagram" role="img" aria-label="Computer data-processing cycle">
-<p class="lesson-diagram-title">The data journey</p><div class="diagram-flow"><div class="diagram-node input"><span>Input</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node process"><span>Validation + Processing</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node output"><span>Output</span></div><span class="diagram-arrow" aria-hidden="true">↔</span><div class="diagram-node start"><span>Memory / Storage</span></div></div></div>
+## Data and instructions
 
-## Example: opening and editing an image
+Data are values you work with: a word, number, or picture. Instructions specify what to do with them. Entering 2 and 3 and requesting addition uses two numbers as data, addition as the operation, and produces 5. The computer does not know whether you meant multiplication; it follows the instructions.
 
-The app asks the OS for the file. The storage controller reads blocks into RAM, the program decodes the format using the CPU, and the GPU may render it. RAM holds active state and the display receives the result. Saving requires writing persistent storage and checking that the write succeeded; changing RAM alone is not enough.
+Hardware means physical components such as a screen or processor. Software means programs and their instructions and data. They cooperate: the keyboard supplies characters, while the text editor determines how to handle them.
 
-## Where data lives
+## Trace your Notepad exercise
 
-- **Registers and CPU caches:** immediately needed values and instructions.
-- **RAM:** fast active workspace.
-- **SSD/HDD:** larger persistent storage with higher access latency.
-- **Network:** movement to another machine through agreed protocols.
+| Stage | Meaning | Your example |
+|---|---|---|
+| Input | Supplying data | Pressing keys to type a word |
+| Processing | Acting on data | Inserting characters at the text cursor |
+| Output | Producing a result | Showing the word on screen |
+| Storage | Saving | Writing text to a file when you save |
 
-This is the overview. Dedicated lessons explain CPU/GPU, memory, storage, and the operating system without duplicating their details here.
+Visible text is not necessarily saved. Output may also be a file or sound. Not every program needs the internet: your Notepad and Calculator exercises can run locally.
 
-## Diagnose along the data path
+## Complete experiment
 
-Check whether input arrived in the expected format, which processing step changed it, whether internal output differs from presentation, whether persistence succeeded, whether a stale cache is being read, and whether disk or network work failed partially.
+Open Calculator through Start. Enter 12+8 and predict 20 before executing. Change addition to subtraction: the result becomes 4. The instruction changed while the data stayed the same.
 
-## Check your understanding
+**Worked exercise:** Three pens cost 5 each. Inputs are price 5 and quantity 3; processing multiplies them; output is 15. Saving an invoice is another action: calculation alone does not automatically create a file.
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Why is an executable file on an SSD not yet a running program?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It contains stored instructions. The OS must create a process, map required pages and resources, and start execution.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>Trace a voice message through IPO and storage.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The microphone supplies input; encoding and compression process it; sending and persistence are output/storage. The receiver accepts bytes, decodes them, and outputs audio.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>The calculation succeeds but the UI shows an old value. What do you inspect?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Inspect the write result, the UI data source, and every cache or buffer that may contain stale state.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>How do a program and a process differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A program is stored instructions. A process is a live execution with an address space, state, open resources, and scheduling context.</div></details></section>
-</div>
+**Check yourself:** A file contains grades 60 and 80; a report gives average 70. The numbers are inputs, while the computed average provides information. Entering 800 instead of 80 can produce a correct calculation on incorrect data; this is why input checking matters.

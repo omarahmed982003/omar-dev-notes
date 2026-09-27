@@ -5,6 +5,27 @@ sidebar:
   order: 11
 ---
 
+## Before you start
+
+Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+
+### New terms in this lesson
+
+- **HTTP:** The rules used to exchange requests and responses on the web.
+- **Token:** A value representing identity or permission without resending a password.
+- **CLI:** A text-based interface controlled by typed commands.
+- **Scope:** A named permission requested or granted to a client, such as orders:read; it does not by itself prove ownership of an order.
+- **Function:** A named, reusable block of code with one defined job.
+
+
+- **Authentication:** Confirming that a user owns an identity.
+- **Authorization:** Deciding which actions an identity may perform.
+- **OAuth:** A delegation protocol granting limited access without sharing a password.
+- **OIDC:** An identity layer over OAuth that identifies who signed in.
+- **SAML:** A standard for exchanging sign-in information between services.
+- **MFA:** Using more than one independent sign-in factor.
+- **Secret:** A sensitive value such as an API key or service password.
+
 # Match the flow to the client
 
 ```text
@@ -83,40 +104,26 @@ RFC 7522 can exchange a SAML bearer assertion as an OAuth grant or use it for cl
 - The Implicit Grant exposes access tokens through the front channel; use Authorization Code + PKCE.
 - The Resource Owner Password Credentials grant exposes user passwords to clients and is incompatible with modern MFA/WebAuthn. The OAuth Security BCP says it must not be used.
 
-## Lesson map
+## Security scenario
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Modern OAuth flows">
-<p class="lesson-diagram-title">Concept map: Modern OAuth flows</p>
-<div class="diagram-flow">
-<div class="diagram-node input"><span>Authorization Code + PKCE</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Client Credentials</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Device Authorization</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Refresh Token</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Assertion grants</span></div>
-</div>
-</div>
+<details><summary>What does PKCE prevent?</summary><p>It binds an authorization code to the initiating client, so an interceptor cannot redeem it without the verifier.</p></details>
 
-## Check your understanding
+## Threat drill
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Explain “Authorization Code + PKCE” as if reviewing a real implementation. What is its goal and most important constraint?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Send response_type=code, exact redirect URI, scopes, state, OIDC nonce, code challenge, and code_challenge_method=S256. At callback, consume the bound state once, then exchange the code with the verifier through the token endpoint. PKCE binds a code to the client instance that started the transaction. Use a new high-entropy verifier and S256 for every attempt. In practice, a successful happy path is insufficient: document assumptions and validate the values and states that can break this behavior.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Compare “Authorization Code + PKCE” with “Client Credentials”. Why does neither replace the other in “Modern OAuth flows”?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> For “Authorization Code + PKCE”: Send response_type=code, exact redirect URI, scopes, state, OIDC nonce, code challenge, and code_challenge_method=S256. At callback, consume the bound state once, then exchange the code with the verifier through the token endpoint. PKCE binds a code to the client instance that started the transaction. Use a new high-entropy verifier and S256 for every attempt. For “Client Credentials”: Use this for a confidential service acting as itself: There is no end user. Prefer independent workload identities and consider mTLS or private_key_jwt for stronger client authentication. The first covers one part of the design while the second completes the behavior or constraints required for a correct implementation.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Assume a system ignores “Device Authorization”. What failure or risk should you expect, and how would a test expose it?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> A constrained device obtains a secret device_code, a human user_code, and a verification URI. The user approves on a second device while the original device polls. Respect the returned polling interval. Increase it by five seconds on slow_down, and stop on denial or expiration. Test a valid path, an exact boundary, and invalid input, then inspect output, side effects, and logs rather than treating the absence of an exception as success.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Turn “Refresh Token” into a reviewable engineering decision. What should be documented and tested?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Send refresh tokens only to the token endpoint and never request broader scope. Rotation replaces each used refresh token and detects reuse of an older member of the token family. Record the rationale, alternatives, and limits; test normal behavior, minimum and maximum boundaries, partial failure, and retry or repetition when applicable.</div></details>
-</section>
-</div>
+**Scenario:** An attacker intercepts an authorization code for a public client and tries to redeem it first.
+
+**Negative test:** Start a PKCE flow, then redeem the code without <code>code_verifier</code> and with a value that does not match the challenge.
+
+**Expected result:** Both attempts fail; only the original verifier with the exact redirect URI is accepted.
+
+### Verification source
+
+- [RFC 7636: Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636.html)
+
+## Connect the ideas
+
+Require PKCE S256 rather than plain, binding code to client, redirect URI, and verifier. Device flow is vulnerable to user-code phishing, so display service/client identity and enforce interval plus expiry. Rotate refresh tokens and detect reuse to revoke the family; do not start new implicit or password-grant designs.
+
+### Try it yourself
+
+Test a wrong verifier, expired device code, and reused refresh token.

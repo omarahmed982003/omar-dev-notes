@@ -1,48 +1,40 @@
 ---
-title: Computer, programming, and web foundations
-description: "A structured path from computers, math, logic, and problem solving to networking, the web, and request flow."
+title: "Computer, programming, and networking fundamentals"
+description: "Learn computer use, build and test a small program, then explore mathematics, computer internals, and networks."
 sidebar:
   order: 0
 ---
 
-# Computer, programming, and web foundations
+Learn computer use, build and test a small program, then explore mathematics, computer internals, and networks.
 
-The track has three connected groups: how computers work and how to study programming, the mathematics and logic used to design solutions, and the networking and web path followed by a request. Follow the order if you are new, or use each group as a focused reference.
+## Using your computer
 
-## 1. Computer and programming fundamentals
+[Open this section](/en/programming-basics/computer-fundamentals/)
 
-[Start the computer-fundamentals path](./computer-fundamentals/) for hardware and software, the data-processing cycle, binary, programming languages, algorithms, technology fields, and AI tools.
+Create and find files, use programs safely, and understand how data and hardware fit together.
 
-## 2. Math, logic, and problem solving
+## Programming fundamentals and practice
 
-[Start the math and problem-solving path](./math-problem-solving/) for remainders, percentages, variables, Boolean logic, graphs, computational thinking, pseudocode, decision trees, flowcharts, loops, and debugging.
+[Open this section](/en/programming-basics/programming-practice/)
 
-[Problem solving and algorithms](./08-problem-solving-algorithms/) connects these topics to data-structure choices, Big O analysis, and testable algorithm design.
+Progress from one result to user input, text, error handling, saved data, and a shopping-list project.
 
-## 3. Networking and web fundamentals
+## Math and problem solving
 
-1. [The Web and request flow](./01-web-and-request-flow/)
-2. [DNS and IP addresses](./02-dns-and-ip/)
-3. [TCP, UDP, and packets](./03-tcp-udp-packets/)
-4. [URLs, ports, and HTTP](./04-url-ports-http/)
-5. [HTTP messages and state](./05-http-messages-state/)
-6. [HTTPS, TLS, and certificates](./06-https-tls-certificates/)
-7. [Inside the server](./07-server-side-path/)
-8. [Servers, proxies, load balancers, and API gateways](./08-server-proxy-api-gateway/)
-9. [How browsers render a page](./09-browser-rendering-devtools/)
-10. [HTTP caching and compression](./10-http-caching-compression/)
-11. [Same-origin policy and CORS](./11-same-origin-cors/)
-12. [Real-time communication and webhooks](./12-realtime-webhooks/)
-13. [API design](./13-api-design/)
-14. [TCP/IP layers, LANs, Ethernet, and ARP](./14-network-layers-lan-ethernet-arp/)
-15. [DHCP, NAT, subnetting, routing, and IPv6](./15-addressing-dhcp-nat-routing-ipv6/)
-16. [HTTP/2, HTTP/3, and QUIC](./16-http2-http3-quic/)
-17. [CDNs, WAFs, and observability](./17-proxies-cdn-waf-observability/)
+[Open this section](/en/programming-basics/math-problem-solving/)
 
-```text
-URL → DNS → IP + Port → TCP/QUIC + TLS → HTTP Request
-    → CDN/WAF/Load Balancer → Web Server → PHP → Database
-    → HTTP Response → Browser
-```
+Learn arithmetic and logic as needed, then practice describing, tracing, and comparing solutions.
 
-This is a teaching map. Caches, reused connections, and application architecture can skip optional stages.
+## Computer internals and development tools
+
+[Open this section](/en/programming-basics/computer-in-depth/)
+
+Return to memory, execution, operating systems, the terminal, and version history after writing programs.
+
+## Networking and the web
+
+[Open this section](/en/programming-basics/networking-next/)
+
+Begin with local connections and Wi-Fi, then addresses, web requests, and encryption. Application-server topics follow separately.
+
+After the programming project, you can start [C++](/en/cpp/) or [PHP](/en/php/) and use the later sections when their questions arise.
