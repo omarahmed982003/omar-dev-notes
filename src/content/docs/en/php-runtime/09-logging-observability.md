@@ -59,6 +59,26 @@ Track request rate, error rate, latency distributions, and saturation. Useful PH
 
 Alert on actionable user impact such as sustained `5xx` rate or p95 latency. Attach deployment version to signals to identify regressions.
 
+## Engine and application failures
+
+Separate expected validation failures, application exceptions, dependency warnings, and fatal engine errors. A public response contains a safe status and error ID while the internal record keeps type, stack, and request ID without secrets.
+
+~~~php
+set_exception_handler(static function (Throwable $error): void {
+    $errorId = bin2hex(random_bytes(8));
+    error_log(json_encode([
+        'event' => 'request.failed',
+        'error_id' => $errorId,
+        'exception' => $error::class,
+    ], JSON_THROW_ON_ERROR));
+    http_response_code(500);
+    echo json_encode(['error' => 'internal_error', 'error_id' => $errorId]);
+});
+~~~
+
+`set_exception_handler` cannot catch every startup or parse failure. Send `log_errors` to stderr, monitor FPM and Nginx startup logs, and use a shutdown handler carefully to inspect `error_get_last()` without continuing a corrupted request. Test that `display_errors=Off` and that responses contain no path or stack.
+
+
 ## Reference
 
 - [PSR-3 Logger Interface](https://www.php-fig.org/psr/psr-3/)
@@ -84,6 +104,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Propagate trace context and span IDs through HTTP, queues, and databases, with sampling that preserves errors and rare requests without full cost. Control label cardinality and keep raw user IDs out of metrics. Define retention, redaction, and access while linking logs, metrics, and traces.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

@@ -5,131 +5,139 @@ sidebar:
   order: 13
 ---
 
-## قبل ما تبدأ
+## المشكلة: الاسم ثلاث حروف، لكن strlen تقول ستة
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+PHP `string` سلسلة **Bytes**، والـByte وحدة تخزين من 8 bits. **Unicode** يعطي الرموز أرقامًا اسمها **code points**. **UTF-8** يحول code point إلى 1–4 Bytes. **Grapheme cluster** مجموعة code points يتعامل معها المستخدم غالبًا كحرف ظاهر واحد. الثلاثة قياسات مختلفة؛ لازم تختار حسب السؤال، مش حسب اسم الدالة.
 
-### كلمات جديدة في الدرس
+مثلًا عمر ثلاثة code points وستة Bytes. حرف e مع علامة نبرة منفصلة يبدو رمزًا واحدًا لكنه code point للحرف وآخر للعلامة. Emoji العائلة تجمع عدة رموز وروابط غير ظاهرة. الدرس PHP 8.1+، مع امتدادي `mbstring` و`intl`؛ تحقق بـ`php -m`.
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
-- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
-- **Unicode:** معيار بيعطي الحروف والرموز من لغات مختلفة أرقامًا موحدة.
-- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
+## برنامج يقارن الوحدات الثلاث
 
+احفظ `unicode.php` كـUTF-8 وشغّل `php unicode.php`:
 
-## الحرف اللي شايفه مش شرط يكون Byte واحد
+~~~php
+<?php
+declare(strict_types=1);
 
-PHP String عبارة عن Bytes. النص الإنجليزي الأساسي غالبًا يخدعنا لأن كل حرف ASCII حجمه Byte واحد، لكن الحرف العربي في UTF-8 غالبًا يحتاج أكثر من Byte، والرمز اللي المستخدم شايفه ممكن يتكوّن من أكتر من Unicode Code Point.
-
-```php
-$text = 'عمر';
-
-echo strlen($text), PHP_EOL;    // عدد الـBytes
-echo mb_strlen($text), PHP_EOL; // عدد المحارف حسب Encoding
-```
-
-علشان كده `strlen()` و`$text[0]` مش اختيارًا صحيحًا لعد أو قص النص العربي. استخدم `mb_*`، ولو محتاج تتعامل مع Grapheme ظاهر للمستخدم استخدم وظائف `intl` المناسبة.
-
-النص يمر بمراحل مختلفة:
-
-```text
-Bytes → UTF-8 decoding → Code Points → Grapheme clusters → Display
-```
-
-والـRegex مش «بحث سحري». هي لغة تصف Pattern. ابدأ بنمط صغير، ثبّت Anchors لما تريد مطابقة القيمة كلها، واستخدم Unicode Mode `u` للنص UTF-8. وما تستخدمش Regex لتحليل HTML كامل أو تنفيذ Parser معقد موجود له Library موثوقة.
-
-## String في PHP
-
-PHP string سلسلة bytes، وليست قائمة Unicode code points. لذلك:
-
-```php
-$text = 'مرحبًا';
-echo strlen($text);                 // bytes
-echo mb_strlen($text, 'UTF-8');     // characters تقريبًا
-```
-
-استخدم UTF-8 عبر التطبيق وقاعدة البيانات وHTTP:
-
-```php
-header('Content-Type: text/html; charset=utf-8');
-```
-
-`mb_strlen` و`mb_substr` و`mb_strtolower` أنسب للنص متعدد اللغات من نسخ byte-oriented.
-
-## Graphemes والتطبيع
-
-الحرف المرئي قد يتكون من أكثر من code point. امتداد `intl` يوفر أدوات grapheme و`Normalizer`:
-
-```php
-$normalized = Normalizer::normalize($input, Normalizer::FORM_C);
-```
-
-طبّع عند الحاجة الواضحة مثل البحث أو uniqueness، ولا تغيّر النص الأصلي بلا متطلب. Case folding والقواعد اللغوية أعقد من `strtolower`.
-
-## Formatting آمن
-
-- استخدم interpolation أو `sprintf` للعرض، لا لبناء SQL.
-- قارن secrets بـ`hash_equals()` لا `===` عند الحاجة لمقارنة ثابتة الزمن.
-- استخدم `htmlspecialchars` عند إخراج نص في HTML، و`rawurlencode` لمعامل URL.
-- لا توجد “دالة تعقيم عامة” لكل السياقات.
-
-## Regular Expressions
-
-```php
-$ok = preg_match('/\A[A-Z]{2}-\d{6}\z/D', $code) === 1;
-```
-
-- استخدم anchors واضحة.
-- افحص `preg_last_error_msg()` عند الفشل.
-- ضع حدودًا لطول input قبل regex معقدة.
-- تجنب backtracking كارثي في patterns على نص غير موثوق.
-- لا تستخدم regex لتحليل HTML أو JSON عندما يوجد parser.
-
-## مثال استخراج
-
-```php
-if (preg_match('/\A(?<country>[A-Z]{2})-(?<number>\d{6})\z/D', $code, $m)) {
-    $country = $m['country'];
-    $number = $m['number'];
+$samples = [
+    'ASCII' => 'Omar',
+    'Arabic' => 'عمر',
+    'accent' => "e\u{0301}",
+    'family' => "👨‍👩‍👧‍👦",
+];
+foreach ($samples as $label => $text) {
+    if (!mb_check_encoding($text, 'UTF-8')) {
+        throw new InvalidArgumentException('Invalid UTF-8');
+    }
+    printf("%s: bytes=%d points=%d graphemes=%d\n",
+        $label, strlen($text), mb_strlen($text, 'UTF-8'), grapheme_strlen($text));
 }
-```
-
-بعد مطابقة الشكل طبّق قواعد المجال؛ الشكل الصحيح لا يعني أن القيمة مسموحة.
-
-## تدريب عملي متدرج
-
-<details><summary>1. ليه strlen مش طول اسم عربي للمستخدم؟</summary><p>لأنها تعد Bytes. استخدم <code>mb_strlen()</code> للمحارف، أوGrapheme Functions لو الرمز الظاهر ممكن يتكون من أكثر من Code Point.</p></details>
-
-<details><summary>2. اكتب Pattern لرقم طلب كامل مثل ORD-1234</summary><p>استخدم Anchors: <code>/\AORD-\d{4}\z/D</code> أوصيغة مكافئة مناسبة، واختبر النص الكامل وقيمة فيها Prefix أوNewline.</p></details>
-
-<details><summary>3. ليه لازم تحدد حدًا لطول المدخل قبل Regex مكلفة؟</summary><p>علشان تمنع استهلاك CPU وMemory بمدخل ضخم أوPattern له Backtracking سيئ.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>لماذا قد تفشل <code>strlen</code> في عد الحروف المرئية؟</summary><p>لأنها تعد bytes، وحرف UTF-8 قد يستخدم أكثر من byte؛ استخدم mbstring أو grapheme حسب المعنى المطلوب.</p></details>
-
-<details><summary>ما خطر regex على مدخل طويل غير موثوق؟</summary><p>نمط سيئ قد يسبب backtracking مكلفًا؛ حدّ طول الإدخال وصمّم النمط واختبر حالات عدائية.</p></details>
-
-## شغّل وتحقق
-
-الملف يفرق بين البايتات وcode points في ASCII والعربية وemoji، ويرفض السطر الجديد في المبلغ. اختبار الأداء لنمط regex آخر يحتاج حد مدخل وقياسًا منفصلًا.
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php text-lab.php
+$text = 'عمر';
+echo 'first byte=', bin2hex($text[0]), PHP_EOL;
+echo 'first point=', mb_substr($text, 0, 1, 'UTF-8'), PHP_EOL;
 ~~~
 
-**هدف تجربة التكامل الموسعة:** تمر نصوص ASCII والعربية وemoji، ويُقاس الطول بالدالة المناسبة؛ regex الكارثي يرفض بحد زمني أو يُعاد تصميمه.
+~~~text
+ASCII: bytes=4 points=4 graphemes=4
+Arabic: bytes=6 points=3 graphemes=3
+accent: bytes=3 points=2 graphemes=1
+family: bytes=25 points=7 graphemes=1
+first byte=d8
+first point=ع
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+`\u{0301}` كتابة code point للعلامة في النص ذي التنصيص المزدوج. `mb_check_encoding` تتأكد أن Bytes تشكل UTF-8 صحيحة قبل تفسيرها. `strlen` مناسبة لحجم ملف/طلب، و`mb_strlen` تعد code points، و`grapheme_strlen` تعد المجموعات الظاهرة وفق Unicode/ICU المثبتة. قواعد تجميع الرموز الحديثة قد تختلف مع إصدار ICU؛ الأمثلة هنا رموز معروفة.
 
-## اربط النقاط ببعض
+`$text[0]` Byte واحدة d8، وهي جزء ناقص من الحرف ع؛ `substr` قد يقطع UTF-8 في المنتصف أيضًا. `mb_substr` تقطع حسب code points، لكنها قد تفصل علامة تشكيل؛ `grapheme_substr` أنسب لحد حروف ظاهر. لا تستخدم عدد Graphemes وحده كحد لحجم الطلب، لأن المجموعة قد تحمل علامات كثيرة؛ ضع حد Bytes أيضًا.
 
-افحص أخطاء <code>preg_*</code> وحدود backtracking ولا تقبل regex قد تعلق على input مهاجم. طبّع Unicode قبل مقارنة identifiers عندما يحدد المجال ذلك، لكن احتفظ بالقيمة الأصلية للعرض. escaping يعتمد السياق: HTML text وattribute وURL وJavaScript ليست عملية واحدة.
+## شكلان لنفس الحرف: Normalization
 
-### جرّب بنفسك
+**Normalization** توحيد تمثيلات Unicode المتكافئة وفق قاعدة محددة. NFC تفضل الشكل المركب حيث يوجد. احفظ `normalize.php`:
 
-اختبر regex على input طويل عدائي وقارن زمنه بالحالة الطبيعية.
+~~~php
+<?php
+$composed = "\u{00E9}";
+$decomposed = "e\u{0301}";
+var_dump($composed === $decomposed);
+$normalized = Normalizer::normalize($decomposed, Normalizer::FORM_C);
+if ($normalized === false) {
+    throw new RuntimeException('Normalization failed');
+}
+var_dump($composed === $normalized);
+echo strlen($decomposed), ' -> ', strlen($normalized), PHP_EOL;
+~~~
+
+~~~text
+bool(false)
+bool(true)
+3 -> 2
+~~~
+
+أول مقارنة بين Bytes مختلفة، رغم تقارب الشكل. بعد NFC تتطابق. التطبيع لا يحول كل حروف متشابهة بصريًا لنفس المعنى، ولا يصلح XSS. قرر سياسة identifiers والبحث قبل التطبيع، واحتفظ بالأصل للعرض إذا مطلوب. لا تطبع أو تغير Password من نفسك. `mb_strtolower` أنسب من strtolower للنص المتعدد، لكن case folding والترتيب اللغوي لهما قواعد؛ `Collator` من intl للترتيب المحلي عند الحاجة.
+
+## Regex: وصف شكل صغير، مش Parser لكل شيء
+
+**Regular expression** نمط يصف شكل النص. ابدأ بشرط طول ثم pattern بسيطة. `\A` بداية النص الحقيقية، و`\z` نهايته الحقيقية. `[0-9]` رقم ASCII، و`{4}` أربع مرات. `(?<id>...)` مجموعة باسم لالتقاط جزء. حرف `u` بعد delimiter يفعل UTF-8 mode؛ لا يغير كل قواعد المجال تلقائيًا.
+
+برنامج `code.php` يقبل ORD وأربع أرقام فقط:
+
+~~~php
+<?php
+function orderId(string $input): ?string
+{
+    if (strlen($input) > 32) {
+        return null;
+    }
+    $matched = preg_match('/\AORD-(?<id>[0-9]{4})\z/u', $input, $matches);
+    if ($matched === false) {
+        throw new RuntimeException(preg_last_error_msg());
+    }
+    return $matched === 1 ? $matches['id'] : null;
+}
+foreach (['ORD-1234', 'xORD-1234', "ORD-1234\n", 'ORD-0000'] as $input) {
+    echo json_encode($input), ' => ', orderId($input) ?? 'invalid', PHP_EOL;
+}
+~~~
+
+~~~text
+"ORD-1234" => 1234
+"xORD-1234" => invalid
+"ORD-1234\n" => invalid
+"ORD-0000" => 0000
+~~~
+
+الدالة تعيد النص لا int فتحافظ على الأصفار. فحص الطول قبل المحرك يحد العمل. `preg_match` تعيد 1 للتطابق و0 لعدم التطابق وfalse للخطأ؛ لا تخلط 0 وfalse. المجموعة لا تُقرأ إلا بعد نجاح المطابقة. قبول 0000 شكليًا لا يعني وجود طلب بهذا الرقم؛ التحقق من البيانات خطوة أخرى.
+
+**غلط:** `/^ORD-[0-9]{4}$/` قد يقبل موضع نهاية قبل newline أخيرة؛ `\z` أدق لعقد النص الكامل. وأنماط مثل `(a+)+` قد تسبب **backtracking** مكلفًا: المحرك يجرب تقسيمات كثيرة عند قرب الفشل. استبدلها بنمط أبسط، ضع حدود طول، وافحص أخطاء PCRE. لا تشغّل pattern مستخدم غير موثوق بحرية. JSON وHTML لهما Parsers؛ Regex ليست بديلًا عامًا.
+
+## العرض والترميز حسب المكان
+
+**Validation** تقرر هل البيانات مسموحة. **Encoding** تجعل البيانات نصًا في سياق العرض بدل أن تُفهم كتعليمات. لا توجد دالة تعقيم عامة. احفظ `escaping.php`:
+
+~~~php
+<?php
+$name = '<Omar & Mona>';
+echo htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), PHP_EOL;
+echo '/search?q=', rawurlencode($name), PHP_EOL;
+echo json_encode(['name' => $name], JSON_THROW_ON_ERROR), PHP_EOL;
+~~~
+
+~~~text
+&lt;Omar &amp; Mona&gt;
+/search?q=%3COmar%20%26%20Mona%3E
+{"name":"<Omar & Mona>"}
+~~~
+
+HTML text/quoted attributes تحتاج htmlspecialchars، ومعامل URL يحتاج rawurlencode أو http_build_query؛ لو الرابط داخل HTML attribute يحتاج ترميز HTML بعد بناء URL. JavaScript سياق آخر؛ استخدم استجابة JSON منفصلة أو آلية embedding آمنة، مش concatenation. `sprintf`/interpolation للعرض، لا لبناء SQL. الأسرار الثابتة الطول مثل CSRF tokens تقارن بـ`hash_equals`؛ دي وظيفة مختلفة عن مقارنة نصوص المستخدم.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع قياسات e مع U+0301</summary><p>3 Bytes و2 code points و1 grapheme. الأول حرف ASCII ببايت والثاني علامة ببايتين؛ الشاشة تجمعهما.</p></details>
+
+<details><summary>Debugging: قص اسم عربي بـsubstr($name, 0, 1)</summary><p>تأخذ Byte واحدة وقد تنتج UTF-8 تالفة. استخدم mb_substr للـcode points أو grapheme_substr لحرف ظاهر، حسب عقدك.</p></details>
+
+<details><summary>كمّل Regex تقبل AB-123456 كاملة</summary><p><code>/\A[A-Z]{2}-[0-9]{6}\z/</code>. اختبر بداية زائدة ونهاية newline. بعدها افحص إن كان كود البلد مسموحًا؛ الشكل وحده مش قاعدة المجال.</p></details>
+
+<details><summary>preg_match رجعت false؛ هل أقول فقط إن الكود غير مطابق؟</summary><p>لا. 0 هي عدم التطابق. false خطأ نمط أو encoding أو حد محرك؛ افحص preg_last_error_msg وتعامل معه عند حد التطبيق.</p></details>
+
+شغّل `php text-lab.php` في [المختبر](/php/00-lab-setup/). دفتر الملاحظات سيحد Bytes وcode points ويتحقق من UTF-8 ثم يرمز عند العرض. [مرجع Grapheme](https://www.php.net/manual/en/function.grapheme-strlen.php).

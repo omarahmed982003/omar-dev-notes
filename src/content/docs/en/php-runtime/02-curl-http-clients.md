@@ -147,6 +147,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 
 Separate connect, TLS/read, and total timeouts and propagate cancellation deadlines. Before fetching a user-supplied URL, prevent SSRF with scheme, host, DNS/IP policy, redirect controls, and re-resolution. Record attempts, latency, and status without tokens or sensitive bodies.
 
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
+
 ### Try it yourself
 
 Test a URL redirecting to a private IP and a server that connects but never sends a body.

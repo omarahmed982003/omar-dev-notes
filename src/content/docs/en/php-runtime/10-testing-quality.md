@@ -63,6 +63,30 @@ Coverage finds unexecuted code but cannot prove useful assertions. Focus on bran
 
 Run PHPUnit, PHPStan/Psalm, and PHPCS/PHP-CS-Fixer locally and in CI with the same configuration. Control clocks and randomness, isolate database tests, avoid ordering dependencies, and never copy real production personal data into fixtures.
 
+```bash
+vendor/bin/phpstan analyse
+vendor/bin/phpunit
+vendor/bin/phpcs
+```
+
+## Contract and integration tests
+
+Test real boundary contracts: status, headers, and schema for HTTP; constraints and isolation for databases; and ack/retry semantics for queues. A fake improves speed but cannot prove driver or broker compatibility.
+
+Give each suite layer a clear command and time budget:
+
+~~~text
+unit -> contract -> integration -> HTTP smoke -> end-to-end
+~~~
+
+Run integration tests against temporary services and isolate data for every process. Parallel tests must not share a database name, queue, or clock. Use unique namespaces and clean resources in `finally`.
+
+## Mutation and flaky tests
+
+Mutation testing changes an operator or condition and expects a test to fail. A surviving mutation means coverage reached the line without a strong assertion. Track a flaky test as a defect with an owner and deadline; rerunning CI until green hides the race.
+
+Exercise failure paths: timeout, malformed response, deadlock, duplicate delivery, full disk, and SIGTERM. Inject time and randomness so the result is repeatable.
+
 ## Reference
 
 - [PHPUnit Manual](https://docs.phpunit.de/)
@@ -88,6 +112,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Separate unit, integration, contract, and end-to-end tests by boundary. Control time, randomness, and external services, and run tests in parallel without shared state. Coverage does not prove assertion quality; mutation testing exposes tests that survive logic changes, and CI starts clean.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

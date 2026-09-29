@@ -22,13 +22,32 @@ Read this lesson in three passes: understand the problem, follow the example, th
 
 Move slow or retryable work—mail, images, reports, API synchronization—outside the HTTP request. Respond after durably recording the intent, not after spawning an unmanaged background process. Version small payloads and send identifiers instead of serialized object graphs.
 
+```json
+{"type":"SendReceipt","job_id":"job_01J...","order_id":42,"attempt":1}
+```
+
 ## Delivery and idempotency
 
 Many systems provide **at-least-once** delivery, so a message can repeat. Deduplicate by job or business idempotency key and make result storage atomic within one transaction and a unique constraint. A transactional outbox ties a database change to publishing intent.
 
+```php
+<?php
+require __DIR__ . '/bootstrap.php';
+
+$db = Lessons\connectInventory(':memory:');
+Lessons\initializeInventory($db);
+$first = Lessons\purchase($db, 'job-42', 1, 1, 2);
+$again = Lessons\purchase($db, 'job-42', 1, 1, 2);
+echo json_encode([$first, $again], JSON_THROW_ON_ERROR), PHP_EOL;
+```
+
 ## Retry policy
 
 Retry transient failures with capped exponential backoff and jitter. Do not retry permanent validation or credential errors unchanged. After a limit, move the message to a dead-letter queue with diagnosis and alerting.
+
+```text
+delay = min(cap, base * 2^attempt) + random_jitter
+```
 
 ## Worker lifecycle
 
@@ -64,25 +83,30 @@ php queue-demo.php
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
+## A real Redis-backed worker
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -fsS -X POST http://127.0.0.1:8080/queue
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:queue
+~~~
+
+The log must contain `processed=<job_id>` and the list length must return to zero. Stop the worker, submit a job and prove it remains queued, then restart the worker. Submit the same `job_id` twice manually and inspect the duplicate record.
+
+
 ## Connect the ideas
 
 Visibility timeout must exceed processing time or be renewed so another worker does not see the message. Ordering is often guaranteed only within a partition. Poison messages need bounded retries, dead-letter handling, and investigation. A transactional outbox closes the database/message dual-write gap.
 
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
+
 ### Try it yourself
 
 Simulate a crash after commit but before ack and prove idempotency prevents duplicate effects.
-
-
-```php
-<?php
-require __DIR__ . '/bootstrap.php';
-
-$db = Lessons\connectInventory(':memory:');
-Lessons\initializeInventory($db);
-$first = Lessons\purchase($db, 'job-42', 1, 1, 2);
-$again = Lessons\purchase($db, 'job-42', 1, 1, 2);
-echo json_encode([$first, $again], JSON_THROW_ON_ERROR), PHP_EOL;
-```
 
 ## Why the claim belongs in the transaction
 

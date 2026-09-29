@@ -5,154 +5,165 @@ sidebar:
   order: 15
 ---
 
-## قبل ما تبدأ
+## المشكلة: العنوان مش لازم يكون اسم ملف
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+بدل `save.php` و`list.php` عايزين `GET /health` و`POST /notes`، مع طريقة واحدة للتعامل مع الأخطاء والإخراج. هنفصل خمس مسؤوليات قبل أي Framework:
 
-### كلمات جديدة في الدرس
+| المصطلح | مسؤوليته |
+|---|---|
+| Request | method وpath وheaders وbody جاية من العميل |
+| Front Controller | نقطة الدخول الواحدة، غالبًا public/index.php |
+| Middleware | عمل مشترك يحيط بالخطوات التالية أو يرفض قبلها |
+| Router | يختار Handler حسب method وpath |
+| Handler | ينفذ حالة واحدة ويرجع Response |
+| Response / Emitter | بيانات status/headers/body؛ وEmitter ترسلها مرة واحدة |
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
-- **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
-- **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
-- **Proxy:** وسيط يستقبل الطلب ويمرره لجهة أخرى حسب قواعد محددة.
-- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+الطلب يدخل كما يلي؛ Middleware خاصة بمسار قد تأتي بعد Router، لكن middleware العامة في المثال تغلفها:
 
+~~~text
+Request → Front Controller → Middleware → Router → Handler
+                                         ↑          ↓
+Response ← Emitter ← Middleware ←─────────┴── Response
+~~~
 
-## خلّينا نركّب الأجزاء في طلب واحد
+## ملف كامل يوضح الحدود
 
-لما المتصفح يبعت `POST /api/orders`، PHP ما بتشوفش «صفحة» بالمعنى البسيط بس. فيه Method وPath وHeaders وBody، والتطبيق محتاج يحولهم لقرار واستجابة.
+PHP 8.1+ وmbstring. أنشئ `public/index.php` كما يلي، أو استخدم `http-demo` في [حزمة الأمثلة](/downloads/php-course.zip). من مجلد http-demo شغّل `php -S 127.0.0.1:8082 -t public public/index.php`. المعامل الأخير يجعل كل الطلبات تمر عبر Front Controller، مش مجرد ملفات موجودة. المثال API تعليمية تعيد الملاحظة ولا تحفظها؛ الحفظ في الدرس 17.
 
-```text
-HTTP Request
-  → Front Controller
-  → Router يحدد الـHandler
-  → Middleware مشتركة
-  → Validation + Authorization
-  → Business Logic
-  → HTTP Response
-```
-
-الـ**Front Controller** هو نقطة دخول واحدة، غالبًا `public/index.php`. بدل ما كل URL يشير لملف مختلف، Web Server يرسل الطلبات الديناميكية للنقطة دي، وهي تبدأ التطبيق وتقرأ الطلب.
-
-الـ**Router** لا ينفذ كل شغل البرنامج؛ دوره الأساسي يطابق Method وPath ويختار Handler. والـ**Middleware** تنفذ مسؤوليات مشتركة حول الطلب، زي Request ID أوAuthentication أوError Mapping.
-
-ابدأ بمثال صغير، لكن حافظ على الحدود: بيانات Body غير موثوقة، وJSON الصالحة نحويًا مش معناها إن الحقول صحيحة، وStatus Code جزء من العقد، وأي `echo` عشوائية ممكن تفسد Response.
-
-## Front Controller
-
-اجعل خادم الويب يمرر الطلبات الديناميكية إلى `public/index.php`:
-
-```php
+~~~php
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-```
-
-لا تجعل document root هو جذر المشروع؛ يجب ألا يصل العميل إلى `vendor/` أو `.env` أو source files.
-
-## قراءة body
-
-```php
-$contentType = strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0]));
-
-if ($contentType !== 'application/json') {
-    respond(['error' => 'Unsupported media type'], 415);
-}
-
-try {
-    $payload = json_decode(
-        file_get_contents('php://input'),
-        true,
-        64,
-        JSON_THROW_ON_ERROR,
-    );
-} catch (JsonException) {
-    respond(['error' => 'Invalid JSON'], 400);
-}
-```
-
-ضع حدًا لحجم body في Web Server والتطبيق. Parsing لا يغني عن validation.
-
-## Router مبسط
-
-```php
-$handler = match ([$method, $path]) {
-    ['GET', '/health'] => static fn () => respond(['status' => 'ok']),
-    ['POST', '/api/orders'] => $createOrder,
-    default => null,
-};
-
-if ($handler === null) {
-    respond(['error' => 'Not found'], 404);
-}
-
-$handler();
-```
-
-Router حقيقية تحتاج parameters وmethod mismatch وURL decoding. الهدف فهم المسؤوليات قبل framework.
-
-## Response
-
-```php
-function respond(array $body, int $status = 200): never
+function response(array $data, int $status = 200, array $headers = []): array
 {
-    http_response_code($status);
-    header('Content-Type: application/json; charset=utf-8');
-    header('Cache-Control: no-store');
-    echo json_encode($body, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
-    exit;
+    return [
+        'status' => $status,
+        'headers' => $headers + [
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Cache-Control' => 'no-store',
+            'X-Content-Type-Options' => 'nosniff',
+        ],
+        'body' => json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+    ];
 }
-```
+function createNote(array $request): array
+{
+    if ($request['type'] !== 'application/json') {
+        return response(['error' => 'Unsupported media type'], 415);
+    }
+    try {
+        $payload = json_decode($request['body'], false, 32, JSON_THROW_ON_ERROR);
+    } catch (JsonException) {
+        return response(['error' => 'Invalid JSON'], 400);
+    }
+    if (!$payload instanceof stdClass
+        || !is_string($payload->text ?? null)
+        || trim($payload->text) === ''
+        || mb_strlen($payload->text, 'UTF-8') > 200) {
+        return response(['error' => 'Use a text field with 1 to 200 code points'], 422);
+    }
+    return response(['text' => trim($payload->text)], 200);
+}
+function route(array $request): array
+{
+    $routes = [
+        '/health' => ['GET' => static fn (array $r): array => response(['status' => 'ok'])],
+        '/notes' => ['POST' => 'createNote'],
+    ];
+    $methods = $routes[$request['path']] ?? null;
+    if ($methods === null) {
+        return response(['error' => 'Not found'], 404);
+    }
+    $handler = $methods[$request['method']] ?? null;
+    if ($handler === null) {
+        return response(['error' => 'Method not allowed'], 405, ['Allow' => implode(', ', array_keys($methods))]);
+    }
+    return $handler($request);
+}
+function middleware(array $request, callable $next): array
+{
+    $id = bin2hex(random_bytes(8));
+    try {
+        if (strlen($request['body']) > 4096) {
+            $reply = response(['error' => 'Body too large'], 413);
+        } else {
+            $reply = $next($request);
+        }
+    } catch (Throwable $error) {
+        error_log(json_encode(['request_id' => $id, 'type' => get_class($error)], JSON_THROW_ON_ERROR));
+        $reply = response(['error' => 'Internal error'], 500);
+    }
+    $reply['headers']['X-Request-ID'] = $id;
+    return $reply;
+}
 
-يجب إرسال headers قبل body. لا تخلط `echo` عشوائية مع response object.
-
-## Middleware pipeline
-
-```text
-request ID -> trusted proxy -> body limit -> routing
--> authentication -> authorization -> validation
--> handler -> error mapping -> response
-```
-
-كل middleware يجب أن تكون مسؤوليتها محددة. Logging وCORS ومعالجة الأخطاء قد تحتاج تغليف المسار كله.
-
-## تدريب عملي متدرج
-
-<details><summary>1. فرق بين 400 و404 و405 و415</summary><p>400 طلب غير صالح، 404 Route/Resource غير موجود، 405 Method غير مسموحة لمسار معروف، و415 نوع Body غير مدعوم.</p></details>
-
-<details><summary>2. JSON صحيحة لكن email مفقود. نعمل إيه؟</summary><p>Parsing نجح، لكن Validation تفشل. ارجع 422 أوالسياسة المتفق عليها مع Error Structure ثابتة، ولا تمرر البيانات للـHandler.</p></details>
-
-<details><summary>3. رتب Middleware</summary><p>Body Limit قبل Parsing، وRouting قبل سياسات Route، وAuthentication قبل Authorization، وError Boundary تغلف المسار كله.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>ماذا يفعل front controller؟</summary><p>يوفر نقطة دخول واحدة تبني request وتمرره إلى routing وmiddleware ثم ترسل response.</p></details>
-
-<details><summary>متى تعيد API خطأ <code>400</code>؟</summary><p>عندما لا يمكن فهم الطلب أو parsing، بينما فشل validation الدلالي يمكن أن يستخدم 422 وفق عقد واضح.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php http-client-lab.php
+$body = file_get_contents('php://input', false, null, 0, 4097);
+if ($body === false) {
+    $reply = response(['error' => 'Body unavailable'], 500);
+} else {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $request = [
+        'method' => $_SERVER['REQUEST_METHOD'] ?? 'GET',
+        'path' => is_string($path) ? $path : '',
+        'type' => strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0])),
+        'body' => $body,
+    ];
+    $reply = middleware($request, 'route');
+}
+http_response_code($reply['status']);
+foreach ($reply['headers'] as $name => $value) {
+    header("{$name}: {$value}");
+}
+echo $reply['body'];
 ~~~
 
-**معيار النجاح:** تعطي المسارات المعروفة status وContent-Type وbody متسقة، ويعطي المسار الغائب 404 والخطأ الداخلي 500 بلا stack trace.
+## تتبع البرنامج من أسفل لأعلى ثم مع طلب واحد
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+تعريف الدوال لا ينفذ أجسامها. التنفيذ الحقيقي يبدأ بقراءة body في الأسفل. نقرأ بحد 4097 Bytes عشان نكتشف تجاوز 4096 بدون تحميل كل الجسم في ذاكرة التطبيق. الخادم نفسه يحتاج حدًا لأن PHP أو الخادم قد يكون استقبل/خزن الجسم قبل وصول الكود. `parse_url(..., PHP_URL_PATH)` يستبعد query string، فـ`/health?check=1` يختار نفس المسار.
 
-## اربط النقاط ببعض
+نبني Request Array ثم نستدعي middleware مع `'route'` كـCallback. Middleware تنشئ request ID وتفحص الحجم قبل parsing. لو الحجم مقبول تستدعي next؛ Router يبحث المسار أولًا، ثم method، ثم يستدعي Handler. الرد يرجع بالعكس؛ Middleware تضيف header، وEmitter ترسل status ثم headers ثم body.
 
-Router يجب أن يفرق 404 عن 405، ويطبق method semantics وContent-Type وbody limits قبل parsing. Response object لا ترسل نفسها عشوائيًا؛ emitter واحد يكتب status وheaders وbody ويمنع output سابقًا. أضف security headers وstreaming عند الحاجة دون تحميل الجسم كاملًا.
+`response` تبني بيانات فقط، ولا تعمل echo أو exit. `json_encode` هنا قبل إرسال headers، فيمكن للحد العام تحويل فشل encoding إلى 500. لا تخلط `var_dump` مع الرد. read failure خارج middleware له 500 مستقلة هنا؛ لو أردت request ID لكل خطأ ضع إنشاء الطلب نفسه داخل boundary أوسع.
 
-### جرّب بنفسك
+## JSON صحيحة مش معناها طلب صحيح
 
-اختبر 404 و405 وJSON تالفًا وbody أكبر من الحد.
+createNote تفصل ثلاثة أسئلة: هل Content-Type مناسب؟ هل النص JSON سليمة؟ هل الجذر Object وله حقل text نصي غير فارغ وبطول مسموح؟ `[]` و`null` و`42` JSON سليمة لكن ليست العقد المطلوب. `json_decode` بدون true تعطينا stdClass للجذر object، فيسهل تمييزها عن list.
+
+`trim` تنظف الأطراف العادية؛ لا تدّعي تنظيف كل أنواع المسافات في Unicode. `mb_strlen` يقيس code points كما اتفقنا. البرنامج يرد 200 لنتيجة التحقق وإعادة النص، لأنه لا ينشئ موردًا دائمًا؛ تطبيق إنشاء حقيقي يضيف حفظًا ويرد 201 وLocation عند وجود عنوان للمورد.
+
+عناوين Router هنا حرفية وثابتة؛ لا تنفذ decoding متكررًا ولا تحوّل path إلى include. Router إنتاجية تحتاج سياسة parameters وURL decoding وHEAD/OPTIONS وcontent negotiation؛ اتبع Framework عند الحاجة. لا تثق في X-Forwarded-* إلا من Proxy معروف ومضبوط.
+
+## جرّب العقد من الطرفية
+
+في Windows استعمل `curl.exe` بدل alias PowerShell. لتفادي فروق quoting احفظ `note.json` بمحتوى `{"text":"Learn routing"}`، و`broken.json` بمحتوى `{` فقط، ثم:
+
+~~~bash
+curl -i http://127.0.0.1:8082/health
+curl -i -X POST -H "Content-Type: application/json" --data-binary @note.json http://127.0.0.1:8082/notes
+curl -i -X POST -H "Content-Type: application/json" --data-binary @broken.json http://127.0.0.1:8082/notes
+~~~
+
+| الطلب | النتيجة |
+|---|---|
+| GET /health | 200 و`{"status":"ok"}` |
+| GET /missing | 404 |
+| GET /notes | 405 وAllow: POST |
+| POST /notes بدون JSON Content-Type | 415 |
+| POST /notes مع JSON مكسورة | 400 |
+| POST /notes مع [] أو text فارغة/Array | 422 |
+| body أكبر من 4096 Bytes | 413 قبل parsing |
+| text صحيحة | 200 و`{"text":"Learn routing"}` |
+
+Header X-Request-ID عشوائي، فلا تثبت قيمته في Test؛ تحقق من وجوده وشكله. الـContent-Type وstatus جزء من الاختبار، مش body فقط. لا تقرأ مسارًا فيه تخزين أو vendor من Document Root؛ اجعل public فقط مكشوفًا.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع: GET /notes مقابل GET /unknown</summary><p>الأول مسار معروف بطريقة غير مسموحة: 405 وAllow. الثاني مسار غائب: 404. ترتيب البحث عن path ثم method هو السبب.</p></details>
+
+<details><summary>Debugging: Router نفذت echo قبل Middleware تضيف header</summary><p>الإرسال المبكر قد يرسل headers ويمنع التعديل أو يفسد JSON. خلي Handler ترجع Response وEmitter واحدة ترسل بعد رجوع السلسلة.</p></details>
+
+<details><summary>كمّل خطوة تمنع body كبيرة قبل json_decode</summary><p>اقرأ حد+1 ثم قارن الطول بالحد وأعد 413. أضف حد الخادم أيضًا؛ Content-Length وحدها ليست دليلًا على الحجم الفعلي لكل طرق النقل.</p></details>
+
+<details><summary>رتب authentication وauthorization وvalidation</summary><p>بعد اختيار Route، اعرف الهوية ثم الصلاحية قبل تنفيذ أثر محمي، وتحقق من المدخل قبل business logic. حد الأخطاء يحيط بالسلسلة، وحد الجسم يسبق parsing. الترتيب التفصيلي يعتمد مسؤولية كل middleware.</p></details>
+
+المشروع التالي ينقل نفس الحدود إلى ملفات ويضيف نموذجًا وجلسة وتخزينًا. للمزيد من HTTP جرّب المعمل كما هو موضح في [تجهيز المختبر](/php/00-lab-setup/).

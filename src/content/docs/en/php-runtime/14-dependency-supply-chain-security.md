@@ -23,7 +23,7 @@ Commit `composer.lock` for applications and use `composer install` in CI and pro
 ```bash
 composer validate --strict
 composer audit --locked
-composer check-platform-reqs
+composer check-platform-reqs --lock --no-dev
 composer outdated --direct
 ```
 
@@ -46,6 +46,21 @@ Composer plugins and scripts execute code with the Composer process permissions.
 
 Do not run Composer as root on untrusted packages. `--no-plugins --no-scripts` reduces execution but may also disable required build steps.
 
+## SBOM, provenance, and signing
+
+Generate the SBOM from the final artifact, not only `composer.json`, because an image also contains operating-system packages, extensions, and files. Connect provenance to the commit, builder, workflow, and digest. A signature proves artifact origin and integrity; it does not prove absence of vulnerabilities.
+
+The acceptance policy must identify who approves an exception, its expiry, whether affected code is reachable, and which environment runs the vulnerable digest. Test the path from CVE to lock file, image, and deployment.
+
+## CI and secrets
+
+Reduce default workflow permissions, pin third-party actions to a reviewed commit, and keep untrusted pull requests away from secrets. Scan history and rotate any exposed credential; deleting it from the latest commit does not revoke it.
+
+~~~text
+source commit -> locked dependencies -> SBOM -> signed image digest -> deployment record
+~~~
+
+
 ## Policy and incident response
 
 Use deliberate SemVer constraints, test supported ranges for libraries, review transitive dependencies, update regularly, and remove unused packages. Protect CI tokens and logs and record which artifact was built from which commit.
@@ -65,10 +80,11 @@ For a vulnerability, assess reachability, patch or mitigate, run the suite, depl
 
 Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
 
-Execute this checkpoint inside the lesson environment:
+Run this checkpoint inside `examples/php-labs` or the extracted lab package:
 
 ~~~bash
 composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ~~~
 
 **Success criterion:** The current lock has no unaccepted known vulnerability; every exception has an owner, reason, and expiry date.
@@ -78,6 +94,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Add an SBOM, provenance, and artifact signing, and inspect typosquatting plus maintainer changes rather than CVEs alone. Secret scanning keeps tokens out of source and history. Use VEX or equivalent exploitability records, with an owner, reason, and expiry for every exception.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

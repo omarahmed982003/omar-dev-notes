@@ -5,150 +5,160 @@ sidebar:
   order: 11
 ---
 
-## قبل ما تبدأ
+## المشكلة: الفشل مش نتيجة عادية
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+حساب رصيد ممكن ينجح، أو يرفض مبلغًا سالبًا، أو يرفض مبلغًا أكبر من الرصيد. وقراءة ملف ممكن تفشل لأن القرص غير متاح. لو كل الحالات ترجع `null`، المستدعي مش هيعرف هل دي «لا توجد بيانات» ولا Bug.
 
-### كلمات جديدة في الدرس
+**Exception** إعلان إن العملية لم تنتج نتيجتها الطبيعية. `throw` ترمي الفشل؛ `try` تحدد المنطقة التي نراقبها، و`catch` تستقبل نوعًا تعرف تعالجه. **Throwable** المظلة التي تجمع Exception وError. الأخيرة تشمل أخطاء مثل TypeError وDivisionByZeroError؛ مش كل خطأ في PHP Exception: Warning قد تطبع تشخيصًا وترجع false.
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
-- **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
-- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+الدرس PHP 8.1+. ارجع لـCall Stack في الدرس 7: الاستثناء يمشي عكس سلسلة الاستدعاءات لحد catch مناسبة.
 
+## برنامج كامل بثلاث حالات
 
-## الخطأ مش كله نوع واحد
+احفظ `withdraw.php` وشغّل `php withdraw.php`. **Domain** هنا قواعد السحب، وDomainException فشل قاعدة عمل رغم أن النوع صحيح:
 
-فيه فرق بين Bug في الكود، ومدخل مستخدم غير صالح، وفشل خدمة خارجية، وحالة عمل متوقعة زي «الرصيد غير كافٍ». لو عاملنا كل الحالات بنفس الرسالة أو `try/catch` ضخمة، هنخفي السبب ومش هنعرف نرجع HTTP Status مناسب.
+~~~php
+<?php
+declare(strict_types=1);
 
-الـException طريقة تقول: «الدالة ماقدرتش تكمل النتيجة الطبيعية». لما يحصل `throw`، التنفيذ يخرج من المسار الحالي ويدور على `catch` مناسب. لو مفيش، يوصل لحد التطبيق العام Global Boundary.
-
-```php
-function withdraw(int $balanceCents, int $amountCents): int
+function withdraw(int $balance, int $amount): int
 {
-    if ($amountCents <= 0) {
-        throw new InvalidArgumentException('Amount must be positive');
+    if ($balance < 0 || $amount <= 0) {
+        throw new InvalidArgumentException('Use a nonnegative balance and positive amount');
     }
-
-    if ($amountCents > $balanceCents) {
+    if ($amount > $balance) {
         throw new DomainException('Insufficient funds');
     }
-
-    return $balanceCents - $amountCents;
+    return $balance - $amount;
 }
-```
-
-ما تعملش Catch لمجرد إنك ترجع `null` وتنسى المشكلة. امسك الاستثناء في الطبقة اللي تعرف تضيف قرارًا: تعيد محاولة آمنة، تحول خطأ المجال إلى Response، أو تسجل التفاصيل وترجع رسالة عامة. واستخدم `finally` لتنظيف مورد لازم يتقفل سواء العملية نجحت أو فشلت.
-
-## Error أم Exception؟
-
-كل من `Exception` و`Error` يطبقان `Throwable`. الاستثناء يمثل غالبًا فشلًا متوقعًا في العملية، بينما `Error` يشمل أخطاء لغة/نوع وتشغيل لا ينبغي تحويلها كلها إلى “نجاح”.
-
-```php
-try {
-    $receipt = $payments->charge($order);
-} catch (PaymentDeclined $e) {
-    // فشل مجال متوقع
-} catch (Throwable $e) {
-    // حد التطبيق: سجّل ثم حوّل لاستجابة عامة
-} finally {
-    $lock?->release();
-}
-```
-
-`finally` ينفذ سواء نجح المسار أو رُمي exception، لذلك يناسب تحرير resource. لا تستخدم catch فارغًا.
-
-## استثناءات المجال
-
-```php
-final class InsufficientStock extends DomainException
-{
-    public function __construct(public readonly int $productId)
-    {
-        parent::__construct('Insufficient stock');
+foreach ([200, 1200, -1] as $amount) {
+    echo "request={$amount}", PHP_EOL;
+    try {
+        $remaining = withdraw(1000, $amount);
+        echo "remaining={$remaining}", PHP_EOL;
+    } catch (InvalidArgumentException $error) {
+        echo "invalid input", PHP_EOL;
+    } catch (DomainException $error) {
+        echo "declined", PHP_EOL;
+    } finally {
+        echo "finished attempt", PHP_EOL;
     }
 }
-```
-
-اجعل النوع يحمل معنى يمكن للطبقة العليا ترجمته إلى `409` أو رسالة مناسبة. لا تستخدم نص الرسالة لاتخاذ قرار برمجي.
-
-## Error reporting
-
-في التطوير:
-
-```ini
-display_errors=On
-error_reporting=E_ALL
-```
-
-في الإنتاج:
-
-```ini
-display_errors=Off
-log_errors=On
-error_reporting=E_ALL
-```
-
-إظهار stack trace للمستخدم قد يكشف paths وأسرارًا وSQL. أعطِ المستخدم رسالة عامة وrequest ID، وسجّل التفاصيل في قناة محمية.
-
-## Global boundary
-
-```php
-set_exception_handler(function (Throwable $e): void {
-    $requestId = bin2hex(random_bytes(8));
-    error_log("[{$requestId}] {$e}");
-
-    if (!headers_sent()) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-    }
-
-    echo json_encode(['error' => 'Internal error', 'request_id' => $requestId]);
-});
-```
-
-الـhandler شبكة أمان، وليس بديلًا عن معالجة الفشل المتوقع قرب سياقه.
-
-## قواعد
-
-- لا تستخدم `@` لإخفاء الأخطاء.
-- لا تعرض رسالة exception الخام للعميل.
-- احتفظ بـ`previous` عند wrapping.
-- لا تسجل password أو token أو body كاملًا بلا تنقية.
-- أعد المحاولة فقط للأخطاء المؤقتة وبعملية idempotent.
-
-## تدريب عملي متدرج
-
-<details><summary>1. إمتى ترمي DomainException؟</summary><p>لما الطلب صالح تقنيًا لكن مرفوض حسب قواعد المجال، زي سحب أكبر من الرصيد. مدخل بنوع أوصيغة غير صحيحة يناسبه InvalidArgumentException عند هذا الحد.</p></details>
-
-<details><summary>2. إيه مشكلة <code>catch (Throwable) { return null; }</code>؟</summary><p>بيخفي Bugs وفشل البنية ويخلطهم مع «لا توجد نتيجة». عالج الحالات المعروفة، وسيب الحد العام يسجل غير المتوقع ويرجّع استجابة آمنة.</p></details>
-
-<details><summary>3. فين تستخدم finally؟</summary><p>لتنظيف لازم يحصل في النجاح والفشل، زي قفل ملف أوإرجاع Resource، بشرط ألا يخفي Exception الأصلية.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>أين تمسك Exception؟</summary><p>في طبقة تستطيع اتخاذ قرار مفيد: التعافي أو التحويل إلى نتيجة مناسبة أو التسجيل ثم الإنهاء عند boundary.</p></details>
-
-<details><summary>لماذا لا نعرض stack trace للمستخدم؟</summary><p>قد يكشف مسارات وأسرارًا وتفاصيل داخلية؛ أعطِ المستخدم رسالة آمنة وسجّل التفاصيل داخليًا.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php error-lab.php
 ~~~
 
-**معيار النجاح:** الحالة المتوقعة تُحوّل إلى نتيجة مجال واضحة، والخطأ غير المتوقع يصل إلى المعالج المركزي مرة واحدة مع correlation ID ولا يُبتلع.
+~~~text
+request=200
+remaining=800
+finished attempt
+request=1200
+declined
+finished attempt
+request=-1
+invalid input
+finished attempt
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+كل دورة تبدأ برصيد 1000؛ المثال يقارن حالات مستقلة، مش كشف حساب متراكم. 200 ترجع 800؛ 1200 ترمي قبل return، فيُتخطى echo remaining وتعمل catch المجال. -1 تدخل فحص المدخل. finally تعمل في الحالات الثلاث. لا تجعل catch عامة قبل الخاصة لأنها ستلتقط النوع مبكرًا.
 
-## اربط النقاط ببعض
+لو دالة داخل withdraw رمت، يُلغى مسارها ثم يبحث PHP خارجها. catch لا تعيد التنفيذ للسطر الذي فشل؛ تكمل بعد الكتلة المعالجة. بدون catch يصل الفشل للحد العام وينتهي الطلب/السكربت عادة.
 
-<code>Throwable</code> يجمع Error وException، وfinally ينفذ للتنظيف حتى مع return أو throw. حوّل warnings إلى exceptions فقط عند boundary تفهم عقده. في worker طويل العمر يجب أن يمنع المعالج سقوط العملية أو تلوث الرسالة التالية حسب السياسة، مع logging مرة واحدة.
+## finally للتنظيف، مش لتغيير النتيجة
 
-### جرّب بنفسك
+المورد المفتوح يحتاج إغلاقًا في النجاح والفشل. تجربة `cleanup.php`:
 
-اختبر success وdomain failure وunexpected error وتأكد من cleanup.
+~~~php
+<?php
+$stream = fopen('php://temp', 'w+b');
+if ($stream === false) {
+    throw new RuntimeException('Open failed');
+}
+try {
+    try {
+        throw new RuntimeException('Simulated read failure');
+    } finally {
+        fclose($stream);
+        echo "closed", PHP_EOL;
+    }
+} catch (RuntimeException $error) {
+    echo "handled", PHP_EOL;
+}
+echo is_resource($stream) ? "open\n" : "not open\n";
+~~~
+
+~~~text
+closed
+handled
+not open
+~~~
+
+الـfinally الداخلية تعمل أثناء خروج الاستثناء، وبعدها catch الخارجية. finally تعمل أيضًا مع return العادية، لكن لا تعتمد عليها بعد `exit` أو إنهاء العملية بالقوة. **خطأ:** return داخل finally قد تخفي نتيجة أو Exception؛ اتركها للتنظيف الذي لا يخفي سبب الفشل الأصلي.
+
+استثناء مخصص مثل `final class InsufficientStock extends DomainException {}` يعطي نوعًا واضحًا، لكن لا تحتاج صنفًا لكل رسالة. عند تغليف فشل احتفظ بـprevious: `throw new RuntimeException('Could not load notes', 0, $error);`. قرارات البرنامج تعتمد على النوع، لا على مقارنة نص الرسالة.
+
+## Warning مش هتدخل catch تلقائيًا
+
+`file_get_contents` قد تصدر Warning وترجع false. ضع فحصًا صريحًا كما في درس الملفات. `@` يخفي التشخيص ولا يصلح القراءة. إذا احتجت تحويل Warning إلى Exception عند حد I/O محدد، ثبّت handler مؤقتًا وأعد السابق في finally، واحترم `error_reporting()`. لا تحول كل Notice في تطبيق كامل عشوائيًا ثم ترجع نجاحًا.
+
+في worker طويل العمر، catch على حد الرسالة تقرر retry أو رفض المهمة وإعادة تنظيف الحالة. retry مناسبة فقط لفشل مؤقت وعملية يمكن تكرارها بدون تنفيذ أثر مرتين؛ الاسم التقني **idempotent**. TypeError داخل الحساب Bug يحتاج إصلاحًا، مش خمس محاولات.
+
+## التطوير والإنتاج: نفس الخطأ وعرض مختلف
+
+**Development** بيئة تجرب فيها، و**production** خدمة يستخدمها الناس. اعرف الملف المحمل بـ`php --ini`؛ إعداد CLI قد يختلف عن FPM/Apache. مثال ملف ini للتطوير:
+
+~~~ini
+error_reporting=E_ALL
+display_errors=On
+display_startup_errors=On
+log_errors=On
+~~~
+
+وفي الإنتاج، مع error_log في مسار محمي قابل لكتابة الخدمة:
+
+~~~ini
+error_reporting=E_ALL
+display_errors=Off
+display_startup_errors=Off
+log_errors=On
+zend.exception_ignore_args=On
+~~~
+
+الهدف الاحتفاظ بالتشخيص في سجل محمي بدل إرساله للمستخدم. لا تسجل Password أو Session ID أو Body كاملة. حجب arguments من trace يقلل تسربًا محتملًا لكنه لا ينقح رسالة كتبت أسرارًا يدويًا. خطأ parsing في نفس الملف قد يحدث قبل ini_set؛ إعداد php.ini يسبق التنفيذ.
+
+## حد تطبيق كامل يعيد JSON
+
+احفظ `boundary.php` وشغّله بخادم PHP محلي. الطلب يرجع 500 وJSON بها request_id مختلف كل مرة. السجل يحتوي النوع والمكان فقط؛ ده مثال لتقليل البيانات، ويمكن إضافة سياق منقح حسب الحاجة:
+
+~~~php
+<?php
+declare(strict_types=1);
+
+set_exception_handler(static function (Throwable $error): void {
+    $id = bin2hex(random_bytes(8));
+    error_log(json_encode([
+        'event' => 'unhandled_failure',
+        'request_id' => $id,
+        'type' => get_class($error),
+        'file' => basename($error->getFile()),
+        'line' => $error->getLine(),
+    ], JSON_THROW_ON_ERROR));
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    echo json_encode(['error' => 'Internal error', 'request_id' => $id], JSON_THROW_ON_ERROR);
+});
+throw new RuntimeException('Demonstration failure');
+~~~
+
+المعالج شبكة أمان للفشل غير المتوقع؛ لا يستبدل 422 عند فشل Validation. لو سبق إرسال body، مش هتقدر تصلح الاستجابة بالكامل؛ خلي الإخراج في نقطة واحدة. catch فارغة أو `catch (Throwable) { return null; }` تخفي الأعطال. سجل الخطأ مرة في الحد المسؤول، مش في كل طبقة مر بها.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع ترتيب cleanup.php لو العملية تفشل</summary><p>closed ثم handled ثم not open. التنظيف يحصل أثناء خروج الاستثناء وقبل catch الخارجية.</p></details>
+
+<details><summary>Debugging: catch (Exception) لا تمسك TypeError</summary><p>TypeError تحت Error، والاثنان تحت Throwable. امسك الأنواع المتوقعة قرب العملية وThrowable عند الحد العام؛ لا تحول Bug إلى نجاح.</p></details>
+
+<details><summary>كمّل تغليف خطأ مع الاحتفاظ بالسبب</summary><p><code>throw new RuntimeException('Load failed', 0, $error);</code>. المعامل الثالث previous يحفظ سلسلة السبب للتشخيص.</p></details>
+
+<details><summary>مستخدم يرى مسار ملف داخلي في JSON الإنتاج</summary><p>راجع display_errors وoutput العشوائية ورسائل exceptions الخام. افصل رسالة عامة ومعرّف تتبع عن سجل محمي، ثم أعد اختبار الرد للتأكد أنه JSON واحدة.</p></details>
+
+جرّب `php error-lab.php` من [المختبر](/php/00-lab-setup/). في الدفتر، بيانات نموذج غير صحيحة 422، وفشل تخزين غير متوقع 500؛ لا نخلطهما.

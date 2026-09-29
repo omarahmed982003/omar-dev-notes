@@ -27,6 +27,14 @@ The simple `type + value + is_ref + refcount` description reflects PHP 5-era int
 ## Reference counting and copy-on-write
 
 ```php
+$first = ['name' => 'Omar'];
+$second = $first;
+
+unset($first);
+// The data remains alive because $second still uses it.
+```
+
+```php
 $original = range(1, 100_000);
 $copy = $original;       // shared for now
 $copy[] = 100_001;       // modified data must now separate
@@ -76,6 +84,11 @@ unset($a, $b);
 ```
 
 The cyclic garbage collector records candidates and periodically detects unreachable cycles. `gc_collect_cycles()` can force a pass, but it should be a measured tool for long-running workers, not a call after every operation.
+
+```php
+$cycles = gc_collect_cycles();
+printf("collected=%d\n", $cycles);
+```
 
 ## Requests, workers, and measurement
 
@@ -127,6 +140,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Generators and streaming reduce the working set when all data is not needed at once. In long-running workers, release references and resources between jobs and observe growth rather than one snapshot. <code>memory_limit</code> does not equal total RSS because extensions, native libraries, and mapped files may sit outside it.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

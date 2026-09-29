@@ -5,133 +5,165 @@ sidebar:
   order: 15
 ---
 
-## Before you start
+## The problem: a URL does not have to name a file
 
-Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+Instead of `save.php` and `list.php`, we want `GET /health` and `POST /notes` with one error/output policy. Separate responsibilities before adopting a framework:
 
-### New terms in this lesson
+| Term | Responsibility |
+|---|---|
+| Request | Client method, path, headers, and body |
+| Front controller | One entry point, usually public/index.php |
+| Middleware | Shared work around later steps, or early rejection |
+| Router | Select a handler using method and path |
+| Handler | Execute one use case and return a response |
+| Response / emitter | Status/headers/body data; an emitter sends them once |
 
-- **HTTP:** The rules used to exchange requests and responses on the web.
-- **API:** A defined interface through which one program requests data or actions from another.
-- **Proxy:** An intermediary that receives a request and forwards it according to rules.
+Requests enter in this order. Route-specific middleware may follow routing, but the example's general middleware wraps it:
 
+~~~text
+Request → Front Controller → Middleware → Router → Handler
+                                         ↑          ↓
+Response ← Emitter ← Middleware ←─────────┴── Response
+~~~
 
-## Assemble one complete request path
+## One complete file with explicit boundaries
 
-When a client sends `POST /api/orders`, PHP receives more than a “page”: method, path, headers, and a body must become a deliberate decision and response.
+Use PHP 8.1+ and mbstring. Create `public/index.php` below, or use `http-demo` in the [examples package](/downloads/php-course.zip). From http-demo run `php -S 127.0.0.1:8082 -t public public/index.php`. The final argument routes all requests through the front controller, not only existing files. This teaching API returns a note without persisting it; lesson 17 adds storage.
 
-```text
-HTTP Request → Front Controller → Router → Middleware
-             → Validation/Authorization → Handler → HTTP Response
-```
-
-A **front controller**, commonly `public/index.php`, is one dynamic entry point. The web server routes application requests there; it boots the application and reads request data.
-
-A **router** primarily matches method plus path and selects a handler. It should not contain every business rule. **Middleware** wraps shared concerns such as request IDs, authentication, body limits, and error mapping.
-
-Keep boundaries explicit even in a small example: request bodies are untrusted, syntactically valid JSON can contain invalid fields, status codes are part of the contract, and stray output can corrupt the response.
-
-## Front controller
-
-Route dynamic requests to `public/index.php` and start from one entry point:
-
-```php
+~~~php
 <?php
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-$path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
-```
-
-Keep the project root outside the document root so clients cannot fetch `vendor/`, `.env`, or source files.
-
-## Read a JSON body
-
-```php
-$contentType = strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0]));
-
-if ($contentType !== 'application/json') {
-    respond(['error' => 'Unsupported media type'], 415);
+function response(array $data, int $status = 200, array $headers = []): array
+{
+    return [
+        'status' => $status,
+        'headers' => $headers + [
+            'Content-Type' => 'application/json; charset=utf-8',
+            'Cache-Control' => 'no-store',
+            'X-Content-Type-Options' => 'nosniff',
+        ],
+        'body' => json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
+    ];
+}
+function createNote(array $request): array
+{
+    if ($request['type'] !== 'application/json') {
+        return response(['error' => 'Unsupported media type'], 415);
+    }
+    try {
+        $payload = json_decode($request['body'], false, 32, JSON_THROW_ON_ERROR);
+    } catch (JsonException) {
+        return response(['error' => 'Invalid JSON'], 400);
+    }
+    if (!$payload instanceof stdClass
+        || !is_string($payload->text ?? null)
+        || trim($payload->text) === ''
+        || mb_strlen($payload->text, 'UTF-8') > 200) {
+        return response(['error' => 'Use a text field with 1 to 200 code points'], 422);
+    }
+    return response(['text' => trim($payload->text)], 200);
+}
+function route(array $request): array
+{
+    $routes = [
+        '/health' => ['GET' => static fn (array $r): array => response(['status' => 'ok'])],
+        '/notes' => ['POST' => 'createNote'],
+    ];
+    $methods = $routes[$request['path']] ?? null;
+    if ($methods === null) {
+        return response(['error' => 'Not found'], 404);
+    }
+    $handler = $methods[$request['method']] ?? null;
+    if ($handler === null) {
+        return response(['error' => 'Method not allowed'], 405, ['Allow' => implode(', ', array_keys($methods))]);
+    }
+    return $handler($request);
+}
+function middleware(array $request, callable $next): array
+{
+    $id = bin2hex(random_bytes(8));
+    try {
+        if (strlen($request['body']) > 4096) {
+            $reply = response(['error' => 'Body too large'], 413);
+        } else {
+            $reply = $next($request);
+        }
+    } catch (Throwable $error) {
+        error_log(json_encode(['request_id' => $id, 'type' => get_class($error)], JSON_THROW_ON_ERROR));
+        $reply = response(['error' => 'Internal error'], 500);
+    }
+    $reply['headers']['X-Request-ID'] = $id;
+    return $reply;
 }
 
-try {
-    $payload = json_decode(
-        file_get_contents('php://input'),
-        true,
-        64,
-        JSON_THROW_ON_ERROR,
-    );
-} catch (JsonException) {
-    respond(['error' => 'Invalid JSON'], 400);
+$body = file_get_contents('php://input', false, null, 0, 4097);
+if ($body === false) {
+    $reply = response(['error' => 'Body unavailable'], 500);
+} else {
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $request = [
+        'method' => $_SERVER['REQUEST_METHOD'] ?? 'GET',
+        'path' => is_string($path) ? $path : '',
+        'type' => strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0])),
+        'body' => $body,
+    ];
+    $reply = middleware($request, 'route');
 }
-```
-
-Enforce body size in both web server and application. Parsing is not validation.
-
-## Minimal router
-
-```php
-$handler = match ([$method, $path]) {
-    ['GET', '/health'] => static fn () => respond(['status' => 'ok']),
-    ['POST', '/api/orders'] => $createOrder,
-    default => null,
-};
-
-if ($handler === null) {
-    respond(['error' => 'Not found'], 404);
+http_response_code($reply['status']);
+foreach ($reply['headers'] as $name => $value) {
+    header("{$name}: {$value}");
 }
-
-$handler();
-```
-
-A production router also handles parameters, method mismatch, and decoding.
-
-## Response and middleware
-
-Send status and headers before the body. Keep output in one response abstraction.
-
-```text
-request ID -> trusted proxy -> body limit -> routing
--> authentication -> authorization -> validation
--> handler -> error mapping -> response
-```
-
-Each middleware should have one clear responsibility. Error mapping, logging, and CORS may need to wrap the whole pipeline.
-
-## Progressive practice
-
-<details><summary>1. Differentiate 400, 404, 405, and 415</summary><p>They represent malformed/invalid request, missing route/resource, disallowed method for a known route, and unsupported body media type.</p></details>
-
-<details><summary>2. JSON parses but email is missing. What fails?</summary><p>Parsing succeeded; validation fails. Return the documented validation status and error shape without invoking domain work.</p></details>
-
-<details><summary>3. Order middleware</summary><p>Limit the body before parsing, route before route policy, authenticate before authorize, and wrap the whole path in the error boundary.</p></details>
-
-## Lesson-specific problems
-
-<details><summary>What does a front controller do?</summary><p>It provides one entry point that builds a request, runs routing and middleware, then sends a response.</p></details>
-
-<details><summary>When should an API return <code>400</code>?</summary><p>When request syntax or parsing fails; semantic validation may use 422 under a documented contract.</p></details>
-
-## Run and verify
-
-Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
-
-Execute this checkpoint inside the lesson environment:
-
-~~~bash
-php http-client-lab.php
+echo $reply['body'];
 ~~~
 
-**Success criterion:** Known routes return consistent status, Content-Type, and body; a missing route returns 404 and an internal error 500 without a stack trace.
+## Read from the entry point, then trace one request
 
-Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+Function definitions do not execute their bodies. Execution starts at the body read near the bottom. Reading at most 4097 bytes detects exceeding 4096 without loading an unbounded body into application memory. The server also needs a body limit because PHP/server infrastructure may already have received or buffered it. `parse_url(..., PHP_URL_PATH)` excludes the query, so `/health?check=1` selects the same route.
 
-## Connect the ideas
+We construct a request array and call middleware with `'route'` as a callback. Middleware creates an ID and checks size before parsing. If acceptable it invokes next; the router finds a path, then method, then calls a handler. The response returns outward; middleware adds a header, and the emitter sends status, headers, then body.
 
-A router should distinguish 404 from 405 and enforce method semantics, content type, and body limits before parsing. A response object should be emitted once by a dedicated emitter that controls status, headers, and body. Add security headers and streaming without loading every body fully.
+`response` builds data without echo or exit. Encoding occurs before headers are sent, so the general boundary can turn encoding failure into 500. Never mix var_dump with the response. The read-failure branch here has its own 500 outside middleware; put request construction inside a broader boundary if every failure needs an ID.
 
-### Try it yourself
+## Valid JSON does not imply a valid request
 
-Test 404, 405, malformed JSON, and an oversized body.
+createNote asks three separate questions: is Content-Type supported, is the text valid JSON, and is its root an object containing a nonempty bounded text string? `[]`, `null`, and `42` are valid JSON but violate this contract. Decoding without true produces stdClass for an object, making it distinguishable from a list.
+
+`trim` removes ordinary surrounding whitespace; it does not promise all Unicode whitespace handling. `mb_strlen` measures the agreed code points. This validation/echo example returns 200 because it creates no persistent resource; a real creation endpoint adds storage and returns 201 plus Location when the resource has an address.
+
+Routes here are fixed literal paths. Do not repeatedly decode them or convert paths into include filenames. A production router also needs policies for parameters, URL decoding, HEAD/OPTIONS, and content negotiation; use a framework when appropriate. Trust X-Forwarded-* only from configured trusted proxies.
+
+## Exercise the contract from a terminal
+
+On Windows use `curl.exe` instead of PowerShell's alias. To avoid shell quoting differences, save `note.json` containing `{"text":"Learn routing"}` and `broken.json` containing only `{`, then run:
+
+~~~bash
+curl -i http://127.0.0.1:8082/health
+curl -i -X POST -H "Content-Type: application/json" --data-binary @note.json http://127.0.0.1:8082/notes
+curl -i -X POST -H "Content-Type: application/json" --data-binary @broken.json http://127.0.0.1:8082/notes
+~~~
+
+| Request | Result |
+|---|---|
+| GET /health | 200 and `{"status":"ok"}` |
+| GET /missing | 404 |
+| GET /notes | 405 and Allow: POST |
+| POST /notes without JSON Content-Type | 415 |
+| POST /notes with broken JSON | 400 |
+| POST /notes with [] or empty/array text | 422 |
+| Body exceeding 4096 bytes | 413 before parsing |
+| Valid text | 200 and `{"text":"Learn routing"}` |
+
+X-Request-ID is random; tests should check its presence/shape, not one fixed value. Assert Content-Type and status as well as body. Expose only public as document root, keeping storage and vendor inaccessible.
+
+## Predict, debug, complete
+
+<details><summary>Predict GET /notes versus GET /unknown</summary><p>The first is a known path with an unsupported method: 405 and Allow. The second is an unknown path: 404. Checking path before method creates that distinction.</p></details>
+
+<details><summary>Debug: a router echoes before middleware adds a header</summary><p>Early output can send headers or corrupt JSON. Return response data from handlers and use one emitter after the chain returns.</p></details>
+
+<details><summary>Complete a body-limit check before json_decode</summary><p>Read limit+1 bytes, compare length with the limit, and return 413. Add a server limit too; Content-Length alone does not establish actual body size for every transfer mode.</p></details>
+
+<details><summary>Order authentication, authorization, and validation</summary><p>After route selection, establish identity and permission before protected effects, and validate input before business logic. Error handling wraps the chain; body limits precede parsing. Detailed ordering depends on each middleware's responsibility.</p></details>
+
+The cumulative project moves these boundaries into files and adds forms, sessions, and storage. For additional HTTP practice see [lab setup](/en/php/00-lab-setup/).

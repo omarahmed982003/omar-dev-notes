@@ -71,6 +71,26 @@ final class Checkout
 
 التنبيه يجب أن يعكس أثرًا قابلًا للتصرف، مثل ارتفاع نسبة `5xx` أو p95 latency، لا كل exception منفردة. اربط deployment version بالـlogs والـmetrics لتحديد regression.
 
+## أخطاء المحرك والتطبيق
+
+فرّق بين validation متوقعة، exception تطبيق، warning من dependency، وfatal engine error. response العام يعطي status ورسالة آمنة وerror ID، بينما السجل الداخلي يحتفظ بالنوع والـstack والـrequest ID بلا secrets.
+
+~~~php
+set_exception_handler(static function (Throwable $error): void {
+    $errorId = bin2hex(random_bytes(8));
+    error_log(json_encode([
+        'event' => 'request.failed',
+        'error_id' => $errorId,
+        'exception' => $error::class,
+    ], JSON_THROW_ON_ERROR));
+    http_response_code(500);
+    echo json_encode(['error' => 'internal_error', 'error_id' => $errorId]);
+});
+~~~
+
+`set_exception_handler` لا يلتقط كل startup أو parse failure. وجّه `log_errors` إلى stderr، راقب FPM/Nginx startup logs، واستخدم shutdown handler بحذر لقراءة `error_get_last()` دون محاولة متابعة request فاسدة. اختبر أن `display_errors=Off` وأن response لا تحتوي path أو stack.
+
+
 ## مرجع
 
 - [PSR-3 Logger Interface](https://www.php-fig.org/psr/psr-3/)
@@ -96,6 +116,11 @@ php observability-lab.php 2> event.log
 ## اربط النقاط ببعض
 
 أضف trace context وspan IDs عبر HTTP والqueue وقاعدة البيانات، وحدد sampling يحفظ الأخطاء والطلبات النادرة دون تكلفة كاملة. اضبط cardinality للlabels ولا تضع user ID الخام في metric. حدد retention وredaction وحق الوصول واربط log وmetric وtrace بـcorrelation واحد.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

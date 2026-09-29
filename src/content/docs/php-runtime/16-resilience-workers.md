@@ -86,6 +86,40 @@ KillSignal=SIGTERM
 
 Health لا تعني أن Process موجودة فقط: راقب قدرتها على سحب Jobs، آخر نجاح، عمر أقدم رسالة، ومعدل الفشل.
 
+## وحدة systemd مكتملة
+
+~~~ini
+[Unit]
+Description=PHP queue worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=app
+Group=app
+WorkingDirectory=/srv/app/current
+EnvironmentFile=/etc/app/worker.env
+ExecStart=/usr/bin/php bin/worker.php
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/app/shared
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+~~~
+
+اختبر `systemd-analyze verify`، ثم stop أثناء job طويلة وتأكد أن العامل يصرف العمل ضمن `TimeoutStopSec`. لا تضع secret في unit أو command line؛ اقرأها من ملف محدود الصلاحية أو secret manager.
+
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -114,6 +148,11 @@ php resilience-lab.php
 ## اربط النقاط ببعض
 
 Retry يحتاج exponential backoff مع jitter وretry budget حتى لا يصنع عاصفة. Shutdown يوقف جلب jobs جديدة ثم يمنح الحالية deadline ويحرر lease. Distributed worker يحتاج ownership token أو fencing لمنع عامل قديم من الكتابة بعد فقد القفل، وbackpressure يجب أن تصل إلى المنتج.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

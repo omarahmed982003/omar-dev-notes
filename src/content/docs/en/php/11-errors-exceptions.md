@@ -5,133 +5,160 @@ sidebar:
   order: 11
 ---
 
-## Before you start
+## The problem: failure is not an ordinary result
 
-Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+A withdrawal can succeed, reject a negative amount, or reject an amount exceeding the balance. A file read may fail because storage is unavailable. If all these return `null`, the caller cannot distinguish “no data” from a bug.
 
-### New terms in this lesson
+An **exception** signals that an operation could not produce its normal result. `throw` raises it; `try` marks the guarded region; `catch` handles a type it understands. **Throwable** covers both Exception and Error. Error includes TypeError and DivisionByZeroError. Not every PHP diagnostic is an exception: a warning may report a problem and return false.
 
-- **HTTP:** The rules used to exchange requests and responses on the web.
-- **Function:** A named, reusable block of code with one defined job.
+This lesson uses PHP 8.1+. Recall lesson 7's call stack: exceptions travel outward through calls until a suitable catch is found.
 
+## A complete three-case program
 
-## Failures do not all mean the same thing
+Save `withdraw.php` and run `php withdraw.php`. The **domain** is our withdrawal rule; DomainException represents a business-rule failure even when types are valid:
 
-A programming bug, invalid user input, an unavailable dependency, and an expected domain rejection such as “insufficient funds” need different handling. A giant `try/catch` that turns everything into one message hides the cause and often returns the wrong HTTP status.
+~~~php
+<?php
+declare(strict_types=1);
 
-An exception says a function cannot complete its normal result. `throw` leaves the current path and searches for a compatible `catch` until the application's global boundary.
-
-```php
-function withdraw(int $balanceCents, int $amountCents): int
+function withdraw(int $balance, int $amount): int
 {
-    if ($amountCents <= 0) {
-        throw new InvalidArgumentException('Amount must be positive');
+    if ($balance < 0 || $amount <= 0) {
+        throw new InvalidArgumentException('Use a nonnegative balance and positive amount');
     }
-
-    if ($amountCents > $balanceCents) {
+    if ($amount > $balance) {
         throw new DomainException('Insufficient funds');
     }
-
-    return $balanceCents - $amountCents;
+    return $balance - $amount;
 }
-```
-
-Do not catch an exception merely to return `null` and erase evidence. Catch it where code can make a real decision: perform a safe retry, map a domain failure to a response, or log protected detail and return a generic message. Use `finally` for cleanup that must happen on both success and failure.
-
-## Error or Exception?
-
-Both `Exception` and `Error` implement `Throwable`. Exceptions often represent operational or domain failure; `Error` includes engine, type, and programming failures that should not all be converted into success.
-
-```php
-try {
-    $receipt = $payments->charge($order);
-} catch (PaymentDeclined $e) {
-    // Expected domain failure
-} catch (Throwable $e) {
-    // Application boundary: log and return a generic response
-} finally {
-    $lock?->release();
-}
-```
-
-`finally` always runs and is useful for releasing resources. Never leave a catch block empty.
-
-## Domain exceptions
-
-```php
-final class InsufficientStock extends DomainException
-{
-    public function __construct(public readonly int $productId)
-    {
-        parent::__construct('Insufficient stock');
+foreach ([200, 1200, -1] as $amount) {
+    echo "request={$amount}", PHP_EOL;
+    try {
+        $remaining = withdraw(1000, $amount);
+        echo "remaining={$remaining}", PHP_EOL;
+    } catch (InvalidArgumentException $error) {
+        echo "invalid input", PHP_EOL;
+    } catch (DomainException $error) {
+        echo "declined", PHP_EOL;
+    } finally {
+        echo "finished attempt", PHP_EOL;
     }
 }
-```
-
-The type carries machine-readable meaning that an outer layer can map to `409` or another contract. Do not branch on message text.
-
-## Reporting policy
-
-Enable `E_ALL` and visible errors in development. In production keep `display_errors=Off`, `log_errors=On`, and return a generic message plus request ID. A browser stack trace can expose paths, secrets, and SQL.
-
-## Global boundary
-
-```php
-set_exception_handler(function (Throwable $e): void {
-    $requestId = bin2hex(random_bytes(8));
-    error_log("[{$requestId}] {$e}");
-
-    if (!headers_sent()) {
-        http_response_code(500);
-        header('Content-Type: application/json');
-    }
-
-    echo json_encode(['error' => 'Internal error', 'request_id' => $requestId]);
-});
-```
-
-The global handler is a safety net, not a replacement for handling expected failures close to their context.
-
-## Rules
-
-- Do not hide failures with `@`.
-- Never send raw exception messages to clients.
-- Preserve `previous` when wrapping.
-- Redact passwords, tokens, and sensitive bodies.
-- Retry only transient failures and only with idempotent behavior.
-
-## Progressive practice
-
-<details><summary>1. When does DomainException fit?</summary><p>When input is technically valid but a domain rule rejects the action, such as withdrawing more than the balance.</p></details>
-
-<details><summary>2. What is wrong with <code>catch (Throwable) { return null; }</code>?</summary><p>It hides bugs and infrastructure failure behind ordinary absence. Handle known cases and let a global boundary log unexpected failure safely.</p></details>
-
-<details><summary>3. Where does finally help?</summary><p>For cleanup required on success and failure, such as closing a file, without replacing the original exception.</p></details>
-
-## Lesson-specific problems
-
-<details><summary>Where should an exception be caught?</summary><p>At a layer able to recover, translate it into a useful result, or log and terminate at a boundary.</p></details>
-
-<details><summary>Why not show a stack trace to users?</summary><p>It may expose paths, secrets, and internals; return a safe message and log details privately.</p></details>
-
-## Run and verify
-
-Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
-
-Execute this checkpoint inside the lesson environment:
-
-~~~bash
-php error-lab.php
 ~~~
 
-**Success criterion:** An expected failure becomes an explicit domain result; an unexpected failure reaches the central handler once with a correlation ID and is not swallowed.
+~~~text
+request=200
+remaining=800
+finished attempt
+request=1200
+declined
+finished attempt
+request=-1
+invalid input
+finished attempt
+~~~
 
-Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+Each iteration starts with 1000; these are independent cases, not a running bank statement. 200 returns 800. 1200 throws before return, skipping the remaining-balance echo and reaching the domain catch. -1 triggers input rejection. Finally runs for all three. Put specific catches before general ones so a broad catch does not consume them first.
 
-## Connect the ideas
+An exception from a deeper function unwinds that call before searching outward. Catch does not resume at the failed line; execution continues after the handled block. An uncaught failure reaches the application boundary and normally ends the request/script.
 
-<code>Throwable</code> covers Error and Exception, while finally performs cleanup even with return or throw. Convert warnings only at boundaries whose contract you understand. In long-running workers, handling must prevent process loss or next-message contamination according to policy, with one log event.
+## finally cleans up; it should not replace the result
 
-### Try it yourself
+An opened resource needs closing on both success and failure. Run `cleanup.php`:
 
-Test success, domain failure, and unexpected error and prove cleanup runs.
+~~~php
+<?php
+$stream = fopen('php://temp', 'w+b');
+if ($stream === false) {
+    throw new RuntimeException('Open failed');
+}
+try {
+    try {
+        throw new RuntimeException('Simulated read failure');
+    } finally {
+        fclose($stream);
+        echo "closed", PHP_EOL;
+    }
+} catch (RuntimeException $error) {
+    echo "handled", PHP_EOL;
+}
+echo is_resource($stream) ? "open\n" : "not open\n";
+~~~
+
+~~~text
+closed
+handled
+not open
+~~~
+
+The inner finally runs while the exception is leaving, then the outer catch handles it. Finally also runs on ordinary return, but do not rely on it after `exit` or forced process termination. **Mistake:** returning from finally can hide a previous result or exception. Keep cleanup from masking the original failure.
+
+A custom exception such as `final class InsufficientStock extends DomainException {}` provides a meaningful type, but not every message needs a new class. When wrapping a failure, preserve previous: `throw new RuntimeException('Could not load notes', 0, $error);`. Program decisions should depend on type, not matching message text.
+
+## A warning does not automatically enter catch
+
+`file_get_contents` may emit a warning and return false. Explicitly check it, as in the files lesson. `@` hides diagnostics without repairing the read. If a specific I/O boundary must convert warnings to exceptions, install a temporary handler, restore the previous one in finally, and respect `error_reporting()`. Do not arbitrarily convert every application notice and then report success.
+
+For a long-running worker, the message boundary decides retry versus rejection and resets state. Retry is appropriate only for a temporary failure and an **idempotent** operation, one whose repetition does not duplicate its effect. A TypeError in arithmetic needs repair, not five retries.
+
+## Development and production: same error, different audience
+
+**Development** is your working environment; **production** serves users. Use `php --ini` to identify loaded configuration; CLI settings can differ from FPM/Apache. A development ini excerpt:
+
+~~~ini
+error_reporting=E_ALL
+display_errors=On
+display_startup_errors=On
+log_errors=On
+~~~
+
+In production, with error_log configured to a protected service-writable path:
+
+~~~ini
+error_reporting=E_ALL
+display_errors=Off
+display_startup_errors=Off
+log_errors=On
+zend.exception_ignore_args=On
+~~~
+
+The goal is protected diagnostics rather than exposing them to users. Never log passwords, session IDs, or complete bodies. Omitting trace arguments reduces exposure but cannot sanitize a message containing manually inserted secrets. A syntax error in the same file may occur before ini_set executes; php.ini is applied earlier.
+
+## A complete JSON application boundary
+
+Save `boundary.php` and serve it with a local PHP server. The request returns 500 and JSON with a different request_id each time. Logging here includes only type and location to minimize data; add sanitized context when needed:
+
+~~~php
+<?php
+declare(strict_types=1);
+
+set_exception_handler(static function (Throwable $error): void {
+    $id = bin2hex(random_bytes(8));
+    error_log(json_encode([
+        'event' => 'unhandled_failure',
+        'request_id' => $id,
+        'type' => get_class($error),
+        'file' => basename($error->getFile()),
+        'line' => $error->getLine(),
+    ], JSON_THROW_ON_ERROR));
+    http_response_code(500);
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    echo json_encode(['error' => 'Internal error', 'request_id' => $id], JSON_THROW_ON_ERROR);
+});
+throw new RuntimeException('Demonstration failure');
+~~~
+
+The handler is a safety net for unexpected failures, not a replacement for 422 validation responses. Once a body has already been sent, the response cannot reliably be repaired; emit in one place. Empty catches and `catch (Throwable) { return null; }` hide failures. Log once at the responsible boundary rather than in every layer the failure crosses.
+
+## Predict, debug, complete
+
+<details><summary>Predict cleanup.php's order when the operation fails</summary><p>closed, handled, not open. Cleanup runs while the exception leaves, before the outer catch.</p></details>
+
+<details><summary>Debug: catch (Exception) does not catch TypeError</summary><p>TypeError extends Error; both Error and Exception implement Throwable. Handle expected types near an operation and Throwable at the application boundary without converting bugs into success.</p></details>
+
+<details><summary>Complete wrapping an error while preserving its cause</summary><p><code>throw new RuntimeException('Load failed', 0, $error);</code>. The third argument retains the previous failure for diagnosis.</p></details>
+
+<details><summary>A user sees an internal path in production JSON</summary><p>Check display_errors, stray output, and raw exception messages. Separate a generic response/tracking ID from protected logs, then confirm the response is one valid JSON document.</p></details>
+
+Run `php error-lab.php` from the [lab](/en/php/00-lab-setup/). In the notebook, invalid form data means 422; unexpected storage failure means 500. They are different failures.

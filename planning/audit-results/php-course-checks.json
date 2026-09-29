@@ -1,0 +1,98 @@
+{
+  "lint": 106,
+  "outputPrograms": 40,
+  "parity": [
+    {
+      "lesson": "05-control-flow.md",
+      "codeBlocks": 10,
+      "exercises": 4,
+      "arCharacters": 6969,
+      "enCharacters": 8024
+    },
+    {
+      "lesson": "06-expressions-operators.md",
+      "codeBlocks": 10,
+      "exercises": 4,
+      "arCharacters": 6265,
+      "enCharacters": 7279
+    },
+    {
+      "lesson": "07-functions-and-includes.md",
+      "codeBlocks": 12,
+      "exercises": 4,
+      "arCharacters": 7414,
+      "enCharacters": 8692
+    },
+    {
+      "lesson": "08-files-streams-data.md",
+      "codeBlocks": 8,
+      "exercises": 4,
+      "arCharacters": 9558,
+      "enCharacters": 10755
+    },
+    {
+      "lesson": "09-uploads-cookies-sessions.md",
+      "codeBlocks": 3,
+      "exercises": 5,
+      "arCharacters": 11015,
+      "enCharacters": 12545
+    },
+    {
+      "lesson": "10-namespaces-autoloading.md",
+      "codeBlocks": 6,
+      "exercises": 4,
+      "arCharacters": 9172,
+      "enCharacters": 10574
+    },
+    {
+      "lesson": "11-errors-exceptions.md",
+      "codeBlocks": 7,
+      "exercises": 4,
+      "arCharacters": 6883,
+      "enCharacters": 7987
+    },
+    {
+      "lesson": "12-arrays-functional-tools.md",
+      "codeBlocks": 8,
+      "exercises": 4,
+      "arCharacters": 6397,
+      "enCharacters": 7181
+    },
+    {
+      "lesson": "13-strings-unicode-regex.md",
+      "codeBlocks": 8,
+      "exercises": 4,
+      "arCharacters": 6658,
+      "enCharacters": 7580
+    },
+    {
+      "lesson": "14-datetime-timezones.md",
+      "codeBlocks": 8,
+      "exercises": 4,
+      "arCharacters": 6529,
+      "enCharacters": 7433
+    },
+    {
+      "lesson": "15-request-router-response.md",
+      "codeBlocks": 3,
+      "exercises": 4,
+      "arCharacters": 8189,
+      "enCharacters": 9015
+    },
+    {
+      "lesson": "16-modern-php-features.md",
+      "codeBlocks": 14,
+      "exercises": 5,
+      "arCharacters": 12056,
+      "enCharacters": 13742
+    },
+    {
+      "lesson": "17-integrated-programs-debugging.md",
+      "codeBlocks": 7,
+      "exercises": 5,
+      "arCharacters": 19780,
+      "enCharacters": 21597
+    }
+  ],
+  "httpAssertions": 143
+}

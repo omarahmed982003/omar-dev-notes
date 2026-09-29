@@ -72,6 +72,21 @@ Browser -> API span
 5. أصلح السبب واختبر Load وRegression.
 6. راقب SLI بعد النشر، لا زمن المثال المحلي فقط.
 
+## SDK وOTLP عمليًا
+
+المختبر يعتمد `open-telemetry/sdk` و`open-telemetry/exporter-otlp`. يحمّل التطبيق الإعداد من environment ويرسل OTLP/HTTP إلى Collector، ثم يطبع Collector الـspan عبر debug exporter.
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -fsS http://127.0.0.1:8080/telemetry
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs otel-collector
+~~~
+
+تحقق أن response تحتوي Trace ID غير صفري وأن logs تعرض `lesson.telemetry` و`service.name=php-runtime-lab`. أضف attributes منخفضة cardinality مثل route وmethod وstatus. لا تستخدم user ID أو URL كامل كـmetric label.
+
+Batch processor مناسب للإنتاج، لكن العملية قصيرة العمر تحتاج flush قبل الخروج. ضع sampling policy واعية بالأخطاء والـlatency، وراقب dropped spans وexport failures؛ نجاح request لا يعني نجاح تصدير telemetry.
+
+
 ## تأكد من فهمك
 
 <div class="lesson-quiz" role="list">
@@ -100,6 +115,11 @@ php profiling-lab.php
 ## اربط النقاط ببعض
 
 أضف instrumentation حقيقيًا لـHTTP وdatabase وqueue وحدد exporter وresource attributes. Histogram يحتاج buckets مناسبة وتفسير quantiles من backend؛ لا تجمع percentiles حسابيًا. اربط تحسين flame graph بتغير SLI لا بمجرد انخفاض دالة واحدة.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

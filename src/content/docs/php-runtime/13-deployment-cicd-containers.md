@@ -23,7 +23,7 @@ sidebar:
 ```bash
 composer install --no-dev --prefer-dist --no-interaction \
   --optimize-autoloader --classmap-authoritative
-composer check-platform-reqs
+composer check-platform-reqs --lock --no-dev
 ```
 
 احفظ commit SHA وbuild ID داخل metadata قابلة للمراقبة، ولا تضع secrets داخل image.
@@ -38,6 +38,24 @@ lint -> unit tests -> static analysis -> integration tests
 
 أوقف النشر عند فشل check. لا تجعل approval يدويًا بديلًا عن اختبارات قابلة للتكرار.
 
+## Pipeline قابلة للمراجعة
+
+احتفظ بالـpipeline في المستودع، وثبّت الأدوات والصور، واربط كل artifact بـcommit. مثال المراحل ليس رسمًا فقط؛ كل مرحلة تنتج دليلًا محفوظًا: test report، scan result، image digest وdeployment record.
+
+~~~yaml
+jobs:
+  verify:
+    steps:
+      - run: composer install --no-interaction --no-progress
+      - run: composer validate --strict
+      - run: composer audit --locked
+      - run: composer test
+      - run: docker build --pull --tag app:$GIT_SHA .
+~~~
+
+لا تستخدم secret في build argument أو layer. افصل build عن release، وروّج digest نفسها من staging إلى production.
+
+
 ## Container
 
 - image صغيرة بإصدار PHP وextensions مثبت.
@@ -48,6 +66,13 @@ lint -> unit tests -> static analysis -> integration tests
 - limits وgraceful shutdown.
 
 افصل web وworker لأن لهما lifecycle وتوسّعًا مختلفين.
+
+## حدود النظام واختبار الحمل
+
+اضبط CPU وmemory وprocess/file-descriptor limits، ثم راقب throttling وOOM والـlisten queue. limit بلا request يجعل scheduling عشوائيًا، وmemory limit للحاوية يجب أن يتسع لـFPM workers وOPcache وnative allocations.
+
+اختبار الحمل يثبت نقطة saturation، لا رقمًا تسويقيًا. ارفع الحمل تدريجيًا، وسجل throughput وp95 والأخطاء وRSS واتصالات قاعدة البيانات. أوقف التجربة عندما تكسر SLO، ثم غيّر متغيرًا واحدًا وأعدها.
+
 
 ## Health
 
@@ -81,19 +106,28 @@ Rollback ليست فقط إعادة image؛ migration قد تكون غير قا�
 
 استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+من داخل `examples/php-labs` أو الحزمة المستخرجة نفّذ:
 
 ~~~bash
-docker compose config --quiet
+docker compose -f production/compose.yaml config --quiet
+docker compose -f production/compose.yaml up --build -d
+curl -fsS http://127.0.0.1:8080/health
+php load-probe.php http://127.0.0.1:8080/health 50 10
+docker compose -f production/compose.yaml down
 ~~~
 
-**معيار النجاح:** ينتهي التحقق بكود 0، ثم يبدأ container بحساب غير root وتنجح readiness فقط بعد جاهزية اعتماداته.
+**معيار النجاح:** تنجح بنية Compose، وتبدأ الخدمات بحسابات غير root وfilesystems للقراءة فقط، ولا يستقبل Nginx traffic قبل صحة FPM. يرجع health JSON بحالة ok، ويظل ملف HTML الساكن خارج PHP. أمر `down` ينظف موارد التجربة.
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
 ## اربط النقاط ببعض
 
 ابن image بطبقات قابلة للتكرار وminimal runtime، وشغلها كمستخدم غير root. أنشئ SBOM ووقّع artifact واربط deployment بالdigest. فرّق readiness عن liveness، واستخدم canary أو blue/green مع rollback، وانشر migrations بتوافق أمامي وخلفي.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

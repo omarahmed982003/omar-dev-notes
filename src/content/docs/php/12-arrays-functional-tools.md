@@ -5,148 +5,143 @@ sidebar:
   order: 12
 ---
 
-## قبل ما تبدأ
+## المشكلة: عندك مجموعة بيانات، محتاج تختار وتحول وتجمع
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+قائمة أسعار مش مجرد متغير واحد. **List** عناصر مفاتيحها 0 إلى n-1 بالترتيب. **Map** تربط مفتاحًا ذا معنى بقيمة مثل name→Omar. PHP تستخدم `array` للاثنين: خريطة مرتبة، فلا تفترض شكل المفاتيح من اسم المتغير.
 
-### كلمات جديدة في الدرس
+**map** تحول كل عنصر، **filter** تختار بعض العناصر، **reduce** تجمع المجموعة في نتيجة واحدة. دي طرق للتعبير عن حركة البيانات، مش شرطًا لجعل الكود «احترافيًا». الدرس PHP 8.1+ بسبب array_is_list وunpacking المفاتيح النصية.
 
-- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
-- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+## برنامج كامل: إجمالي الطلبات المدفوعة
 
+احفظ `paid.php` وشغّل `php paid.php`. نفترض أن Rows اجتازت التحقق من النوع والشكل قبل هذه المرحلة:
 
-## Array في PHP أداة مرنة جدًا
+~~~php
+<?php
+declare(strict_types=1);
 
-نفس نوع `array` ممكن يمثل قائمة مرتبة أوMap بمفاتيح أوRows جاية من قاعدة بيانات. المرونة دي مفيدة، لكنها تخليك مسؤول عن معرفة الشكل المتوقع.
-
-```php
-$prices = [1200, 2500, 800];
-$product = ['id' => 7, 'name' => 'Keyboard'];
-```
-
-في القائمة، المفاتيح غالبًا `0, 1, 2`. في الـMap، المفتاح له معنى زي `'name'`. بعض العمليات مثل `array_filter()` تحافظ على المفاتيح، ولذلك لو محتاج JSON List متصلة استخدم `array_values()` بعد الفلترة.
-
-الدوال `map` و`filter` و`reduce` مش هدفها تعمل الكود أقصر بأي ثمن:
-
-- `map`: حوّل كل عنصر إلى عنصر جديد.
-- `filter`: احتفظ بالعناصر اللي تحقق شرطًا.
-- `reduce`: اجمع القائمة في نتيجة واحدة.
-
-```php
-$positive = array_values(array_filter(
-    $prices,
-    static fn (int $price): bool => $price > 0,
-));
-
-$withTax = array_map(
-    static fn (int $price): int => (int) round($price * 1.14),
-    $positive,
-);
-
-$total = array_sum($withTax);
-```
-
-لو سلسلة التحويلات بقت محتاجة شرح طويل، Loop واضحة ممكن تكون أفضل. اختار الأسلوب اللي يوضح حركة البيانات ويخلي الأخطاء والأنواع ظاهرة.
-
-## PHP array أكثر من نوع
-
-`array` في PHP خريطة مرتبة تستخدم كـlist أوmap. افحص شكلها عند حدود التطبيق بدل افتراض أن المفاتيح متتالية.
-
-```php
-$ids = [10, 20, 30];
-$user = ['id' => 7, 'name' => 'Omar'];
-
-[$first, $second] = $ids;
-['id' => $id, 'name' => $name] = $user;
-```
-
-`array_is_list()` يفرق list ذات مفاتيح `0..n-1` عن map. حذف عنصر من list لا يعيد الفهرسة تلقائيًا؛ استخدم `array_values()` عند الحاجة، خصوصًا قبل JSON.
-
-## map وfilter وreduce
-
-```php
-$paidTotals = array_map(
-    static fn (array $order): int => $order['total_cents'],
-    array_filter(
-        $orders,
-        static fn (array $order): bool => $order['status'] === 'paid',
-    ),
-);
-
-$sum = array_reduce(
-    $paidTotals,
-    static fn (int $carry, int $total): int => $carry + $total,
-    0,
-);
-```
-
-هذه الأدوات مناسبة لتحويلات واضحة. loop عادية أفضل أحيانًا إذا احتجت عدة نتائج أو early exit أو أردت تجنب arrays وسيطة.
-
-## Unpacking والدمج
-
-```php
-$defaults = ['timeout' => 3, 'retries' => 1];
-$config = [...$defaults, ...$environment];
-
-function sum(int ...$numbers): int {
-    return array_sum($numbers);
-}
-
-$total = sum(...[2, 4, 6]);
-```
-
-في المفاتيح النصية تفوز القيمة اللاحقة عند unpacking. أما `+` بين arrays فيحافظ على قيمة الطرف الأيسر للمفتاح الموجود؛ لا تخلطهما بلا قصد.
-
-## الفرز
-
-- `sort()/rsort()` يعيدان فهرسة القيم.
-- `asort()/arsort()` يحافظان على المفاتيح.
-- `ksort()/krsort()` يرتبان المفاتيح.
-- `usort()` يستخدم comparator يعيد سالبًا/صفرًا/موجبًا.
-
-```php
-usort($orders, static fn ($a, $b) =>
-    [$b['created_at'], $b['id']] <=> [$a['created_at'], $a['id']]
-);
-```
-
-## الذاكرة
-
-PHP arrays مرنة لكنها أثقل من packed binary structures. لا تستخدم `array_map` و`fetchAll` على ملايين العناصر. استخدم Generator أو pagination أو processing streaming.
-
-## تدريب عملي متدرج
-
-<details><summary>1. فلتر الأسعار الموجبة وحافظ على JSON List</summary><p>استخدم <code>array_filter()</code> ثم <code>array_values()</code> لإعادة ترقيم المفاتيح قبل <code>json_encode()</code>.</p></details>
-
-<details><summary>2. map ولا filter لتطبيق ضريبة؟</summary><p><code>map</code> لأنها تحول كل سعر إلى سعر جديد. <code>filter</code> تختار عناصر ولا يفترض أن تغيّر معناها.</p></details>
-
-<details><summary>3. إمتى Loop أوضح من reduce؟</summary><p>لما التجميع له أكثر من حالة أوفشل أوSide Effect. الوضوح أهم من ضغط المنطق في Callback واحدة.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>ما الفرق بين <code>map</code> و<code>filter</code>؟</summary><p>map يحول كل عنصر ويحافظ عادة على العدد، بينما filter يختار عناصر وقد يقلل العدد.</p></details>
-
-<details><summary>لماذا قد تكون PHP array مكلفة للبيانات الكثيفة؟</summary><p>هي بنية hash مرنة تحمل metadata كبيرة؛ stream أو بنية أنسب قد توفر الذاكرة.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php arrays-lab.php
+$orders = [
+    ['id' => 'A', 'status' => 'paid', 'total' => 1200],
+    ['id' => 'B', 'status' => 'pending', 'total' => 500],
+    ['id' => 'C', 'status' => 'paid', 'total' => 800],
+];
+$paid = array_filter($orders, static fn (array $row): bool => $row['status'] === 'paid');
+echo 'keys=', implode(',', array_keys($paid)), PHP_EOL;
+$totals = array_map(static fn (array $row): int => $row['total'], $paid);
+echo json_encode($totals, JSON_THROW_ON_ERROR), PHP_EOL;
+$totals = array_values($totals);
+echo json_encode($totals, JSON_THROW_ON_ERROR), PHP_EOL;
+$sum = array_reduce($totals, static fn (int $carry, int $n): int => $carry + $n, 0);
+echo "sum={$sum}", PHP_EOL;
+echo array_is_list($totals) ? "list\n" : "map\n";
 ~~~
 
-**معيار النجاح:** يثبت الاختبار شكل المصفوفة بعد map وfilter وreduce، ولا تتغير المصفوفة الأصلية إلا إذا كان ذلك جزءًا معلنًا من العقد.
+~~~text
+keys=0,2
+{"0":1200,"2":800}
+[1200,800]
+sum=2000
+list
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+`array_filter` تستدعي callback تسأل عن status، وتحافظ على المفاتيح 0 و2؛ حذف B لا يعيد الترقيم. `array_map` مع Array واحدة تحافظ على مفاتيحها، فيتحول كل Row لعدد. JSON ترى فجوة فتعرض object. `array_values` تعيد الترقيم، فتظهر قائمة JSON. `reduce` تبدأ carry=0، ثم 1200، ثم 2000. لو القائمة فاضية النتيجة 0؛ بدون initial قد تصبح null. `array_sum` أبسط لجمع أعداد فقط؛ هنا reduce لشرح الآلية.
 
-## اربط النقاط ببعض
+المصفوفة الأصلية لم تتغير. العمليات تبني Arrays جديدة، لكن لو العناصر Objects قد تشير النتائج لنفس الكائنات؛ نسخ الحاوية مش نسخًا عميقًا.
 
-PHP array قد يحول بعض المفاتيح النصية الرقمية إلى integers، لذلك اختبر شكل المفاتيح بعد JSON أو input. <code>array_is_list</code> يفرق list عن map، وSPL structures قد تكون أوضح للqueue/heap. map/filter/reduce تنسخ بيانات وقد تزيد الذاكرة؛ قس قبل استخدامها على مجموعات كبيرة.
+## حلقة مكافئة، ومتى تكون أوضح؟
 
-### جرّب بنفسك
+~~~php
+<?php
+$orders = [
+    ['status' => 'paid', 'total' => 1200],
+    ['status' => 'pending', 'total' => 500],
+    ['status' => 'paid', 'total' => 800],
+];
+$sum = 0;
+foreach ($orders as $row) {
+    if ($row['status'] !== 'paid') {
+        continue;
+    }
+    $sum += $row['total'];
+}
+echo $sum, PHP_EOL;
+~~~
 
-اختبر مفاتيح 0 و"0" و"01" وقس الذاكرة قبل وبعد pipeline.
+~~~text
+2000
+~~~
+
+نفس الاختيار والجمع بلا Arrays وسيطة؛ لو عندك توقف مبكر أو أكثر من إحصائية قد تكون Loop أوضح. مع بيانات كثيرة جدًا استخدم Generator أو pagination بدل `fetchAll` أو بناء عدة Arrays. الـGenerator تنتج عنصرًا عند الطلب؛ الدرس 16 يشرحها. PHP Arrays تحمل metadata للمفاتيح والقيم، مش مصفوفة أرقام مضغوطة. قس الذاكرة بـ`memory_get_peak_usage(true)` على نفس حجم البيانات قبل تغيير التصميم. `SplQueue` مناسبة لطابور و`SplHeap` لأولوية عندما تحتاج سلوكهما فعلًا.
+
+## المفاتيح لها أنواع وقواعد
+
+احفظ `keys.php`. **Destructuring** استخراج عدة قيم بأسمائها/مواضعها، و**unpacking** فرد العناصر في Array أو arguments:
+
+~~~php
+<?php
+$keys = [0 => 'first', '0' => 'second', '01' => 'third'];
+echo json_encode($keys, JSON_THROW_ON_ERROR), PHP_EOL;
+$user = ['id' => 7, 'name' => 'Omar'];
+['id' => $id, 'name' => $name] = $user;
+[$first, $second] = [10, 20];
+echo "{$id}:{$name}:{$first}:{$second}", PHP_EOL;
+
+$defaults = ['timeout' => 3, 'retries' => 1];
+$environment = ['timeout' => 5];
+echo json_encode([...$defaults, ...$environment], JSON_THROW_ON_ERROR), PHP_EOL;
+echo json_encode($defaults + $environment, JSON_THROW_ON_ERROR), PHP_EOL;
+~~~
+
+~~~text
+{"0":"second","01":"third"}
+7:Omar:10:20
+{"timeout":5,"retries":1}
+{"timeout":3,"retries":1}
+~~~
+
+`'0'` تتحول لمفتاح integer فتستبدل 0، لكن `'01'` تظل نصًا. فك بنية حقل غير موجود يسبب Warning؛ افحص شكل المدخل أولًا. في unpacking النصي القيمة اللاحقة تفوز؛ في `+` اليسار تفوز، والمفاتيح العددية في unpacking يعاد ترقيمها. و`sum(...$numbers)` يفرد القائمة لوسائط دالة، مش نفس عملية تعريف `int ...$numbers` التي تجمعها.
+
+`isset($row['x'])` لا تفرق الغياب عن null، و`array_key_exists('x', $row)` تميز وجود المفتاح حتى لو null. `in_array($needle, $values, true)` تبحث بالقيمة والنوع؛ النسخة بلا true مرنة. `array_filter($values)` بدون callback تحذف كل falsy ومنها `0` و`'0'`؛ اكتب predicate صريحة لو الصفر صالح.
+
+## الفرز يغيّر المصفوفة نفسها
+
+**Comparator** دالة ترجع سالبًا لو الأول قبل الثاني، صفرًا لو متساويين، وموجبًا لو بعده. لا ترجع Boolean. برنامج `sort.php`:
+
+~~~php
+<?php
+$orders = [
+    ['id' => 2, 'total' => 800],
+    ['id' => 3, 'total' => 1200],
+    ['id' => 1, 'total' => 800],
+];
+usort($orders, static fn (array $a, array $b): int =>
+    [$a['total'], $a['id']] <=> [$b['total'], $b['id']]
+);
+echo implode(',', array_column($orders, 'id')), PHP_EOL;
+~~~
+
+~~~text
+1,2,3
+~~~
+
+نقارن total ثم id لكسر التعادل، فـ1 تسبق 2 رغم نفس السعر. `usort` تعيد ترقيم المفاتيح؛ قيمة عودتها نجاح العملية وليست Array مرتبة. **غلط:** `$sorted = sort($values)` تجعل sorted Boolean. انسخ القيم أولًا لو عايز الحفاظ على الأصل، ثم رتب النسخة.
+
+| الدالة | ما يرتب؟ | يحافظ على المفاتيح؟ |
+|---|---|---|
+| sort / rsort | القيم تصاعدي/تنازلي | لا |
+| asort / arsort | القيم | نعم |
+| ksort / krsort | المفاتيح | نعم |
+| usort | القيم بمقارن مخصص | لا |
+
+للتنازلي اعكس طرفي المقارنة. قارن أنواعًا متجانسة؛ خلْط نصوص وأعداد قد يجعل ترتيبًا غير مقصود.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع: array_filter([0, 5, 0, 8]) ثم JSON</summary><p>المفاتيح تبقى 1 و3، فتظهر object. لو الصفر مطلوب، استخدم callback لا تحذفه؛ لو المطلوب list بعد الفلترة استخدم array_values.</p></details>
+
+<details><summary>Debugging: comparator ترجع $a['total'] &gt; $b['total']</summary><p>ترجع true/false فتفقد التفريق بين «قبل» و«متساوي». استخدم <code>$a['total'] &lt;=&gt; $b['total']</code> ونوع int.</p></details>
+
+<details><summary>كمّل reduce لضرب [2,3,4]، بما فيها القائمة الفارغة</summary><p>ابدأ بقيمة 1، واستخدم <code>fn (int $carry, int $n): int =&gt; $carry * $n</code>. الناتج 24؛ الفارغة ترجع 1 حسب عقد حاصل الضرب، مش 0.</p></details>
+
+<details><summary>إيه الأنسب لحساب مجموع وعدد مع توقف عند حد معين؟</summary><p>حلقة واضحة غالبًا؛ تقدر تحدث العدد والمجموع ثم break بدون Arrays وسيطة أو callback مع آثار جانبية مخفية.</p></details>
+
+في الدفتر ستعرض قائمة الملاحظات وتفحص شكلها عند القراءة. شغّل `php arrays-lab.php` من [المختبر](/php/00-lab-setup/) وغيّر القيم لصفر وقائمة فارغة.

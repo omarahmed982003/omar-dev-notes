@@ -68,6 +68,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 
 Add point-in-time recovery for transaction logs and test the recoverable boundary. Encrypted backups need a key-recovery plan stored separately. Order restoration of DNS, identity, secrets, queues, and third parties, and run a game day including communications and actual timing.
 
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
+
 ### Try it yourself
 
 Perform a restore without the primary production account and measure actual RPO/RTO.

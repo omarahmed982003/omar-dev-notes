@@ -111,6 +111,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 
 Measure memory consumption, interned strings, hit/miss, and wasted percentage instead of copying a size. Invalidation and timestamp policy must match atomic deployment. JIT does not speed every workload and is separate from the core OPcache benefit. Preloading persists for process lifetime and needs restart.
 
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
+
 ### Try it yourself
 
 Collect metrics before and after repeated load and explain eviction or restart behavior.

@@ -1,6 +1,6 @@
 ---
 title: تشغيل PHP وأدوات الإنتاج
-description: Composer وcURL وOPcache وإدارة الذاكرة وPHP-FPM وخوادم الويب ومتغيرات البيئة.
+description: من Composer وOPcache وPHP-FPM إلى الاختبارات وRedis والطوابير والنشر والمراقبة والمرونة والتعافي.
 sidebar:
   order: 0
 ---
@@ -32,6 +32,13 @@ sidebar:
 15. [Profiling وSLI/SLO وOpenTelemetry](/php-runtime/15-profiling-slo-opentelemetry/) — Flame Graphs وPercentiles وأهداف الخدمة وانتقال Trace Context.
 16. [المرونة وإدارة Workers](/php-runtime/16-resilience-workers/) — Circuit Breaker وBulkhead وBackpressure وSignals وsystemd.
 17. [Disaster Recovery واختبار الاستعادة](/php-runtime/17-disaster-recovery/) — RPO وRTO والنسخ والاسترجاع وGame Days.
+18. [Sessions وShared State عند التوسع](/php-runtime/18-sessions-shared-state/) — التخزين المشترك والقفل وTTL والتوافق بين النسخ.
+19. [اتصالات قاعدة البيانات وتشغيلها](/php-runtime/19-database-runtime-operations/) — ميزانية الاتصالات والمهلات والـpooling والـreplicas.
+20. [PHP طويلة العمر وWorker Runtimes](/php-runtime/20-long-running-php/) — FrankenPHP وRoadRunner وSwoole وتسرب الحالة وإعادة الضبط.
+
+## بروتوكول التجربة في كل درس
+
+كل تمرين يمر بخمس خطوات: توقّع النتيجة، شغّل الأمر، أحدث عطلًا مقصودًا، اجمع دليلًا من الخروج أو logs أو metrics، ثم أصلح السبب وأعد الاختبار. نجاح الأمر وحده ليس دليلًا كافيًا من دون معيار قبول يمكن مراجعته.
 
 :::tip[الخيط الذي يربط الدروس]
 المتصفح يتصل بخادم الويب، والخادم يمرر طلب PHP إلى FPM، والـWorker يشغّل كودًا حمّله Composer ويستفيد من OPcache، وقد يستدعي خدمة خارجية عبر cURL. الإعدادات والأسرار تصل من البيئة، والذاكرة تُدار داخل كل Worker.
@@ -58,5 +65,7 @@ Client
 - [OPcache](https://www.php.net/manual/en/book.opcache.php) و[Preloading](https://www.php.net/opcache.preloading.php)
 - [Garbage Collection في PHP](https://www.php.net/manual/en/features.gc.php)
 - [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
+- [إعداد الجلسات](https://www.php.net/manual/en/session.configuration.php) و[إدارة اتصالات PDO](https://www.php.net/manual/en/pdo.connections.php)
+- [FrankenPHP Worker Mode](https://frankenphp.dev/docs/worker/)
 - [Nginx FastCGI](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html) و[Apache MPM](https://httpd.apache.org/docs/2.4/mpm.html)
 - [getenv()](https://www.php.net/getenv) و[`$_ENV`](https://www.php.net/manual/en/reserved.variables.environment.php)

@@ -23,7 +23,7 @@ Build once and promote the same artifact instead of resolving dependencies diffe
 ```bash
 composer install --no-dev --prefer-dist --no-interaction \
   --optimize-autoloader --classmap-authoritative
-composer check-platform-reqs
+composer check-platform-reqs --lock --no-dev
 ```
 
 Record commit and build IDs. Inject secrets at runtime, never into the image.
@@ -37,6 +37,31 @@ lint -> unit tests -> static analysis -> integration tests
 ```
 
 Fail closed when checks fail. Manual approval is not a substitute for repeatable verification.
+
+## A reviewable pipeline
+
+Keep the pipeline in the repository, pin tools and images, and connect each artifact to a commit. Every stage should produce retained evidence: test reports, scan results, an image digest, and a deployment record.
+
+~~~yaml
+jobs:
+  verify:
+    steps:
+      - run: composer install --no-interaction --no-progress
+      - run: composer validate --strict
+      - run: composer audit --locked
+      - run: composer test
+      - run: docker build --pull --tag app:$GIT_SHA .
+~~~
+
+Do not place a secret in a build argument or image layer. Separate build from release and promote the same digest from staging to production.
+
+
+## Operating-system limits and load
+
+Configure CPU, memory, process, and file-descriptor limits, then monitor throttling, OOM events, and the FPM listen queue. Container memory must cover FPM workers, OPcache, and native allocations.
+
+A load test identifies saturation rather than producing a marketing number. Increase load gradually and record throughput, p95, errors, RSS, and database connections. Stop when the SLO fails, change one variable, and repeat.
+
 
 ## Containers and health
 
@@ -58,19 +83,28 @@ Rollback may not undo a destructive migration. Prepare roll-forward, backups, fe
 
 Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
 
-Execute this checkpoint inside the lesson environment:
+From `examples/php-labs` or the extracted package, run:
 
 ~~~bash
-docker compose config --quiet
+docker compose -f production/compose.yaml config --quiet
+docker compose -f production/compose.yaml up --build -d
+curl -fsS http://127.0.0.1:8080/health
+php load-probe.php http://127.0.0.1:8080/health 50 10
+docker compose -f production/compose.yaml down
 ~~~
 
-**Success criterion:** Validation exits 0, then the container runs as non-root and readiness succeeds only after its dependencies are ready.
+**Success criterion:** Compose validation passes; the services start as non-root with read-only filesystems, and Nginx receives traffic only after FPM is healthy. Health returns ok JSON while static HTML bypasses PHP. The final `down` removes the lab resources.
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
 ## Connect the ideas
 
 Build reproducible layered images with a minimal runtime and non-root user. Produce an SBOM, sign the artifact, and deploy by digest. Separate readiness from liveness, use canary or blue/green rollback, and deploy migrations with forward/backward compatibility.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

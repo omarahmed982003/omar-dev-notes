@@ -15,17 +15,17 @@ This checklist tracks the project-wide rewrite approved on 2026-09-26.
 
 | Track | Lessons | Status |
 |---|---:|---|
-| PHP | 17 × 2 languages | All lessons now have beginner bridges and concept-specific answered exercises in both languages; lessons 1–4 have the deepest sentence-level rebuild and 5–17 retain their detailed core coverage |
+| PHP | 17 × 2 languages | Beginner-first rewrite complete through lesson 17. Lessons 5–17 now have parallel Arabic/English explanations, runnable programs, expected output, 55 answered exercises per language, and a cumulative notebook project. Existing lessons 1–4 remain unchanged in this round. See `planning/php-rewrite-verification.md`. |
 | Programming basics | 34 × 2 | Main web/network sequence 1–17 now has beginner-first framing and concept-specific exercises in both languages; computer-fundamentals and math/problem-solving subtracks remain for the full sentence-level pass |
 | C++ | 14 × 2 | Pending tone and beginner-flow rewrite; preserve the current detailed coverage |
 | OOP | 8 × 2 | All lessons retain detailed coverage and now use concept-specific answered exercises in both languages; sentence-level beginner-flow review completed for the generated sections |
 | Database | 5 × 2 | All lessons retain detailed coverage and now use database-specific diagnostic exercises in both languages |
-| PHP Runtime | 17 × 2 | All lessons retain detailed runtime coverage and now use operational, concept-specific answered exercises in both languages; prerequisite prose still merits a later deep editorial pass |
+| PHP Runtime | 20 × 2 | Expanded on 2026-09-27 with sessions/shared state, database runtime operations, long-running workers, real Redis/PostgreSQL/OTel labs, and a five-step practice cycle in every bilingual lesson. PHP/Composer/build checks pass; Docker execution remains unavailable on this host. |
 | Auth and authorization | 22 × 2 | All lessons retain their security coverage and now use threat-specific scenarios and explained answers in both languages; lessons 20–22 already had specialized material |
 
 ## Homepage
 
-Lesson counts are calculated from content files during the Astro build. Current total: 117 lessons per language across seven tracks.
+Lesson counts are calculated from content files during the Astro build. Verified on 2026-09-27: 174 counted pages per language across seven tracks. PHP contributes 18 pages: the setup lab plus 17 numbered lessons. Track tables describe numbered lessons; homepage counts also include eligible setup/reference pages.
 
 ## Editorial audit
 
@@ -68,3 +68,13 @@ Lesson counts are calculated from content files during the Astro build. Current 
 - Removed the two exercise-only C++ pages from the ordered course sidebar and lesson count while keeping their original files as archived references.
 - Removed source-page-number wording from track introductions in both languages.
 - OOP and Database lesson bodies remain excluded from this rewrite round; only their track introductions were cleaned.
+
+## PHP lessons 5–17 completion — 2026-09-27
+
+- Rebuilt 13 Arabic lessons and their 13 English counterparts around complete programs and step-by-step reasoning; preserved existing lesson URLs and order.
+- Added prediction, debugging, and completion exercises with explained answers, plus common mistakes and boundary cases.
+- Expanded control flow, function calls/callbacks, streams, upload/session boundaries, Composer/PSR-4 and tooling, Unicode, request handling, and the released PHP 8.0–8.5 feature timeline.
+- Added a runnable cumulative notebook project with form validation, CSRF protection, per-session storage, private files, routing, escaped output, and PRG; documented its local teaching scope and limitations.
+- Added PSR-4/Composer, HTTP, session/upload, and console examples under `examples/php-course`, with a downloadable archive at `/downloads/php-course.zip`.
+- Verified 106 PHP blocks, 40 expected-output programs, 143 HTTP assertions, 15 standalone notebook checks, Composer quality tools, and all 26 rendered lesson pages. The final Astro build generated 388 pages.
+- Detailed evidence, commands, warnings, and verification boundaries are recorded in `planning/php-rewrite-verification.md`. This round does not alter lessons 1–4 or other course tracks.

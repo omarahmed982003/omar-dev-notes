@@ -87,7 +87,17 @@ server {
 }
 ```
 
-Where possible, forwarding only the front controller `/index.php` reduces the execution surface. Keep `.env`, `vendor/`, and executable uploads outside the public document root.
+Where possible, forwarding only the front controller `/index.php` reduces the execution surface:
+
+```nginx
+location = /index.php {
+    include fastcgi_params;
+    fastcgi_param SCRIPT_FILENAME $document_root/index.php;
+    fastcgi_pass unix:/run/php/app.sock;
+}
+```
+
+Keep `.env`, `vendor/`, and executable uploads outside the public document root.
 
 ## Unix versus TCP
 
@@ -111,19 +121,25 @@ Trust forwarded IP/protocol headers only from explicitly trusted proxies. Align 
 
 Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
 
-Execute this checkpoint inside the lesson environment:
+Start `examples/php-labs/production` as described in its README, then run:
 
 ~~~bash
-curl -sS -D - http://localhost/index.php -o NUL
+curl -sS -D - http://127.0.0.1:8080/health -o /dev/null
+curl -fsS http://127.0.0.1:8080/
 ~~~
 
-**Success criterion:** You see application status and headers, while a static file bypasses PHP. A missing route exposes no internal filesystem path.
+**Success criterion:** The first request shows status and headers from PHP, while the second returns a static file from Nginx. A request for `/health.php` or a missing path returns 404 and exposes no internal filesystem path. In Windows PowerShell, replace `/dev/null` with `NUL`.
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
 ## Connect the ideas
 
 Define ownership of TLS, HTTP/2, compression, and static files. Tune request/response buffering, timeouts, and body limits by endpoint. Bind SCRIPT_FILENAME to trusted paths, prevent path-info confusion, and add security headers in one clear layer without conflicting duplication.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

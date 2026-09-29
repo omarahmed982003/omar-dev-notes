@@ -5,200 +5,177 @@ sidebar:
   order: 7
 ---
 
-## قبل ما تبدأ
+## المشكلة: نفس الحساب مكتوب في خمس أماكن
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+لو قاعدة السعر اتغيرت، تعديل خمس نسخ ممكن ينسينا واحدة. **Function** دالة تجمع مهمة تحت اسم، تستقبل بيانات، وترجع نتيجة. مش لازم تحفظ مصطلحاتها مرة واحدة: **parameter** اسم المدخل في التعريف، **argument** القيمة عند الاستدعاء، و**return value** النتيجة الراجعة.
 
-### كلمات جديدة في الدرس
+ابدأ بحساب يرجع قيمة بدل طباعتها؛ كده نقدر نعرضه في CLI أو HTML ونختبره. احفظ `functions.php`، PHP 8.0+، وشغّل `php functions.php`:
 
-- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+~~~php
+<?php
+declare(strict_types=1);
 
-
-## الدالة بتلم فكرة واحدة في اسم واضح
-
-لو حسبت السعر النهائي في خمس أماكن، أي تعديل في القاعدة محتاج خمس تعديلات وممكن تنسى واحد. الدالة Function بتجمع خطوات لها هدف واحد تحت اسم، وتستقبل مدخلات، وقد ترجع نتيجة.
-
-```php
-function calculateSubtotal(int $priceCents, int $quantity): int
+function subtotal(int $price, int $quantity = 1): int
 {
-    if ($priceCents < 0 || $quantity < 1) {
-        throw new InvalidArgumentException('Invalid order values');
+    if ($price < 0 || $quantity < 1) {
+        throw new InvalidArgumentException('Invalid order');
     }
-
-    return $priceCents * $quantity;
-}
-
-$subtotal = calculateSubtotal(1500, 3);
-```
-
-اقرأ توقيع الدالة كعقد: الاسم يشرح الفعل، والـParameters هي البيانات المطلوبة، و`int` بعد القوس هو نوع النتيجة. الدالة الجيدة مش مجرد كود اتنقل؛ لها مسؤولية واضحة، ومدخلاتها ظاهرة، ونتيجتها قابلة للاختبار.
-
-فرّق بين **Parameter** في تعريف الدالة و**Argument** وقت الاستدعاء. وابدأ بالتمرير بالقيمة؛ المرجع `&` استثناء يحتاج سببًا واضحًا لأنه يسمح للدالة تغير متغير المستدعي.
-
-ملفات `include` و`require` بتنظم الكود، لكنها مش بديل عن Functions وClasses وAutoloading. لما تضم ملفًا، الكود الموجود فيه بيتنفذ في اللحظة دي، وممكن يرجع قيمة أو يعرف دوالًا وأصنافًا.
-
-## تعريف الدالة
-
-الدالة كتلة قابلة لإعادة الاستخدام تنفذ مهمة محددة. الدوال العادية في PHP ذات نطاق عام (مع مراعاة namespace)، ولا يمكنك إعلان دالتين بالاسم نفسه في النطاق نفسه للتعامل مع توقيعات مختلفة.
-
-```php
-function calculateTotal(float $price, int $quantity = 1): float
-{
     return $price * $quantity;
 }
-
-echo calculateTotal(19.5, 3);
-echo calculateTotal(quantity: 3, price: 19.5); // named arguments
-```
-
-**Parameters** هي الأسماء في التعريف، و**arguments** هي القيم عند الاستدعاء. يمكن محاكاة حالات متعددة بقيم افتراضية وunion types وvariadics:
-
-```php
-function sum(int ...$numbers): int
+function receipt(int $price, int $quantity): string
 {
-    return array_sum($numbers);
+    $amount = subtotal($price, $quantity);
+    return "Total: {$amount}";
 }
-echo sum(1, 2, 3);
-```
-
-فضّل `return` كي تكون الدالة قابلة للاختبار والتركيب، واترك `echo` لطبقة العرض.
-
-## التمرير بالقيمة والمرجع
-
-```php
-function increment(int $number): int
-{
-    return $number + 1;
-}
-
-function incrementInPlace(int &$number): void
-{
-    $number++;
-}
-```
-
-المرجع يغيّر متغير المستدعي، لذلك اجعله واضحًا ونادرًا.
-
-## Variable functions وCallbacks
-
-```php
-function greet(string $name): string
-{
-    return "Hello {$name}";
-}
-
-$functionName = 'greet';
-echo $functionName('Omar');
-
-$routes = [
-    'home' => fn (): string => 'Home',
-    'health' => fn (): array => ['status' => 'ok'],
-];
-$response = $routes[$route] ?? fn () => 'Not found';
-```
-
-استدعِ callback بعد التحقق بـ `is_callable()` إذا لم يكن النوع مضمونًا.
-
-## Closure وuse وArrow Function
-
-```php
-$tax = 0.14;
-
-$withTax = function (float $price) use ($tax): float {
-    return $price * (1 + $tax); // التقط $tax بالقيمة
-};
-
-$counter = 0;
-$next = function () use (&$counter): int {
-    return ++$counter; // التقاط بالمرجع
-};
-
-$withTaxShort = fn (float $price): float => $price * (1 + $tax);
-```
-
-Arrow function تلتقط متغيرات النطاق الخارجي تلقائيًا **بالقيمة** وتحتوي expression واحدة. الدالة المجهولة العادية تستخدم `use`، ويمكن أن تلتقط بالمرجع.
-
-```php
-$names = [' ali ', 'mona '];
-$clean = array_map(trim(...), $names); // First-class callable
-```
-
-إعلان دالة داخل دالة ممكن، لكن الدالة الداخلية لا تُعلن إلا بعد تنفيذ الخارجية وتصبح في نطاق الدوال؛ تجنب هذا الأسلوب، واستخدم Closure بدلًا منه.
-
-## include وrequire
-
-كلاهما language construct يقرأ ملفًا وينفذه:
-
-```php
-$config = require __DIR__ . '/../config/app.php';
-include __DIR__ . '/partials/header.php';
-```
-
-- فشل `require` يوقف المسار الحالي برمي `Error` في PHP الحديثة.
-- فشل `include` يصدر `E_WARNING` ويكمل التنفيذ غالبًا.
-- `require_once` و`include_once` يمنعان تحميل الملف نفسه أكثر من مرة.
-- إذا لم يُرجع الملف قيمة صريحة، يكون ناتج التضمين الناجح عادة `1`.
-- `return` داخل الملف المضمن ينهي ذلك الملف ويعيد القيمة.
-- الملف المضمن يرث نطاق مكان التضمين.
-
-`config/app.php`:
-
-```php
-<?php
-return [
-    'name' => 'Omar Notes',
-    'debug' => false,
-];
-```
-
-:::tip
-استخدم `__DIR__` بدل الاعتماد على current working directory. استخدم `require_once` لتعريفات لا يجوز تكرارها، واعتمد Composer autoload للفئات في المشاريع الحقيقية.
-:::
-
-## goto
-
-```php
-goto done;
-echo 'لن يُنفذ';
-done:
-echo 'تم';
-```
-
-`goto` يقفز إلى label داخل الملف والنطاق نفسه، ولا يجوز القفز إلى داخل loop أو switch. نادرًا ما يكون أوضح من دالة صغيرة أو `break` أو `continue`.
-
-## تدريب عملي متدرج
-
-<details><summary>1. حوّل معادلة مكررة إلى دالة</summary><p>اعمل <code>calculateTotal(int $priceCents, int $quantity): int</code>، ارفض القيم السالبة أوQuantity أقل من 1، واختبر 1 و3 وقيمة غير صالحة.</p></details>
-
-<details><summary>2. إيه مشكلة Reference Parameter غير الواضحة؟</summary><p>المستدعي قد يفتكر إن الدالة تحسب نتيجة فقط، بينما هي تغيّر متغيره. رجّع قيمة جديدة غالبًا أو سمّ الدالة بوضوح لو التعديل مقصود.</p></details>
-
-<details><summary>3. require ولا include لملف الإعداد؟</summary><p>استخدم <code>require</code> لأن التطبيق لا يستطيع الاستمرار بشكل صحيح من غير الإعداد. لو المورد اختياري فعلًا، تعامل مع فشل <code>include</code> صراحة.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>متى يكون التمرير بالمرجع اختيارًا سيئًا؟</summary><p>حين يخفي أن الدالة تغيّر قيمة خارجها؛ إرجاع قيمة جديدة أوضح غالبًا وأسهل للاختبار.</p></details>
-
-<details><summary>ما الفرق العملي بين <code>include</code> و<code>require</code>؟</summary><p>فشل require يوقف التنفيذ، بينما include يصدر تحذيرًا وقد يستمر؛ استخدم require للملفات اللازمة للتطبيق.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php functions-lab.php
+echo receipt(1500, 3), PHP_EOL;
+echo subtotal(quantity: 2, price: 500), PHP_EOL;
 ~~~
 
-**معيار النجاح:** تنجح الدالة للحدود المعلنة وتفشل بوضوح خارجها، ويُحمّل الملف المطلوب مرة واحدة بلا اعتماد على working directory عارض.
+~~~text
+Total: 4500
+1000
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+`declare` يجعل هذا الملف يستدعي دوال الأنواع scalar بصرامة. `function subtotal` تعريف؛ الجسم لا يعمل لمجرد قراءته. `int` قبل الاسم نوع المدخل وبعد القوس نوع الناتج. `= 1` قيمة افتراضية لو لم نمرر quantity. شرط البداية يرفض القيم خارج العقد؛ `throw` توقف المسار بفشل واضح، وهنفصلها في الدرس 11. `return` تنهي الاستدعاء وترسل حاصل الضرب. الدالة الثانية تركب رسالة من النتيجة. السطر الأخير **named arguments**: القيم مرتبطة بالأسماء، لذلك إعادة تسمية parameter قد تكسر المستدعي.
 
-## اربط النقاط ببعض
+PHP لا تسمح بتعريف دالتين بنفس الاسم في Namespace واحدة حسب اختلاف عدد الوسائط. استخدم defaults أو Union Types أو variadic حسب المعنى. الأعداد هنا صغيرة؛ مراجعة حدود الضرب جزء من توسيع التطبيق.
 
-Named arguments ترتبط بأسماء parameters وقد تجعل إعادة التسمية breaking change. Variadics تجمع القيم وfirst-class callables تنقل callable بعقد أوضح. Recursion تحتاج base case وحد عمق. لا تبن include path من input، واستخدم autoload بدل سلسلة require يدوية في المشروع.
+## Call Stack: فين بيروح التنفيذ ويرجع إزاي؟
 
-### جرّب بنفسك
+**Call Stack** رصّة الاستدعاءات النشطة. كل استدعاء يضيف **frame** فيه متغيراته ومكان الرجوع. آخر دالة دخلت هي أول واحدة ترجع. تتبع السطر `receipt(1500, 3)`:
 
-اختبر callable وvariadic وrecursion بحد فشل واضح.
+~~~text
+main
+main → receipt(price=1500, quantity=3)
+main → receipt → subtotal(price=1500, quantity=3)
+main → receipt(amount=4500)
+main → echo("Total: 4500")
+~~~
+
+متغير `$amount` محلي لـreceipt؛ المتغيرات المتشابهة في Frames مختلفة مش نفس المتغير. `return` ترجع للمستدعي، مش لبداية البرنامج. **Recursion** دالة تستدعي نفسها: كل مرة Frame جديد، فلازم حالة توقف وحد للمدخل. في `countdown.php`:
+
+~~~php
+<?php
+function countdown(int $n): void
+{
+    if ($n < 0 || $n > 10) {
+        throw new InvalidArgumentException('Use 0..10');
+    }
+    if ($n === 0) {
+        echo "go", PHP_EOL;
+        return;
+    }
+    echo $n, PHP_EOL;
+    countdown($n - 1);
+}
+countdown(3);
+~~~
+
+~~~text
+3
+2
+1
+go
+~~~
+
+`void` تعني لا نتيجة مفيدة راجعة. فحص 0 هو **base case**، وطرح 1 يقربنا له؛ حذف أي منهما قد يستهلك الذاكرة. الدوال الصغيرة الواضحة أو Loop أنسب للتكرار البسيط، والـStack يساعد في فهم Trace عند الخطأ.
+
+## القيمة والمرجع وvariadic
+
+التمرير العادي لا يسمح للدالة بإعادة إسناد متغير المستدعي. `&` يجعلها تعدله مباشرة؛ استخدمه بسبب واضح. `...` في تعريف الدالة يجمع عددًا متغيرًا من arguments في Array. جرّب `arguments.php`:
+
+~~~php
+<?php
+function increment(int $n): int { return $n + 1; }
+function incrementInPlace(int &$n): void { $n++; }
+function sum(int ...$numbers): int { return array_sum($numbers); }
+
+$n = 4;
+echo increment($n), ':', $n, PHP_EOL;
+incrementInPlace($n);
+echo $n, PHP_EOL;
+echo sum(...[2, 3, 4]), PHP_EOL;
+~~~
+
+~~~text
+5:4
+5
+9
+~~~
+
+الأول يرجع 5 ويترك n=4؛ الثاني يغير n إلى 5. `...` وقت الاستدعاء يفرد القائمة إلى arguments. إسناد object مختلف عن إعادة إسناد المتغير: ممكن دالة تعدل حالة نفس الكائن حتى بدون `&`؛ التفاصيل في OOP.
+
+## Callback: ابعت طريقة الشغل، مش ناتجها
+
+**Callable** قيمة قابلة للاستدعاء. **Callback** دالة تمررها لكود آخر ليقرر وقت استدعائها. لا تعني تلقائيًا شغلًا مؤجلًا أو متوازيًا. `array_map` مثلًا تستدعيها فورًا لكل عنصر. في `callbacks.php` نكتب المستدعي بأنفسنا عشان الفكرة تبقى واضحة:
+
+~~~php
+<?php
+declare(strict_types=1);
+
+function transform(array $values, callable $operation): array
+{
+    $result = [];
+    foreach ($values as $value) {
+        $result[] = $operation($value);
+    }
+    return $result;
+}
+$factor = 2;
+$double = function (int $n) use ($factor): int {
+    return $n * $factor;
+};
+$factor = 10;
+$values = transform([1, 2, 3], $double);
+echo implode(',', $values), PHP_EOL;
+$plusOne = fn (int $n): int => $n + 1;
+echo implode(',', transform($values, $plusOne)), PHP_EOL;
+~~~
+
+~~~text
+2,4,6
+3,5,7
+~~~
+
+`transform` تستقبل Array ودالة؛ لا تعرف هل العملية ضرب أم جمع. كل دورة تستدعي `$operation($value)` وترتب النتيجة. `function (...) use ($factor)` دالة مجهولة اسمها **Closure**، وتلتقط factor بالقيمة عند إنشائها: 2 حتى بعد تغييره إلى 10. `use (&$factor)` تراقب نفس المتغير؛ استخدمها فقط لو ده مقصود. `fn` هي Arrow Function، تعبير واحد بعودة ضمنية والتقاط خارجي بالقيمة.
+
+**غلط:** تمرير `$double(3)` إلى transform يمرر العدد 6، مش دالة. الصحيح `$double` بدون استدعاء. دالة مسماة ممكن تشير لها بنص `'trim'` (variable function)، أو `trim(...)` من PHP 8.1 كـFirst-class Callable؛ بعدها تستدعي القيمة. استخدم `is_callable` لو المصدر غير مضمون، ولا تجعل المستخدم يختار اسم دالة عشوائيًا. Closure محلية أنسب من إعلان function مسماة داخل function؛ الإعلان الداخلي يحدث بعد استدعاء الخارجية ويشارك نطاق أسماء الدوال وقد يتكرر.
+
+## مشروع ملفين: require ينفذ الملف
+
+اعمل مجلدًا فيه `config.php` و`main.php`. ده مشروع كامل بدون Composer. الملف الأول يرجع بيانات؛ الثاني يحتاجها:
+
+~~~php
+<?php
+// config.php
+return ['name' => 'Notebook', 'limit' => 3];
+~~~
+
+~~~php
+<?php
+// main.php
+$config = require __DIR__ . '/config.php';
+echo $config['name'], ': ', $config['limit'], PHP_EOL;
+~~~
+
+~~~text
+Notebook: 3
+~~~
+
+شغّل `php main.php`. `__DIR__` مجلد الملف الحالي؛ يحميك من اختلاف مجلد التشغيل. `require` يقرأ وينفذ الملف ثم يأخذ return. بدون return صريحة نتيجة التضمين الناجح عادة 1. الملف يرث نطاق مكان التضمين؛ لذلك تجنب اعتمادًا خفيًا على متغيرات خارجية.
+
+`include` تصدر Warning عند الفشل وغالبًا تكمل. `require` ترمي Error في PHP الحديثة، فلا يكمل المسار بدون معالجة. نسختا `_once` تمنعان إعادة تحميل التعريفات. لا تستخدم require_once لقراءة Config ثم تتوقع نفس Array في كل استدعاء؛ التحميل الثاني قد يرجع true. لا تبن مسار التضمين من Input. الدرس 10 ينقل تحميل Classes إلى Composer.
+
+`goto` تقفز إلى label داخل الملف والنطاق نفسه، ولا تدخل بها Loop أو switch من الخارج. مثال `goto done; echo 'skip'; done: echo 'done';` يطبع done، لكن دالة صغيرة أو break غالبًا أسهل في التتبع.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع: غير factor من 2 إلى 10 بعد إنشاء Closure</summary><p>مع use ($factor) تظل النتائج 2,4,6 لأن الالتقاط حدث بالقيمة. مع use (&amp;$factor) تصبح 10,20,30. Arrow تلتقط بالقيمة أيضًا.</p></details>
+
+<details><summary>Debugging: الدالة تعمل echo ثم أحاول جمع ناتجها</summary><p>الطباعة لا ترجع القيمة للحساب. استخدم return للقيمة، وخلي echo عند عرض النتيجة؛ كده يمكن اختبار الدالة بدون التقاط الإخراج.</p></details>
+
+<details><summary>كمّل Callback تعيد مربع العدد</summary><p><code>fn (int $n): int =&gt; $n * $n</code>؛ تمريرها إلى transform مع [1,2,3] يعطي [1,4,9]. لا تستدعها قبل تمريرها.</p></details>
+
+<details><summary>شخّص recursion تستدعي countdown($n) بلا تغيير</summary><p>كل استدعاء يضيف Frame بنفس n فلا يصل للصفر. مرر n-1، واحتفظ بحالة توقف وحد للمدخل؛ مجرد كتابة base case لا يكفي بدون تقدم نحوها.</p></details>
+
+في مشروع الدفتر سنفصل التحقق والحفظ والعرض إلى دوال، ثم نمرر Handler كـCallback للـRouter. جرّب أيضًا `php functions-lab.php` من [المختبر](/php/00-lab-setup/).

@@ -5,128 +5,135 @@ sidebar:
   order: 14
 ---
 
-## قبل ما تبدأ
+## المشكلة: «الساعة 9» مش موعد كامل
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+ناقص التاريخ والمكان: 9 في القاهرة مش 9 في لندن. **Instant** لحظة واحدة عالميًا. **Local date/time** التاريخ والساعة في مكان. **Timezone** قواعد المكان، مثل Africa/Cairo، وتشمل تغييرات التوقيت الصيفي **DST**. **Offset** فرق عن UTC في لحظة، مثل +02:00؛ مش بديلًا عن اسم المنطقة وقواعدها. **Duration** مدة، مش تاريخًا.
 
+نخزن لحظة حدث مضى غالبًا بـUTC، ونعرضها بمنطقة المستخدم. موعد متكرر «كل يوم 9 بالقاهرة» يحتاج الوقت المحلي واسم المنطقة وسياسة DST، مش رقم UTC ثابتًا إلى الأبد. الأمثلة PHP 8.1+، وتستخدم تواريخ محددة بدل now عشان نقدر نراجع الناتج.
 
-### كلمات جديدة في الدرس
+## لحظة واحدة، عرضان
 
-الدرس ده مفيهوش اسم تقني جديد محتاج تحفظه لوحده؛ أي فكرة جديدة هتتشرح وقت ظهورها في المثال.
+احفظ `zones.php` وشغّل `php zones.php`. **Immutable** تعني أن العملية ترجع كائنًا جديدًا ولا تغير الأصل:
 
-## الوقت أصعب من رقم الساعة اللي ظاهر
-
-لما المستخدم يقول «الاجتماع الساعة 9»، ناقصنا نعرف التاريخ والمنطقة الزمنية، وهل الساعة 9 قبل أو بعد تغيير التوقيت الصيفي. علشان كده بنفرق بين:
-
-- **Instant:** لحظة واحدة على الخط الزمني العالمي.
-- **Local date/time:** شكل الساعة والتاريخ في منطقة معينة.
-- **Timezone:** قواعد تحول اللحظة إلى وقت محلي، ومنها تغييرات DST التاريخية والمستقبلية.
-- **Duration/Interval:** مدة أو فرق بين وقتين.
-
-قاعدة عملية جيدة: خزّن اللحظات بصيغة UTC، واحتفظ بالمنطقة الزمنية الأصلية لما معنى الحدث يعتمد عليها، وحوّل للعرض عند حدود الواجهة.
-
-```php
-$createdAt = new DateTimeImmutable('now', new DateTimeZone('UTC'));
-$cairoTime = $createdAt->setTimezone(new DateTimeZone('Africa/Cairo'));
-
-echo $createdAt->format(DateTimeInterface::ATOM), PHP_EOL;
-echo $cairoTime->format('Y-m-d H:i:s P'), PHP_EOL;
-```
-
-استخدام `DateTimeImmutable` يقلل التعديل المفاجئ: `modify()` و`setTimezone()` يرجعوا Object جديدًا بدل تغيير الأصل. وما تضيفش `24 * 60 * 60` وتفترض إنه «نفس الساعة بكرة»؛ عبور DST ممكن يغير طول اليوم المحلي.
-
-## لحظة أم وقت محلي؟
-
-فرّق بين:
-
-- **Instant:** نقطة عالمية على timeline؛ خزّنها غالبًا UTC.
-- **Local date/time:** مثل موعد متجر 09:00 في القاهرة.
-- **Timezone:** قواعد منطقة مثل `Africa/Cairo` وتشمل تغييرات DST التاريخية.
-- **Duration/Interval:** مدة وليست تاريخًا.
-
-Offset مثل `+02:00` ليس بديلًا عن اسم timezone؛ القواعد قد تتغير.
-
-## DateTimeImmutable
-
-```php
-$now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
-$cairo = $now->setTimezone(new DateTimeZone('Africa/Cairo'));
-
-echo $now->format(DateTimeInterface::ATOM);
-echo $cairo->format('Y-m-d H:i:s P');
-```
-
-فضّل `DateTimeImmutable` حتى تعيد العمليات object جديدة ولا تغيّر قيمة يشاركها كود آخر.
-
-## Parsing صارم
-
-```php
-$date = DateTimeImmutable::createFromFormat(
-    '!Y-m-d',
-    $input,
-    new DateTimeZone('Africa/Cairo'),
-);
-$errors = DateTimeImmutable::getLastErrors();
-
-if ($date === false || ($errors !== false &&
-    ($errors['warning_count'] > 0 || $errors['error_count'] > 0))) {
-    throw new InvalidArgumentException('Invalid date');
-}
-```
-
-لا تعتمد على parser المرن لمدخل مستخدم يحتاج format محددًا؛ قد “يصحح” تاريخًا غير موجود.
-
-## العمليات وDST
-
-```php
-$tomorrow = $now->add(new DateInterval('P1D'));
-$after24Hours = $now->add(new DateInterval('PT24H'));
-```
-
-“اليوم التالي في الساعة نفسها” قد يختلف عن “بعد 24 ساعة” حول DST. حدد معنى المجال.
-
-## التخزين والعرض
-
-- خزّن instant بصيغة/نوع يحفظ UTC بدقة.
-- خزّن timezone الأصلية إذا كان الموعد المستقبلي مرتبطًا بالوقت المحلي.
-- حوّل إلى منطقة المستخدم عند العرض.
-- لا تستخدم timezone الافتراضية الضمنية في business logic.
-- اختبر نهاية الشهر والسنة وleap day وتغييرات DST.
-
-استخدم clock قابلة للحقن في الاختبارات بدل استدعاء “الآن” داخل كل class.
-
-## تدريب عملي متدرج
-
-<details><summary>1. حوّل لحظة UTC للعرض في القاهرة</summary><p>أنشئ <code>DateTimeImmutable</code> في UTC، ثم استخدم <code>setTimezone(new DateTimeZone('Africa/Cairo'))</code> وFormat يعرض Offset.</p></details>
-
-<details><summary>2. ليه إضافة 86400 ثانية مش دايمًا «نفس الساعة بكرة»؟</summary><p>لأن اليوم المحلي قد يتغير طوله عند DST. استخدم قواعد Calendar وTimezone حسب معنى العملية.</p></details>
-
-<details><summary>3. اختبر تاريخًا غير صالح</summary><p>استخدم Parsing صارم وافحص <code>DateTimeImmutable::getLastErrors()</code> بدل السماح للمحرك بتعديل التاريخ تلقائيًا.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>لماذا نخزن اللحظة بـUTC مع timezone منفصل عند الحاجة؟</summary><p>UTC يحفظ اللحظة دون غموض، والـtimezone يسمح بإعادة العرض وفق قواعد المكان وDST.</p></details>
-
-<details><summary>لماذا إضافة 24 ساعة ليست دائمًا «غدًا في نفس الموعد»؟</summary><p>تغيير DST قد يجعل اليوم المحلي 23 أو 25 ساعة؛ استخدم عملية تقويمية عندما تقصد اليوم التالي محليًا.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php datetime-lab.php
+~~~php
+<?php
+$utc = new DateTimeImmutable('2024-01-15 12:00:00', new DateTimeZone('UTC'));
+$cairo = $utc->setTimezone(new DateTimeZone('Africa/Cairo'));
+echo $utc->format('Y-m-d H:i:s P'), PHP_EOL;
+echo $cairo->format('Y-m-d H:i:s P'), PHP_EOL;
+var_dump($utc->getTimestamp() === $cairo->getTimestamp());
+$tomorrow = $utc->modify('+1 day');
+echo $utc->format('Y-m-d'), ' / ', $tomorrow->format('Y-m-d'), PHP_EOL;
 ~~~
 
-**معيار النجاح:** تُخزن اللحظة كـUTC وتُعرض في منطقتين بزمنين محليين يمثلان اللحظة نفسها، مع اختبار انتقال توقيت صيفي إن كان ينطبق.
+~~~text
+2024-01-15 12:00:00 +00:00
+2024-01-15 14:00:00 +02:00
+bool(true)
+2024-01-15 / 2024-01-16
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+ننشئ تاريخًا في UTC، ثم setTimezone تحول العرض. `getTimestamp` عدد الثواني منذ Unix epoch لنفس اللحظة، فيتساوى. `Y-m-d` سنة-شهر-يوم، `H:i:s` ساعة-دقيقة-ثانية؛ الحرف i للدقائق، مش m. `P` يطبع offset. `DateTimeInterface::ATOM` صيغة جاهزة للنقل مع offset. آخر سطر يثبت أن modify لم تغير utc.
 
-## اربط النقاط ببعض
+**غلط:** استدعاء `$utc->modify('+1 day');` وتجاهل العودة ثم توقع تاريخ جديد. الصحيح إسناد النتيجة. اختار DateTimeImmutable عشان مشاركة الكائن بين الدوال لا تسبب تغييرًا مفاجئًا.
 
-الوقت المحلي قد يكون غير موجود أو يتكرر أثناء DST؛ parsing بلا سياسة قد يختار نتيجة غير متوقعة. Calendar interval مثل شهر لا يساوي عدد ثوان ثابتًا. مرر Clock للتطبيق والاختبارات بدل استدعاء now في عمق المنطق، وخزن instant مع timezone المطلوبة لإعادة الحساب.
+## Parsing صارم: المحرك ممكن يصلح تاريخًا أنت عايز ترفضه
 
-### جرّب بنفسك
+**Parsing** قراءة نص وتحويله لقيمة تاريخ. Parser مرنة قد تحول 30 فبراير إلى مارس. احفظ `dates.php`:
 
-اختبر وقتًا قبل وبعد DST وساعة وهمية ثابتة.
+~~~php
+<?php
+declare(strict_types=1);
+function parseDate(string $input): DateTimeImmutable
+{
+    if (preg_match('/\A[0-9]{4}-[0-9]{2}-[0-9]{2}\z/', $input) !== 1) {
+        throw new InvalidArgumentException('Use YYYY-MM-DD');
+    }
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $input, new DateTimeZone('UTC'));
+    $errors = DateTimeImmutable::getLastErrors();
+    if ($date === false
+        || ($errors !== false && ($errors['warning_count'] > 0 || $errors['error_count'] > 0))
+        || $date->format('Y-m-d') !== $input) {
+        throw new InvalidArgumentException('Invalid calendar date');
+    }
+    return $date;
+}
+foreach (['2024-02-29', '2023-02-29', '2024-2-9'] as $input) {
+    try {
+        echo parseDate($input)->format('Y-m-d H:i:s'), PHP_EOL;
+    } catch (InvalidArgumentException) {
+        echo "invalid: {$input}", PHP_EOL;
+    }
+}
+~~~
+
+~~~text
+2024-02-29 00:00:00
+invalid: 2023-02-29
+invalid: 2024-2-9
+~~~
+
+Regex تضبط الشكل وطول المكونات، مش صحة التقويم. `!` تصفر الحقول غير المذكورة بدل أخذ الوقت الحالي. نحفظ getLastErrors فور التحليل؛ من PHP 8.2 قد ترجع false عند عدم وجود أخطاء، فلا نفترض أنها Array. نفحص warnings أيضًا لأن إصلاح تاريخ مستحيل قد يكون Warning، ثم نعيد format للمقارنة. كل `||` توقف مبكرًا، فلا نستدعي format على false.
+
+التاريخ فقط مثل يوم ميلاد ليس بالضرورة Instant؛ تخزينه كـDATE محلية له معنى مختلف عن created_at. لا تضف timezone لمجرد أن كل قيم الوقت في النظام لها timezone.
+
+## يوم تقويمي غير 24 ساعة دائمًا
+
+**Interval** وصف فرق، مثل `P1D` يوم تقويمي و`PT24H` 24 ساعة. شغّل `dst.php` بتوقيت لندن التاريخي المعروف في مارس 2024:
+
+~~~php
+<?php
+$start = new DateTimeImmutable('2024-03-30 12:00:00', new DateTimeZone('Europe/London'));
+$calendar = $start->add(new DateInterval('P1D'));
+$elapsed = $start->add(new DateInterval('PT24H'));
+foreach (['calendar' => $calendar, 'elapsed' => $elapsed] as $label => $end) {
+    $seconds = $end->getTimestamp() - $start->getTimestamp();
+    echo $label, ': ', $end->format('Y-m-d H:i P'), " seconds={$seconds}", PHP_EOL;
+}
+~~~
+
+~~~text
+calendar: 2024-03-31 12:00 +01:00 seconds=82800
+elapsed: 2024-03-31 13:00 +01:00 seconds=86400
+~~~
+
+النقطة الأولى تحافظ على 12 محليًا، لكن الفرق 23 ساعة بسبب تقديم الساعة. الثانية تحافظ على 24 ساعة فتصبح 13 محليًا. وقت محلي قد يكون غير موجود عند تقديم الساعة، أو يتكرر عند تأخيرها؛ قرر رفضه أو اختيار offset بوضوح، ولا تقبل اختيار Parser الصامت في نظام مواعيد حساس.
+
+`P1M` شهر مش 30 يومًا: إضافة شهر لـ31 يناير قد تتجاوز فبراير. قرر هل المطلوب آخر يوم في الشهر التالي أم إضافة تقويمية كما هي. اختبر leap day ونهاية الشهر/السنة. قواعد المناطق تتغير سياسيًا؛ حدث بيانات timezone وأعد تقييم المواعيد المستقبلية المحلية حسب سياسة التطبيق.
+
+## اختبار «الآن» بدون الانتظار
+
+**Clock injection** معناها تمرير الوقت الحالي كمدخل بدل استدعائه عميقًا داخل المنطق. نسخة بسيطة بدون Interfaces:
+
+~~~php
+<?php
+function expired(DateTimeImmutable $deadline, DateTimeImmutable $now): bool
+{
+    return $now >= $deadline;
+}
+$deadline = new DateTimeImmutable('2024-01-01T12:00:00+00:00');
+foreach (['11:59:59', '12:00:00', '12:00:01'] as $time) {
+    $now = new DateTimeImmutable("2024-01-01T{$time}+00:00");
+    echo $time, ': ', expired($deadline, $now) ? 'expired' : 'valid', PHP_EOL;
+}
+~~~
+
+~~~text
+11:59:59: valid
+12:00:00: expired
+12:00:01: expired
+~~~
+
+الحد نفسه منتهٍ وفق `>=`؛ دي قاعدة واضحة قابلة للاختبار. قياس زمن تنفيذ كود يفضل ساعة monotonic مثل `hrtime`، لا wall clock التي قد تُصحح أثناء القياس. خزّن event instant بوضوح، واحتفظ بالـtimezone المطلوبة للمواعيد المحلية، وحول عند العرض.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع: UTC 12:00 والقاهرة 14:00 في المثال، أيهما أحدث؟</summary><p>نفس اللحظة، والدليل timestamp متساوية. النص المختلف عرض محلي فقط.</p></details>
+
+<details><summary>Debugging: createFromFormat رجعت Object لتاريخ 2023-02-29 فاعتبرته صحيحًا</summary><p>المحرك قد يصحح التاريخ. افحص warnings/errors وround-trip، لأن وجود Object لا يثبت قبول المدخل حرفيًا.</p></details>
+
+<details><summary>كمّل صلاحية تنتهي عند deadline نفسها</summary><p>استخدم <code>$now &gt;= $deadline</code>. اختبر ثانية قبل وحدًا مساويًا وثانية بعد؛ &gt; فقط تسمح باللحظة الحدية.</p></details>
+
+<details><summary>موعد يومي 9 محليًا؛ نخزن offset +02:00 وحده؟</summary><p>لا. احتفظ بالوقت المحلي واسم المنطقة وسياسة الأيام الغامضة، لأن offset قد تتغير مع DST أو القانون.</p></details>
+
+شغّل `php datetime-lab.php` من [المختبر](/php/00-lab-setup/). في الدفتر created_at لحظة UTC، ثم ننسقها للعرض. [مرجع التحليل](https://www.php.net/manual/en/datetimeimmutable.createfromformat.php).

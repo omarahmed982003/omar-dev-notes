@@ -167,6 +167,11 @@ php http-client-lab.php
 
 افصل connect timeout عن TLS/read/total timeout، وانشر cancellation deadline عبر السلسلة. قبل جلب URL يقدمه مستخدم، امنع SSRF عبر scheme وhost وDNS/IP policy مع حماية من redirects وإعادة resolution. سجّل attempts وlatency/status دون token أو body حساس.
 
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
+
 ### جرّب بنفسك
 
 اختبر URL يعيد redirect إلى private IP وخادمًا يفتح الاتصال ولا يرسل body.

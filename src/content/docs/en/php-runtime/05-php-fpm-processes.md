@@ -43,18 +43,19 @@ Separate applications into pools and OS identities where isolation matters.
 ## Process-manager modes
 
 ```ini
-; Fixed workers, predictable memory
 pm = static
 pm.max_children = 20
+```
 
-; Or elastic capacity with warm spare workers
+```ini
 pm = dynamic
 pm.max_children = 40
 pm.start_servers = 8
 pm.min_spare_servers = 4
 pm.max_spare_servers = 12
+```
 
-; Or spawn only when requested
+```ini
 pm = ondemand
 pm.max_children = 20
 pm.process_idle_timeout = 10s
@@ -79,6 +80,7 @@ Arrival rate also matters. At 100 requests/s and a 200 ms average service time, 
 ```ini
 pm.max_requests = 500
 request_terminate_timeout = 30s
+request_terminate_timeout_track_finished = yes
 request_slowlog_timeout = 3s
 slowlog = /var/log/php-fpm/app-slow.log
 catch_workers_output = yes
@@ -86,9 +88,13 @@ ping.path = /fpm-ping
 pm.status_path = /fpm-status
 ```
 
+```text
+concurrency = throughput × latency = 100 × 0.2 = 20 workers
+```
+
 Monitor active/idle processes, listen queue, slow traces, and `max children reached`. Keep status endpoints private.
 
-Use graceful reloads during deployment. `fastcgi_finish_request()` can flush the response before brief follow-up work, but it still occupies a worker; durable or heavy tasks belong in a queue worker.
+Use graceful reloads during deployment. `fastcgi_finish_request()` can flush the response before brief follow-up work, but it still occupies a worker; durable or heavy tasks belong in a queue worker. By default FPM does not apply `request_terminate_timeout` after request completion or `fastcgi_finish_request()`; `request_terminate_timeout_track_finished` extends the limit to that phase.
 
 ## Operational problem
 
@@ -98,20 +104,25 @@ Use graceful reloads during deployment. `fastcgi_finish_request()` can flush the
 
 Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
 
-Execute this checkpoint inside the lesson environment:
+Start the `examples/php-labs/production` environment as described in its README, then run:
 
 ~~~bash
-curl -sS -o NUL -w "status=%{http_code} total=%{time_total}
+curl -sS -o /dev/null -w "status=%{http_code} total=%{time_total}
 " http://localhost/health
 ~~~
 
-**Success criterion:** Under controlled load the health check remains responsive and worker count stays bounded; correlate delay with the FPM queue rather than guessing.
+**Success criterion:** The health check returns 200 and `docker compose ps` reports both services healthy. Under controlled load the worker count stays bounded; correlate delay with the FPM queue rather than guessing. In Windows PowerShell, replace `/dev/null` with `NUL`.
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
 ## Connect the ideas
 
 Expose the FPM status page and slowlog only on a protected internal path to inspect active/idle workers, listen queue, and slow requests. Measure memory per child under load and reserve headroom. In containers, do not let autoscaling hide bad max_children, and align graceful termination with platform deadlines.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

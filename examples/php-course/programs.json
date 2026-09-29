@@ -1,0 +1,212 @@
+[
+  {
+    "file": "programs/11/withdraw.php",
+    "lesson": "/php/11-errors-exceptions/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/11/cleanup.php",
+    "lesson": "/php/11-errors-exceptions/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/11/boundary.php",
+    "lesson": "/php/11-errors-exceptions/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/12/paid.php",
+    "lesson": "/php/12-arrays-functional-tools/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/12/paid-loop.php",
+    "lesson": "/php/12-arrays-functional-tools/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/12/keys.php",
+    "lesson": "/php/12-arrays-functional-tools/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/12/sort.php",
+    "lesson": "/php/12-arrays-functional-tools/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/13/unicode.php",
+    "lesson": "/php/13-strings-unicode-regex/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/13/normalize.php",
+    "lesson": "/php/13-strings-unicode-regex/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/13/code.php",
+    "lesson": "/php/13-strings-unicode-regex/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/13/escaping.php",
+    "lesson": "/php/13-strings-unicode-regex/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/14/zones.php",
+    "lesson": "/php/14-datetime-timezones/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/14/dates.php",
+    "lesson": "/php/14-datetime-timezones/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/14/dst.php",
+    "lesson": "/php/14-datetime-timezones/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/14/clock.php",
+    "lesson": "/php/14-datetime-timezones/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/generator.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/weak.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/fiber.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/dnf.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.2+"
+  },
+  {
+    "file": "programs/16/attribute.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/contact.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.4+"
+  },
+  {
+    "file": "programs/16/features85.php",
+    "lesson": "/php/16-modern-php-features/",
+    "php": "8.5+"
+  },
+  {
+    "file": "programs/05/grade.php",
+    "lesson": "/php/05-control-flow/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/05/status.php",
+    "lesson": "/php/05-control-flow/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/05/sum.php",
+    "lesson": "/php/05-control-flow/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/05/attempts.php",
+    "lesson": "/php/05-control-flow/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/05/scores.php",
+    "lesson": "/php/05-control-flow/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/06/checkout.php",
+    "lesson": "/php/06-expressions-operators/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/06/precedence.php",
+    "lesson": "/php/06-expressions-operators/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/06/compare.php",
+    "lesson": "/php/06-expressions-operators/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/06/array-union.php",
+    "lesson": "/php/06-expressions-operators/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/06/pipe.php",
+    "lesson": "/php/06-expressions-operators/",
+    "php": "8.5+"
+  },
+  {
+    "file": "programs/07/functions.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/countdown.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/arguments.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/callbacks.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/config.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/main.php",
+    "lesson": "/php/07-functions-and-includes/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/08/stream.php",
+    "lesson": "/php/08-files-streams-data/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/08/notes-json.php",
+    "lesson": "/php/08-files-streams-data/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/08/csv.php",
+    "lesson": "/php/08-files-streams-data/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/08/filter.php",
+    "lesson": "/php/08-files-streams-data/",
+    "php": "8.1+"
+  }
+]

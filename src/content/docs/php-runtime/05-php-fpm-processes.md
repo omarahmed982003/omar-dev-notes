@@ -99,6 +99,7 @@ available RAM for FPM / realistic high-percentile worker RSS
 ```ini
 pm.max_requests = 500
 request_terminate_timeout = 30s
+request_terminate_timeout_track_finished = yes
 request_slowlog_timeout = 3s
 slowlog = /var/log/php-fpm/app-slow.log
 catch_workers_output = yes
@@ -123,7 +124,7 @@ concurrency = throughput × latency = 100 × 0.2 = 20 workers
 
 ## Graceful reload وfastcgi_finish_request
 
-استخدم reload من مدير الخدمة في النشر حتى تكمل العمليات الحالية حيث أمكن. وتسمح `fastcgi_finish_request()` بإرسال الاستجابة ثم متابعة عمل قصير، لكنها تبقي worker مشغولًا؛ الأعمال الثقيلة أو الموثوقة مكانها queue worker مستقل.
+استخدم reload من مدير الخدمة في النشر حتى تكمل العمليات الحالية حيث أمكن. وتسمح `fastcgi_finish_request()` بإرسال الاستجابة ثم متابعة عمل قصير، لكنها تبقي worker مشغولًا؛ الأعمال الثقيلة أو الموثوقة مكانها queue worker مستقل. افتراضيًا لا يطبق FPM قيمة `request_terminate_timeout` بعد انتهاء الطلب أو بعد `fastcgi_finish_request()`؛ تفعيل `request_terminate_timeout_track_finished` يجعل الحد يشمل هذه المرحلة أيضًا.
 
 ## مسألة تشغيلية
 
@@ -133,20 +134,25 @@ concurrency = throughput × latency = 100 × 0.2 = 20 workers
 
 استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+شغّل بيئة `examples/php-labs/production` كما في README، ثم نفّذ:
 
 ~~~bash
-curl -sS -o NUL -w "status=%{http_code} total=%{time_total}
+curl -sS -o /dev/null -w "status=%{http_code} total=%{time_total}
 " http://localhost/health
 ~~~
 
-**معيار النجاح:** تحت حمل مضبوط تظل health check سريعة ولا يرتفع عدد العمال بلا حد؛ اربط التأخير بطابور FPM بدل التخمين.
+**معيار النجاح:** يرجع health check حالة 200، وتُظهر `docker compose ps` الخدمتين بحالة healthy. تحت حمل مضبوط يظل عدد workers داخل الحد، واربط التأخير بطابور FPM بدل التخمين. في PowerShell على Windows استبدل `/dev/null` بـ`NUL`.
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
 ## اربط النقاط ببعض
 
 فعّل status page وslowlog على مسار داخلي محمي لتفهم active/idle/listen queue والطلبات البطيئة. احسب memory per child من قياس تحت حمل، واترك هامشًا للنظام والweb server. داخل container لا تجعل autoscaling يخفي max_children غير صحيح، واضبط graceful termination مع مهلة المنصة.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

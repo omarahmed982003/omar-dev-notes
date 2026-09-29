@@ -66,6 +66,21 @@ Prefer auto-instrumentation or established libraries. Do not place secrets or pe
 
 Start with a slow trace, locate the longest span, correlate logs by trace ID, inspect a query plan or third-party latency, and use a CPU profile only when time is spent inside application computation. Verify the fix under load and watch the SLI after deployment.
 
+## A real SDK and OTLP path
+
+The lab installs `open-telemetry/sdk` and `open-telemetry/exporter-otlp`. Environment configuration sends OTLP/HTTP to a Collector, whose debug exporter prints the span.
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -fsS http://127.0.0.1:8080/telemetry
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs otel-collector
+~~~
+
+Verify that the response contains a nonzero trace ID and the logs contain `lesson.telemetry` and `service.name=php-runtime-lab`. Add low-cardinality attributes such as route, method, and status. Never use a user ID or full URL as a metric label.
+
+A batch processor suits production, but short-lived processes must flush before exit. Define a sampling policy aware of errors and latency, and monitor dropped spans and export failures; request success does not prove telemetry export.
+
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">
@@ -94,6 +109,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Add real instrumentation for HTTP, database, and queues with an exporter and resource attributes. Histograms need suitable buckets, and percentiles must not be averaged. Connect flame-graph improvements to an SLI change rather than one faster function.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

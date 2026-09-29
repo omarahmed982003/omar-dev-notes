@@ -79,12 +79,17 @@ $service = new App\Billing\InvoiceService();
 
 `App\Billing\InvoiceService` conventionally maps to `src/Billing/InvoiceService.php`. Linux filesystems are commonly case-sensitive, so incorrect casing that survives on Windows can fail after deployment.
 
+```text
+src/Billing/InvoiceService.php
+```
+
 ## A production install
 
 ```bash
 composer validate --strict
 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
-composer audit
+composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ```
 
 - `--no-dev` excludes development packages at deployment time.
@@ -109,19 +114,26 @@ composer audit
 
 Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
 
-Execute this checkpoint inside the lesson environment:
+Run this checkpoint inside `examples/php-labs` or the extracted lab package:
 
 ~~~bash
 composer validate --strict
+composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ~~~
 
-**Success criterion:** The command exits with code 0, <code>composer.lock</code> matches declared constraints, and no required package is left unlocked.
+**Success criterion:** All commands exit 0; <code>composer.lock</code> is valid, its contents have no known advisory, and the real PHP version and extensions satisfy production requirements. The lock makes <code>--locked</code> reproducible; <code>validate</code> alone neither creates nor guarantees a lock.
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
 ## Connect the ideas
 
 Treat SemVer as a compatibility contract, not a quality guarantee: <code>^</code> and <code>~</code> open different ranges while the lock records actual choices. Validate platform requirements and extensions, configure private repositories without committed tokens, and review scripts because Composer executes them.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

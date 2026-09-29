@@ -87,9 +87,26 @@ php queue-demo.php
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
+## Worker حقيقي على Redis
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -fsS -X POST http://127.0.0.1:8080/queue
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:queue
+~~~
+
+يجب أن يظهر `processed=<job_id>` ويعود طول القائمة إلى صفر. أوقف worker، أرسل job وتأكد أنها تبقى، ثم أعده وأثبت المعالجة. أرسل نفس `job_id` يدويًا مرتين واختبر سجل duplicate.
+
+
 ## اربط النقاط ببعض
 
 Visibility timeout يجب أن يتجاوز المعالجة أو يتجدد حتى لا تظهر الرسالة لعامل ثانٍ. Ordering غالبًا مضمون داخل partition فقط. Poison message تحتاج retry محدودًا وdead-letter وتحقيقًا. Transactional outbox يربط تغيير قاعدة البيانات بنشر الحدث دون dual-write gap.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

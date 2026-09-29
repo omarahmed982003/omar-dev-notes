@@ -139,6 +139,11 @@ php -d opcache.enable_cli=1 -r "var_export(opcache_get_status(false) !== false);
 
 قس memory_consumption وinterned strings وhit/miss وwasted percentage لتحديد sizing بدل نسخ إعداد. Invalidation وtimestamp policy يجب أن تتوافق مع atomic deployment. JIT لا يسرع كل workload ويبقى منفصلًا عن فائدة OPcache الأساسية. Preloading يثبت classes داخل عمر العملية ويتطلب restart عند التغيير.
 
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
+
 ### جرّب بنفسك
 
 اجمع metrics قبل وبعد حمل مكرر وفسر eviction أو restart.

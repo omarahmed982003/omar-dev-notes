@@ -1,263 +1,412 @@
 ---
-title: 17. برامج مترابطة وDebugging عملي
+title: 17. مشروع دفتر الملاحظات وDebugging عملي
 description: برامج PHP كاملة تربط الأنواع والدوال والملفات والطلبات والاستثناءات، مع تمارين توقع الناتج وتصحيح الأخطاء.
 sidebar:
   order: 17
 ---
 
-## قبل ما تبدأ
+## المشكلة: الأجزاء تعمل وحدها، لكن هل الطلب الكامل يعمل؟
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+الدالة قد تكون صحيحة، لكن النموذج يرسل Array بدل نص، أو الحفظ يفشل، أو echo مبكرة تكسر redirect. عشان كده هنربط Form وValidation وSession وFiles وRouter في **دفتر ملاحظات محلي**. لكل جلسة متصفح دفترها؛ لا يوجد Login أو Database في المشروع. لما تحتاج حسابات أو تخزينًا متعدد المستخدمين انتقل إلى [الأمان](/auth/) و[قواعد البيانات](/database/) بدل اختراعها هنا.
 
-### كلمات جديدة في الدرس
+كل الملفات كاملة تحت `examples/php-course/notebook` أو [حزمة أمثلة المنهج](/downloads/php-course.zip). تحتاج PHP 8.1+ وmbstring ومخزن جلسات قابلًا للكتابة. اقرأ على ثلاث جلسات: الطلب والتحقق؛ الحفظ والعرض؛ الاختبارات والتصحيح.
 
-- **Debugger:** أداة تتبّع الأخطاء: بتوقف البرنامج خطوة خطوة عشان تشوف القيم ومسار التنفيذ.
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
-- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
-- **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
-- **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+## مراحل البناء التي وصلنا لها
 
+| المرحلة | ما تعلمته | الدليل العملي |
+|---|---|---|
+| الدرس 5–7 | شروط ودوال وCallbacks | اختيار خطأ أو متابعة وتنفيذ Handler |
+| الدرس 8 | ملفات وJSON وفشل I/O | كتابة ملف والتحقق من Bytes وقراءة شكله |
+| الدرس 9 | Form→Validation→Session | preferences.php تتذكر الاسم وCSRF |
+| الدرس 10 | Composer وأدوات الجودة | composer-demo له lock واختبارات فعلية |
+| الدرس 13–15 | Unicode والوقت ومسار الطلب | UTF-8 وUTC وRouter وEmitter |
+| هنا | ربط الحدود | حفظ ملاحظة ثم عرضها عبر GET |
 
-## من Fragment لبرنامج نقدر نشغله
+لا تنسخ fragments متفرقة فوق بعضها. أنشئ الشجرة التالية، ثم اكتب كل ملف كما هو:
 
-المثال الصغير ممتاز لشرح Operator أوFunction واحدة، لكنه مش بيوريك المشاكل اللي بتحصل لما الأجزاء تتجمع: المدخل ممكن يكون ناقصًا، الملف ممكن مايفتحش، الإخراج ممكن يفسد، والدالة الصحيحة ممكن تُستدعى بترتيب غلط.
+~~~text
+notebook/
+  config.php
+  public/index.php
+  src/notebook.php
+  views/notebook.php
+  storage/              (created on first save)
+~~~
 
-علشان كده البرنامج الكامل لازم يوضح:
+## 1. إعداد واضح بدل افتراض البيئة
 
-- الأمر أوالرابط اللي يشغله.
-- شكل المدخلات والقيم غير الصالحة.
-- الناتج وExit Code أوHTTP Status المتوقع.
-- حدود مسؤولية كل دالة.
-- طريقة التعامل مع الفشل.
-- حالات اختبار تثبت السلوك.
+`config.php`؛ environment قيمة من إعداد الخدمة، وليست من Request:
 
-وأثناء الـDebugging، ما تبدأش بإصلاح أول سطر شكله غريب. ثبّت المشكلة بأقل Input، اكتب المتوقع والفعلي، اجمع دليلًا من Log أوDump أوTest، غيّر سببًا واحدًا، وبعد الإصلاح أضف Regression Test.
-
-```text
-Reproduce → Minimize → Observe → Hypothesis
-          → One change → Verify → Regression test
-```
-
-الدروس السابقة بتديك القطع، والدرس ده بيدرّبك تشوف حدود البرنامج كاملة.
-
-## لماذا نحتاج برامج كاملة؟
-
-الـFragment يشرح تعليمة واحدة، لكن البرنامج الكامل يكشف حدود الطبقات: أين نقرأ المدخل؟ أين نتحقق؟ متى نرمي Exception؟ وكيف نخرج نتيجة ثابتة قابلة للاختبار؟ الأمثلة التالية صغيرة، لكنها تعمل من البداية إلى النهاية.
-
-## برنامج CLI: تلخيص أسعار صحيحة
-
-```php
+~~~php
 <?php
+$environment = getenv('APP_ENV') ?: 'development';
+if (!in_array($environment, ['development', 'production'], true)) {
+    throw new RuntimeException('Invalid APP_ENV');
+}
+return [
+    'secure_cookie' => $environment === 'production',
+    'storage' => getenv('NOTEBOOK_STORAGE') ?: __DIR__ . '/storage',
+];
+~~~
 
+المحلي HTTP فيختار Cookie بدون Secure. الإنتاج يختار Secure=true ويحتاج HTTPS فعليًا. NOTEBOOK_STORAGE اختيار لمسار تخزين موثوق في الاختبار أو النشر؛ الافتراضي خارج public. إعداد غير معروف يفشل بدل تشغيل سياسة غير مقصودة. حد الطلب في الخادم وphp.ini يكمّل حد التطبيق؛ أخطاء الإنتاج تسجل ولا تعرض.
+
+## 2. التحقق والتخزين والعرض: src/notebook.php
+
+~~~php
+<?php
 declare(strict_types=1);
 
-function parseMinorUnits(string $value): int
+function validateNote(array $input): array
 {
-    if (preg_match('/\A[0-9]+(?:\.[0-9]{1,2})?\z/', $value) !== 1) {
-        throw new InvalidArgumentException('Invalid amount');
+    $data = [];
+    $errors = [];
+    foreach (['name' => 40, 'text' => 200] as $field => $limit) {
+        $value = $input[$field] ?? null;
+        if (!is_string($value) || strlen($value) > $limit * 4
+            || !mb_check_encoding($value, 'UTF-8')) {
+            $errors[$field] = 'Use valid UTF-8 text';
+            $data[$field] = '';
+            continue;
+        }
+        $value = trim($value);
+        $data[$field] = $value;
+        if ($value === '' || mb_strlen($value, 'UTF-8') > $limit) {
+            $errors[$field] = "Use 1 to {$limit} code points";
+        }
     }
-    [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
-    $digits = ltrim($whole . str_pad($fraction, 2, '0'), '0');
-    $digits = $digits === '' ? '0' : $digits;
-    $maximum = (string) PHP_INT_MAX;
-    if (strlen($digits) > strlen($maximum)
-        || (strlen($digits) === strlen($maximum) && strcmp($digits, $maximum) > 0)) {
-        throw new InvalidArgumentException('Amount exceeds integer range');
-    }
-    return (int) $digits;
+    return ['data' => $data, 'errors' => $errors];
 }
-
-function addMinorUnits(int $left, int $right): int
+function ownerDirectory(string $root, string $owner): string
 {
-    if ($left < 0 || $right < 0 || $left > PHP_INT_MAX - $right) {
-        throw new InvalidArgumentException('Total exceeds integer range');
+    if (preg_match('/\A[a-f0-9]{32}\z/', $owner) !== 1) {
+        throw new RuntimeException('Invalid storage identifier');
     }
-    return $left + $right;
+    return $root . '/' . $owner;
 }
-
-$arguments = array_slice($argv, 1);
-if ($arguments === []) {
-    fwrite(STDERR, "Usage: php total.php 12.50 3.25\n");
-    exit(2);
-}
-
-try {
-    $total = array_reduce(
-        $arguments,
-        fn (int $sum, string $amount): int => addMinorUnits($sum, parseMinorUnits($amount)),
-        0,
-    );
-    printf("%d.%02d\n", intdiv($total, 100), $total % 100);
-} catch (InvalidArgumentException $exception) {
-    fwrite(STDERR, $exception->getMessage() . PHP_EOL);
-    exit(1);
-}
-```
-
-تشغيل `php total.php 12.50 3.25` يطبع `15.75`. المثال يربط Strict Types وRegex والدوال والمصفوفات والاستثناءات وExit Codes، ويتجنب أخطاء `float` في الأموال.
-
-## برنامج Streaming: عد السطور دون تحميل الملف
-
-```php
-<?php
-
-declare(strict_types=1);
-
-function readableLines(string $path): Generator
+function readNotes(string $root, string $owner): array
 {
-    $file = new SplFileObject($path, 'r');
-    foreach ($file as $number => $line) {
-        $line = trim((string) $line);
-        if ($line !== '') {
-            yield $number + 1 => $line;
+    $directory = ownerDirectory($root, $owner);
+    if (file_exists($root) && (!is_dir($root) || !is_readable($root))) {
+        throw new RuntimeException('Storage unavailable');
+    }
+    if (!is_dir($directory)) {
+        return [];
+    }
+    $paths = glob($directory . '/*.json');
+    if ($paths === false || count($paths) > 100) {
+        throw new RuntimeException('Cannot list notes');
+    }
+    $notes = [];
+    foreach ($paths as $path) {
+        $raw = file_get_contents($path, false, null, 0, 8193);
+        if ($raw === false || strlen($raw) > 8192) {
+            throw new RuntimeException('Cannot read note');
+        }
+        $note = json_decode($raw, true, 32, JSON_THROW_ON_ERROR);
+        if (!is_array($note)
+            || !is_string($note['name'] ?? null)
+            || !is_string($note['text'] ?? null)
+            || !is_string($note['created_at'] ?? null)
+            || !is_string($note['id'] ?? null)) {
+            throw new RuntimeException('Invalid stored note');
+        }
+        $notes[] = $note;
+    }
+    usort($notes, static fn (array $a, array $b): int =>
+        [$a['created_at'], $a['id']] <=> [$b['created_at'], $b['id']]);
+    return $notes;
+}
+function saveNote(string $root, string $owner, array $data, DateTimeImmutable $now): void
+{
+    $directory = ownerDirectory($root, $owner);
+    if (!is_dir($directory) && !mkdir($directory, 0700, true) && !is_dir($directory)) {
+        throw new RuntimeException('Cannot create storage');
+    }
+    $id = bin2hex(random_bytes(16));
+    $note = [
+        'id' => $id,
+        'name' => $data['name'],
+        'text' => $data['text'],
+        'created_at' => $now->setTimezone(new DateTimeZone('UTC'))->format(DateTimeInterface::ATOM),
+    ];
+    $json = json_encode($note, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+    $temporary = tempnam($directory, '.pending-');
+    if ($temporary === false) {
+        throw new RuntimeException('Cannot create temporary file');
+    }
+    if (realpath(dirname($temporary)) !== realpath($directory)) {
+        unlink($temporary);
+        throw new RuntimeException('Temporary file outside storage');
+    }
+    try {
+        if (file_put_contents($temporary, $json) !== strlen($json)) {
+            throw new RuntimeException('Cannot write complete note');
+        }
+        if (!rename($temporary, $directory . '/' . $id . '.json')) {
+            throw new RuntimeException('Cannot publish note');
+        }
+    } finally {
+        if (is_file($temporary)) {
+            unlink($temporary);
         }
     }
 }
-
-$path = $argv[1] ?? '';
-if ($path === '' || !is_readable($path)) {
-    fwrite(STDERR, "Readable file required\n");
-    exit(2);
+function escapeHtml(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
-
-$count = 0;
-foreach (readableLines($path) as $number => $line) {
-    $count++;
-    echo $number, ': ', $line, PHP_EOL;
-}
-echo "Count: {$count}", PHP_EOL;
-```
-
-الذاكرة هنا تقريبًا ثابتة بالنسبة لحجم الملف لأن كل سطر يُعالج عند الطلب. اختبر ملفًا فارغًا، وسطرًا يحتوي Spaces فقط، وملفًا غير قابل للقراءة.
-
-## Endpoint JSON صغير بحدود واضحة
-
-```php
-<?php
-
-declare(strict_types=1);
-
-header('Content-Type: application/json; charset=utf-8');
-
-try {
-    $payload = json_decode(file_get_contents('php://input'), true, flags: JSON_THROW_ON_ERROR);
-    $name = is_string($payload['name'] ?? null) ? trim($payload['name']) : '';
-
-    if ($name === '' || mb_strlen($name) > 80) {
-        http_response_code(422);
-        echo json_encode(['error' => 'invalid_name'], JSON_THROW_ON_ERROR);
-        exit;
+function renderNotes(array $notes, array $errors, array $old, string $csrf, string $flash): string
+{
+    ob_start();
+    try {
+        require dirname(__DIR__) . '/views/notebook.php';
+        return (string) ob_get_contents();
+    } finally {
+        ob_end_clean();
     }
-
-    http_response_code(201);
-    echo json_encode(['name' => $name], JSON_THROW_ON_ERROR);
-} catch (JsonException) {
-    http_response_code(400);
-    echo '{"error":"invalid_json"}';
 }
-```
-
-افصل خطأ صياغة JSON `400` عن قيمة صحيحة الصياغة لكنها تخالف قواعد المجال `422`. في تطبيق حقيقي أضف Authentication وAuthorization وCSRF حسب نوع العميل، ولا تضع تفاصيل Exception في الاستجابة العامة.
-
-## منهج Debugging قابل للتكرار
-
-1. ثبّت Input يعيد المشكلة.
-2. اكتب Expected وActual بوضوح.
-3. صنّف المشكلة: Parse أوType أوControl Flow أوI/O أوState خارجي.
-4. صغّر الحالة حتى يبقى أقل كود يعيد الخطأ.
-5. أضف Test يفشل قبل الإصلاح وينجح بعده.
-6. أصلح السبب، ثم افحص الحالات المجاورة وحدود القيم.
-
-`var_dump` و`print_r` للملاحظة المؤقتة، بينما Logger وDebugger وTests تعطي Evidence قابلة للتكرار. لا تترك Tokens أوPasswords أوBodies حساسة في Logs.
-
-## تدريب عملي متدرج
-
-<details><summary>1. البرنامج يفشل مع ملف فارغ فقط. أول خطوة؟</summary><p>ثبّت الملف الفارغ كأقل Reproduction، اكتب المتوقع، وشغّل Test منفصل قبل تعديل الكود.</p></details>
-
-<details><summary>2. ليه نغيّر سببًا واحدًا في كل تجربة؟</summary><p>علشان لو النتيجة اتغيرت نعرف أي فرضية اتأكدت. تغييرات كثيرة معًا تنتج إصلاحًا غير مفهوم وقد تخفي المشكلة.</p></details>
-
-<details><summary>3. ما قيمة Regression Test؟</summary><p>يثبت السلوك اللي كان مكسورًا ويمنع نفس الخطأ من الرجوع أثناء تعديل لاحق.</p></details>
-
-## خريطة الدرس
-
-<div class="lesson-diagram" role="img" aria-label="خريطة البرامج والتصحيح">
-<p class="lesson-diagram-title">من العطل إلى إصلاح مثبت</p>
-<div class="diagram-flow diagram-pipeline">
-<div class="diagram-node input"><span>Input يعيد العطل</span></div><span class="diagram-arrow">→</span>
-<div class="diagram-node process"><span>Expected مقابل Actual</span></div><span class="diagram-arrow">→</span>
-<div class="diagram-node decision"><span>فرضية واحدة</span></div><span class="diagram-arrow">→</span>
-<div class="diagram-node process"><span>اختبار يفشل</span></div><span class="diagram-arrow">→</span>
-<div class="diagram-node output"><span>إصلاح واختبار حدود</span></div>
-</div>
-
-## مشروع تراكمي: مستورد طلبات قابل للتشغيل
-
-ابنِ ملفًا باسم <code>orders.php</code> يقرأ ملف JSON، يتحقق من بنية كل طلب، يحسب الإجمالي بالسنتات الصحيحة، ثم يطبع ملخصًا واحدًا. اجعل حدود المشروع واضحة: القراءة قد تفشل، JSON قد يكون تالفًا، والسعر أو الكمية قد يكونان خارج العقد.
-
-### عقد الإدخال
-
-~~~json
-[
-  {"id":"A-100","unit_price_minor":1250,"quantity":2},
-  {"id":"A-101","unit_price_minor":499,"quantity":1}
-]
 ~~~
 
-### التشغيل والنتيجة
+### اقرأ الدوال واحدة واحدة
+
+`validateNote` تبني بيانات منظفة وأخطاء. افحص is_string قبل strlen وmb_check_encoding؛ `name[]=x` لا يكسر الدالة. حد Bytes يسبق العمل على Unicode، ثم trim وحد code points. `continue` تمنع تنفيذ باقي التحقق على قيمة مرفوضة. الصفر النصي `'0'` صالح؛ لا نستخدم empty التي ترفضه.
+
+`ownerDirectory` تسمح فقط بمعرّف مولد من 32 حرف hex. المتصفح لا يحدد اسم الملف؛ owner تأتي من مخزن Session على الخادم. ده فصل دفاتر الجلسات، وليس نظام حسابات يمكن استعادتها.
+
+`readNotes` تعتبر مجلدًا لم ينشأ دفترًا فارغًا. `glob` تبحث عن ملفات json المنشورة فقط، ثم نقرأ بحد حجم ونفك JSON بفشل واضح. لا نحول ملفًا تالفًا إلى «لا ملاحظات»؛ ده فقد بيانات متخفٍ. نفحص البنية، ونرتب بالوقت ثم id لكسر التعادل؛ المعرّف العشوائي لا يعني ترتيب إنشاء داخل نفس الثانية.
+
+`saveNote` تنشئ المجلد الخاص وتولد id، وتحول now المحقونة إلى UTC. `tempnam` تنشئ ملفًا مؤقتًا؛ نتحقق من كتابة العدد الكامل، ثم rename لاسم json نهائي داخل نفس filesystem. القارئ لا يرى ملفات pending. اختبر ضمان rename على منصة النشر؛ المثال لا يَعِد بمتانة عند انقطاع الكهرباء. finally تنظف المؤقت عند الفشل.
+
+`renderNotes` تستخدم output buffer عشان القالب يرجع string بدل إرسالها فورًا؛ finally تنظف الـbuffer حتى لو القالب فشل. `escapeHtml` تعمل عند العرض، لا عند التخزين.
+
+## 3. القالب: views/notebook.php
+
+~~~php
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My learning notebook</title>
+<h1>My learning notebook</h1>
+<p>This browser session owns this notebook. This demo has no login.</p>
+<p role="status"><?= escapeHtml($flash) ?></p>
+<?php foreach ($errors as $field => $message): ?>
+  <p role="alert"><?= escapeHtml($field . ': ' . $message) ?></p>
+<?php endforeach; ?>
+<form method="post" action="/notes">
+  <input type="hidden" name="csrf" value="<?= escapeHtml($csrf) ?>">
+  <p><label>Name <input name="name" required value="<?= escapeHtml($old['name'] ?? '') ?>"></label></p>
+  <p><label>Note <textarea name="text" required><?= escapeHtml($old['text'] ?? '') ?></textarea></label></p>
+  <button>Save note</button>
+</form>
+<h2>Saved notes</h2>
+<?php if ($notes === []): ?><p>No notes yet.</p><?php endif; ?>
+<ol>
+<?php foreach ($notes as $note): ?>
+  <li><strong><?= escapeHtml($note['name']) ?></strong>:
+    <span class="note-text"><?= escapeHtml($note['text']) ?></span>
+    <time datetime="<?= escapeHtml($note['created_at']) ?>"><?= escapeHtml($note['created_at']) ?></time>
+  </li>
+<?php endforeach; ?>
+</ol>
+</html>
+~~~
+
+hidden csrf من الجلسة، لكن المستخدم يقدر يغير أي hidden input؛ الحماية من مقارنة الخادم، مش اختفاء الحقل. نعرض errors جنب النموذج ونحافظ على input الصحيحة بعد 422. كل اسم ونص وزمن يمر عبر escapeHtml حتى لو جاء من ملفنا؛ الثقة في مكان التخزين لا تحول النص إلى HTML مسموح. لو كتبت `<b>hello</b>` لازم تشوفها حروفًا، مش خطًا عريضًا.
+
+الواجهة الإنجليزية هنا مقصودة لتثبيت نفس المثال في اللغتين؛ الاسم والملاحظة يقبلان العربية وUTF-8. تغيير نصوص الواجهة لا يغير منطق الدرس.
+
+## 4. نقطة الدخول والـMiddleware والـRouter
+
+`public/index.php`؛ ده الملف الوحيد الذي يستقبل كل المسارات:
+
+~~~php
+<?php
+declare(strict_types=1);
+require dirname(__DIR__) . '/src/notebook.php';
+
+function reply(string $body, int $status = 200, array $headers = []): array
+{
+    return ['status' => $status, 'headers' => $headers, 'body' => $body];
+}
+function routeNotebook(string $method, string $path, array $config): array
+{
+    $routes = ['/' => 'GET', '/notes' => 'POST'];
+    if (!isset($routes[$path])) {
+        return reply('Not found', 404);
+    }
+    if ($routes[$path] !== $method) {
+        return reply('Method not allowed', 405, ['Allow' => $routes[$path]]);
+    }
+    $owner = $_SESSION['owner'];
+    $csrf = $_SESSION['csrf'];
+    if ($method === 'POST') {
+        $type = strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0]));
+        if ($type !== 'application/x-www-form-urlencoded') {
+            return reply('Unsupported media type', 415);
+        }
+        $token = $_POST['csrf'] ?? null;
+        if (!is_string($token) || !hash_equals($csrf, $token)) {
+            return reply('Invalid form token', 403);
+        }
+        $result = validateNote($_POST);
+        $notes = readNotes($config['storage'], $owner);
+        if ($result['errors'] !== []) {
+            return reply(renderNotes($notes, $result['errors'], $result['data'], $csrf, ''), 422);
+        }
+        if (count($notes) >= 100) {
+            return reply('Notebook is full', 409);
+        }
+        saveNote($config['storage'], $owner, $result['data'], new DateTimeImmutable('now', new DateTimeZone('UTC')));
+        $_SESSION['name'] = $result['data']['name'];
+        $_SESSION['flash'] = 'Note saved';
+        return reply('', 303, ['Location' => '/']);
+    }
+    $flash = $_SESSION['flash'] ?? '';
+    unset($_SESSION['flash']);
+    return reply(renderNotes(
+        readNotes($config['storage'], $owner),
+        [],
+        ['name' => $_SESSION['name'] ?? '', 'text' => ''],
+        $csrf,
+        $flash,
+    ));
+}
+function sessionMiddleware(callable $next, array $config): array
+{
+    $raw = file_get_contents('php://input', false, null, 0, 4097);
+    if ($raw === false) {
+        throw new RuntimeException('Cannot read body');
+    }
+    if (strlen($raw) > 4096 || (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 4096) {
+        return reply('Body too large', 413);
+    }
+    if (!session_start([
+        'use_strict_mode' => true,
+        'use_only_cookies' => true,
+        'cookie_secure' => $config['secure_cookie'],
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax',
+        'cookie_path' => '/',
+    ])) {
+        throw new RuntimeException('Session unavailable');
+    }
+    try {
+        $_SESSION['owner'] ??= bin2hex(random_bytes(16));
+        $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
+        return $next();
+    } finally {
+        session_write_close();
+    }
+}
+
+ini_set('display_errors', '0');
+ini_set('log_errors', '1');
+$requestId = bin2hex(random_bytes(8));
+try {
+    $config = require dirname(__DIR__) . '/config.php';
+    $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $response = sessionMiddleware(
+        static fn (): array => routeNotebook($method, is_string($path) ? $path : '', $config),
+        $config,
+    );
+} catch (Throwable $error) {
+    error_log(json_encode(['request_id' => $requestId, 'type' => get_class($error)], JSON_THROW_ON_ERROR));
+    $response = reply('Internal error. Reference: ' . $requestId, 500);
+}
+http_response_code($response['status']);
+header('Content-Type: text/html; charset=utf-8');
+header('Cache-Control: no-store');
+header('X-Content-Type-Options: nosniff');
+header('X-Request-ID: ' . $requestId);
+foreach ($response['headers'] as $name => $value) {
+    header("{$name}: {$value}");
+}
+echo $response['body'];
+~~~
+
+### رحلة الحفظ سطرًا بسطر على مستوى القرار
+
+نقرأ الإعداد ونحدد method/path، ثم sessionMiddleware تقرأ body بحد وتبدأ الجلسة. owner عشوائي ثابت داخل الجلسة، وcsrf عشوائي آخر؛ لا ترسل owner في النموذج. تستدعي next فتصل routeNotebook: تبحث المسار ثم method، ثم نوع body، ثم token، ثم validateNote. **ولا ملف يُكتب قبل نجاح الخطوات دي.**
+
+البيانات المرفوضة ترجع 422 مع نفس النموذج. لو وصل الدفتر 100 ملاحظة يرجع 409. في النجاح نقرأ القائمة ونحفظ، ثم نخزن الاسم وflash ونرجع 303. الـfinally تغلق Session قبل الإرسال. مع file session handler الافتراضي يظل القفل ممسوكًا خلال count ثم save؛ طلبان لنفس الجلسة لا يتجاوزان الحد بسبب قراءة نفس العدد. تغيير handler يحتاج ضمان قفل مكافئ.
+
+المتصفح يتبع Location إلى GET /. handler تقرأ flash ثم تمسحها، لذلك رسالة Note saved تظهر مرة. القراءة لا تعيد الحفظ. Emitter واحدة تطبع status والـheaders ثم body. حد الأخطاء يعطي 500 ومعرّفًا للسجل؛ logs هنا لا تحتوي النص أو Cookie.
+
+الـ303 لا تمنع إعادة إرسال POST عمدًا ولا Double-click في كل ظرف؛ النسخة دي قد تحفظ ملاحظة ثانية عند POST ثانية. مفتاح idempotency مرحلة منفصلة عند الحاجة. انتهاء Session يفقد ربط المتصفح بالدفتر؛ تنظيف الملفات القديمة واستعادة الحسابات خارج نطاق هذه التجربة ومذكوران في README.
+
+## التشغيل ودليل النجاح
+
+من مجلد notebook، شغّل `php tests.php` أولًا: المتوقع `PASS: 15 notebook checks` للتحقق من المدخلات والتخزين والعزل وUTC والترميز. بعدها شغّل الخادم:
 
 ~~~bash
-php orders.php fixtures/orders.json
+php -S 127.0.0.1:8083 -t public public/index.php
 ~~~
 
-~~~text
-orders=2
-items=3
-total_minor=2999
+افتح [الدفتر المحلي](http://127.0.0.1:8083/). اكتب Omar وLearn PHP. المتوقع POST 303 ثم GET 200، رسالة Note saved وملاحظة محفوظة. Refresh ثانية: الرسالة تختفي والملاحظة تظل. نافذة خاصة: دفتر فاضي. بعد إيقاف السيرفر وتشغيله بنفس Session Cookie ومخزن جلسات ساري، الملفات ما زالت موجودة.
+
+| التجربة | المطلوب |
+|---|---|
+| name فارغ أو name[] | 422، لا ملف جديد |
+| نص عربي وemoji | حفظ وعرض صحيحان |
+| نص يحتوي HTML | يظهر كنص، لا يتنفذ |
+| CSRF ناقص/غلط | 403، لا حفظ |
+| GET /notes | 405 وAllow: POST |
+| /missing | 404 |
+| JSON بدل form-urlencoded | 415 |
+| جسم أكثر من 4096 Bytes | 413 |
+| ملف JSON مخزن تالف | 500 مع reference، لا ادعاء دفتر فارغ |
+| GET /storage/... | 404؛ Document Root هي public فقط |
+
+اختبر فساد الملفات في نسخة تجارب منفصلة باستخدام NOTEBOOK_STORAGE، مش ملاحظاتك الحقيقية. الاختبارات الآلية المرفقة في المستودع تتحقق من الجلسات والعزل وCSRF وUTF-8 والإخراج والحفظ ومسارات الخطأ.
+
+## Debugging: دليل قبل التعديل
+
+1. ثبّت Request صغيرة تعيد العيب، وسجّل expected وactual.
+2. حدد الحد: parsing أم validation أم حفظ أم عرض؟
+3. افحص قيمة ونوعًا عند الحد، بدون طباعة داخل Response.
+4. اختبر فرضية واحدة وعدل سببًا واحدًا.
+5. أضف Regression Test تفشل قبل الإصلاح وتنجح بعده.
+
+**Breakpoint** نقطة توقف في debugger قبل تنفيذ سطر. Xdebug امتداد PHP، والـIDE عميل يعرض المتغيرات والـCall Stack. ثبت الامتداد المطابق لبنية وإصدار PHP وفق [التثبيت الرسمي](https://xdebug.org/docs/install)، ثم `php --ri xdebug` للتأكد. إعداد محلي، مع سطر zend_extension لمسار ملفك الفعلي:
+
+~~~ini
+xdebug.mode=debug
+xdebug.start_with_request=trigger
+xdebug.client_host=127.0.0.1
+xdebug.client_port=9003
 ~~~
 
-ويجب أن تعطي حالة الفشل نتيجة قابلة للاختبار:
+افتح listener في IDE واضبط path mapping لو PHP داخل container. ضع breakpoint على `$result = validateNote($_POST);` ثم أرسل النموذج مع XDEBUG_TRIGGER عن طريق browser helper/Cookie. **Step Into** تدخل الدالة، **Step Over** تنفذ السطر، و**Step Out** تكمل حتى تعود للمستدعي. راقب `$_POST['name']`، ثم errors، ثم Call Stack: index→middleware→route→validateNote.
 
-~~~bash
-php orders.php fixtures/broken.json
-~~~
+من CLI على PowerShell: `$env:XDEBUG_TRIGGER='1'` ثم شغّل الملف، وبعد التجربة `Remove-Item Env:XDEBUG_TRIGGER`. لو لا تتوقف: راجع PHP المستخدمة وملف ini وlistener وtrigger وmapping؛ امتداد CLI لا يعني أن FPM حملته. [مرجع step debugging](https://xdebug.org/docs/step_debug). في الإنتاج لا تفعّل اتصال debugger عام؛ استخدم logs محمية وrequest ID وdisplay_errors=Off. إعدادات 11 تشرح الفرق. Log منظمة بمعلومات منقحة، لا dump لكل SESSION.
 
-~~~text
-ERROR invalid JSON
-exit_code=2
-~~~
+## الاختبارات والأدوات على مشروع فعلي
 
-### شروط القبول
+ارجع إلى composer-demo من الدرس 10: `composer install` ثم `composer check` ثم `composer audit`. PHPUnit تتحقق من النتائج، PHPStan من العقود، وPHP-CS-Fixer من التنسيق. الـlock يثبت النسخ؛ لا تحذفها لحل خطأ test. أثناء نشر التطبيق استخدم install من lock وcheck-platform-reqs على المنصة المستهدفة، مع PHP ini منفصل للتطوير والإنتاج.
 
-1. لا تستخدم <code>float</code> للمال، ولا تسمح بتحويل نص رقمي ضمنيًا.
-2. افصل القراءة والتحقق والحساب والعرض في دوال صغيرة ذات أنواع واضحة.
-3. أضف اختبارات للملف المفقود وJSON التالف والكمية صفرًا والسعر السالب والعدد الذي يتجاوز مدى <code>int</code>.
-4. مرّر PHPStan أو أداة التحليل المختارة، ثم احتفظ باختبار regression لأي عيب تجده.
-5. سجّل سبب الخطأ تقنيًا، لكن اجعل رسالة CLI مستقرة ولا تعرض stack trace للمستخدم.
-</div>
+## امتداد التدريب: البرامج الكاملة السابقة ما زالت متاحة
 
-## تأكد من فهمك
+في [مختبر PHP الأصلي](/php/00-lab-setup/) ملفات `total.php` و`orders.php` و`stream-lab.php` كاملة وليست أجزاء ناقصة:
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>توقع ناتج <code>array_map(fn ($x) =&gt; $x * 2, ['2', 3])</code> دون Strict Types، وما الخطر؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> الناتج [4, 6] بسبب تحويل النص الرقمي. الخطر أن بيانات غير منضبطة تمر بصمت؛ تحقق من الشكل والنوع عند الحدود.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا استخدام <code>float</code> لجمع أسعار كثيرة قد يعطي سنتًا خاطئًا؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> معظم الكسور العشرية تقريبية في التمثيل الثنائي. استخدم أصغر وحدة صحيحة أو Decimal مناسبًا للمجال.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>اكتشف الخطأ: <code>if ($value = null)</code>.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> هذا إسناد لا مقارنة ويجعل الشرط false. استخدم <code>$value === null</code> وفعّل التحليل الساكن.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>لماذا <code>file_get_contents()</code> يحتاج فحصًا صارمًا ضد <code>false</code>؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> النص الفارغ نتيجة صحيحة لكنه falsy؛ المقارنة الصارمة تفرق بين فشل القراءة ومحتوى فارغ.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>صمم حالات اختبار لـ<code>parseMinorUnits</code>.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> اختبر 0 و12 و12.5 و12.50، ثم -1 و1.234 وحروفًا ومسافات وقيمة ضخمة تتجاوز int.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>ما الفرق بين إصلاح العرض وإصلاح السبب؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> إخفاء Warning أو Catch عام قد يخفي العرض، لكن الإصلاح الحقيقي يثبت سبب الحالة ويمنعها أو يعالجها بعقد واختبار واضحين.</div></details></section>
-</div>
+- `php total.php 12.50 3.25` → `15.75`. تحويل المبلغ يتم كنص لوحدات صحيحة: ضبط الصيغة بـ`\A`/`\z`، تكملة الكسر لرقمين، مقارنة طول الأرقام ثم ترتيبها مع PHP_INT_MAX **قبل التحويل**. الجمع يفحص `left <= PHP_INT_MAX - right`. اختبر 0 و12 و12.5 و12.50، وارفض -1 و1.234 وnewline وقيمة ضخمة. `php tests.php values` يثبت الحدود.
+- `php orders.php fixtures/orders.json` → `orders=2` و`items=3` و`total_minor=2999`، للطلبين 1250×2 و499×1. JSON المكسورة ترجع `ERROR invalid JSON` وكود خروج 2. افصل القراءة والتحقق والحساب والعرض، واختبر كمية صفرًا وسعرًا سالبًا وoverflow.
+- `php stream-lab.php fixtures/large.csv` يعالج بالتتابع؛ اختبر الملف الفارغ والمفقود والسطر الكبير. Generator أو SplFileObject لا تجعل ذاكرة السطر الواحد غير محدودة آمنة. راقب العدد والذاكرة، ولا تخلط فشل القراءة بقائمة فاضية.
 
-## اربط النقاط ببعض
+حالة JSON endpoint وفروق 400/422/415/413 موجودة كاملة في http-demo بالدرس 15. خلي لكل برنامج README وfixtures واختبارًا؛ الشغل من نسخة نظيفة يكشف ملفات محلية منسية.
 
-حوّل المشروع الختامي إلى files فعلية: fixtures صحيحة وفاسدة، test runner، وREADME بأوامر التشغيل. اجعل كل bug سابق regression test، وشغّل static analysis وtests من checkout نظيف حتى لا يعتمد النجاح على ملف محلي غير معلن.
+## توقع، شخّص، كمّل
 
-### جرّب بنفسك
+<details><summary>توقع: Save ناجحة ثم Refresh مرتين</summary><p>POST تحفظ مرة وترجع 303. أول GET تظهر flash وتمسحها؛ التالية تعرض الملاحظة بدون flash ولا حفظ جديد. إعادة POST نفسها حالة أخرى قد تضيف ملاحظة.</p></details>
 
-احذف cache المحلية وشغّل المشروع من نسخة نظيفة وفق README فقط.
+<details><summary>Debugging: name[]=Omar يسبب TypeError</summary><p>يعني وصلت Array لدالة نص قبل التحقق. ضع is_string في validateNote قبل trim/mb_strlen، واختبر أن الرد 422 وأن عدد الملفات لم يتغير.</p></details>
 
+<details><summary>كمّل اختبار يمنع XSS من ملف مخزن</summary><p>احفظ نصًا مثل &lt;img src=x onerror=alert(1)&gt; ثم افحص HTML: يظهر مرمزًا داخل note-text ولا يوجد عنصر img ناتج عنه. الاختبار لازم يقرأ الرد الحقيقي، مش يختبر escapeHtml وحدها فقط.</p></details>
 
-## اختبر حدود المبالغ
+<details><summary>ملف JSON تالف أدى لدفتر فاضي ورسالة نجاح. إيه الخطأ؟</summary><p>الفشل اتبلع. ارم خطأ عند decode/shape failure، وسجل reference وارجع 500 بلا تفاصيل حساسة. لا تعدل المتوقع ليتوافق مع فقد البيانات.</p></details>
 
-المبلغ بيبدأ كنص، وماينفعش نحوله لعدد قبل فحص شكله وحدوده. `\A` و`\z` بيثبتوا بداية النص ونهايته الحقيقية؛ لكن `$` ممكن يطابق قبل سطر جديد في الآخر. بنوصل الجزء الصحيح برقمين للكسر كنص، بدل ضرب ممكن يتجاوز حد العدد قبل ما نفحصه. بنقارن طول الأرقام ثم ترتيب النصوص المتساوية الطول، وبعدها نحول إلى `int`. والجمع مسموح بس لما `left <= PHP_INT_MAX - right`. المثال يقبل مبالغ غير سالبة بكسر من رقم أو رقمين وأصفار بادئة؛ مش بيعمل تحويل عملات أو تقريب.
+<details><summary>المجموع المالي صحيح للمدخلات العادية ويفشل عند الحد الأعلى. أول خطوة؟</summary><p>ثبّت الحد وحالة تتجاوزه في Test، وافحص قبل الضرب أو الجمع؛ overflow قد يحول النتيجة إلى float قبل أن تلحق تتحقق منها.</p></details>
 
-شغّل `php tests.php values` داخل [المختبر القابل للتنزيل](/php/00-lab-setup/). جرّب `12.5` فتطلع 1250، ثم نفس النص وبعده سطر جديد فيُرفض، ومبلغ أكبر من حد العدد فيُرفض، ومبلغين صحيحين مجموعهما أكبر من الحد فيُرفض الجمع.
+الانتهاء من الدرس يعني أنك تقدر تتبع طلب واحد من النموذج حتى الملف والرد، وتثبت مسار رفض بلا أثر، وتشرح سبب كل حالة HTTP.

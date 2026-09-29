@@ -83,6 +83,24 @@ PHPStan/Psalm تكشف تناقض الأنواع والمسارات المستح
 - لا تستخدم بيانات production حقيقية.
 - اختبر migration وrollback/forward path حيث يلزم.
 
+## Contract وIntegration tests
+
+اختبر العقد عند الحدود الفعلية: status وheaders وschema لعميل HTTP، constraints وisolation لقاعدة البيانات، ودلالات ack/retry للـqueue. Fake مفيدة للسرعة، لكن لا تثبت توافق driver أو broker.
+
+قسّم suite إلى طبقات لها أوامر ووقت واضحان:
+
+~~~text
+unit -> contract -> integration -> HTTP smoke -> end-to-end
+~~~
+
+شغّل integration tests على خدمة مؤقتة وبيانات مستقلة لكل عملية. لا تجعل parallel tests تشترك في database name أو queue أو clock. استخدم unique namespace واحذف الموارد في `finally`.
+
+## Mutation وFlaky tests
+
+Mutation testing يغير operator أو شرطًا ويتوقع فشل الاختبار. إذا بقي أخضر فالتغطية وصلت للسطر دون assertion قوية. سجّل flaky test كعطل له مالك وموعد؛ إعادة CI حتى ينجح تخفي السباق.
+
+اختبر failure paths: timeout، response تالفة، deadlock، duplicate message، امتلاء القرص، وSIGTERM. اجعل الوقت والعشوائية injectable حتى تكون النتيجة قابلة للتكرار.
+
 ## مرجع
 
 - [PHPUnit Manual](https://docs.phpunit.de/)
@@ -108,6 +126,11 @@ php tests.php
 ## اربط النقاط ببعض
 
 افصل unit عن integration وcontract وend-to-end حسب boundary. اجعل الوقت والعشوائية والخدمات الخارجية قابلة للضبط، وشغل الاختبارات بالتوازي دون state مشتركة. Coverage لا يثبت جودة assertions؛ mutation testing يكشف اختبارًا يمر رغم تغيير المنطق، وCI يبدأ من بيئة نظيفة.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

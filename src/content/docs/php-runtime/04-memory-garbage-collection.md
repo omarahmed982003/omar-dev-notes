@@ -159,6 +159,11 @@ php memory-lab.php
 
 Generator وstreaming يقللان working set عندما لا تحتاج كل البيانات معًا. في worker طويل العمر حرر مراجع وresources بين jobs وراقب growth لا لقطة واحدة. <code>memory_limit</code> ليس كل RSS لأن extensions وnative libraries وmapped files قد تقع خارجه.
 
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
+
 ### جرّب بنفسك
 
 عالج 100 job وراقب RSS بعد كل عشرة لكشف retention.

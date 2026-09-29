@@ -97,7 +97,8 @@ Linux حساس لحالة الأحرف؛ خطأ مثل `invoiceService.php` قد
 ```bash
 composer validate --strict
 composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
-composer audit
+composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ```
 
 - `--no-dev` يستبعد أدوات التطوير، لكنه لا يعني أن `require-dev` غير مهم أثناء الاختبار.
@@ -124,19 +125,26 @@ composer audit
 
 استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+نفّذ نقطة التحقق التالية داخل `examples/php-labs` أو النسخة المستخرجة من الحزمة:
 
 ~~~bash
 composer validate --strict
+composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ~~~
 
-**معيار النجاح:** ينتهي الأمر بكود 0، ويطابق <code>composer.lock</code> القيود المعلنة ولا توجد حزمة مطلوبة غير مقفلة.
+**معيار النجاح:** تنتهي الأوامر بكود 0؛ يكون <code>composer.lock</code> صالحًا، ولا توجد advisory معروفة في محتواه، وتطابق نسخة PHP والامتدادات الفعلية متطلبات الإنتاج. وجود lock هو الذي يجعل فحص <code>--locked</code> قابلًا للتكرار؛ <code>validate</code> وحده لا ينشئ lock ولا يضمن وجوده.
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
 ## اربط النقاط ببعض
 
 افهم SemVer كعقد توافق لا ضمان جودة: <code>^</code> و<code>~</code> يفتحان نطاقات مختلفة، والـlock يثبت الاختيار الفعلي. تحقق من platform requirements وإضافات PHP، واضبط private repositories واعتمادياتها دون تخزين token. راجع scripts لأنها كود ينفذ أثناء Composer.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

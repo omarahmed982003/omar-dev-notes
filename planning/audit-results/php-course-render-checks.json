@@ -1,0 +1,28 @@
+{
+  "pages": 26,
+  "codeBlocks": 208,
+  "exercises": 110,
+  "links": 50,
+  "counts": {
+    "ar": {
+      "programming-basics": 89,
+      "cpp": 14,
+      "php": 18,
+      "php-runtime": 17,
+      "oop": 8,
+      "auth": 22,
+      "database": 6,
+      "total": 174
+    },
+    "en": {
+      "programming-basics": 89,
+      "cpp": 14,
+      "php": 18,
+      "php-runtime": 17,
+      "oop": 8,
+      "auth": 22,
+      "database": 6,
+      "total": 174
+    }
+  }
+}

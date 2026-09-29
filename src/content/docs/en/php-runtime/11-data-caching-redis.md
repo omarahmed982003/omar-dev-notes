@@ -70,9 +70,27 @@ php cache-lab.php
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 
+## A real Redis exercise
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -c cookies.txt -b cookies.txt http://127.0.0.1:8080/session
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli info memory
+docker compose -f production/compose.yaml -f production/compose.full.yaml stop redis
+curl -i -c cookies.txt -b cookies.txt http://127.0.0.1:8080/session
+~~~
+
+Record latency and HTTP status before and after the outage. Restart Redis and prove that the service does not silently use stale local state. This complements rather than replaces the local race model.
+
+
 ## Connect the ideas
 
 Choose Redis structures by contract: strings, hashes, sets, sorted sets, and streams are not interchangeable. Understand eviction policy, memory limits, replication lag, and failover. Cache is not the source of truth; define stale tolerance, invalidation, stampede control, and fallback.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

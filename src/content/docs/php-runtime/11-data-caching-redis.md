@@ -96,9 +96,27 @@ php cache-lab.php
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
+## تجربة Redis حقيقية
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml up --build -d
+curl -c cookies.txt -b cookies.txt http://127.0.0.1:8080/session
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli info memory
+docker compose -f production/compose.yaml -f production/compose.full.yaml stop redis
+curl -i -c cookies.txt -b cookies.txt http://127.0.0.1:8080/session
+~~~
+
+سجّل زمن الاستجابة وكود HTTP قبل الانقطاع وبعده. أعد Redis وتأكد أن الخدمة لا تستخدم قيمة محلية قديمة بصمت. هذه التجربة تكمل نموذج السباق المحلي ولا تستبدله.
+
+
 ## اربط النقاط ببعض
 
 اختر Redis structure حسب العقد: string وhash وset وsorted set وstream ليست متبادلة. افهم eviction policy والحد الأقصى للذاكرة، وحدد أثر replication lag وfailover. Cache ليست مصدر الحقيقة؛ صمم stale tolerance وinvalidations وstampede lock وfallback عند غياب Redis.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

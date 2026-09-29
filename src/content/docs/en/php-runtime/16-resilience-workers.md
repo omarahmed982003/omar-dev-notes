@@ -75,6 +75,40 @@ KillSignal=SIGTERM
 
 Health means more than a live process: observe the ability to reserve work, last successful completion, oldest-message age, and error rate.
 
+## A complete systemd unit
+
+~~~ini
+[Unit]
+Description=PHP queue worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=app
+Group=app
+WorkingDirectory=/srv/app/current
+EnvironmentFile=/etc/app/worker.env
+ExecStart=/usr/bin/php bin/worker.php
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+KillSignal=SIGTERM
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/app/shared
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+~~~
+
+Run `systemd-analyze verify`, then stop the service during a long job and prove that it drains within `TimeoutStopSec`. Do not put a secret in the unit or command line; load it from a permission-restricted file or secret manager.
+
+
 ## Check your understanding
 
 <div class="lesson-quiz" role="list">
@@ -103,6 +137,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Retries need exponential backoff, jitter, and a retry budget to avoid storms. Shutdown stops fetching new jobs, gives current work a deadline, and releases leases. Distributed workers need ownership tokens or fencing so stale workers cannot write after lock loss, and backpressure must reach producers.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

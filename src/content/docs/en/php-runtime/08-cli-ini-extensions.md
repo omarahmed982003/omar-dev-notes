@@ -48,7 +48,7 @@ Some directives cannot change at runtime. Declare extension requirements in Comp
 ```bash
 php --ri opcache
 php --ri pdo_mysql
-composer check-platform-reqs
+composer check-platform-reqs --lock --no-dev
 ```
 
 ## Environment policy
@@ -57,7 +57,42 @@ Development can show detailed errors and load Xdebug. Production should hide err
 
 ## CLI programs
 
+```php
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+set_time_limit(0);
+$options = getopt('', ['dry-run', 'limit:']);
+```
+
 Use meaningful exit codes, timeouts, logging, signal handling for workers, and a lock when duplicate execution is unsafe. `set_time_limit(0)` does not stop the operating system or orchestrator from terminating a process.
+
+## PHP lifecycle and upgrades
+
+Saying an application supports PHP 8.x is insufficient. Record the minimum and maximum tested minor versions, support deadlines, and extension versions. Before upgrading:
+
+1. Read the migration guide, backward-incompatible changes, and deprecations.
+2. Run tests and static analysis on both versions in CI.
+3. Build a new image with every extension instead of replacing only the binary.
+4. Watch startup warnings, OPcache, and FPM errors in a canary.
+5. Keep a rollback path compatible with schema and queue payloads.
+
+Treat `E_DEPRECATED` as early CI work rather than output for users. `display_errors=Off` and `error_reporting=E_ALL` can coexist: record complete errors without exposing them in a response.
+
+## Startup failures and extension ABI
+
+Check startup errors before declaring the service healthy. An extension compiled for another PHP ABI or thread-safety mode can fail before application code runs. Pin its source and version in the image, then run:
+
+~~~bash
+php -v
+php --ini
+php -m
+php --ri opcache
+composer check-platform-reqs --lock --no-dev
+~~~
+
+Compare CLI and FPM through a protected internal endpoint and deliberately test a missing extension and startup failure. Never expose `phpinfo()` publicly; it reveals paths, configuration, and environment data.
 
 ## Operational problem
 
@@ -80,6 +115,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 INI modes determine whether a setting changes in php.ini, per-directory configuration, or runtime. Compare <code>php --ini</code> with FPM configuration to avoid editing CLI only. A PECL extension must match PHP ABI, thread-safety mode, and platform; inspect startup errors after upgrades.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

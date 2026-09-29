@@ -1,6 +1,6 @@
 ---
 title: PHP Runtime & Production
-description: Composer, HTTP clients, OPcache, memory, PHP-FPM, web servers, and environment configuration.
+description: From Composer, OPcache, and PHP-FPM to testing, Redis, queues, deployment, observability, resilience, and recovery.
 sidebar:
   order: 0
 ---
@@ -32,6 +32,13 @@ These subjects are neither OOP nor PHP syntax. They form the **runtime and produ
 15. [Profiling, SLI/SLO, and OpenTelemetry](/en/php-runtime/15-profiling-slo-opentelemetry/) — Flame graphs, percentiles, objectives, and trace propagation.
 16. [Resilience and worker management](/en/php-runtime/16-resilience-workers/) — Circuit breakers, bulkheads, backpressure, signals, and systemd.
 17. [Disaster recovery and restore testing](/en/php-runtime/17-disaster-recovery/) — RPO, RTO, backups, restores, and game days.
+18. [Sessions and shared state at scale](/en/php-runtime/18-sessions-shared-state/) — shared storage, locking, TTL, and release compatibility.
+19. [Database connections and runtime operations](/en/php-runtime/19-database-runtime-operations/) — connection budgets, timeouts, pooling, and replicas.
+20. [Long-running PHP and worker runtimes](/en/php-runtime/20-long-running-php/) — FrankenPHP, RoadRunner, Swoole, state leakage, and reset.
+
+## The practice protocol
+
+Every exercise follows five steps: predict the result, run it, introduce a controlled failure, collect evidence from output, logs, or metrics, then repair the cause and repeat. A successful command without reviewable acceptance evidence is insufficient.
 
 ```text
 Client
@@ -52,5 +59,7 @@ Client
 - [OPcache](https://www.php.net/manual/en/book.opcache.php) and [preloading](https://www.php.net/opcache.preloading.php)
 - [PHP garbage collection](https://www.php.net/manual/en/features.gc.php)
 - [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
+- [Session configuration](https://www.php.net/manual/en/session.configuration.php) and [PDO connection management](https://www.php.net/manual/en/pdo.connections.php)
+- [FrankenPHP worker mode](https://frankenphp.dev/docs/worker/)
 - [Nginx FastCGI](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html) and [Apache MPMs](https://httpd.apache.org/docs/2.4/mpm.html)
 - [getenv()](https://www.php.net/getenv) and [`$_ENV`](https://www.php.net/manual/en/reserved.variables.environment.php)

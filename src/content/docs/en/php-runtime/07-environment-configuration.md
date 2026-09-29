@@ -51,12 +51,23 @@ PHP does not load `.env` files by itself. A framework, a package such as `vlucas
 
 ## Development files
 
+```bash
+composer require vlucas/phpdotenv
+```
+
 ```php
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 $dotenv->required(['APP_ENV', 'DATABASE_DSN']);
+```
+
+```dotenv
+# .env.example - names and non-secret examples
+APP_ENV=local
+APP_DEBUG=false
+DATABASE_DSN=mysql:host=127.0.0.1;dbname=app;charset=utf8mb4
 ```
 
 Commit a non-secret `.env.example`, ignore the real `.env`, and keep it outside the document root. If a secret leaks, revoke or rotate it; deleting one commit does not invalidate the credential.
@@ -122,6 +133,13 @@ env[DATABASE_DSN] = $DATABASE_DSN
 
 Environment variables are configuration transport, not encryption. They may be visible to diagnostics or child processes. Use a secret manager for rotation, auditing, and policy; never expose `phpinfo()`, full environment dumps, or server secrets to a browser.
 
+```text
+hard-coded safe defaults
+  <- committed non-secret config
+  <- environment-specific values
+  <- secret manager
+```
+
 ## Operational problem
 
 <details><summary>Why must secrets stay out of Git?</summary><p>History retains them and clones spread them; use a secret manager and rotate any exposed secret.</p></details>
@@ -143,6 +161,11 @@ Record the exit code and observed evidence. If reality differs, explain the envi
 ## Connect the ideas
 
 Build a typed configuration schema that validates once at startup and explicitly parses durations, sizes, and booleans. Define precedence among defaults, files, environment, and secret managers. Keep configuration immutable during a request and rotate secrets with an overlap window without printing values.
+
+#### Practice cycle
+
+Write your prediction before running the example and record the output. Introduce one controlled failure, collect evidence from logs or metrics, repair the cause, and rerun the check to prove the fix handles the fault instead of hiding it.
+
 
 ### Try it yourself
 

@@ -190,6 +190,11 @@ php config-check.php
 
 ابن typed configuration schema يحقق القيم مرة عند startup ويحول المدة والحجم وBoolean صراحة. حدد precedence بين defaults وfile وenvironment وsecret manager. Configuration immutable داخل request، وsecret rotation تحتاج نافذة تقبل القديم والجديد دون طباعة أي قيمة.
 
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
+
 ### جرّب بنفسك
 
 احذف متغيرًا مطلوبًا وأدخل Boolean ملتبسًا وتأكد من fail-fast.

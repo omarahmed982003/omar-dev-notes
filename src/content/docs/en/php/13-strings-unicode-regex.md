@@ -5,109 +5,139 @@ sidebar:
   order: 13
 ---
 
-## Before you start
+## The problem: a three-letter name has strlen six
 
-Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
+A PHP `string` is a sequence of **bytes**, each an 8-bit storage unit. **Unicode** assigns numbers called **code points** to characters. **UTF-8** encodes a code point using 1–4 bytes. A **grapheme cluster** combines code points that a user usually perceives as one character. These are different measurements; choose according to the question.
 
-### New terms in this lesson
+For example, عمر has three code points and six bytes. An e followed by a separate accent appears as one character but has two code points. A family emoji combines several symbols and invisible joiners. This lesson needs PHP 8.1+ with `mbstring` and `intl`; check `php -m`.
 
-- **HTTP:** The rules used to exchange requests and responses on the web.
-- **URL:** The complete address of a resource such as a page or API endpoint.
-- **Unicode:** A standard that assigns consistent numbers to characters and symbols.
-- **UTF-8:** A common encoding that stores Unicode numbers as bytes.
-- **Function:** A named, reusable block of code with one defined job.
+## Compare all three units in one program
 
+Save `unicode.php` as UTF-8 and run `php unicode.php`:
 
-## A visible character is not necessarily one byte
+~~~php
+<?php
+declare(strict_types=1);
 
-A PHP string is bytes. Basic English can hide this fact because ASCII characters use one byte, while Arabic characters usually use multiple UTF-8 bytes and one user-visible symbol may contain several Unicode code points.
-
-```php
+$samples = [
+    'ASCII' => 'Omar',
+    'Arabic' => 'عمر',
+    'accent' => "e\u{0301}",
+    'family' => "👨‍👩‍👧‍👦",
+];
+foreach ($samples as $label => $text) {
+    if (!mb_check_encoding($text, 'UTF-8')) {
+        throw new InvalidArgumentException('Invalid UTF-8');
+    }
+    printf("%s: bytes=%d points=%d graphemes=%d\n",
+        $label, strlen($text), mb_strlen($text, 'UTF-8'), grapheme_strlen($text));
+}
 $text = 'عمر';
-
-echo strlen($text), PHP_EOL;    // bytes
-echo mb_strlen($text), PHP_EOL; // characters under the encoding
-```
-
-Therefore `strlen()` and `$text[0]` are not general Unicode text operations. Use `mb_*`, and use suitable `intl` grapheme functions when user-visible clusters matter.
-
-```text
-Bytes → UTF-8 decoding → Code points → Grapheme clusters → Display
-```
-
-A regular expression is a small language that describes a pattern, not magic search. Start small, anchor a pattern when the entire value must match, and enable Unicode mode with `u` for UTF-8 text. Do not parse full HTML or a complex formal language with regex when a maintained parser exists.
-
-## PHP strings are bytes
-
-```php
-$text = 'مرحبًا';
-echo strlen($text);              // bytes
-echo mb_strlen($text, 'UTF-8');  // characters, approximately
-```
-
-Use UTF-8 consistently across HTTP, PHP, and the database. Prefer `mb_strlen`, `mb_substr`, and `mb_strtolower` for multilingual text.
-
-## Graphemes and normalization
-
-A visible symbol may contain multiple code points. The `intl` extension provides grapheme functions and `Normalizer`:
-
-```php
-$normalized = Normalizer::normalize($input, Normalizer::FORM_C);
-```
-
-Normalize for a clear purpose such as search or uniqueness. Preserve original text when required; case folding is language-sensitive.
-
-## Contextual output
-
-- Use interpolation or `sprintf` for display, never SQL.
-- Compare secret values with `hash_equals()` where timing-safe equality matters.
-- Use `htmlspecialchars` for HTML text and `rawurlencode` for URL parameters.
-- No universal sanitization function works for every context.
-
-## Regular expressions
-
-```php
-$ok = preg_match('/\A[A-Z]{2}-\d{6}\z/D', $code) === 1;
-```
-
-Use explicit anchors, inspect `preg_last_error_msg()`, limit input size before complex patterns, avoid catastrophic backtracking, and choose a real parser for HTML or JSON.
-
-Pattern validity is not business validity. Apply domain rules after matching the shape.
-
-## Progressive practice
-
-<details><summary>1. Why is strlen not a user-visible Arabic length?</summary><p>It counts bytes. Use <code>mb_strlen()</code> for characters or grapheme functions when one visible symbol can contain several code points.</p></details>
-
-<details><summary>2. Match a complete order ID such as ORD-1234</summary><p>Use full-input anchors and exactly four digits, then test valid input, extra prefixes, and trailing newlines.</p></details>
-
-<details><summary>3. Why cap input length before an expensive regex?</summary><p>To prevent excessive CPU or memory use from huge input or pathological backtracking.</p></details>
-
-## Lesson-specific problems
-
-<details><summary>Why can <code>strlen</code> miscount visible characters?</summary><p>It counts bytes, while one UTF-8 character may use several; use mbstring or grapheme-aware tools as needed.</p></details>
-
-<details><summary>Why is regex risky on long untrusted input?</summary><p>A poor pattern can trigger expensive backtracking; bound input, design carefully, and test adversarial cases.</p></details>
-
-## Run and verify
-
-The file distinguishes bytes/code points for ASCII, Arabic, and emoji and rejects a trailing newline in amounts. Performance testing another regex requires input bounds and separate measurement.
-
-Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands for Composer, FPM, Docker, or a real server run inside the corresponding configured project, not an empty folder.
-
-Execute this checkpoint inside the lesson environment:
-
-~~~bash
-php text-lab.php
+echo 'first byte=', bin2hex($text[0]), PHP_EOL;
+echo 'first point=', mb_substr($text, 0, 1, 'UTF-8'), PHP_EOL;
 ~~~
 
-**Extended integration exercise target:** ASCII, Arabic, and emoji cases pass using the appropriate length semantics; a catastrophic regex is bounded or redesigned.
+~~~text
+ASCII: bytes=4 points=4 graphemes=4
+Arabic: bytes=6 points=3 graphemes=3
+accent: bytes=3 points=2 graphemes=1
+family: bytes=25 points=7 graphemes=1
+first byte=d8
+first point=ع
+~~~
 
-Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
+`\u{0301}` inserts the accent code point in a double-quoted string. `mb_check_encoding` verifies that the bytes form valid UTF-8 before interpretation. `strlen` suits file/request sizes, `mb_strlen` counts code points, and `grapheme_strlen` counts clusters according to the installed Unicode/ICU rules. Newer symbols can depend on ICU version; these examples use established characters.
 
-## Connect the ideas
+`$text[0]` is the single byte d8, an incomplete part of ع. `substr` can also cut through a UTF-8 sequence. `mb_substr` cuts by code points but can separate a combining accent; `grapheme_substr` better fits visible-character limits. Grapheme limits alone do not bound request size because one cluster can contain many marks; bound bytes too.
 
-Inspect <code>preg_*</code> errors and backtracking limits; do not accept a regex that can stall on attacker input. Normalize Unicode before identifier comparison when the domain requires it while preserving display data. Escaping is contextual across HTML text, attributes, URLs, and JavaScript.
+## Two representations of one character: normalization
 
-### Try it yourself
+**Normalization** standardizes equivalent Unicode representations under a chosen rule. NFC favors composed forms where available. Save `normalize.php`:
 
-Test a regex against long adversarial input and compare time with the normal case.
+~~~php
+<?php
+$composed = "\u{00E9}";
+$decomposed = "e\u{0301}";
+var_dump($composed === $decomposed);
+$normalized = Normalizer::normalize($decomposed, Normalizer::FORM_C);
+if ($normalized === false) {
+    throw new RuntimeException('Normalization failed');
+}
+var_dump($composed === $normalized);
+echo strlen($decomposed), ' -> ', strlen($normalized), PHP_EOL;
+~~~
+
+~~~text
+bool(false)
+bool(true)
+3 -> 2
+~~~
+
+The first comparison sees different bytes despite matching appearance. NFC makes this pair identical. Normalization does not equate every visually similar character and does not repair XSS. Define identifier/search policy before normalizing and retain original text for display when needed. Never silently normalize or alter passwords. `mb_strtolower` is more suitable than strtolower for multilingual case conversion, but case folding and linguistic ordering have additional rules; intl's `Collator` supports locale-aware sorting.
+
+## Regex describes a small pattern, not every language
+
+A **regular expression** describes text shape. Start with a length bound and a simple pattern. `\A` anchors the actual start, `\z` the actual end, `[0-9]` an ASCII digit, and `{4}` four repetitions. `(?<id>...)` names a captured group. A `u` modifier enables UTF-8 mode; it does not automatically implement business rules.
+
+`code.php` accepts ORD followed by exactly four digits:
+
+~~~php
+<?php
+function orderId(string $input): ?string
+{
+    if (strlen($input) > 32) {
+        return null;
+    }
+    $matched = preg_match('/\AORD-(?<id>[0-9]{4})\z/u', $input, $matches);
+    if ($matched === false) {
+        throw new RuntimeException(preg_last_error_msg());
+    }
+    return $matched === 1 ? $matches['id'] : null;
+}
+foreach (['ORD-1234', 'xORD-1234', "ORD-1234\n", 'ORD-0000'] as $input) {
+    echo json_encode($input), ' => ', orderId($input) ?? 'invalid', PHP_EOL;
+}
+~~~
+
+~~~text
+"ORD-1234" => 1234
+"xORD-1234" => invalid
+"ORD-1234\n" => invalid
+"ORD-0000" => 0000
+~~~
+
+The function returns a string, preserving leading zeros. A pre-engine length check bounds work. `preg_match` returns 1 for match, 0 for no match, false for failure; do not merge 0 and false. Read captures only after a match. Accepting 0000 structurally does not prove an order exists; that needs a separate data check.
+
+**Mistake:** `/^ORD-[0-9]{4}$/` can match before a final newline. `\z` enforces the actual end. Patterns such as `(a+)+` can cause expensive **backtracking**, where the engine tries many partitions near failure. Simplify the pattern, bound input length, and check PCRE errors. Do not freely execute untrusted user patterns. JSON and HTML have parsers; regex is not a universal substitute.
+
+## Encode for the destination context
+
+**Validation** decides whether data is allowed. **Encoding** makes it text in the output context rather than instructions. No universal sanitization function exists. Save `escaping.php`:
+
+~~~php
+<?php
+$name = '<Omar & Mona>';
+echo htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'), PHP_EOL;
+echo '/search?q=', rawurlencode($name), PHP_EOL;
+echo json_encode(['name' => $name], JSON_THROW_ON_ERROR), PHP_EOL;
+~~~
+
+~~~text
+&lt;Omar &amp; Mona&gt;
+/search?q=%3COmar%20%26%20Mona%3E
+{"name":"<Omar & Mona>"}
+~~~
+
+HTML text/quoted attributes need htmlspecialchars; a URL parameter needs rawurlencode or http_build_query. A URL inside an HTML attribute needs HTML encoding after URL construction. JavaScript is another context: prefer a separate JSON response or safe embedding mechanism, not concatenation. `sprintf`/interpolation serve presentation, not SQL construction. Compare fixed-length secrets such as CSRF tokens with `hash_equals`; that is a different purpose from ordinary user-text comparison.
+
+## Predict, debug, complete
+
+<details><summary>Predict measurements for e followed by U+0301</summary><p>3 bytes, 2 code points, 1 grapheme. ASCII e uses one byte and the accent two; rendering combines them.</p></details>
+
+<details><summary>Debug cutting Arabic with substr($name, 0, 1)</summary><p>It takes one byte and may create invalid UTF-8. Use mb_substr for code points or grapheme_substr for perceived characters, according to the contract.</p></details>
+
+<details><summary>Complete a regex accepting exactly AB-123456</summary><p><code>/\A[A-Z]{2}-[0-9]{6}\z/</code>. Test extra prefixes and a trailing newline, then separately check whether the country code is allowed.</p></details>
+
+<details><summary>preg_match returned false. Is that simply no match?</summary><p>No: zero means no match. False indicates a pattern, encoding, or engine-limit error. Inspect preg_last_error_msg and handle it at the application boundary.</p></details>
+
+Run `php text-lab.php` in the [lab](/en/php/00-lab-setup/). The notebook bounds bytes and code points, validates UTF-8, and encodes on output. See the [grapheme reference](https://www.php.net/manual/en/function.grapheme-strlen.php).

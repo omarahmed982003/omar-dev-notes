@@ -24,7 +24,7 @@ sidebar:
 ```bash
 composer validate --strict
 composer audit --locked
-composer check-platform-reqs
+composer check-platform-reqs --lock --no-dev
 composer outdated --direct
 ```
 
@@ -59,6 +59,21 @@ Composer plugins وscripts تنفذ code بصلاحية المستخدم الذ�
 
 احمِ tokens، ثبّت permissions للـworkflow، لا تطبع environment، وثبّت actions/images حيث يمكن. أنشئ SBOM إذا تتطلب البيئة، واحتفظ بسجل artifact ومن بناها.
 
+## SBOM وProvenance والتوقيع
+
+أنشئ SBOM من artifact النهائية، لا من `composer.json` وحده، لأن الصورة تضم نظام تشغيل وextensions وملفات أخرى. اربط provenance بالـcommit والـbuilder والـworkflow والـdigest. التوقيع يثبت مصدر artifact وسلامتها ولا يثبت خلوها من الثغرات.
+
+سياسة القبول يجب أن تجيب: من يوافق على exception؟ ما مدته؟ هل الحزمة المتأثرة reachable؟ وأي بيئة تحتوي digest المصابة؟ اختبر البحث من CVE إلى lock ثم image ثم deployment.
+
+## CI والـSecrets
+
+قلّل permissions الافتراضية للـworkflow، ثبّت third-party actions إلى commit موثوق، وامنع pull requests غير الموثوقة من الوصول إلى secrets. نفّذ secret scanning على التاريخ، ودوّر السر إذا ظهر؛ حذفه من آخر commit لا يلغيه.
+
+~~~text
+source commit -> locked dependencies -> SBOM -> signed image digest -> deployment record
+~~~
+
+
 ## استجابة لثغرة
 
 حدد هل الكود المتأثر reachable، طبّق update أو mitigation، شغّل suite، انشر، وراقب. إذا تسرب secret عبر package/script فدوّره؛ إزالة الحزمة لا تبطل السر.
@@ -76,10 +91,11 @@ Composer plugins وscripts تنفذ code بصلاحية المستخدم الذ�
 
 استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
+نفّذ نقطة التحقق التالية داخل `examples/php-labs` أو النسخة المستخرجة من الحزمة:
 
 ~~~bash
 composer audit --locked
+composer check-platform-reqs --lock --no-dev
 ~~~
 
 **معيار النجاح:** لا توجد ثغرة معروفة غير مقبولة في الـlock الحالي؛ أي استثناء موثق بمالك وسبب وموعد انتهاء.
@@ -89,6 +105,11 @@ composer audit --locked
 ## اربط النقاط ببعض
 
 أضف SBOM وprovenance وتوقيع artifact، وافحص typosquatting وmaintainer change لا CVE فقط. Secret scanning يمنع token في source/history. استخدم VEX أو توثيقًا مماثلًا لبيان قابلية الاستغلال، وكل استثناء له مالك وسبب وموعد انتهاء.
+
+#### دورة التجربة
+
+قبل التنفيذ اكتب توقعك، ثم شغّل المثال وسجّل الخروج. أحدث فشلًا واحدًا مقصودًا، اجمع الدليل من logs أو metrics، أصلح السبب، وأعد التشغيل لإثبات أن الإصلاح يعالج العطل ولا يخفيه.
+
 
 ### جرّب بنفسك
 

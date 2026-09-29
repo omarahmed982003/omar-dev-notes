@@ -5,268 +5,263 @@ sidebar:
   order: 16
 ---
 
-## قبل ما تبدأ
+## المشكلة: المثال صحيح، لكن السيرفر مش بيفهمه
 
-ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
+ميزة جديدة قد تغير Syntax فيفشل الملف **قبل التنفيذ** على إصدار أقدم. `if (PHP_VERSION_ID >= ...)` داخل نفس الملف لا تحمي صياغة لا يفهمها Parser. اختار الحد الأدنى في Composer، واختبره فعلًا، ثم تعلم الميزة لأنها تحل مشكلة محددة.
 
-### كلمات جديدة في الدرس
+الدرس خريطة قراءة على مرحلتين: أولًا Generators وWeakMap وFibers لفهم دورة التنفيذ والذاكرة، ثم أنواع وميزات كائنات للتعرف عليها. تفاصيل OOP في [مسارها](/oop/)، مش مطلوب تبني Framework هنا.
 
-- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
-- **Proxy:** وسيط يستقبل الطلب ويمرره لجهة أخرى حسب قواعد محددة.
-- **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
-- **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+## خريطة زمنية لإصدارات صادرة
+
+دي تواريخ الإصدار الأول لكل سلسلة، مش توصية بتثبيت النسخة .0 القديمة. PHP 8.5 صدرت فعلًا في 20 نوفمبر 2025؛ ليست RFC مستقبلية. راجع إصدار patch مدعوم عند التثبيت.
+
+| Version | Release date | Features |
+|---|---|---|
+| [8.0](https://www.php.net/releases/8.0/en.php) | 2020-11-26 | Named arguments, attributes, constructor promotion, union types, match, nullsafe, WeakMap, ValueError, mixed, JIT |
+| [8.1](https://www.php.net/releases/8.1/en.php) | 2021-11-25 | Enums, fibers, first-class callables, intersection types, never, readonly properties, array_is_list |
+| [8.2](https://www.php.net/releases/8.2/en.php) | 2022-12-08 | DNF types, readonly classes, standalone true/false/null, SensitiveParameter, dynamic-property deprecation |
+| [8.3](https://www.php.net/releases/8.3/en.php) | 2023-11-23 | Typed class constants, Override, json_validate, readonly reinitialization during cloning, dynamic class-constant access |
+| [8.4](https://www.php.net/releases/8.4/en.php) | 2024-11-21 | Property hooks, asymmetric visibility, lazy objects, array_find/array_any/array_all, Deprecated attribute |
+| [8.5](https://www.php.net/releases/8.5/en.php) | 2025-11-20 | Pipe, URI extension, clone with, NoDiscard, array_first/array_last, partitioned cookie option |
 
 
-## الحديث مش معناه تستخدم كل ميزة
+التواريخ موثقة في [سجل الإصدارات](https://www.php.net/ChangeLog-8.php). الجدول يعرف مكان الميزة؛ مش شرط تحفظه. **مهم تاريخيًا:** Generators و`yield` من 5.5، و`yield from` من 7.0؛ وجودها هنا لا يجعلها ميزة PHP 8. **JIT** ترجمة وقت التشغيل، ومش ضمانًا أن موقعك أسرع؛ قياس التطبيق هو الحكم.
 
-ميزات PHP الحديثة بتحل مشاكل حقيقية، لكن اختيار الميزة يبدأ من نسخة PHP اللي المشروع يضمنها ومن المشكلة اللي بتحاول تحلها. كتابة Syntax من 8.4 في Package تعلن دعم 8.1 هتكسر التحميل قبل ما الكود يوصل لأي شرط.
+`require: {"php":"^8.3"}` يعني `>=8.3.0 <9.0.0`، فلا تدخل Hooks من 8.4 في ملف يدعي دعم 8.3. `composer check-platform-reqs` يفحص المنصة الفعلية. راجع migration/deprecations واختبر أقل وأعلى إصدار تدعمه؛ رقم إصدار جديد لا يلغي اختباراتك.
 
-ابدأ دائمًا بـ`composer.json` وCI:
+## Generator: عنصر عند الطلب، مش Array كاملة
 
-```json
-{
-  "require": {
-    "php": "^8.2"
-  }
-}
-```
+**Generator** دالة تحتوي yield؛ استدعاؤها يرجع كائن تكرار، وجسمها يتقدم أثناء foreach. تحتفظ بمكانها والمتغيرات بين العناصر. `yield from` تفوض إنتاج العناصر لمصدر آخر. احفظ `generator.php`؛ الكود متوافق مع PHP 7.0+ لكن استخدم بيئة PHP مدعومة:
 
-وبعدها اسأل عن كل ميزة:
-
-1. ظهرت في أي إصدار؟
-2. هل بيئة Production وCI والمطورين على الإصدار ده؟
-3. هل الميزة توضح التصميم ولا بتخليه أصعب على الفريق؟
-4. هل فيه Migration أوStatic Analysis يكتشف عدم التوافق؟
-
-الخريطة الزمنية في الدرس مش قائمة لازم تستخدمها كلها. مثلًا `WeakMap` مفيدة لربط Metadata بعمر Object، وFibers أساس تبني عليه مكتبات Async، لكن تطبيق CRUD عادي غالبًا مش محتاج يستخدمهم مباشرة. اقرأ المثال علشان تعرف المشكلة التي تحلها الميزة قبل حفظ صياغتها.
-
-## اكتب الحد الأدنى للإصدار
-
-لا تستخدم ميزة جديدة بلا إعلان requirement في `composer.json` واختبار بيئة النشر:
-
-```json
-{
-  "require": {
-    "php": "^8.4 || ^8.5"
-  }
-}
-```
-
-استخدم `composer check-platform-reqs` أثناء النشر. الأمثلة التالية مميزة بالإصدار وليست كلها متاحة في PHP الأقدم.
-
-## الخريطة الزمنية من PHP 8.0 إلى 8.3
-
-| الإصدار | أهم ما يجب فهمه |
-|---|---|
-| PHP 8.0 | Named Arguments وAttributes وConstructor Property Promotion وUnion Types و`match` وNullsafe Operator و`WeakMap` و`ValueError` |
-| PHP 8.1 | Enums وFibers وFirst-class Callables وIntersection Types و`never` وReadonly Properties |
-| PHP 8.2 | DNF Types وReadonly Classes و`true` و`false` و`null` كأنواع مستقلة و`#[SensitiveParameter]` وتحذير Dynamic Properties |
-| PHP 8.3 | Typed Class Constants و`#[Override]` وتحسينات Readonly أثناء `clone` والوصول الديناميكي إلى Class Constants |
-
-هذه الخريطة ليست قائمة ترقية عمياء. اقرأ Backward Incompatible Changes وDeprecated Features لكل إصدار، وشغّل الاختبارات والتحليل الساكن قبل تغيير قيد PHP في `composer.json`.
-
-## WeakMap — PHP 8.0
-
-تربط `WeakMap` بيانات إضافية بكائن دون أن تجعل الخريطة سببًا في بقاء الكائن داخل الذاكرة. عندما لا يبقى Reference قوي للكائن، يستطيع Garbage Collector إزالة الكائن ومدخله من الخريطة.
-
-```php
+~~~php
 <?php
-
-declare(strict_types=1);
-
-final class Request {}
-
-$metadata = new WeakMap();
-$request = new Request();
-$metadata[$request] = ['startedAt' => microtime(true)];
-
-echo isset($metadata[$request]) ? "tracked\n" : "missing\n";
-unset($request);
-
-echo count($metadata), PHP_EOL; // 0 بعد جمع الكائن
-```
-
-استخدمها للـmetadata المرتبطة بكائن لا تملكه، لا كبديل عام للمصفوفات أو Cache دائم. لا تعتمد على توقيت Garbage Collection لتنفيذ منطق عمل مهم.
-
-## Fibers — PHP 8.1
-
-Fiber وحدة تنفيذ يمكن إيقافها واستئنافها تعاونيًا. هي لا تنشئ Thread ولا تجعل العملية CPU-parallel تلقائيًا؛ فائدتها الأساسية أن Event Loops ومكتبات الـasync تستطيع إخفاء State Machine مع الاحتفاظ بشكل كود متسلسل.
-
-```php
-<?php
-
-$fiber = new Fiber(function (): string {
-    $reply = Fiber::suspend('waiting-for-data');
-    return strtoupper((string) $reply);
-});
-
-echo $fiber->start(), PHP_EOL;      // waiting-for-data
-$fiber->resume('done');
-echo $fiber->getReturn(), PHP_EOL;  // DONE
-```
-
-لا تستدعِ `resume()` قبل `start()`، ولا تستأنف Fiber انتهت. في تطبيقات الويب التقليدية استخدم Framework أو Runtime async موثوقًا بدل بناء Scheduler خاص بلا حاجة.
-
-## yield from وتركيب Generators
-
-`yield from` يفوض التكرار إلى iterable آخر، فيسمح بتقسيم Pipeline القراءة إلى Generators صغيرة دون تحميل كل البيانات في الذاكرة.
-
-```php
-function lines(string $path): Generator
+function batches(): Generator
 {
-    $file = new SplFileObject($path);
-    foreach ($file as $line) {
-        yield rtrim((string) $line, "\r\n");
-    }
+    echo "begin", PHP_EOL;
+    yield from [10, 20];
+    yield from [30];
+    echo "end", PHP_EOL;
 }
-
-function allLines(array $paths): Generator
-{
-    foreach ($paths as $path) {
-        yield from lines($path);
-    }
+$items = batches();
+echo "created", PHP_EOL;
+foreach ($items as $key => $value) {
+    echo "{$key}:{$value}", PHP_EOL;
 }
-```
-
-Generator أحادي المرور غالبًا؛ لا تفترض أنك تستطيع إعادته إلى البداية بعد استهلاكه. و`yield from` لا يجعل I/O غير متزامنًا وحده.
-
-## DNF Types وReadonly Classes — PHP 8.2
-
-DNF Type هي Union من Intersection Types، ويجب وضع كل Intersection بين أقواس:
-
-```php
-function export((JsonSerializable&Stringable)|array $value): string
-{
-    return is_array($value)
-        ? json_encode($value, JSON_THROW_ON_ERROR)
-        : (string) $value;
-}
-
-readonly class Money
-{
-    public function __construct(
-        public int $minorUnits,
-        public string $currency,
-    ) {
-        if ($minorUnits < 0) {
-            throw new InvalidArgumentException('Negative money');
-        }
-    }
-}
-```
-
-Readonly Class تجعل Instance Properties المعلنة Readonly وتمنع Dynamic Properties، لكنها لا تجعل الكائنات الداخلية Deeply Immutable. إذا احتوت Property على كائن قابل للتغيير فقد تتغير حالته الداخلية.
-
-## Attributes وReflection — PHP 8+
-
-```php
-#[Attribute(Attribute::TARGET_FUNCTION)]
-final readonly class RequiresRole
-{
-    public function __construct(public string $role) {}
-}
-
-#[RequiresRole('admin')]
-function deleteUser(int $id): void {}
-
-$attribute = (new ReflectionFunction('deleteUser'))
-    ->getAttributes(RequiresRole::class)[0]->newInstance();
-echo $attribute->role; // admin
-```
-
-Attributes metadata منظمة؛ لا تنفذ الحماية وحدها. framework أو كودك يجب أن يقرأها ويطبقها.
-
-## Property Hooks وAsymmetric Visibility — PHP 8.4
-
-```php
-final class User
-{
-    public private(set) string $email {
-        set => filter_var($value, FILTER_VALIDATE_EMAIL)
-            ? strtolower($value)
-            : throw new InvalidArgumentException('Invalid email');
-    }
-}
-```
-
-الـhook تضيف سلوك get/set، والـasymmetric visibility تحدد من يقرأ ومن يكتب. لا تحول كل property إلى منطق مخفي؛ method مسماة أفضل للعملية المعقدة.
-
-## Lazy Objects — PHP 8.4
-
-Reflection تدعم lazy ghost وlazy proxy لتأخير initialization حتى ملاحظة الحالة. الاستخدام الأساسي داخل DI containers وORMs؛ لا تبنِ proxy خاصة قبل الحاجة وفهم identity وserialization.
-
-## Pipe Operator — PHP 8.5
-
-```php
-$slug = $title
-    |> trim(...)
-    |> mb_strtolower(...)
-    |> (fn (string $v): string => str_replace(' ', '-', $v));
-```
-
-كل مرحلة callable تستقبل نتيجة السابقة كوسيط واحد. لا تستخدم pipe لسلسلة side effects غامضة.
-
-## URI Extension وClone With — PHP 8.5
-
-URI extension توفر parsing وفق RFC 3986 وWHATWG بدل حلول string يدوية. وClone With تسهّل نسخ value object مع تعديل properties:
-
-```php
-$published = clone($draft, ['status' => Status::Published]);
-```
-
-حافظ على invariants عبر hooks/constructors واختبارات؛ سهولة النسخ لا تبرر حالة غير صالحة.
-
-## إضافات 8.5
-
-- `array_first()` و`array_last()`.
-- `#[NoDiscard]` للتنبيه عند تجاهل return value.
-- attributes على constants.
-- تحسينات cloning وasymmetric visibility.
-- `setcookie()` تدعم خيار `partitioned`.
-
-راجع migration guide قبل الترقية، شغّل الاختبارات والتحليل الساكن، ولا تعتمد على رقم الإصدار وحده.
-
-## مراجع
-
-- [PHP 8.0](https://www.php.net/manual/en/migration80.new-features.php) و[PHP 8.1](https://www.php.net/manual/en/migration81.new-features.php)
-- [PHP 8.2](https://www.php.net/manual/en/migration82.new-features.php) و[PHP 8.3](https://www.php.net/manual/en/migration83.new-features.php)
-- [PHP 8.4](https://www.php.net/releases/8.4/en.php)
-- [PHP 8.5](https://www.php.net/releases/8.5/en.php)
-- [الإصدارات المدعومة](https://www.php.net/supported-versions.php)
-
-## تدريب عملي متدرج
-
-<details><summary>1. المشروع يدعم PHP 8.2. هل تستخدم Property Hooks؟</summary><p>لا، لأنها من 8.4. ارفع الحد الأدنى بعد خطة ترقية أو استخدم تصميمًا متوافقًا مع 8.2.</p></details>
-
-<details><summary>2. إمتى WeakMap أنسب من Array بمعرّف الكائن؟</summary><p>لما الـMetadata لازم تختفي تلقائيًا عند عدم وجود References للكائن، من غير ما التخزين نفسه يطيل عمره.</p></details>
-
-<details><summary>3. هل Fiber معناها تنفيذ متوازي؟</summary><p>لا. هي Cooperative Suspension داخل Thread؛ الـEvent Loop أوالمكتبة تنظم الاستئناف، وهي ليست CPU Parallelism.</p></details>
-
-## مسائل مرتبطة بالدرس
-
-<details><summary>هل تستخدم ميزة حديثة لمجرد وجودها؟</summary><p>لا. اربطها بمشكلة واضحة وحدد minimum PHP version واختبر دعم بيئة الإنتاج والأدوات.</p></details>
-
-<details><summary>ما فائدة readonly؟</summary><p>تجعل نية عدم إعادة إسناد الحالة صريحة، لكنها لا تجعل كل object graph عميقًا غير قابل للتغيير.</p></details>
-
-## شغّل وتحقق
-
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
-
-نفّذ نقطة التحقق التالية داخل بيئة الدرس:
-
-~~~bash
-php modern-features-lab.php
+echo implode(',', iterator_to_array(batches(), false)), PHP_EOL;
 ~~~
 
-**معيار النجاح:** تغطي الاختبارات enum صالحًا وغير صالح وreadonly mutation وmatch بلا فرع؛ استخدم الميزة لأنها تقوي العقد لا لأنها جديدة.
+~~~text
+created
+begin
+0:10
+1:20
+0:30
+end
+begin
+end
+10,20,30
+~~~
 
-دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
+created قبل begin تثبت أن الاستدعاء لم يبن القائمة. المفتاح 0 يتكرر لأن yield from تحافظ على مفاتيح المصدر؛ `iterator_to_array(..., false)` يعيد الترقيم فلا يفقد 10. الخيار الافتراضي يحافظ على المفاتيح وقد يستبدل المتكرر. التحويل إلى Array يحمل كل العناصر، فيفقد ميزة الذاكرة. لإعادة المرور أنشئ Generator جديدة؛ لا تفترض rewind بعد استهلاكها.
 
-## اربط النقاط ببعض
+في ملفات كبيرة اجعل Generator تقرأ سطرًا داخل try/finally وتقفل المقبض عند انتهائها أو تدميرها. الاحتفاظ بـGenerator متوقفة يحتفظ بمواردها. `yield from` لا تجعل القراءة غير متزامنة.
 
-قسّم القراءة حسب minimum PHP version في مشروعك: stable usable features، ثم migration/deprecations، ثم ميزات لا تستخدمها إلا عند رفع المنصة. شغّل CI على أقل وأعلى إصدار مدعومين واستخدم PHPCompatibility أو تحليلًا مماثلًا. لا تجعل مثال 8.5 يعمل في ملف يدعي دعم 8.1.
+## WeakMap من 8.0: معلومات تتبع عمر كائن
 
-### جرّب بنفسك
+**Strong reference** مرجع يبقي الكائن حيًا. WeakMap تستخدم كائنات كمفاتيح دون أن يكون المفتاح سببًا لإبقائها حية؛ مناسبة لmetadata، أي معلومات إضافية مؤقتة. احفظ `weak.php`، PHP 8.0+:
 
-أنشئ compatibility matrix لكل مثال وحدد البديل في الإصدار الأدنى.
+~~~php
+<?php
+$map = new WeakMap();
+$request = new stdClass();
+$map[$request] = 'checked';
+$alias = $request;
+echo count($map), PHP_EOL;
+unset($request);
+echo count($map), PHP_EOL;
+unset($alias);
+echo count($map), PHP_EOL;
+~~~
+
+~~~text
+1
+1
+0
+~~~
+
+حذف request وحدها لا يكفي لأن alias مرجع قوي. بعد حذف الاثنين يختفي المدخل في هذا المثال بدون cycles. لو القيمة المخزنة نفسها تحتفظ بمرجع للمفتاح قد تبقيه حيًا؛ الضعف للمفتاح مش وعدًا بإزالة كل graph. لا تستخدم توقيت garbage collection لتقرير سداد أو حذف مهم، ولا تعتبر WeakMap cache دائمة. [المرجع](https://www.php.net/manual/en/class.weakmap.php).
+
+## Fiber من 8.1: وقف واستئناف سلسلة استدعاءات
+
+**Fiber** سياق تنفيذ يمكنه تعليق Call Stack ثم استكمالها. **Cooperative** يعني أن الكود يسلّم التحكم صراحة؛ ليست Thread ولا CPU parallelism. احفظ `fiber.php`، PHP 8.1+:
+
+~~~php
+<?php
+$fiber = new Fiber(function (): string {
+    echo "fiber entered", PHP_EOL;
+    $reply = Fiber::suspend('need input');
+    echo "fiber resumed", PHP_EOL;
+    return strtoupper($reply);
+});
+echo "main before", PHP_EOL;
+echo $fiber->start(), PHP_EOL;
+echo "main between", PHP_EOL;
+$fiber->resume('done');
+echo $fiber->getReturn(), PHP_EOL;
+~~~
+
+~~~text
+main before
+fiber entered
+need input
+main between
+fiber resumed
+DONE
+~~~
+
+new Fiber لا تشغلها. start تدخل الجسم لحد suspend؛ قيمة need input ترجع للمستدعي. resume ترسل done لتصبح ناتج suspend في `$reply`. بعد النهاية getReturn تقرأ DONE؛ return النهائية مش بالضرورة قيمة resume. لا تستأنف قبل start أو بعد النهاية. دوال `isStarted/isSuspended/isTerminated` توضح الحالة.
+
+Event loop مكتبة تنظم مَن يستأنف ومتى عند جاهزية I/O؛ Fiber وحدها لا تصنع loop ولا تجعل file_get_contents غير blocking. استخدم مكتبة موثوقة لو احتجت async. [مرجع Fibers](https://www.php.net/manual/en/language.fibers.php).
+
+## DNF Types وReadonly Classes من 8.2
+
+**Union** تقبل واحدًا من الأنواع، مثل A أو B. **Intersection** تشترط نفس الكائن يحقق النوعين A وB. **DNF** تجمعهما بصيغة «(A وB) أو C». الأقواس حول intersection مطلوبة. مثال `dnf.php` كامل على 8.2+:
+
+~~~php
+<?php
+function describe((Countable&Stringable)|array $value): string
+{
+    return is_array($value) ? 'array:' . count($value) : (string) $value;
+}
+$items = new class implements Countable, Stringable {
+    public function count(): int { return 2; }
+    public function __toString(): string { return $this->count() . ' items'; }
+};
+echo describe([10, 20]), PHP_EOL;
+echo describe($items), PHP_EOL;
+
+readonly class Amount
+{
+    public function __construct(public int $minorUnits) {}
+}
+$amount = new Amount(500);
+echo $amount->minorUnits, PHP_EOL;
+try {
+    $amount->minorUnits = 600;
+} catch (Error) {
+    echo "readonly blocked reassignment", PHP_EOL;
+}
+~~~
+
+~~~text
+array:2
+2 items
+500
+readonly blocked reassignment
+~~~
+
+Array تمر من فرع union، والكائن يحقق Countable وStringable معًا. readonly class تجعل Instance properties المقيدة بالنوع readonly وتمنع dynamic properties؛ ليست deep immutability: كائن داخل property قد تتغير حالته. constructor promotion اختصار لتعريف property واستقبالها، ظهرت من 8.0، لكن readonly class نفسها 8.2.
+
+Enums من 8.1 مجموعة حالات مغلقة؛ backed enum تستخدم from التي ترمي ValueError لو القيمة غير موجودة أو tryFrom التي ترجع null. readonly property من 8.1، وnever لدالة لا ترجع طبيعيًا، مثل التي تنهي أو ترمي دائمًا. اقرأ التفاصيل في [OOP](/oop/) و[نظام الأنواع](/php/03-types/).
+
+## Attributes: بيانات وصفية تحتاج مَن يقرأها
+
+**Reflection** فحص تعريفات الكود أثناء التشغيل. مثال `attribute.php`، PHP 8.0+:
+
+~~~php
+<?php
+#[Attribute(Attribute::TARGET_FUNCTION)]
+final class Label
+{
+    public function __construct(public string $text) {}
+}
+#[Label('Preview')]
+function preview(): void {}
+$definition = new ReflectionFunction('preview');
+$label = $definition->getAttributes(Label::class)[0]->newInstance();
+echo $label->text, PHP_EOL;
+~~~
+
+~~~text
+Preview
+~~~
+
+Attribute لا تنفذ إذنًا أو مسارًا تلقائيًا؛ Reflection هنا قرأتها ثم استخدمنا text. `#[SensitiveParameter]` من 8.2 تخفي قيمة parameter في traces، ولا تنقح logs كتبتها بنفسك. `#[Override]` من 8.3 تساعد في كشف method يفترض أنها تعيد تعريف أصل غير موجود. Typed class constants من 8.3 تصرح النوع، مثل `public const int LIMIT = 10;`؛ والوصول الديناميكي `ClassName::{$name}` من 8.3.
+
+## 8.4: Hooks وAsymmetric Visibility وLazy Objects
+
+**Hook** كود عند قراءة/كتابة property. **Asymmetric visibility** صلاحية قراءة تختلف عن الكتابة. مثال `contact.php` على 8.4+:
+
+~~~php
+<?php
+final class Contact
+{
+    public private(set) string $email {
+        set {
+            $clean = trim($value);
+            if (filter_var($clean, FILTER_VALIDATE_EMAIL) === false) {
+                throw new InvalidArgumentException('Invalid email');
+            }
+            $this->email = strtolower($clean);
+        }
+    }
+    public function __construct(string $email) { $this->email = $email; }
+}
+$contact = new Contact(' OMAR@EXAMPLE.COM ');
+echo $contact->email, PHP_EOL;
+~~~
+
+~~~text
+omar@example.com
+~~~
+
+constructor مسموح لها بالكتابة، والقراءة public؛ كتابة خارجية تُرفض. lowercase البريد سياسة تعليمية هنا وليست قاعدة لكل نظم البريد. **Lazy object** تؤجل initialization لحين الحاجة للحالة؛ Reflection توفر ghost/proxy. تستخدمها DI/ORM غالبًا، ومش معنى lazy أن كل method تشغّل initializer فورًا. احتفظ بدالة مسماة للعمليات المعقدة بدل منطق مخفي في property. [مرجع lazy objects](https://www.php.net/manual/en/language.oop5.lazy-objects.php).
+
+## 8.5: برنامج صغير بميزات صدرت بالفعل
+
+احفظ `features85.php` وشغّله بـPHP 8.5. **URI** عنوان مورد؛ الامتداد الجديد يوفر APIs وفق RFC 3986 وWHATWG. Clone with تنسخ كائنًا وتعدل properties أثناء النسخ؛ لا تعيد تشغيل constructor تلقائيًا، فلا تعتمد عليها لإعادة التحقق:
+
+~~~php
+<?php
+readonly class Page
+{
+    public function __construct(public string $title) {}
+    public function withTitle(string $title): self
+    {
+        return clone($this, ['title' => $title]);
+    }
+}
+$draft = new Page('Draft');
+$published = $draft->withTitle('Published');
+$slug = ' Learn PHP ' |> trim(...) |> strtolower(...);
+$uri = new Uri\Rfc3986\Uri('https://example.com/notes?sort=new');
+echo $draft->title, ' / ', $published->title, PHP_EOL;
+echo $slug, PHP_EOL;
+echo $uri->getHost(), PHP_EOL;
+echo array_first(['A', 'B']), '/', array_last(['A', 'B']), PHP_EOL;
+~~~
+
+~~~text
+Draft / Published
+learn php
+example.com
+A/B
+~~~
+
+الأصل Draft لم يتغير. عملية clone with داخل method لها صلاحية الكتابة؛ readonly من 8.4 لها protected(set) افتراضيًا، فلا تفترض أن تعديلها من global scope مسموح. Pipe تمرر وسيطًا واحدًا لكل callable؛ تفاصيلها في الدرس 6. array_first/last تعيدان null للفارغ؛ null قد تكون قيمة عنصر أيضًا، فلا تخلط الحالتين لو العقد يفرقهما.
+
+`#[NoDiscard]` تصدر Warning عند تجاهل نتيجة معلّمة؛ `(void)` تجاهل صريح في 8.5. توجد أيضًا attributes على constants، callable/static closures في constant expressions، وتوسيع asymmetric visibility، وخيار Cookie `partitioned`. راجع [الإعلان الرسمي لـ8.5](https://www.php.net/releases/8.5/en.php) قبل اختيار API، ولا تحول وجودها إلى إلزام باستخدامها.
+
+## توقع، شخّص، كمّل
+
+<details><summary>توقع عدد WeakMap بعد unset(request) مع بقاء alias</summary><p>1؛ alias مرجع قوي. الضعف في المفتاح لا يلغي المراجع الأخرى.</p></details>
+
+<details><summary>Debugging: وضعت pipe داخل if لفحص الإصدار على PHP 8.4</summary><p>يفشل parsing قبل if. ضع المثال في ملف يعمل فقط على 8.5 أو استخدم الصياغة القديمة وارفع الحد الأدنى بخطة.</p></details>
+
+<details><summary>كمّل نوع يقبل Array أو كائنًا Countable وStringable</summary><p><code>(Countable&amp;Stringable)|array</code> من 8.2. نفس الكائن لازم يحقق الواجهتين؛ union بينهما ستغير العقد.</p></details>
+
+<details><summary>توقع وقت ظهور begin عند استدعاء batches فقط</summary><p>لن يظهر حتى تبدأ التكرار. Generator مؤجلة؛ تحويلها إلى Array يستهلكها بالكامل وقد يستهلك ذاكرة كبيرة.</p></details>
+
+<details><summary>هل Fiber تقلل وقت حساب CPU طويل تلقائيًا؟</summary><p>لا. لا Thread ولا parallelism؛ من غير suspend يظل الحساب ممسكًا بالتحكم. فائدتها في تنظيم تعليق العمل مع scheduler وI/O مناسبين.</p></details>
+
+شغّل كل ملف على الحد المعلن، و`php -l` على الأقل قبل التنفيذ. `php modern-features-lab.php` من [المختبر](/php/00-lab-setup/) يضيف enum وreadonly وmatch failures. راجع [الدعم الحالي](https://www.php.net/supported-versions.php) عند النشر.
