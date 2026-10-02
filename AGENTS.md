@@ -4,6 +4,16 @@ This repository contains one Astro Starlight website with multiple independent c
 
 These instructions define how to select the active module, conduct a study session, turn completed material into documentation, and avoid mixing courses.
 
+## Mandatory Session Bootstrap
+
+At the beginning of every new conversation or study session, read `STUDY_SESSION_CONTEXT.md` completely before teaching, assessing, choosing a module, or editing course content.
+
+- Use it as the central router and session handoff document.
+- Then read the selected track's complete Master Prompt and Progress file.
+- The selected track's Progress file remains the only source of truth for its exact current checkpoint, status, score, evidence, and next action.
+- If the summary in `STUDY_SESSION_CONTEXT.md` conflicts with a Progress file, follow the Progress file and update the summary.
+- After a study session changes progress, update both the track's Progress file and the concise current-state section in `STUDY_SESSION_CONTEXT.md`.
+
 ## Development
 
 When starting the development server, use the project's supported background command when available:
