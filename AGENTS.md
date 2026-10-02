@@ -399,6 +399,7 @@ If a shared component must change, explain why, keep the change minimal, and tes
 
 For all public lessons:
 
+- Use PHP for code examples by default, and use Laravel when a framework example is useful. If the active course or requested topic is explicitly about another programming language, use that language instead and do not rewrite its examples into PHP.
 - Preserve the approved site design and responsive behavior.
 - Reuse existing components and styles.
 - Keep English pages LTR and Arabic pages RTL.
