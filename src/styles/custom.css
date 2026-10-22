@@ -15,7 +15,8 @@
 }
 
 :root {
-	--sl-font: "Playpen Sans Arabic", "Segoe Print", "Comic Sans MS", cursive;
+	--sl-font: "Segoe UI", Tahoma, Arial, sans-serif;
+	--docs-font-heading: "Playpen Sans Arabic", "Segoe Print", "Comic Sans MS", cursive;
 	--sl-font-mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
 	--sl-content-width: 57rem;
 	--sl-sidebar-width: 19rem;
@@ -40,7 +41,11 @@
 }
 
 :root[lang='ar'] {
-	--sl-font: "Alan Sans", "Segoe UI", Tahoma, Arial, sans-serif;
+	--docs-font-heading: "Alan Sans", "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--docs-font-heading);
 }
 
 :root[data-theme='light'] {

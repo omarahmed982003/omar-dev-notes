@@ -1,5 +1,9 @@
 # Study Session Context and Handoff
 
+## مسار دراسة دوكس Laravel الرسمية — 2026-10-23
+
+أضيف `study/LARAVEL_DOCS_MASTER_PROMPT.md` و`study/LARAVEL_DOCS_PROGRESS.md` بطلب الطالب، كمسار مستقل مبني على فهرس دوكس Laravel 13.x الرسمي مع تثبيت الإصدار ومراجعة المصدر وقت الدرس. أمر الاختيار «ابدأ Laravel Docs» أو«كمل دوكس Laravel». البداية 0.1 تشخيص المتطلبات، والحالة Not Started والدرجة Not assessed؛ لا دراسة أوتثبيت أوتعديل موقع تم بسبب إنشاء الملفات. افصل هذا المسار عن مرحلة10 داخل web-zero-to-mastery وعن Laravel Query؛ إذا قيل «كمل Laravel» بلا تحديد اسأل أي مسار مقصود، ولا تنقل الدرجات أوتغير تقدم المسارين القديمين. اقرأ الملفين كاملين قبل الجلسة، وProgress الجديد وحده مصدر موضع التوقف.
+
 ## إقفال نقاط عمق كارد الأساسيات واعتماد النطاق — 2026-10-22
 
 نُفذ طلب «انطلق» بعد المراجعة: تعميق URL encoding و NAT/PAT و CDN ومهام المتصفح باللغتين، مع تتبع فقد و ACK وحساب النافذة في TCP. الأمثلة لها مدخل ونتيجة وتفسير وتمرين مستقل وحل مطوي. انتقلت فقرة نطاقات المنافذ الإنجليزية من URL encoding إلى درس المنافذ، من غير حذف معرفة صحيحة.
@@ -133,6 +137,7 @@ npm run preview
 | Authentication & Authorization | Not Started | Module 0 — Identity vs Authentication vs Authorization |
 | System Design | Not Started | Module 0 — Requirements, constraints and scope |
 | GitHub Portfolio | Not Started | Repository foundation and MVP scope |
+| Laravel Official Docs | Not Started | 0.1 — تشخيص المتطلبات؛ لا درجة نجاح للتشخيص |
 
 ### ملاحظات تعارض قديمة لا يعتمد عليها
 
@@ -153,6 +158,7 @@ npm run preview
 | Authentication & Authorization | `study/AUTHENTICATION_AUTHORIZATION_MASTER_PROMPT.md` | `study/AUTHENTICATION_AUTHORIZATION_PROGRESS.md` |
 | System Design | `study/SYSTEM_DESIGN_MASTER_PROMPT.md` | `study/SYSTEM_DESIGN_PROGRESS.md` |
 | GitHub Portfolio | `study/GITHUB_PORTFOLIO_PROJECT_IDEAS.md` | `study/GITHUB_PORTFOLIO_PROGRESS.md` |
+| Laravel Official Docs | `study/LARAVEL_DOCS_MASTER_PROMPT.md` | `study/LARAVEL_DOCS_PROGRESS.md` |
 
 المرجع المركزي لبقية الخطة والمسارات المقترحة مستقبلًا هو `study/BACKEND_ARCHITECT_STUDY_MAP.md`، لكنه ليس مصدرًا لحالة التقدم.
 
