@@ -2,12 +2,16 @@
 title: "Connect to Wi-Fi and diagnose problems"
 description: "Distinguish local connection from internet access and understand network names, access points, signal, security, and diagnosis."
 sidebar:
-  order: 4
+  order: 15
 prev: {"link":"/en/programming-basics/28-lan-segmentation/","label":"Segment networks and prevent frame loops"}
-next: {"link":"/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/","label":"Device addresses and connection settings"}
+next: {"link":"/en/programming-basics/26-subnet-calculations/","label":"Calculate a subnet from its address"}
 ---
 
-A phone shows Wi-Fi, yet a website will not open. Is the failure in the phone, the home network, or its internet connection? Separate the stages before changing settings. First read about the [local network](/en/programming-basics/14-network-layers-lan-ethernet-arp/), the nearby devices communicating within a place such as a home.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
+
+A phone shows Wi-Fi, yet a website will not open. Is the failure in the phone, the home network, or its internet connection? Separate the stages before changing settings.
+
+First read about the [local network](/en/programming-basics/14-network-layers-lan-ethernet-arp/), the nearby devices communicating within a place such as a home.
 
 ## Roles inside the home
 
@@ -31,7 +35,6 @@ Hotel and airport networks may use a **captive portal**, a page requiring accept
 
 ## Signal strength and speed differ
 
-
 Wi-Fi uses frequency bands including 2.4, 5, and 6 **GHz**, gigahertz; one gigahertz is one billion cycles per second. This describes the radio wave, not a file-download rate, and 5 GHz is not the same thing as cellular 5G.
 
 The 2.4 GHz band often reaches farther through obstacles. With suitable equipment and conditions, 5 and 6 GHz may offer more capacity nearby. Walls, placement, interference, and device capabilities affect the result; the frequency number alone does not decide performance.
@@ -44,7 +47,9 @@ A range extender relays the connection. If its link to the main access point is 
 
 **WPA, Wi-Fi Protected Access**, names a family of wireless security mechanisms. WPA2 and WPA3 are versions. Use a modern mode supported by your devices, such as WPA3-Personal or WPA2/WPA3 compatibility when needed. Do not treat an unprotected open network as suitable protection for sensitive data.
 
-The Wi-Fi password controls network admission; the router's administration password permits configuration changes. They serve different purposes. Change default administration credentials and follow manufacturer updates. A **guest network** may isolate visitors from your devices depending on its settings; verify isolation rather than assuming the name establishes it.
+The Wi-Fi password controls network admission; the router's administration password permits configuration changes. They serve different purposes. Change default administration credentials and follow manufacturer updates.
+
+A **guest network** may isolate visitors from your devices depending on its settings; verify isolation rather than assuming the name establishes it.
 
 Wi-Fi protection concerns the local wireless link. **HTTPS** protects the web connection between browser and site; a later lesson explains it. Neither replaces the other or guarantees that a site's owner is honest.
 
@@ -59,7 +64,9 @@ Wi-Fi protection concerns the local wireless link. **HTTPS** protects the web co
 | Only one device fails in the same location | Investigate that device; comparison narrows possibilities without proving a cause |
 | One site fails while others work | Investigate the site or its name resolution; general connectivity may be healthy |
 
-**Worked experiment:** open the same page on the same phone near the router and then in a distant room. If only the distant case fails, investigate coverage first. If two nearby devices cannot reach any site, investigate the internet path. Do not begin with a factory reset: it erases configuration and may require provider credentials to restore service.
+**Worked experiment:** open the same page on the same phone near the router and then in a distant room. If only the distant case fails, investigate coverage first. If two nearby devices cannot reach any site, investigate the internet path.
+
+Do not begin with a factory reset: it erases configuration and may require provider credentials to restore service.
 
 The [next addressing lesson](/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/) explains addresses and gateways, followed by tools for distinguishing connection stages. The goal here is to choose the next test and avoid confusing a Wi-Fi icon with working end-to-end internet access.
 

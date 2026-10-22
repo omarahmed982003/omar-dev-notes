@@ -2,11 +2,12 @@
 title: "How the browser displays a page"
 description: Navigation, DOM, CSSOM, render trees, JavaScript execution, and practical DevTools analysis.
 sidebar:
-  order: 18
-prev: {"link":"/en/programming-basics/23-tls-handshake-details/","label":"How peers establish an encrypted connection"}
-next: {"link":"/en/programming-basics/29-browser-scheduling/","label":"Load scripts and schedule browser tasks"}
+  order: 12
+prev: {"link":"/en/programming-basics/06-https-tls-certificates/","label":"Connection encryption and website certificates"}
+next: {"link":"/en/programming-basics/32-local-network-lab/","label":"Set up a local request-and-response lab"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## Change text size and measure width
 
@@ -40,7 +41,9 @@ Record width before clicking. Text grows from16 to32 and measured width increase
 
 ## Before the details
 
-Receiving HTML (Hypertext Markup Language, a language describing page structure) is not the end. The browser builds a DOM (Document Object Model, the page's element tree exposed to programs), resolves CSS (Cascading Style Sheets, rules describing element appearance), constructs what to paint, and runs JavaScript; network and script work can block parts of that path.
+Receiving HTML (Hypertext Markup Language, a language describing page structure) is not the end.
+
+The browser builds a DOM (Document Object Model, the page's element tree exposed to programs), resolves CSS (Cascading Style Sheets, rules describing element appearance), constructs what to paint, and runs JavaScript; network and script work can block parts of that path.
 
 ## From a response to pixels
 
@@ -84,7 +87,9 @@ A high TTFB may come from the network, CDN (Content Delivery Network, distribute
 
 **LCP, Largest Contentful Paint**, measures the display time of the largest eligible visible content element. **INP, Interaction to Next Paint**, measures interaction responsiveness over a visit. **CLS, Cumulative Layout Shift**, measures unexpected layout movement. They answer different questions.
 
-The **main thread** handles much page execution. The **event loop** schedules work; **microtasks** run at specified checkpoints after current execution and before a subsequent rendering opportunity. A never-ending microtask chain can delay rendering. Painting need not happen after every task. **Layout thrashing** is repeated geometry reads and writes forcing repeated layout computation. Group reads and writes where appropriate. **Accessibility** includes keyboard and assistive-technology use.
+The **main thread** handles much page execution. The **event loop** schedules work; **microtasks** run at specified checkpoints after current execution and before a subsequent rendering opportunity. A never-ending microtask chain can delay rendering. Painting need not happen after every task.
+
+**Layout thrashing** is repeated geometry reads and writes forcing repeated layout computation. Group reads and writes where appropriate. **Accessibility** includes keyboard and assistive-technology use.
 
 The script snippets reference example files; they demonstrate loading attributes, not standalone programs. Modules form a **dependency graph**, a relationship map showing which files import others. DOMContentLoaded follows HTML parsing and relevant deferred/module execution, not completion of every image.
 
@@ -92,4 +97,4 @@ The script snippets reference example files; they demonstrate loading attributes
 
 ## Next step
 
-After completing this practice, continue with [Load scripts and schedule browser tasks](/en/programming-basics/29-browser-scheduling/).
+[Set up a local request-and-response lab](/en/programming-basics/32-local-network-lab/).

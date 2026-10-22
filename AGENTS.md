@@ -6,6 +6,8 @@ These instructions define how to select the active module, conduct a study sessi
 
 ## Mandatory Session Bootstrap
 
+Editorial revision authorized on 2026-10-20: follow the topic-owned, standalone lesson rules in `planning/content-writing-guide.md`. Start programmer foundations with a short hardware introduction followed by software and operating-system mechanisms. Use natural Egyptian Arabic and PHP/Laravel examples unless studying another named language. OOP public pages were exported to the user's Desktop and removed at their request; keep private Git/OOP curricula and progress in `study/`. Do not republish archived course pages automatically. This is a documentation revision, not evidence of study progress.
+
 At the beginning of every new conversation or study session, read `STUDY_SESSION_CONTEXT.md` completely before teaching, assessing, choosing a module, or editing course content.
 
 - Use it as the central router and session handoff document.

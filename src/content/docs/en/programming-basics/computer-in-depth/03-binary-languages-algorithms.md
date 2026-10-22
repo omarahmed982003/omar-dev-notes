@@ -3,83 +3,200 @@ title: "Representing numbers and characters in memory"
 description: "Representing numbers and characters in memory"
 tableOfContents: true
 sidebar:
-  order: 10
-prev: {"link":"/en/programming-basics/computer-in-depth/06-operating-systems/","label":"Operating-system architecture and types"}
-next: {"link":"/en/programming-basics/computer-in-depth/14-running-code/","label":"From solution steps to running code"}
+  order: 5
+prev: {"link":"/en/programming-basics/computer-in-depth/04-cpu-gpu/","label":"How a processor executes instructions"}
+next: {"link":"/en/programming-basics/computer-fundamentals/18-media-and-units/","label":"Images, audio, video, and size units"}
 ---
 
-## Overview
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-All data and instructions become bits inside the machine. Programming languages let us express algorithms clearly before a compiler or interpreter turns them into executable work.
+## What will you understand?
 
-## Core concepts
+Why can two programs interpret the same bytes as a number and as text? A **representation** is how a value is written; an **interpretation** is the agreement that gives that representation meaning.
 
-- A bit is 0 or 1; eight bits form a byte.
-- Binary is a positional base-2 representation.
-- Text is stored using code points defined by Unicode and bytes defined by an encoding form such as UTF-8 (Unicode Transformation Format with 8-bit units, encoding Unicode character numbers as bytes), then as bits.
-- An algorithm is a finite, precise solution independent of any language.
-- Language choice depends on domain, ecosystem, performance, and team constraints.
+You only need small additions and multiplications. On the first pass, focus on bits/bytes, binary/hex, and Unicode versus UTF-8. A foundation check and exit point follow; signed values, fractional precision, and byte order are optional depth. PHP experiments wait until the language environment is ready.
 
-## Worked example
+## Bits and bytes
 
-To classify a grade: read it, validate that it is between 0 and 100, then report pass for 50 or more and fail otherwise. Validation must precede the decision.
+A **bit** is a position with two possible values: 0 and 1. Eight bits form a **byte**, with 256 possible patterns because each position doubles the number of combinations.
 
-## Corrections and common mistakes
+A pattern alone does not identify its meaning. It could belong to an image, a number, or a character depending on the file format and the programs' agreement.
 
-- Code is one language-specific implementation of an algorithm.
-- One successful sample is insufficient; test boundaries and invalid input.
+### Binary: why 101 can mean five
 
-## From binary to hexadecimal
+**Binary** is base two. From right to left, place values are 1, 2, 4, 8, and so on. Thus `101₂ = 1×4 + 0×2 + 1×1 = 5`. The small ₂ identifies the base.
 
-Hexadecimal makes bit patterns shorter because one hex digit represents four bits. For example, `1111 1010₂` equals `FA₁₆`. Hex appears in memory addresses, colors such as `#22C55E`, binary-file viewers, and bit masks.
+Similarly, `45 = 32 + 8 + 4 + 1`, giving `101101₂`. The value stays the same; its written representation changes.
 
-## Unicode and UTF-8 in practice
+### Hexadecimal: a shorter representation
 
-Unicode assigns a code point to each character, such as `U+0639` for the Arabic letter ع. UTF-8 defines the bytes used to encode that value. Basic English characters use one byte, Arabic letters usually use two, and other symbols may use up to four.
+**Hexadecimal**, or **hex**, uses base sixteen: digits 0–9 followed by A–F for values 10–15. Each hex digit corresponds to exactly four bits.
 
-Do not assume character count equals byte count or slice text at arbitrary byte positions. Use library operations that understand Unicode when measuring or splitting human text.
+`FA₁₆ = 15×16 + 10 = 250`, or `1111 1010` in binary. The prefix `0x` commonly identifies hex, as in `0xFA`.
 
-## Signed values, floating point, endianness, and runtimes
+Hex appears in memory addresses, colors, and binary-file inspection.
 
-The same bits have different meanings under different types. Unsigned values wrap within their range, while common signed integers use two's complement. Floating point stores an approximation using a sign, exponent, and significand, so many decimal fractions cannot be represented exactly.
+## Unicode is not UTF-8
 
-Endianness defines byte order for multi-byte values. It matters in binary files and network protocols. 
+**Unicode** assigns agreed numbers to symbols. A **code point** is one such number: the Arabic letter “ع” is `U+0639`, with hexadecimal digits after U+.
 
+An **encoding** maps those numbers to bytes. **UTF-8** is a common Unicode encoding using one to four bytes per code point.
 
+Basic Latin letters usually take one byte, while “ع” takes two: `D8 B9`. One visible character need not be one code point: a letter with a combining mark, or some emoji, can contain several.
 
-## Work through actual representations
+A **grapheme cluster** groups code points treated as one visible unit. Byte count, code-point count, and visible-unit count therefore answer different questions.
 
-First review [5 to 101 and text/image/audio representation](/en/programming-basics/computer-fundamentals/02-binary-data-representation/). **Hexadecimal** uses 0–9 and A–F for 10–15. FA is 15×16+10=250, or binary 11111010. A **bit mask** selects particular bits, such as the low bit for odd/even checks.
+### A no-code text experiment
 
-In 8-bit **two's complement**, 5 is 00000101; invert bits to 11111010 and add one to get 11111011, interpreted as -5. The same pattern is unsigned 251. The signed range is -128 (10000000) through 127 (01111111). Do not generalize unsigned wrapping to every signed type: signed overflow in C++ is not guaranteed wrapping.
+Save two new text files in a practice folder: one containing `A`, the other `ع`. Select UTF-8 without a final newline or **BOM**, an optional encoding-identification mark at the beginning, if your editor supports these options.
 
-**Floating point** uses sign, exponent, and significand; the exponent scales the value and the significand supplies precision. Just as decimal 1/3 repeats forever, binary 0.1 does not terminate. JavaScript commonly displays 0.1+0.2 as 0.30000000000000004. Choose domain-appropriate accuracy and rounding rules rather than an arbitrary tolerance. Integer minor units can suit money with explicit conversion and rounding policies.
+The text payload should occupy one byte versus two. If the file is larger, inspect newlines, the initial mark, and the encoding before blaming the calculation. Allocated disk space can differ from the file's data length.
 
-**Endianness** orders bytes, not bits within each byte. For two-byte hexadecimal 0x1234, big-endian stores 12 then 34 from the lower address; little-endian stores 34 then 12. The 0x prefix denotes hexadecimal. **Worked check:** bytes 35 and 00 represent 53 as a little-endian 16-bit integer, while the first byte alone encodes the UTF-8 character 5. State the type, byte order, and encoding.
+### Optional PHP experiment
 
+PHP runs the language examples here. After configuring PHP, save a new file named `text-bytes.php`. `echo` displays results, `strlen` counts string bytes, `bin2hex` renders bytes as hex, and `PHP_EOL` supplies the platform line ending.
 
+```php
+<?php
+echo strlen('A'), PHP_EOL;
+echo strlen('ع'), PHP_EOL;
+echo bin2hex('ع'), PHP_EOL;
+```
 
-## Check your understanding
+Run `php text-bytes.php`. With UTF-8 source, expect:
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Represent 45 in binary and explain why its value does not change.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> 45 is 32+8+4+1, so it is 101101. Only the representation and base changed; the mathematical value did not.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Why is UTF-8 not a programming language even though it maps text to bytes?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> UTF-8 is an encoding for character representation. It has no executable instructions, control flow, or algorithm semantics.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>Is an algorithm correct because one sample passes? Give a counterexample.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> No. Division may work for 10/2 but fail for a zero denominator; boundaries and invalid input must also be tested.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>When might ahead-of-time compilation matter compared with interpretation or JIT?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> It depends on platform, performance, and workflow. AOT supports native distribution and predictable startup; interpretation/JIT can favor dynamic execution and iteration.</div></details>
-</section>
-</div>
+```text
+1
+2
+d8b9
+```
 
-## Next step
+This does not count visible characters. Cutting Arabic text at an arbitrary byte offset can split a UTF-8 sequence and produce invalid text.
 
-After completing this practice, continue with [From solution steps to running code](/en/programming-basics/computer-in-depth/14-running-code/).
+## Pause: check the first-pass foundation
+
+1. Represent thirteen in binary, then convert it back.
+2. Do ten text bytes prove there are ten visible characters?
+3. What decimal value does hex F represent, and how many bits correspond to one hex digit?
+4. Why does renaming arbitrary data to .txt not turn it into valid text?
+
+<details>
+<summary>Review the foundation after attempting</summary>
+
+1. `1101₂ = 8 + 4 + 1 = 13`.
+2. No: encoding, combining marks, and symbol composition affect the relationship.
+3. F means fifteen; one hex digit corresponds to four bits.
+4. The extension helps choose a reader; it does not rewrite data into a text encoding.
+
+</details>
+
+If you can explain these answers and the A/“ع” experiment, continue to [images, audio, and video](/en/programming-basics/computer-fundamentals/18-media-and-units/). Mastering the calculations below is not required before a first program.
+
+## Optional depth: choose a representation topic
+
+Each folded topic explores important cases and has its own exercise. Open one when studying numbers or binary files, or return after the foundation.
+
+<details>
+<summary>Signed values, overflow, and bit masks</summary>
+
+### Integers: one pattern, different interpretations
+
+**Unsigned** represents nonnegative integers. An eight-bit model has a range of 0–255.
+
+**Signed** permits negative values. A common representation called **two's complement** gives an eight-bit range of -128 through 127.
+
+To represent -5, write 5 as `00000101`, invert the bits to `11111010`, then add one to obtain `11111011`. The same pattern means 251 when interpreted as unsigned.
+
+**Overflow** occurs when a result exceeds a type's range. Behavior depends on the language and type: fixed-width unsigned types in languages such as C++ wrap, but signed overflow in C++ is not guaranteed wrapping. This model does not imply that a PHP integer has eight bits.
+
+A **bit mask** selects particular bits, such as checking a nonnegative integer's last bit for parity.
+
+#### Check the pattern's interpretation
+
+How can `11111011` represent both -5 and 251? Does this eight-bit model specify every PHP integer's size?
+
+<details>
+<summary>Review the integer interpretation</summary>
+
+Signed two's-complement interpretation gives -5; unsigned interpretation gives 251. The bits are unchanged. Eight bits is a teaching model, not a universal size or overflow rule for other languages and types.
+
+</details>
+
+</details>
+
+<details>
+<summary>Fractional precision: display versus exact value</summary>
+
+### Fractions and finite precision
+
+**Floating point** commonly represents fractions using a sign, an exponent, and a significand. The exponent scales the number; the significand limits precision. **IEEE 754** specifies common floating-point representations and operations.
+
+Just as one third has no finite decimal expansion, 0.1 has no finite binary expansion. Computation usually uses finite approximations rather than exact mathematical fractions.
+
+In PHP, `printf` formats output and `%.17f` requests seventeen fractional digits. Displaying enough digits can expose the approximation:
+
+```php
+<?php
+printf("%.17f\n", 0.1 + 0.2);
+```
+
+A common result with binary double precision is `0.30000000000000004`; default formatting may hide it.
+
+Do not choose an arbitrary tolerance to hide an unexplained error. Choose precision and rounding for the domain. Money may require integer minor units or decimal arithmetic with explicit conversion and rounding rules.
+
+#### Independent precision exercise
+
+1. A display shows `0.3` after `0.1 + 0.2`. Does that prove storage of an exact mathematical fraction? How would you inspect formatting's effect?
+2. A price convention uses integer cents: 30 and 20. What is their sum, and what unit must remain explicit when converting to the major currency unit?
+
+<details>
+<summary>Review precision and units</summary>
+
+1. No. Formatting may round or hide digits. The printf example asks for more digits, but remains finite formatting rather than general proof that every calculation is exact.
+2. Fifty cents, or 0.50 major units under a 100-cents-per-unit agreement. This avoids some fractional-representation errors in addition, but division or tax producing fractions of a cent still needs a rounding policy.
+
+</details>
+
+</details>
+
+<details>
+<summary>Byte order when reading a multibyte integer</summary>
+
+### Endianness: ordering bytes
+
+**Endianness** defines the order of bytes in a multibyte value. It does not reverse the bits inside each byte.
+
+For the two-byte value `0x1234`, the following 12 and 34 are hex byte values, not decimal numbers: **big-endian** stores 12 then 34 from the lowest address; **little-endian** stores 34 then 12. Readers of binary files and cross-system messages must agree on the order.
+
+The bytes `35 00` mean 53 as a sixteen-bit little-endian integer. The first byte alone represents “5” in UTF-8. Meaning requires a type, order, and encoding.
+
+When combining two unsigned bytes, the higher byte has weight 256 and the lower weight 1. For example, `0x0102 = 1 × 256 + 2 = 258`. The ordering agreement determines where the higher byte is stored.
+
+#### Independent ordering exercise
+
+Two bytes, listed from the lowest address, are `01 02`. Assume an unsigned sixteen-bit number.
+
+1. Calculate its value using big-endian, then little-endian.
+2. If a reader uses the wrong ordering, must the file's bytes have changed?
+
+<details>
+<summary>Review byte-order calculations</summary>
+
+1. Big-endian: `1 × 256 + 2 = 258`. Little-endian: `2 × 256 + 1 = 513`.
+2. No. Interpretation can change while stored bytes remain identical. Byte ordering does not reverse the bits inside each byte.
+
+</details>
+
+</details>
+
+## Summary
+
+Separate values from representations, and bytes from the agreement that interprets them. A size unit is not a data type, and UTF-8 is not a programming language.
+
+Next: [images, audio, video, and size units](/en/programming-basics/computer-fundamentals/18-media-and-units/).
+
+## Further reading
+
+- [Unicode: encodings and BOM](https://www.unicode.org/faq/utf_bom.html)
+- [PHP: strlen counts bytes](https://www.php.net/manual/en/function.strlen.php)
+- [PHP: floating-point precision](https://www.php.net/manual/en/language.types.float.php)

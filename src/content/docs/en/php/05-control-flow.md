@@ -50,7 +50,7 @@ Score 75: B
 
 `$active ? 'active' : 'paused'` is ternary: condition, true result, false result. Use it for a short choice. `$input['name'] ?? 'guest'` replaces only missing keys or `null`, preserving `0` and `''`. The shorter `?:` uses Boolean conversion and also replaces `'0'`.
 
-`$user?->address?->city` uses nullsafe access: it stops at `null` in an object chain, not at an exception or a missing array key. See [OOP](/en/oop/) for objects. In HTML you may use `if (...): ... else: ... endif;` instead of braces, but do not mix styles within one block.
+`$user?->address?->city` uses nullsafe access: it stops at `null` in an object chain, not at an exception or a missing array key. See OOP for objects. In HTML you may use `if (...): ... else: ... endif;` instead of braces, but do not mix styles within one block.
 
 ## switch and match
 

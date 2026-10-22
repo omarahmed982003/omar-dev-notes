@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import foundationsCurriculum from '../../data/foundations-curriculum.json';
 const foundationsOrder = ['programming-basics', ...foundationsCurriculum.flatMap(group => [group.guide, ...group.lessons])];
 
-const sectionOrder = ['programming-basics', 'cpp', 'php', 'php-runtime', 'oop', 'auth', 'database'];
+const sectionOrder = ['programming-basics', 'cpp', 'php', 'php-runtime', 'auth', 'database'];
 const sectionNames = {
 	ar: {
 		'programming-basics': 'أساسيات الكمبيوتر والبرمجة والشبكات',
@@ -35,7 +35,9 @@ const docs = (await getCollection('docs'))
 		const fileNumber = Number(normalizedId.split('/').at(-1)?.match(/^\d+/)?.[0] ?? 999);
 		return { entry, locale, section, stage, order: entry.data.sidebar?.order ?? fileNumber };
 	})
-	.filter((item) => sectionOrder.includes(item.section))
+	.filter((item) => sectionOrder.includes(item.section) && (
+		item.section !== 'programming-basics' || foundationsOrder.includes(item.entry.id.replace(/^en\//, ''))
+	))
 	.sort((a, b) => {
 		const localeDifference = a.locale.localeCompare(b.locale);
 		if (localeDifference) return localeDifference;
@@ -162,6 +164,9 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 				display: block; max-width: 100%; max-height: 190mm; height: auto;
 				margin: 6mm auto; break-inside: avoid;
 			}
+			.doc-content .teaching-figure { margin: 5mm 0; padding: 3mm; border: 1px solid #d7deec; break-inside: avoid; }
+			.doc-content .teaching-figure img { max-width: 95mm; max-height: 185mm; margin: 0 auto; }
+			.doc-content .teaching-figure figcaption { margin-top: 3mm; font-size: 9pt; color: #344054; }
 			.doc-content .lesson-diagram {
 				border: 1px solid #ccd8ec; border-radius: 3mm; padding: 5mm; margin: 5mm 0;
 				background: #f7f9fd; break-inside: avoid;
@@ -219,7 +224,7 @@ const generatedAt = new Intl.DateTimeFormat('ar-EG', { dateStyle: 'long' }).form
 					الكمبيوتر وC++ إلى PHP والتشغيل والأمان وقواعد البيانات.
 				</p>
 				<div class="cover-meta">
-					<span>7 مسارات مترابطة</span><span>Arabic + English</span><span>إصدار {generatedAt}</span>
+					<span>{sectionOrder.length} مسارات مترابطة</span><span>Arabic + English</span><span>إصدار {generatedAt}</span>
 				</div>
 			</section>
 

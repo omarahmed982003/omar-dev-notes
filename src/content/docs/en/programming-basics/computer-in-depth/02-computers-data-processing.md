@@ -33,8 +33,7 @@ Distinguish raw **data**, interpreted **information**, a stored **program**, and
 
 The stages may overlap. A video player receives chunks, decodes them, fills a buffer, and displays frames while later chunks are still arriving.
 
-<div class="lesson-diagram" role="img" aria-label="Computer data-processing cycle">
-<p class="lesson-diagram-title">The data journey</p><div class="diagram-flow diagram-pipeline"><div class="diagram-node input"><span>Input</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node process"><span>Validation + Processing</span></div><span class="diagram-arrow" aria-hidden="true">→</span><div class="diagram-node output"><span>Output</span></div><span class="diagram-arrow" aria-hidden="true">↔</span><div class="diagram-node start"><span>Memory / Storage</span></div></div></div>
+
 
 ## Example: opening and editing an image
 

@@ -44,22 +44,8 @@ next: false
 - الذكاء الاصطناعي أداة ممكن تساعد في بعض المهام لكنه لا يلغي الحاجة إلى فهم المتطلبات والتحقق والاختبار.
 - الشهادة مفيدة لكنها ليست البديل عن الأساسيات والمشروعات والتواصل المهني.
 
-## خريطة الدرس
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: مجالات التقنية والذكاء الاصطناعي والعقلية الهندسية">
-<p class="lesson-diagram-title">خريطة مفاهيم: مجالات التقنية والذكاء الاصطناعي والعقلية الهندسية</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>حدّد نوع المشكلة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>اختر مجالًا وأداة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>ابنِ أصغر تجربة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>قس النتيجة والقيود</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>حسّن أو غيّر الفرضية</span></div>
-</div>
-</div>
+
 
 ## المجال من مشكلة ملموسة
 

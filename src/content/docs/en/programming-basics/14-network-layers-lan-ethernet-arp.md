@@ -4,9 +4,10 @@ description: How application data crosses network layers and how devices communi
 sidebar:
   order: 2
 prev: {"link":"/en/programming-basics/01-web-and-request-flow/","label":"The internet, the web, and a request's journey"}
-next: {"link":"/en/programming-basics/28-lan-segmentation/","label":"Segment networks and prevent frame loops"}
+next: {"link":"/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/","label":"Device addresses and connection settings"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## Two computers and a router
 
@@ -28,15 +29,21 @@ Suppose a laptop requests a page. A network card does not transmit the URL (Unif
 HTTP data → TCP segment / UDP datagram → IP packet → Ethernet frame → signals
 ```
 
-Layers are responsibility boundaries, not necessarily separate devices. HTTP (Hypertext Transfer Protocol, the rules for web requests and responses) defines request meaning, TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail) manages ordered delivery, IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) routes between networks, and Ethernet/Wi-Fi move one frame over the current link.
+Layers are responsibility boundaries, not necessarily separate devices.
 
-For a remote destination, the laptop needs the local default gateway's MAC (Media Access Control, an interface address used for local-link communication), not the remote server's MAC. Every router removes the current link frame and creates another for the next hop. IP identifies the routed destination; MAC addresses change hop by hop.
+HTTP (Hypertext Transfer Protocol, the rules for web requests and responses) defines request meaning, TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail) manages ordered delivery, IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) routes between networks, and Ethernet/Wi-Fi move one frame over the current link.
+
+For a remote destination, the laptop needs the local default gateway's MAC (Media Access Control, an interface address used for local-link communication), not the remote server's MAC. Every router removes the current link frame and creates another for the next hop.
+
+IP identifies the routed destination; MAC addresses change hop by hop.
 
 ARP (Address Resolution Protocol, finding a local-link MAC address for an IPv4 address) asks a local IPv4 question: “Who has this IP, and what is your MAC?” The cached answer is not authentication; ARP spoofing can advertise a malicious mapping on the LAN (Local Area Network, a network within an area such as a home or office).
 
 ## TCP/IP layers
 
-Layers separate responsibilities. HTTP defines application messages, TCP or UDP (User Datagram Protocol, independent messages without built-in delivery or ordering guarantees) transports them, IP routes packets between networks, and Ethernet or Wi-Fi moves frames across the current link. Each layer adds a header during encapsulation and the receiving side removes it.
+Layers separate responsibilities. HTTP defines application messages, TCP or UDP (User Datagram Protocol, independent messages without built-in delivery or ordering guarantees) transports them, IP routes packets between networks, and Ethernet or Wi-Fi moves frames across the current link.
+
+Each layer adds a header during encapsulation and the receiving side removes it.
 
 | Layer | Examples | Data unit |
 |---|---|---|
@@ -57,7 +64,9 @@ ARP discovers the MAC address associated with an IPv4 address on the LAN. A host
 
 ## Switches and routers
 
-A switch forwards local frames using MAC addresses. A router connects IP networks and selects a next hop using its routing table. A home device may combine routing, switching, Wi-Fi, DHCP (Dynamic Host Configuration Protocol, automatic network configuration for hosts), and NAT (Network Address Translation, rewriting IP addresses at a network boundary), but these remain distinct functions.
+A switch forwards local frames using MAC addresses. A router connects IP networks and selects a next hop using its routing table.
+
+A home device may combine routing, switching, Wi-Fi, DHCP (Dynamic Host Configuration Protocol, automatic network configuration for hosts), and NAT (Network Address Translation, rewriting IP addresses at a network boundary), but these remain distinct functions.
 
 ## Practical exercises
 
@@ -69,7 +78,6 @@ A switch forwards local frames using MAC addresses. A router connects IP network
 
 Why are both IP and MAC addresses needed? IP identifies an endpoint across networks; MAC delivers the frame on the current local link.
 
-
 ## Next step
 
-After completing this practice, continue with [Segment networks and prevent frame loops](/en/programming-basics/28-lan-segmentation/).
+[Device addresses and connection settings](/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/).

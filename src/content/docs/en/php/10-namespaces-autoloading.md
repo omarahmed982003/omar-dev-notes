@@ -9,7 +9,7 @@ sidebar:
 
 Your project and an external library both define a User class. A **namespace** gives the name an address, like identical street names in different cities. **Autoloading** solves another problem: who loads the file when PHP needs a class? **Composer** manages packages, resolves compatible libraries, and generates an autoloader.
 
-We use a small class only as a container for a function; class design belongs in [OOP](/en/oop/). This project needs PHP 8.3+ and Composer 2. Check `php -v` and `composer --version` and run every command inside the project directory, not the documentation site directory.
+We use a small class only as a container for a function; class design belongs in OOP. This project needs PHP 8.3+ and Composer 2. Check `php -v` and `composer --version` and run every command inside the project directory, not the documentation site directory.
 
 ## The complete project
 

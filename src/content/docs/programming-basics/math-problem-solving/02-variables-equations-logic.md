@@ -2,18 +2,19 @@
 title: "المتغيرات والمعادلات والمنطق البولياني"
 description: "المتغير اسم لقيمة قد تتغير، والمعادلة تصف علاقة بين قيم. المنطق البولياني يحول شروط المسألة إلى قرارات يمكن للبرنامج تقييمها."
 tableOfContents: true
-prev: {"link":"/programming-basics/math-problem-solving/07-division-and-precision/","label":"القسمة والباقي ودقة الحساب"}
-next: {"link":"/programming-basics/math-problem-solving/08-sets-relations/","label":"المجموعات والعلاقات ومدخلات الدالة"}
 sidebar:
   order: 3
+prev: {"link":"/programming-basics/math-problem-solving/07-division-and-precision/","label":"القسمة والباقي ودقة الحساب"}
+next: {"link":"/programming-basics/math-problem-solving/08-sets-relations/","label":"المجموعات والعلاقات ومدخلات الدالة"}
 ---
 
-استخدم القسم بعد [القيم والقرارات والحلقات](/programming-basics/computer-fundamentals/10-decisions-and-repetition/). ارجع للحساب حسب الحاجة؛ الرسوم والتعقيد والبرمجة الديناميكية توسعات لاحقة وليست شروطًا لأول برنامج.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+لو معاك تذكرة لكن اسمك محظور، هل تدخل؟ المطلوب مش حساب مبلغ؛ المطلوب قرار صح أو غلط. **Boolean — قيمة منطقية** لها قيمتان: `true` صحيحة، و `false` خاطئة.
 
-## جملة منطقية نجربها
+## من الجملة لشرط واضح
 
-الدخول مسموح لو معاك تذكرة **ومش محظور**. المنطق البولياني يستخدم نتيجتين: `true` صحيح و`false` غير صحيح. `AND` معناها لازم الشرطان، و`NOT` تعكس الإجابة.
+قاعدة الدخول: «عنده تذكرة **ومش** محظور». **AND** تربط شرطين لازم يتحققا معًا. **NOT** تنفي الشرط: المحظور يتحول إلى «مش محظور».
 
 | تذكرة؟ | محظور؟ | مسموح؟ |
 |---|---|---|
@@ -22,73 +23,80 @@ sidebar:
 | نعم | لا | نعم |
 | نعم | نعم | لا |
 
-ده **جدول حقيقة**: كل تركيبات المدخلات ونتيجتها. اشرح الصف الأخير قبل متابعة الرموز. المجموعات والعلاقات لها درس مستقل بعد تثبيت القرار البسيط.
+ده **جدول حقيقة**: بيجرب كل تركيبات القيم المنطقية، مش حالات عشوائية. آخر صف مرفوض لأن وجود التذكرة ما يلغيـش الحظر.
 
-## الفكرة العامة
+**OR** تكفيها واحدة صحيحة على الأقل، و**XOR** تصح لما الشرطان مختلفان؛ لو الاثنان صحيحان، OR صحيحة و XOR خاطئة. XOR أقل شيوعًا من AND و OR في شروط الأعمال.
 
-المتغير اسم لقيمة قد تتغير، والمعادلة تصف علاقة بين قيم. المنطق البولياني يحول شروط المسألة إلى قرارات يمكن للبرنامج تقييمها.
+## المتغير غير المعادلة
 
-## المفاهيم الأساسية
+**المتغير** اسم نربطه بقيمة أثناء التنفيذ. **التعبير** حساب ينتج قيمة، زي `price * quantity`. **الإسناد** يحفظ قيمة جديدة: `x = x + 1` يعني اقرأ القيمة القديمة، زوّد 1، وخزن الناتج.
 
-- التعبير ينتج قيمة، بينما المعادلة أو المقارنة تسأل عن علاقة.
-- الإسناد يحدّث حالة المتغير؛ لذلك ترتيب التعليمات قد يغيّر النتيجة.
-- AND يتطلب تحقق الشروط كلها، وOR يكفيه شرط واحد، وNOT يعكس القيمة.
-- XOR يساوي true عندما يختلف الشرطان، لكنه أقل استخدامًا في شروط الأعمال اليومية.
-- اكتب كل شرط بسيط منفصلًا ثم اجمعه لتقليل أخطاء المنطق.
+لو x كانت 4 تصبح 5. ترتيب تعليمات الإسناد يغير النتيجة لأنه يغير حالة البرنامج. رياضيًا، المعادلة `x=x+1` تطلب مساواة مستحيلة على الأعداد العادية؛ المعادلة مش تعليمة تحديث.
 
-## مثال تطبيقي
+**المقارنة** تسأل عن علاقة وترجع قيمة منطقية، زي «العمر 18 أو أكثر». ما تخلطش «ضع القيمة» و«هل القيمتان متساويتان؟»؛ رموزهما تتحدد بلغة البرنامج.
 
-أهلية قرض قد تكون: عمر مناسب AND دخل كافٍ AND لا توجد مديونية خطرة. حوّل كل عبارة إلى Boolean باسم واضح ثم اجمعها في قرار نهائي.
+## تجربة PHP اختيارية
 
-## تصحيح مفاهيم وأخطاء شائعة
+المثال يحتاج تشغيل `php logic.php` بـ PHP 8+ من مجلد التدريب. لو لسه ما درستش المتغيرات والقوائم في [PHP](/php/)، اكتفِ بالجدول وارجع للكود بعدهم.
 
-- لا تخلط بين “يساوي” و“ضع قيمة في المتغير”.
-- انتبه للأقواس عند دمج AND وOR حتى يكون المعنى صريحًا.
+`$` تبدأ اسم متغير في PHP. `&&` تعني AND و `!` تعني NOT. `foreach` تزور كل زوج، و `? :` تختار النص حسب نتيجة الشرط، و `echo` تطبع. لا توجد كتابة ملفات.
 
-## خريطة الدرس
+~~~php
+<?php
+declare(strict_types=1);
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: المتغيرات والمعادلات والمنطق البولياني">
-<p class="lesson-diagram-title">خريطة مفاهيم: المتغيرات والمعادلات والمنطق البولياني</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>المعطيات والمجهول</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>اكتب العلاقة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>عوّض القيم</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>قيّم الشرط</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>تحقق من الحل</span></div>
-</div>
-</div>
+foreach ([[false, false], [false, true], [true, false], [true, true]] as [$hasTicket, $isBlocked]) {
+    $allowed = $hasTicket && !$isBlocked;
+    echo $allowed ? "allow\n" : "deny\n";
+}
+~~~
 
-## Truth Tables وImplication
+الخرج المتوقع بالترتيب:
 
-يسجل Truth Table نتيجة التعبير لكل تركيب من القيم المنطقية. يكون `A && B` صحيحًا فقط عندما يصح الاثنان، و`A || B` صحيحًا عندما يصح أحدهما على الأقل، وXOR صحيحًا عندما يختلفان.
+~~~text
+deny
+deny
+allow
+deny
+~~~
 
-العبارة `A -> B` تكون خاطئة فقط عندما يصح A وتفشل B. لا تخلطها بعلاقة سببية؛ إنها صياغة منطقية. وتقول قوانين De Morgan إن نفي `A && B` يساوي `!A || !B`، ونفي `A || B` يساوي `!A && !B`.
+كل دورة تقابل صفًا في جدول الحقيقة. غيّر شرطًا واحدًا وتوقع الصفوف التي تتغير قبل التشغيل.
 
-## تأكد من فهمك
+## الأقواس بتكتب سياسة الأعمال
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين x = x + 1 في البرمجة والمعادلات الرياضية؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> برمجيًا هي إسناد: احسب القيمة القديمة ثم خزّن الأكبر بواحد. رياضيًا المعادلة x=x+1 مستحيلة على الأعداد العادية.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>حوّل “مقبول إذا كان موظفًا أو دخله كافيًا، وبشرط ألا يكون محظورًا” إلى منطق واضح.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> eligible = (isEmployee OR hasEnoughIncome) AND NOT isBlocked. الأقواس ضرورية لأن الحظر يجب أن يرفض الحالتين.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>متى تختلف عدة شروط if مستقلة عن سلسلة else-if؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> الشروط المستقلة قد تنفذ أكثر من فرع، بينما else-if تختار أول شرط صحيح فقط؛ الاختيار يعتمد على كون النتائج متزامنة أم حصرية.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>كيف تختبر قاعدة منطقية مركبة دون تجربة كل القيم عشوائيًا؟</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة المشروحة:</strong> أنشئ جدول حقيقة أو جدول قرار يغطي كل شرط منفردًا، التركيبات المهمة، وحدود المقارنات، ثم حدد النتيجة المتوقعة مسبقًا.</div></details>
-</section>
-</div>
+«موظف **أو** دخله كافي، بشرط ألا يكون محظورًا» تكتب:
 
-## الخطوة التالية
+~~~text
+(isEmployee OR hasEnoughIncome) AND NOT isBlocked
+~~~
 
-كمّل في [المجموعات والعلاقات ومدخلات الدالة](/programming-basics/math-problem-solving/08-sets-relations/) بعد تنفيذ التجربة هنا.
+الأقواس تجمع بديلَي الأهلية قبل تطبيق الحظر على الاثنين. في مثال قرض، ممكن القاعدة تكون «عمر مناسب AND دخل كافٍ AND مديونية غير خطرة». سمِّ الشروط البسيطة الأول، وبعدها اجمعها.
+
+**if** تختار تنفيذًا عند صحة شرط. عدة `if` مستقلة ممكن تنفذ أكثر من فرع؛ سلسلة `if / else-if` تختار أول فرع ناجح فقط. نستخدم المستقلة لو النتائج ممكن تجتمع، والسلسلة لو المطلوب بديل واحد.
+
+## تعمق اختياري: النفي و«يستلزم»
+
+**قوانين De Morgan** تقول: نفي `A AND B` يساوي `NOT A OR NOT B`، ونفي `A OR B` يساوي `NOT A AND NOT B`. مثال: «ليس العمر مناسبًا والدخل كافيًا معًا» يعني على الأقل واحد منهما لم يتحقق.
+
+**الاستلزام المنطقي** `A → B` يفشل فقط لو A صحيحة و B خاطئة. قاعدة «لو الطلب مدفوع، لازم له إيصال» تكسرها حالة مدفوع بلا إيصال. لا تدعي أن الدفع سبب فيزيائي لوجود إيصال؛ ده قيد منطقي. عند A خاطئة، القاعدة وحدها لا تحكم بوجود الإيصال أو عدمه.
+
+## جرّب لوحدك
+
+1. اختبر قاعدة الأهلية السابقة لموظف محظور، وغير موظف دخله كافٍ وغير محظور.
+2. حول «لا هو موظف ولا دخله كافٍ» باستعمال De Morgan.
+3. برنامج يسمح بدخول حامل التذكرة المحظور. أي صف يثبت الخطأ؟ اقترح شرطًا خاطئًا قد يسببه.
+4. لو المطلوب عرض كل التنبيهات الصحيحة، هل تختار if مستقلة أم else-if؟
+
+<details>
+<summary>الإجابات والتفسير</summary>
+
+1. الأول مرفوض، والثاني مقبول؛ الحظر شرط نهائي على البديلين.
+2. `NOT (isEmployee OR hasEnoughIncome)`، أو `NOT isEmployee AND NOT hasEnoughIncome`.
+3. صف «نعم، نعم» لازم يرفض. شرط مثل `hasTicket OR !isBlocked` يسمح به غلط.
+4. if مستقلة؛ سلسلة else-if توقف الاختيار عند أول شرط ناجح.
+
+</details>
+
+## الخلاصة
+
+اكتب السياسة بجمل قصيرة، سمِّ شروطها، وجرب التركيبات والحدود قبل الكود. كمل [المجموعات والعلاقات ومدخلات الدالة](/programming-basics/math-problem-solving/08-sets-relations/).

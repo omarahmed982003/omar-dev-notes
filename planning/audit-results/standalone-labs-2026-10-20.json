@@ -1,0 +1,36 @@
+{
+  "directory": "C:\\my_docs\\tmp\\standalone-labs\\run-IdfC4M",
+  "php": "PHP 8.4.23 (cli) (built: Jul  1 2026 04:47:16) (NTS Visual C++ 2022 x64)",
+  "results": [
+    {
+      "check": "language-code-parity:computer-in-depth/software-and-runtime",
+      "passed": true
+    },
+    {
+      "check": "language-code-parity:computer-in-depth/06-operating-systems",
+      "passed": true
+    },
+    {
+      "check": "language-code-parity:03-tcp-udp-packets",
+      "passed": true
+    },
+    {
+      "check": "php-output:hello",
+      "actual": "Hello Omar",
+      "passed": true
+    },
+    {
+      "check": "php-output:os",
+      "actual": "Hello from PHP",
+      "passed": true
+    },
+    {
+      "check": "tcp-round-trip",
+      "passed": true
+    },
+    {
+      "check": "tcp-invalid-message-rejected",
+      "passed": true
+    }
+  ]
+}

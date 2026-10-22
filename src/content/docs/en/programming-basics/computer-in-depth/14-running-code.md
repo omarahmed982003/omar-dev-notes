@@ -2,43 +2,105 @@
 title: "From solution steps to running code"
 description: "From solution steps to running code"
 sidebar:
-  order: 11
-prev: {"link":"/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/","label":"Representing numbers and characters in memory"}
-next: {"link":"/en/programming-basics/computer-in-depth/05-os-terminal-files-git/","label":"Read and write files from a terminal"}
+  order: 13
+prev: {"link":"/en/programming-basics/computer-in-depth/15-parallel-work/","label":"When does parallel work help?"}
+next: {"link":"/en/programming-basics/computer-in-depth/16-testing-and-debugging/","label":"Test behavior and locate a defect"}
 ---
 
-After representing values, follow instructions: what translates them, what executes them, and why a program may need an external library.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-A **compiler** translates source to machine code or another executable representation. An **interpreter** executes code or its representation. A **runtime** supplies execution services. **JIT**, just-in-time compilation, translates selected code while a program runs.
+## Turn a request into testable steps
 
-## From an algorithm to a program
+“Write a program that decides whether a student passed” is incomplete. Which grades are valid, where does passing start, and what happens outside the range?
 
-1. Define inputs, outputs, and constraints.
-2. Write language-independent steps as pseudocode or a flowchart.
-3. Dry-run a normal, boundary, and invalid case.
-4. Translate the design into code and compare behavior with expectations.
-5. Optimize only after correctness and measurement show a real need.
+A **requirement** describes intended behavior. Our agreement is: a numeric grade from 0 through 100 is valid, passing starts at 50, and other values are rejected.
 
-<div class="lesson-diagram" role="img" aria-label="From a problem to machine-executable instructions">
-<p class="lesson-diagram-title">From a problem to machine-executable instructions</p>
-<div class="diagram-flow diagram-pipeline">
-<div class="diagram-node input"><span>Problem</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Algorithm</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Source code</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Compiler / Interpreter</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Executable instructions</span></div>
-</div>
-</div>
+## An algorithm is not code
 
+An **algorithm** is a sequence of defined steps for solving a problem, independent of a programming language. **Code** implements those steps using a language's rules.
 
-A compiler translates source before execution, an interpreter executes a representation at runtime, and a JIT (Just-In-Time compilation, translating code during execution) compiles selected code while the program runs. A runtime supplies services required by the language or platform.
+**Pseudocode** expresses structured human-readable steps without executable language syntax. This is a paper model, not a shell command:
 
+```text
+READ grade
+IF grade < 0 OR grade > 100
+    REPORT invalid
+ELSE IF grade >= 50
+    REPORT passed
+ELSE
+    REPORT failed
+```
 
-Libraries may link statically or load dynamically. Projects record dependency versions because API (Application Programming Interface, a defined contract for requesting data or actions from another component) and behavior can change between releases.
+READ receives a value; IF tests a condition; OR accepts either alternative; ELSE follows the alternative path when earlier conditions fail.
 
+A **flowchart** draws the same steps as a start, input, branching decision, result, and finish. Its purpose is tracing decisions, not memorizing decorative arrows.
 
-A **library** is reusable code; a **dependency** is something a project requires. **Static linking** incorporates library code into a build; **dynamic linking** loads it for execution. A **lock file** records selected dependency versions to help reproduce a build.
+## Trace before running
+
+A **dry run** follows an input by hand and records each decision. For 50, rejection is false and the passing condition is true, producing “passed.”
+
+| Input | Expected result | Reason |
+|---|---|---|
+| -1 | invalid | Below the range |
+| 0 | failed | Valid but below 50 |
+| 49 | failed | Immediately below the boundary |
+| 50 | passed | Exactly the boundary |
+| 100 | passed | Last valid value |
+| 101 | invalid | Beyond the range |
+
+An **edge case** is a significant boundary or unusual input. Passing one test with 70 proves neither correct handling of 50 nor rejection of 101.
+
+If users supply text, validating its shape and converting it to a number require additional rules. Arbitrary text is not automatically a valid numeric grade.
+
+## Who turns the steps into execution?
+
+**Source code** is the human-written program. A **compiler** transforms one representation into a lower-level representation; an **interpreter** executes instructions or a representation at runtime.
+
+A **runtime** provides services while the program runs, such as memory management and error handling. An implementation can combine compilation and interpretation.
+
+**JIT**, or just-in-time compilation, translates selected work into machine code during execution. Availability and benefit depend on implementation, settings, and workload.
+
+A common PHP path parses and compiles source into intermediate instructions, then executes them in PHP's runtime. An ahead-of-time compiled program instead produces an executable during a build step. See [software and runtimes](/en/programming-basics/computer-in-depth/software-and-runtime/).
+
+Language choice depends on the domain, libraries, team, performance, and distribution. Neither ahead-of-time compilation nor JIT proves that business logic is correct.
+
+## Optional first implementation after configuring PHP
+
+Writing code is not a prerequisite here. Complete the paper trace and revisit this example during the first PHP lessons.
+
+`$grade` stores the grade; `if` chooses a path; `||` means “or”; `>=` means “at least.” `echo` displays text and `PHP_EOL` ends the line.
+
+Save a new practice file named `grade.php`; it does not modify other files:
+
+```php
+<?php
+$grade = 50;
+if ($grade < 0 || $grade > 100) {
+    echo 'invalid', PHP_EOL;
+} elseif ($grade >= 50) {
+    echo 'passed', PHP_EOL;
+} else {
+    echo 'failed', PHP_EOL;
+}
+```
+
+Run `php grade.php` and expect `passed`. Change the value to 49 and then -1: expect `failed` and `invalid`.
+
+Validation comes before classification. Checking only whether a value exceeds 50 could incorrectly accept 101.
+
+## Independent practice
+
+Write the table's results before reading the implementation. Then change the passing boundary to 60. Which condition and tests must change?
+
+<details>
+<summary>Review the reasoning after attempting</summary>
+
+Use “at least 60” and test 59, 60, and 61. Retain range-boundary and invalid-input tests; changing one rule does not remove the rest of the agreement.
+
+</details>
+
+## Summary
+
+Define inputs, outputs, and rules; trace cases; then implement. Compilation and execution do not replace understanding the problem.
+
+Next: [testing behavior and diagnosing faults](/en/programming-basics/computer-in-depth/16-testing-and-debugging/).

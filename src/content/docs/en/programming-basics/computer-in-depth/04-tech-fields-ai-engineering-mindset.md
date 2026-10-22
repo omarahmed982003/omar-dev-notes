@@ -42,22 +42,8 @@ Run a mini exploration: build a web page, analyze a data file, deploy a local se
 - AI can help with some tasks, but the benefit depends on the task and user; requirements analysis, verification, and testing remain necessary.
 - A degree can help, but it does not replace fundamentals, projects, and communication.
 
-## Lesson map
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Technology fields, AI, and the engineering mindset">
-<p class="lesson-diagram-title">Concept map: Technology fields, AI, and the engineering mindset</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>Identify the problem type</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Choose a field and tool</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Build the smallest experiment</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Measure results and constraints</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Improve or change the hypothesis</span></div>
-</div>
-</div>
+
 
 ## Explore a field through a concrete problem
 

@@ -2,17 +2,20 @@
 title: "Receive a webhook and handle repeated delivery"
 description: "Receive a webhook and handle repeated delivery"
 sidebar:
-  order: 28
+  order: 27
 prev: {"link":"/en/programming-basics/12-realtime-webhooks/","label":"Poll or receive a server stream"}
 next: {"link":"/en/programming-basics/13-api-design/","label":"Designing data interfaces"}
 ---
 
-A **webhook** is a server-to-server request sent for an agreed event. Its client is a server program, not the browser tab. Send one local event, then repeat it to observe duplicate-effect prevention.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+A **webhook** is a server-to-server request sent for an agreed event. Its client is a server program, not the browser tab. Send one local event, then repeat it to observe duplicate-effect prevention.
 
 ## Send one event twice
 
-Start the [lab](/en/programming-basics/32-local-network-lab/). In PowerShell:
+No-Node reading alternative: event order-1 arrives twice. First delivery produces `duplicate:false`, `processedCount:1`; second produces `duplicate:true`, count still1. A new order-2 increases the count to 2. Explain those expected effects before execution.
+
+For **optional execution**, run the Node.js [lab](/en/programming-basics/32-local-network-lab/) and use a fresh practice folder. The commands write event.json, so do not overwrite your existing files. The later PHP signing fragment does not require Node:
 
 ```powershell
 Set-Content -LiteralPath event.json -Value '{"id":"order-1"}' -Encoding ascii
@@ -27,7 +30,9 @@ This local receiver loses memory on restart and does not verify an external send
 
 The **raw body** is the received bytes before parsing or changing whitespace. **HMAC, Hash-based Message Authentication Code**, computes a verification value using a shared secret and message. A **timestamp** records time; **replay** resends a previously valid message.
 
-The code below is a fragment: timestamp, rawBody, secret, and signature must already be read and validated according to the provider's exact signing contract. SHA-256 is the hash used in this HMAC example; hash_equals avoids comparison-time differences revealing the matching prefix. This fragment alone neither checks message age nor deduplicates events.
+The code below is a fragment: timestamp, rawBody, secret, and signature must already be read and validated according to the provider's exact signing contract. SHA-256 is the hash used in this HMAC example; hash_equals avoids comparison-time differences revealing the matching prefix.
+
+This fragment alone neither checks message age nor deduplicates events.
 
 1. Read the raw body.
 2. Verify an HMAC signature and timestamp.
@@ -49,6 +54,10 @@ Senders retry failed deliveries, so idempotency is required.
 
 A reconnect does not recover messages automatically. A **sequence** orders them, a **cursor** records a read position, and a **snapshot** supplies current state. Choose a recovery mechanism appropriate to the service.
 
-**Idempotent processing** avoids repeating the intended effect of the same operation. After signature and time checks, store the event identifier and business change atomically, meaning all succeed or all fail together, or use an equivalent reliable design. A separate "already seen?" check followed by a write can race with another request.
+**Idempotent processing** avoids repeating the intended effect of the same operation. After signature and time checks, store the event identifier and business change atomically, meaning all succeed or all fail together, or use an equivalent reliable design.
 
-**Worked check:** Payment event pay-42 arrives twice. A unique processing record lets the first application record payment and the second recognize completion without adding credit again. When enqueuing, acknowledge after durable acceptance rather than before storing. Late or reordered events also require checks against the order's current state and transition rules.
+A separate "already seen?" check followed by a write can race with another request.
+
+**Worked check:** Payment event pay-42 arrives twice. A unique processing record lets the first application record payment and the second recognize completion without adding credit again. When enqueuing, acknowledge after durable acceptance rather than before storing.
+
+Late or reordered events also require checks against the order's current state and transition rules.

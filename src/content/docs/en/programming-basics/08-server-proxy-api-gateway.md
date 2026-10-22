@@ -2,15 +2,18 @@
 title: "Proxies and request distribution"
 description: Practical differences among servers, forward and reverse proxies, load balancers, and API gateways, including trust and failure boundaries.
 sidebar:
-  order: 22
+  order: 21
 prev: {"link":"/en/programming-basics/07-server-side-path/","label":"A request's journey inside the server"}
 next: {"link":"/en/programming-basics/31-proxy-policies/","label":"Load distribution and proxy policies"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## Try one proxy
+## Read one proxy path, or optionally run it
 
-In the [local lab](/en/programming-basics/32-local-network-lab/), click Through one proxy. The browser requests `/proxy` on8765; that server requests the product on8766 and returns the response. The **upstream** is8766.
+A **proxy** receives a request and forwards it. No-Node reading trace: a client requests `/proxy` from A; A requests a product from B; A returns B's product to the client. If B returns `{id:1}`, the client receives that data through A. A and B are explanatory server labels, not runnable addresses.
+
+For optional execution, configure the Node.js [local lab](/en/programming-basics/32-local-network-lab/) and click Through one proxy. The browser requests `/proxy` on 8765; that server requests the product on 8766 and returns the response. The **upstream** is 8766.
 
 Inspect `/proxy` in Network: `X-Lab-Proxy: forwarded` identifies forwarding; `X-Request-Id` and `X-Upstream-Request-Id` match. Compare the terminal’s two log entries. Understand this single path before distributing requests among copies.
 
@@ -36,7 +39,9 @@ Not every system needs every layer. A small app may use Nginx for TLS and revers
 
 A **forward proxy** acts for clients. Corporate devices send outbound traffic through it for policy, destination controls, caching, or auditing. It may hide an address from the destination but is not automatically anonymous; the proxy can identify and log the client.
 
-A **reverse proxy** acts for servers. Clients request the app normally and the proxy selects an upstream. It may terminate TLS, route hosts and paths, compress or cache responses, enforce body limits, add request IDs, and hide internal addresses. Nginx, HAProxy, and Envoy can perform these duties. A proxy cannot replace application validation and authorization.
+A **reverse proxy** acts for servers. Clients request the app normally and the proxy selects an upstream. It may terminate TLS, route hosts and paths, compress or cache responses, enforce body limits, add request IDs, and hide internal addresses. Nginx, HAProxy, and Envoy can perform these duties.
+
+A proxy cannot replace application validation and authorization.
 
 ## Role comparison
 
@@ -58,7 +63,6 @@ One product can combine roles. Review the responsibility, trust boundary, and fa
 
 <details><summary>Does an API gateway replace authorization inside a service?</summary><p>No. It can apply shared policy, but each service remains responsible for access rules specific to its resources.</p></details>
 
-
 ## Next step
 
-After completing this practice, continue with [Load distribution and proxy policies](/en/programming-basics/31-proxy-policies/).
+[Load distribution and proxy policies](/en/programming-basics/31-proxy-policies/).

@@ -7,31 +7,120 @@ prev: {"link":"/en/programming-basics/math-problem-solving/01-arithmetic-foundat
 next: {"link":"/en/programming-basics/math-problem-solving/02-variables-equations-logic/","label":"Variables, equations, and Boolean logic"}
 ---
 
-You have 10 items and boxes holding 3. Three boxes are insufficient: all items need four. If you ask only for full boxes, the answer is three with one remaining. The question determines the division operation.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## Calculate before naming
+Seventeen items and boxes holding five give three full boxes and two remaining items. Packing **all** items takes four boxes. Different questions require different division operations.
 
-`floor(10/3)=3` chooses the greatest integer no larger than the value; `ceil(10/3)=4` chooses the least integer no smaller. For −2.3, floor is −3 and ceiling −2: locate them on a number line.
+The arithmetic needs no code. The optional complete example requires PHP 8+ and CLI file execution introduced in the [PHP course](/en/php/); completing that course is not required to read this lesson.
 
-Grouping 12 and 18 items equally without leftovers allows a largest group size of 6: **GCD, Greatest Common Divisor**. Bells ringing every 4 and 6 minutes first coincide again at 12: **LCM, Least Common Multiple**, for these positive integers.
+## Quotient and remainder
 
-**Try:** 17 items in size-5 boxes: full boxes, remainder, and boxes for everything are 3, 2, and 4. Explain each before studying the rules.
+`17 = 3×5 + 2`. Three is the **integer quotient** and two the **remainder**. PHP uses `intdiv(17,5)` and `17 % 5` respectively.
 
+PHP's `/` performs ordinary division: `17/5` gives 3.4. Integer operands do not guarantee an integer quotient.
 
-## Integer division, number theory, and precision
+For nonnegative item counts and positive box sizes, **ceiling division** counts enough boxes for everything: take the integer quotient and add one if a remainder exists. Seventeen items need four boxes, fifteen need three, and zero needs zero.
 
-Integer division returns an integer quotient; negative-value rounding depends on the language, as the worked examples below show. For positive integers, `(count + size - 1) / size` computes ceiling division. Euclid's algorithm repeatedly replaces `(a, b)` with `(b, a % b)` to find the GCD (Greatest Common Divisor, the largest common divisor); the LCM (Least Common Multiple, the least common multiple under the stated zero convention) can then be derived carefully without overflowing intermediate values.
+## Complete PHP experiment
 
-Modular arithmetic models cycles such as clocks and parity. Floating-point results are approximate, so comparisons may require a tolerance chosen for the problem's scale.
+Save as `division.php` in a new training folder and run `php division.php`. It only prints; it does not access your files.
 
-## Calculate instead of memorizing names
+A **function** names steps with inputs and a result. `int` declares integers, `return` returns the result, `%` calculates a remainder, `===` compares strictly, and `? :` chooses between two values. `foreach` visits the examples.
 
-A **power** is repeated multiplication: 2³=8. The nonnegative **square root** of 25 is 5. For 2,4,9, the mean is 15/3=5 and the median is 4. An empty-list mean needs a policy instead of division by zero.
+The input contract requires `count >= 0` and `size > 0`. `throw` signals failure with `InvalidArgumentException` when that contract is violated.
 
-17 divided by 5 has remainder 2 because 17=3×5+2. Many languages use %. Integer division of negatives differs: C++ -7/3 truncates toward zero to -2; Python -7//3 floors to -3. JavaScript 7/3 is ordinary division. Specify the language.
+~~~php
+<?php
+declare(strict_types=1);
 
-Ten items in groups of three require four groups. The ceiling-division formula (count+size−1)/size requires integer division, nonnegative count, positive size, and no intermediate overflow. Zero items need zero groups; zero group size is invalid.
+function boxesNeeded(int $count, int $size): int
+{
+    if ($count < 0 || $size <= 0) {
+        throw new InvalidArgumentException('Invalid count or box size');
+    }
 
-For **GCD**, 48%18=12, 18%12=6, 12%6=0, so the greatest common divisor is 6. **LCM** is 48/6×18=144. Under the common programming convention, return zero if either argument is zero, handling (0,0) before division. abs means absolute value.
+    return intdiv($count, $size) + ($count % $size === 0 ? 0 : 1);
+}
 
-**Worked check:** Five hours after hour 23 is (23+5)%24=4. This is modular arithmetic. **Tolerance** is a domain-appropriate permitted numerical difference; **overflow** exceeds a type's range and is not fixed by an approximation tolerance.
+foreach ([[10, 3], [17, 5], [0, 5]] as [$count, $size]) {
+    echo $count . '/' . $size . ': ' . boxesNeeded($count, $size) . PHP_EOL;
+}
+~~~
+
+Expected output:
+
+~~~text
+10/3: 4
+17/5: 4
+0/5: 0
+~~~
+
+`strict_types` makes strict calls reject mismatched argument types instead of silently converting them; `PHP_EOL` ends the line. The calculation adds zero or one to the quotient instead of adding a box size to a possibly near-limit count.
+
+`intdiv(count + size - 1, size)` also works for nonnegative count and positive size **if the intermediate addition fits**. In PHP, `(count + size - 1) / size` alone is not ceiling division: for 17 and 5 it gives 4.2. The division operation is part of the contract.
+
+## Floor, ceiling, and rounding
+
+**Floor** is the greatest integer no larger than a value. **Ceiling** is the least integer no smaller. **Round** selects a nearest value using the function's tie rule.
+
+| Value | floor | ceil |
+|---|---: |---: |
+| 2.3 | 2 | 3 |
+| −2.3 | −3 | −2 |
+
+Removing the fractional part toward zero is not floor for negatives. PHP's `intdiv(-7,3)` gives−2; Python's `//` gives−3. State the language and operation.
+
+Ties such as 2.5 depend on the language and rounding mode. Do not assume one universal rule.
+
+## Remainders describe cycles
+
+Five hours after hour 23 is `(23+5)%24 = 4`. A cycle of length 24 maps the result back into the clock. Remainders also describe parity, divisibility, and repeated positions.
+
+PHP can return a negative remainder: `-1 % 24 = -1`. If the contract requires 0 through 23, normalize with `((value % 24)+24)%24`. A general formula needs a positive modulus and safe intermediate ranges.
+
+## Optional depth: GCD and LCM
+
+The **greatest common divisor (GCD)** is the largest positive integer dividing two positive integers exactly. **Euclid's algorithm** repeatedly replaces the pair with the divisor and remainder.
+
+| Operation | Remainder |
+|---|---: |
+| 48 % 18 | 12 |
+| 18 % 12 | 6 |
+| 12 % 6 | 0 |
+
+The last nonzero divisor is 6. The common divisors of `a,b` are exactly those of `b,a%b`.
+
+The **least common multiple (LCM)** is the first positive common multiple of positive integers. Bells ringing every 4 and 6 minutes coincide again at 12. For 48 and 18, `48/6×18=144`. Dividing by the GCD before multiplying reduces the intermediate value but does not guarantee against overflow.
+
+A common programming convention returns zero for the LCM if either input is zero; handle `(0,0)` before dividing. `abs` means absolute value, the distance from zero. Negative inputs, including the most negative integer, need an explicit type-range policy; these examples use small positives.
+
+## Approximation and overflow are different
+
+**Floating point** approximates many fractions. **Absolute error** is the magnitude of the difference from a reference: 100.2 instead of 100 has error 0.2. **Relative error** divides by the reference magnitude: 0.002, or 0.2%.
+
+A **tolerance** is an acceptable difference chosen for the problem, not one universal constant. A zero reference requires special handling rather than relative-error division by zero.
+
+**Overflow** exceeds a numeric type's range; a tolerance does not repair it. Exact monetary work may use integer minor units with range checks, or an appropriate decimal representation.
+
+## Independent checks
+
+1. Find quotient, remainder, and boxes needed for 17, 15, and 0 with box size 5.
+2. Why does copying `(17+5-1)/5` into PHP not give the box count?
+3. Predict `boxesNeeded(5,0)` and `boxesNeeded(-1,3)` from the contract.
+4. Find the hour five hours after 23, and floor/ceiling of−2.3.
+
+<details>
+<summary>Answers and reasoning</summary>
+
+1. Seventeen: 3, 2, 4. Fifteen: 3, 0, 3. Zero: 0, 0, 0.
+2. Ordinary division returns 4.2; use integer division and add one if a remainder exists.
+3. Both throw `InvalidArgumentException` instead of returning counts.
+4. Hour 4; floor−3 and ceiling−2.
+
+</details>
+
+## Summary and references
+
+Decide whether you need a quotient, remainder, approximation, or sufficient capacity. Continue to [logic and decisions](/en/programming-basics/math-problem-solving/02-variables-equations-logic/).
+
+Execution references: [PHP arithmetic](https://www.php.net/manual/en/language.operators.arithmetic.php), [intdiv](https://www.php.net/manual/en/function.intdiv.php), and [floating-point precision](https://www.php.net/manual/en/language.types.float.php).

@@ -123,7 +123,7 @@ echo json_encode(array_merge($left, $right), JSON_THROW_ON_ERROR), PHP_EOL;
 {"timeout":5,"0":"A","1":"B"}
 ~~~
 
-Array `===` also checks types and key/value order; `==` does not require the same order. `instanceof` checks an object's class/interface. Assigning an object to another variable does not copy it; `clone` is shallow and nested objects may remain shared. See [OOP](/en/oop/).
+Array `===` also checks types and key/value order; `==` does not require the same order. `instanceof` checks an object's class/interface. Assigning an object to another variable does not copy it; `clone` is shallow and nested objects may remain shared. See OOP.
 
 ## Operators do not repair hidden failures
 

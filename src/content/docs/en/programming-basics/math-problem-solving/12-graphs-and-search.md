@@ -4,43 +4,81 @@ description: "Draw relationships and search for a path"
 sidebar:
   order: 14
 prev: {"link":"/en/programming-basics/math-problem-solving/11-counting-probability/","label":"Sequences, counting, and probability"}
-next: false
+next: {"link":"/en/programming-basics/math-problem-solving/","label":"Math and problem solving"}
 ---
 
-A **graph** has vertices for things and edges for relationships. Every edge here is undirected and costs one step. F is isolated:
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-```text
+A **graph** models things and connections: a **vertex** represents a thing and an **edge** a connection. Find a path from A to E with the fewest edges. Lists and queues are introduced in [data organization](/en/programming-basics/08-problem-solving-algorithms/); this trace can be followed on paper.
+
+## Specify the graph
+
+Every edge is bidirectional and costs one step. Edges are A–B, A–C, B–D, C–E, D–E; F is isolated.
+
+~~~text
     B ── D
    /     │
   A      │     F
    \     │
     C ── E
-```
+~~~
 
-Edges are A–B, A–C, B–D, C–E, D–E. A **queue** removes the earliest inserted item. Start with A and mark vertices when enqueuing them so they cannot be queued repeatedly.
+A **path** follows a sequence of edges. A **cycle** returns to a previous vertex; A→B→D→E→C→A is a cycle.
 
-| Removed vertex | Queue after adding undiscovered neighbors |
+A **queue** removes the earliest inserted vertex. Add neighbors in the written order and mark them discovered on insertion to avoid repeated insertion around cycles.
+
+## Breadth-first search visits nearer levels first
+
+**Breadth-first search (BFS)** visits levels. Begin with[A]. Removing a vertex means examining its neighbors, not deleting it from the graph.
+
+| Removed vertex | Queue after undiscovered neighbors are added |
 |---|---|
 | Start | A |
 | A | B, C |
 | B | C, D |
 | C | D, E |
 | D | E |
-| E | empty |
+| E | Empty |
 
-E was discovered through C: A→C→E takes two edges. **Try:** from B, a shortest path is B→D→E. F remains unreachable. Next name this BFS and measure its work.
+When C discovers E, record `parent[E]=C`. Here **parent** means discovery predecessor. With `parent[C]=A`, reconstruct E←C←A and display A→C→E: two edges.
 
+F is unreachable from A, a legitimate result rather than necessarily an implementation error. Neighbor order may select different equally short paths, not change the minimum edge count.
 
-## Trace a graph with a queue
+## Why the queue matters
 
-A vertex represents a place and an edge connects places. Use an undirected graph with unit-cost edges: A connects to B,C; B to D; C to E; D to E. F is isolated.
+B and C are one edge from A, so they are removed before vertices two edges away. A **stack** removes the newest item instead and may explore a branch deeply first. Do not transfer BFS's shortest-path guarantee to any traversal order.
 
-Breadth-first search (BFS) visits levels. A queue removes the earliest inserted element first. Start with [A], remove A and add B,C; remove B and add D; remove C and add E. A shortest path from A to E is A→C→E with two edges. Mark vertices discovered when enqueuing to avoid repeated insertion around cycles. Record parent[E]=C and parent[C]=A to reconstruct the path backward.
+Mark on insertion, not only on removal, so other edges do not repeatedly enqueue discovered vertices.
 
-F is unreachable. BFS minimizes edge count, not general weighted cost. With V vertices, E edges, and adjacency lists, time is O(V+E) and extra memory O(V). This graph is not a tree: A→B→D→E→C→A is a cycle, and F disconnects it. A simple undirected tree is connected, has no cycles, and has V−1 edges.
+## Limits and cost
 
+BFS minimizes **edge count** here, not arbitrary weighted cost. A **weighted** edge has a cost; a **directed** edge permits a specified direction. State these rules before choosing a search.
 
-A graph contains vertices and edges. Edges may be directed or weighted. Paths connect vertices, cycles revisit a vertex, and a tree is connected and acyclic. Graphs model networks, routes, dependencies, and social relationships.
+Let V count vertices and E edges. An **adjacency list** stores each vertex's neighbors. Traversal takes O(V+E) time and O(V) additional space for discovery, queue, and predecessors. These are growth descriptions, not seconds; review [complexity](/en/programming-basics/08-problem-solving-algorithms/).
 
+## Optional depth: a tree is not any branching picture
 
-In the graph example below, V counts vertices and E counts edges. **O(V+E)** describes work growing with their sum, assuming an adjacency list stores each vertex's neighbors. **O(V)** additional space grows with the number of vertices. These expressions describe growth, not seconds. See [comparing solutions](/en/programming-basics/08-problem-solving-algorithms/).
+A **tree**, for a simple undirected graph, is connected and acyclic, has one path between any two vertices, and V−1 edges. Our graph is not a tree: it has a cycle, and F disconnects it.
+
+Graphs model roads, networks, dependencies, and social relationships. Those domains need not share edge directions or costs.
+
+## Independent practice
+
+1. Start from B and trace the queue until E is discovered. Give a shortest path and edge count.
+2. Is F reachable from B? What should the program report?
+3. Change A–C's cost to 100 and all other costs to 1. Does minimum edge count still give minimum cost from A to E?
+4. Does removing only F make a tree?
+
+<details>
+<summary>Answers and acceptance criteria</summary>
+
+1. Start[B]; remove B, enqueue A, D; remove A, enqueue C; remove D, discover E. B→D→E has two edges. Neighbor order may change the queue but not the minimum distance.
+2. No; report unreachable rather than inventing a path.
+3. No. A→C→E costs 101 over two edges; A→B→D→E costs 3 over three. Unweighted BFS does not solve the changed cost question.
+4. No; A→B→D→E→C→A remains a cycle. Trace discovery and check edge directions/costs, not merely the algorithm name.
+
+</details>
+
+## Summary
+
+Specify relationships, direction, and cost, then trace the queue and predecessor links. Broader graph algorithms follow language practice; they are not prerequisites to a first web application.

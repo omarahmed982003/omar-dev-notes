@@ -43,7 +43,10 @@ try {
  if (!sourceResponse.ok) throw new Error('Print page failed with HTTP '+sourceResponse.status);
  const sourceHtml = await sourceResponse.text();
  const {sections,documentCount} = inspectPrintHtml(sourceHtml);
- if (sections.length !== 14 || !documentCount) throw new Error('Expected seven sections for each of two languages');
+ const arSections = sections.filter(section => section.locale === 'ar');
+ const enSections = sections.filter(section => section.locale === 'en');
+ if (!arSections.length || arSections.length !== enSections.length || !documentCount)
+  throw new Error('Expected matching nonempty sections for both languages');
  let currentHtml='';
  const printPath=new URL(targetUrl).pathname;
  await page.route('**/*', async route=>{

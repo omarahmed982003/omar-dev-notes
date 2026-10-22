@@ -1,0 +1,1290 @@
+{
+  "date": "2026-10-21",
+  "routes": 128,
+  "codeParity": [
+    {
+      "route": "programming-basics",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/03-hardware-architecture",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/software-and-runtime",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/computer-in-depth/06-operating-systems",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/computer-in-depth/04-cpu-gpu",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/03-binary-languages-algorithms",
+      "exact": true,
+      "arBlocks": 2,
+      "enBlocks": 2
+    },
+    {
+      "route": "programming-basics/computer-fundamentals/18-media-and-units",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/05-ram-memory-buffers",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/12-memory-allocation",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/computer-in-depth/13-buffers-and-durability",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/05-os-terminal-files-git",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/17-terminal-environment",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/computer-in-depth/15-parallel-work",
+      "exact": true,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/14-running-code",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/computer-in-depth/16-testing-and-debugging",
+      "exact": true,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/networking-next",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/01-web-and-request-flow",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/14-network-layers-lan-ethernet-arp",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/28-lan-segmentation",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/18-wifi-practical-basics",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/15-addressing-dhcp-nat-routing-ipv6",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/26-subnet-calculations",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/27-routing-and-ipv6",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/02-dns-and-ip",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/03-tcp-udp-packets",
+      "exact": false,
+      "arBlocks": 2,
+      "enBlocks": 2
+    },
+    {
+      "route": "programming-basics/udp",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/20-transport-diagnostics",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/04-url-ports-http",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/21-url-encoding",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/05-http-messages-state",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/22-http-state-and-updates",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/06-https-tls-certificates",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/09-browser-rendering-devtools",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/29-browser-scheduling",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/32-local-network-lab",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/07-server-side-path",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/08-server-proxy-api-gateway",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/31-proxy-policies",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/10-http-caching-compression",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/11-same-origin-cors",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/33-browser-isolation",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/12-realtime-webhooks",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/30-webhook-delivery",
+      "exact": false,
+      "arBlocks": 1,
+      "enBlocks": 1
+    },
+    {
+      "route": "programming-basics/13-api-design",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/16-http2-http3-quic",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/17-proxies-cdn-waf-observability",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/24-request-protection",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/25-request-observation",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/01-arithmetic-foundations",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/07-division-and-precision",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/02-variables-equations-logic",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/08-sets-relations",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/04-computational-thinking",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/06-flowcharts-loops-debugging",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/08-problem-solving-algorithms",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/13-loop-reasoning",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/09-solution-patterns",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/10-greedy-dynamic-programming",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/03-applied-math-graphs-primes",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/11-counting-probability",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    },
+    {
+      "route": "programming-basics/math-problem-solving/12-graphs-and-search",
+      "exact": false,
+      "arBlocks": 0,
+      "enBlocks": 0
+    }
+  ],
+  "navigation": [
+    "programming-basics/computer-in-depth/03-hardware-architecture",
+    "programming-basics/computer-in-depth/software-and-runtime",
+    "programming-basics/computer-in-depth/06-operating-systems",
+    "programming-basics/computer-in-depth/04-cpu-gpu",
+    "programming-basics/computer-in-depth/03-binary-languages-algorithms",
+    "programming-basics/computer-fundamentals/18-media-and-units",
+    "programming-basics/computer-in-depth/05-ram-memory-buffers",
+    "programming-basics/computer-in-depth/12-memory-allocation",
+    "programming-basics/computer-in-depth/13-buffers-and-durability",
+    "programming-basics/computer-in-depth/05-os-terminal-files-git",
+    "programming-basics/computer-in-depth/17-terminal-environment",
+    "programming-basics/computer-in-depth/15-parallel-work",
+    "programming-basics/computer-in-depth/14-running-code",
+    "programming-basics/computer-in-depth/16-testing-and-debugging",
+    "programming-basics/01-web-and-request-flow",
+    "programming-basics/14-network-layers-lan-ethernet-arp",
+    "programming-basics/28-lan-segmentation",
+    "programming-basics/18-wifi-practical-basics",
+    "programming-basics/15-addressing-dhcp-nat-routing-ipv6",
+    "programming-basics/26-subnet-calculations",
+    "programming-basics/27-routing-and-ipv6",
+    "programming-basics/02-dns-and-ip",
+    "programming-basics/03-tcp-udp-packets",
+    "programming-basics/udp",
+    "programming-basics/20-transport-diagnostics",
+    "programming-basics/04-url-ports-http",
+    "programming-basics/21-url-encoding",
+    "programming-basics/05-http-messages-state",
+    "programming-basics/22-http-state-and-updates",
+    "programming-basics/06-https-tls-certificates",
+    "programming-basics/09-browser-rendering-devtools",
+    "programming-basics/29-browser-scheduling",
+    "programming-basics/32-local-network-lab",
+    "programming-basics/07-server-side-path",
+    "programming-basics/08-server-proxy-api-gateway",
+    "programming-basics/31-proxy-policies",
+    "programming-basics/10-http-caching-compression",
+    "programming-basics/11-same-origin-cors",
+    "programming-basics/33-browser-isolation",
+    "programming-basics/12-realtime-webhooks",
+    "programming-basics/30-webhook-delivery",
+    "programming-basics/13-api-design",
+    "programming-basics/16-http2-http3-quic",
+    "programming-basics/17-proxies-cdn-waf-observability",
+    "programming-basics/24-request-protection",
+    "programming-basics/25-request-observation",
+    "programming-basics/math-problem-solving/01-arithmetic-foundations",
+    "programming-basics/math-problem-solving/07-division-and-precision",
+    "programming-basics/math-problem-solving/02-variables-equations-logic",
+    "programming-basics/math-problem-solving/08-sets-relations",
+    "programming-basics/math-problem-solving/04-computational-thinking",
+    "programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees",
+    "programming-basics/math-problem-solving/06-flowcharts-loops-debugging",
+    "programming-basics/08-problem-solving-algorithms",
+    "programming-basics/math-problem-solving/13-loop-reasoning",
+    "programming-basics/math-problem-solving/09-solution-patterns",
+    "programming-basics/math-problem-solving/10-greedy-dynamic-programming",
+    "programming-basics/math-problem-solving/03-applied-math-graphs-primes",
+    "programming-basics/math-problem-solving/11-counting-probability",
+    "programming-basics/math-problem-solving/12-graphs-and-search"
+  ],
+  "labs": [
+    {
+      "route": "programming-basics/computer-in-depth/software-and-runtime",
+      "block": 0,
+      "lint": true,
+      "stdout": "Hello Omar",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/06-operating-systems",
+      "block": 0,
+      "lint": true,
+      "stdout": "Hello from PHP",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/03-binary-languages-algorithms",
+      "block": 0,
+      "lint": true,
+      "stdout": "1\r\n2\r\nd8b9",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/03-binary-languages-algorithms",
+      "block": 1,
+      "lint": true,
+      "stdout": "0.30000000000000004",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/12-memory-allocation",
+      "block": 0,
+      "lint": true,
+      "stdout": "440984\r\n1493688\r\n441016",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/17-terminal-environment",
+      "block": 0,
+      "lint": true,
+      "stdout": "result",
+      "status": 3
+    },
+    {
+      "route": "programming-basics/computer-in-depth/14-running-code",
+      "block": 0,
+      "lint": true,
+      "stdout": "passed",
+      "status": 0
+    },
+    {
+      "route": "programming-basics/computer-in-depth/16-testing-and-debugging",
+      "block": 0,
+      "lint": true,
+      "stdout": "failed",
+      "status": 0
+    },
+    {
+      "check": "PowerShell fresh-folder, quoted path, absolute and relative reads",
+      "passed": true
+    }
+  ],
+  "browser": [
+    {
+      "route": "/programming-basics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/06-operating-systems/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/18-media-and-units/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/12-memory-allocation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/17-terminal-environment/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/15-parallel-work/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/14-running-code/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/networking-next/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/01-web-and-request-flow/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/28-lan-segmentation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/18-wifi-practical-basics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/26-subnet-calculations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/27-routing-and-ipv6/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/02-dns-and-ip/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/udp/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/04-url-ports-http/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/21-url-encoding/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/05-http-messages-state/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/06-https-tls-certificates/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/09-browser-rendering-devtools/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/29-browser-scheduling/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/32-local-network-lab/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/07-server-side-path/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/08-server-proxy-api-gateway/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/31-proxy-policies/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/10-http-caching-compression/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/11-same-origin-cors/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/33-browser-isolation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/12-realtime-webhooks/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/30-webhook-delivery/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/13-api-design/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/16-http2-http3-quic/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/17-proxies-cdn-waf-observability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/24-request-protection/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/25-request-observation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/07-division-and-precision/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/08-sets-relations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/08-problem-solving-algorithms/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/09-solution-patterns/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/11-counting-probability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "rtl"
+    },
+    {
+      "route": "/en/programming-basics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/06-operating-systems/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/18-media-and-units/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/12-memory-allocation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/17-terminal-environment/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/15-parallel-work/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/14-running-code/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/networking-next/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/01-web-and-request-flow/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/18-wifi-practical-basics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/26-subnet-calculations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/27-routing-and-ipv6/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/02-dns-and-ip/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/udp/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/04-url-ports-http/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/21-url-encoding/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/05-http-messages-state/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/06-https-tls-certificates/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/09-browser-rendering-devtools/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/29-browser-scheduling/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/32-local-network-lab/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/07-server-side-path/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/08-server-proxy-api-gateway/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/31-proxy-policies/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/10-http-caching-compression/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/11-same-origin-cors/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/33-browser-isolation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/12-realtime-webhooks/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/30-webhook-delivery/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/13-api-design/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/16-http2-http3-quic/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/17-proxies-cdn-waf-observability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/24-request-protection/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/25-request-observation/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/07-division-and-precision/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/08-sets-relations/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/08-problem-solving-algorithms/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/09-solution-patterns/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/11-counting-probability/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "status": 200,
+      "languageSwitch": true,
+      "dir": "ltr"
+    }
+  ],
+  "limitations": [
+    "No claim that every optional network or mathematics lab was executed.",
+    "Power-loss durability was not experimentally tested."
+  ],
+  "browserErrors": [],
+  "work": "C:\\my_docs\\tmp\\foundations-validation\\run-GNlIEP"
+}

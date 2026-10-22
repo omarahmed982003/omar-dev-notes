@@ -2,49 +2,114 @@
 title: "Read and write files from a terminal"
 description: "Read and write files from a terminal"
 sidebar:
-  order: 12
-prev: {"link":"/en/programming-basics/computer-in-depth/14-running-code/","label":"From solution steps to running code"}
+  order: 10
+prev: {"link":"/en/programming-basics/computer-in-depth/13-buffers-and-durability/","label":"Moving data and making writes durable"}
 next: {"link":"/en/programming-basics/computer-in-depth/17-terminal-environment/","label":"Command channels, permissions, and environment"}
 ---
 
-## Terminal and shell
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-A terminal displays a text session; a shell parses commands, quoting, expansions, and pipes before starting processes. PowerShell, Bash, zsh, and `cmd.exe` use different syntax, so escaping rules should not be copied blindly between them.
+## Reach the same file in two ways
 
-## Paths and working directory
+“File not found” can mean a wrong starting location rather than a missing file. We will distinguish names and paths, then read one new practice file through relative and absolute paths.
 
-An absolute path starts at a root or drive. A relative path is resolved from the current working directory; `.` means current and `..` means parent. A filename is not a complete path, and an extension does not prove content type.
+The experiment uses PowerShell on Windows, a particular command language rather than PHP. Do not copy its syntax into Bash as if they were identical.
 
-Use tab completion and literal-path options for special characters. Before recursive deletion or movement, resolve and display the exact target.
+## Terminal versus shell
 
-## A reproducible terminal workspace
+A **terminal** displays a text session. A **shell** interprets commands; PowerShell, Bash, zsh, and cmd have different rules.
 
-Open PowerShell on Windows and create a new training directory under your user directory. Choose another name if it already exists:
+A **command** requests an operation. **Arguments** supply its values; a named **parameter**, such as `-Name`, identifies a value's purpose.
+
+A shell may execute an internal command or start a **process**, a running program. **Escaping** protects a symbol from special interpretation; **quoting** groups text between quotation marks. Their rules depend on the shell.
+
+## Files, directories, and paths
+
+A **file** contains data with **metadata**, such as size, timestamps, and ownership. A **directory** organizes file and directory names.
+
+A **filesystem** manages the association between names and stored data. A **path** identifies how to reach an item, not merely its name.
+
+The **working directory** is the starting point for relative paths. An **absolute path** identifies a location from a drive root, such as `C:\Users\Learner\note.txt`.
+
+A **relative path**, such as `.\note.txt`, depends on that starting point. `.` means the current directory and `..` the parent. Changing the working directory changes relative interpretation, not file contents.
+
+An **extension**, such as .txt, is part of the name. A **format** describes the data organization; renaming does not convert an image into text.
+
+## Identity and permissions before administration
+
+A **user** is an identity; a **group** collects identities that can share access. **Permissions** control operations such as reading, writing, and execution.
+
+Unix commonly separates owner, group, and others. Windows uses an **ACL**, an access control list associating identities with permissions. Permission to execute does not prove safety.
+
+**Administrator and root** have broad privileges. Do not elevate everything to hide access errors; inspect identity, path, and required permission first.
+
+A **handle or file descriptor** is a reference supplied by the OS after opening a resource. A name locates it; the program then uses its open reference. Details differ between systems.
+
+## A practice run that refuses an existing folder
+
+Open PowerShell in a location you may write. These commands create `terminal practice` inside the current directory. If it exists, stop and choose a new name instead of reusing it.
+
+Before running: `Get-Location` displays the location; `Test-Path` checks existence; `if` tests a condition; `throw` stops execution. `New-Item` creates a directory, and `Set-Location` changes location.
+
+`Set-Content` writes and can replace a file, so it follows successful creation of a fresh directory. `Get-Content` reads; `Resolve-Path` obtains an absolute path. `-LiteralPath` prevents wildcard interpretation.
 
 ```powershell
-Set-Location $HOME
-New-Item -ItemType Directory -Name terminal-practice
-Set-Location .\terminal-practice
-Set-Content -LiteralPath '.\note.txt' -Value 'Hello'
 Get-Location
+if (Test-Path -LiteralPath '.\terminal practice') { throw 'Choose a new practice folder name' }
+New-Item -ItemType Directory -Name 'terminal practice' -ErrorAction Stop
+Set-Location -LiteralPath '.\terminal practice'
+Set-Content -LiteralPath '.\note.txt' -Value 'Hello' -ErrorAction Stop
 Get-ChildItem
 Get-Content -LiteralPath '.\note.txt'
+$practiceFile = (Resolve-Path -LiteralPath '.\note.txt').Path
+Set-Location ..
+Get-Content -LiteralPath $practiceFile
+Get-Content -LiteralPath '.\terminal practice\note.txt'
 ```
 
-Set-Location changes the working directory; $HOME is your user directory. New-Item creates a directory. Set-Content writes text and would replace an existing file, so use the new training folder. The Get commands display location, children, and contents. Expect note.txt and Hello. Tab completes names.
+`Get-ChildItem` lists items; `-ErrorAction Stop` stops on failure. `$practiceFile` retains the resolved path, and `.Path` selects its text property.
 
-**Quoting** preserves paths containing spaces. A **wildcard**, such as *, can match many items; LiteralPath treats the path literally. **Recursive** includes child directories and therefore broadens a move or deletion.
+Expect note.txt and three Hello readings. After returning to the parent, `.\note.txt` no longer identifies the same location, but the absolute path and longer relative path still identify the file.
 
+If access is denied or the name exists, stop and inspect the message. Do not elevate privileges or delete a directory to force the example.
 
-## Check your understanding
+## Names are not copies
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>How do a terminal and shell differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> The terminal presents the session; the shell interprets commands and connects processes and streams.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>Why can a valid relative path fail?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It is resolved from the current working directory, which may differ from the script or project directory.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why separate stdout and stderr?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Machine-readable output remains clean while diagnostics can be displayed or logged independently.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Is an environment variable a secret vault?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> No. It is a configuration channel that can leak; use secret management, permissions, rotation, and log redaction.</div></details></section>
-</div>
+A same-filesystem rename can update metadata quickly. Moving across devices may require copying and deleting, with different costs and guarantees.
 
-## Next step
+A **symbolic link** refers to a path. It is neither a data copy nor a backup; changing or removing its target affects access through it.
 
-After completing this practice, continue with [Command channels, permissions, and environment](/en/programming-basics/computer-in-depth/17-terminal-environment/).
+## Before touching many files
+
+A **wildcard**, such as `*`, may select many files. **Recursive** operations include child directories; a **bulk operation** affects multiple items.
+
+Inspect the location and names first. Read `Get-Help` or a program's supported `--help`. Tab completion helps type names but does not validate the intended target.
+
+`$HOME` identifies the user's home directory, which is not necessarily the current working directory. Never use the entire home directory as a recursive move or deletion target.
+
+Do not place secrets in command history. A **script** executes saved commands and must handle errors and external-program exit codes, covered next.
+
+## Check your reasoning
+
+1. Why does the absolute path still work after changing the working directory?
+2. Does renaming .jpg to .txt change its bytes?
+3. Is a symbolic link a backup?
+4. What should you do before repeating the folder experiment?
+
+<details>
+<summary>Review after attempting</summary>
+
+1. Absolute interpretation does not depend on the current starting directory.
+2. No. Names and data formats differ.
+3. No. It refers to a path.
+4. Choose a new nonexisting practice-folder name rather than replacing older files.
+
+</details>
+
+## Summary
+
+Establish identity, location, and path before executing commands. Next: [program environment and output channels](/en/programming-basics/computer-in-depth/17-terminal-environment/).
+
+## Reference
+
+[Microsoft: PowerShell quoting rules](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules)

@@ -2,44 +2,96 @@
 title: "Moving data and making writes durable"
 description: "Moving data and making writes durable"
 sidebar:
-  order: 8
+  order: 9
 prev: {"link":"/en/programming-basics/computer-in-depth/12-memory-allocation/","label":"Allocation and the lifetime of data"}
-next: {"link":"/en/programming-basics/computer-in-depth/06-operating-systems/","label":"Operating-system architecture and types"}
+next: {"link":"/en/programming-basics/computer-in-depth/05-os-terminal-files-git/","label":"Read and write files from a terminal"}
 ---
 
-A program can produce data faster than a device consumes it. Understand waiting storage, then distinguish handing off a write from making it durable.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## Waiting data or a reusable copy?
+## Why writing is not one step
 
-A producer emits100 messages/second while a consumer handles60:40 accumulate per second. A **buffer** holds data in transit; a **queue** organizes waiting order. A **cache** retains a reusable, usually reproducible copy.
+A program produces one hundred messages per second while the receiver processes sixty. Without a waiting policy, data accumulates. Even a “Saved” message leaves a second question: what persistence guarantee was actually provided?
 
-Ten seconds adds400 messages. **Backpressure** slows production in response to a slower consumer, or a bounded system rejects new work. After a write reaches a device, ask whether it survives power loss: **durability** is persistence under a specified failure guarantee.
+Recall that RAM is working memory and programs request operating-system services. This lesson separates moving data from surviving failure.
 
-## Buffer, cache, queue, stream, and pool
+## Buffers versus caches
 
-| Concept | Purpose |
-|---|---|
-| Buffer | Absorb rate differences or batch transfer |
-| Cache | Keep a reproducible copy to avoid repeated work |
-| Queue | Order work waiting for consumption |
-| Stream | Sequential flow whose final size may be unknown |
-| Pool | Reusable prepared resources |
+A **buffer** temporarily holds data in transit or combines small operations into a batch. A **cache** keeps a reusable copy to avoid repeating work or reading.
 
-A cache can normally be dropped and rebuilt; unsent buffered data may be unique and must not be discarded.
+A send buffer may contain a message not stored anywhere else; losing it loses the message. A rebuildable cache can generally be discarded without losing the original data. Not every temporary area is the source of truth.
 
-## Common buffers
+A **queue** organizes pending work under an ordering policy. A **stream** supplies sequential data whose total length may be unknown.
 
-Input buffers collect events. File buffers reduce small system calls. Socket send and receive buffers decouple network and application rates. `stdout` may be line-buffered on a terminal and fully buffered when redirected. Ring buffers reuse fixed storage; double buffering prepares one frame while another is displayed.
+A **pool** contains reusable resources, such as a **connection** between programs or a **worker** processing tasks. One structure can serve multiple roles, but loss policies differ.
 
-A buffer overflow writes beyond a boundary in an unsafe environment. Media underflow means consumption outran production. Backpressure prevents an unbounded producer from filling memory.
+## When production exceeds consumption
 
-## Flush, DMA, and zero-copy
+A **producer** adds data; a **consumer** processes it. At rates of one hundred and sixty per second, backlog grows by forty per second: four hundred after ten seconds, assuming constant rates and no rejection.
 
-A library `flush` may move bytes only into the kernel, which can retain them in page cache, while the device may have another cache. Power-loss durability requires an explicit filesystem or database contract. DMA (Direct Memory Access, device-memory transfer without the CPU copying every byte) transfers blocks without CPU copying each byte. Zero-copy techniques reduce intermediate copies but do not mean data never moves.
+**Backpressure** makes the producer slow down when the consumer cannot keep up. A bounded queue with explicit rejection is another policy. More RAM alone only delays exhaustion.
 
+An initially empty buffer holding two hundred messages fills in five seconds under this model. Real systems must also account for message size, variable rates, and retries.
 
-**Worked check:** A producer adds 100 messages per second and a consumer processes 60. The queue grows by 40 per second, or 400 after ten seconds. A size limit plus rejection or backpressure bounds growth; adding RAM only delays exhaustion. A flush can move data between buffers without guaranteeing power-loss durability.
+## Different buffer uses
 
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>What is the essential buffer/cache difference?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A buffer holds data in transit; a cache retains a usually reproducible copy for speed.</div></details></section>
+- An **input buffer** retains events, such as keystrokes, until the program reads them.
+- A **file buffer** may batch small writes to reduce **system calls**, requests for OS services.
+- A **socket**, a programmatic communication endpoint, commonly has send and receive buffers to absorb rate differences.
+- **stdout**, the ordinary output channel, may use line or batch buffering depending on the program, library, and destination. There is no universal rule for every PHP setup and terminal.
+- A **ring buffer** reuses fixed storage through read and write positions.
+- **Double buffering** prepares a background image **frame** while displaying the current frame, reducing **flicker**, or visible display instability.
 
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Why may flush not guarantee durability?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Data may remain in kernel or device caches; durable persistence needs an explicit sync and storage contract.</div></details></section>
+**Buffer overflow** means writing beyond allowed capacity in an environment that does not prevent it and can be a security risk. **Underflow** means the consumer needs data before it arrives, as with audio samples.
+
+## From application to storage
+
+**Flush** pushes data from one buffer to a following layer; it does not name one universal guarantee. File data can pass through application buffering, the operating system's **page cache**, and storage-device buffers.
+
+A device **controller** manages storage access. Successful writing can mean that one layer accepted the data rather than that it reached power-loss-resistant storage.
+
+**Durability** means surviving specified failure types under a defined contract. Filesystem, device, and synchronization policies determine that contract.
+
+### Closing and synchronizing are not universal promises
+
+An **API**, an application programming interface, defines an operation, result, and guarantee. Closing a file releases resources under implementation rules; do not infer the same guarantee as a storage-synchronization API.
+
+In PHP, `fflush` pushes the file buffer, while `fsync`, available from PHP 8.1, requests synchronization of file data and metadata to storage. Check return values and system guarantees. This is not a universal guarantee of database-protocol correctness or an all-or-nothing update across multiple files.
+
+**Metadata** describes attributes such as names, links, and timestamps. File creation, renaming, and failure durability have system-specific details; write followed by close is not a promise of surviving every failure.
+
+Do not cut device power or risk real files. Actual PHP file writing and error handling follow language foundations.
+
+## Optional depth: reducing copies
+
+**DMA**, direct memory access, lets a device transfer blocks to or from RAM without the CPU personally copying every byte. The CPU and OS still configure and manage the operation.
+
+**Zero-copy** names techniques reducing copies between application, OS, and device buffers. It does not mean physical data never moves.
+
+Use these techniques after measuring copying costs; their availability does not identify your bottleneck.
+
+## Independent practice
+
+1. Calculate backlog from production of 120 messages per second and consumption of 90 over four seconds.
+2. Can an unsent-message buffer be discarded like a rebuildable cache?
+3. A write succeeded: what question remains before claiming durability?
+4. Draw three writing layers and define flush at one layer.
+
+<details>
+<summary>Review after attempting</summary>
+
+1. Thirty extra per second gives 120 messages before rejection or rate changes.
+2. No: the first may contain the only copy.
+3. Which layer accepted it, and which synchronization, filesystem, and device contract applies?
+4. Application → OS memory → device. Advancing one layer does not prove completion of all later layers.
+
+</details>
+
+## Summary
+
+A buffer absorbs rate differences rather than preventing exhaustion forever. Transfer success between layers is not itself failure durability.
+
+## References
+
+- [PHP: fflush](https://www.php.net/manual/en/function.fflush.php)
+- [PHP: fsync and its contract](https://www.php.net/manual/en/function.fsync.php)

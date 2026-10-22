@@ -3,57 +3,152 @@ title: "How a processor executes instructions"
 description: "How a processor executes instructions"
 sidebar:
   order: 4
-prev: {"link":"/en/programming-basics/computer-in-depth/03-hardware-architecture/","label":"Hardware components and motherboard architecture"}
-next: {"link":"/en/programming-basics/computer-in-depth/15-parallel-work/","label":"When does parallel work help?"}
+prev: {"link":"/en/programming-basics/computer-in-depth/06-operating-systems/","label":"Operating-system architecture and types"}
+next: {"link":"/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/","label":"Representing numbers and characters in memory"}
 ---
 
-## Two instructions, then data location
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-Imagine two simplified instructions: put 5 in a processor working slot, then add 3 to it. The slot is a **register**. The processor fetches an instruction, decodes its required operation, and executes it. Results are 5, then 8. This is a teaching model, not a specific machine syntax.
+## Required now: trace 5 + 3
 
-```text
-CPU registers ↔ L1 cache ↔ L2 cache ↔ L3 cache ↔ RAM
-```
+The **CPU, central processor**, executes program instructions. **RAM, working memory**, holds active instructions and data; it is not the component performing the addition.
 
-A **cache** keeps nearby copies to reduce repeated data waits. L1/L2/L3 are levels in a common simplified hierarchy; organization and sharing vary. Arrows represent requests/transfers, not a requirement that every read visits every level. Learn this picture before parallelism and prediction details.
+Our imaginary program has two instructions: “put 5 in the working slot,” then “add 3 to it.” This is a paper model, not real machine syntax or a command to run.
 
-## Inside a CPU
+### Where will the value live?
 
-The processor fetches, decodes, and executes instructions. A program counter identifies the next instruction, the control unit coordinates it, the ALU (Arithmetic Logic Unit, the processor's arithmetic and logical operation unit) performs arithmetic and logic, and registers hold values closest to execution. Other units handle floating point, vectors, branches, and memory access.
+A **register** is a small, fast processor working location. Call ours R; we do not need to assume an initial value.
 
-Modern CPUs pipeline instructions, predict branches, and execute independent work out of order. “One instruction per clock” is therefore an oversimplification, and GHz (gigahertz, a billion cycles per second, not a count of completed instructions) alone cannot predict performance.
+The **program counter** is a register that helps track the next instruction's location. Label our instructions A and B instead of using real addresses.
 
-## Cores, threads, clock, and IPC
+| Moment | R | Next instruction |
+|---|---|---|
+| Before starting | Unspecified | A: put 5 |
+| After A | 5 | B: add 3 |
+| After B | 8 | Whatever follows the program |
 
-A core can execute an independent instruction stream. A hardware thread shares some core resources; it is not a complete additional core. Clock rate counts cycles, while IPC (Instructions Per Cycle, average instructions completed per processor cycle) measures useful instructions completed per cycle. Memory behavior, architecture, heat, and power limits matter as well.
+The table separates an **instruction** from **data**: “add 3” specifies work, while 5 is the value it operates on. Execution needs both.
 
-More cores help only when work can be divided. Serial sections and shared locks limit speedup.
+### How does “add 3” happen?
 
-## Registers and L1/L2/L3 caches
+**Fetch–Decode–Execute** names three responsibilities: obtaining an instruction, identifying its required operation, and carrying it out. Apply them to B while R contains 5:
 
-Registers are the smallest and fastest storage. L1 is tiny and very fast, L2 is larger, and L3 is larger again and often shared. Caches move cache lines, so contiguous access benefits from locality while random access causes more misses and RAM (Random Access Memory, working memory for active program data and instructions) waits.
+1. **Fetch:** the processor obtains the instruction. The program counter helps track the execution location.
+2. **Decode:** the **control unit** coordinates understanding and execution: add 3 to R.
+3. **Execute:** the **ALU, Arithmetic Logic Unit**, performs the addition in our model, leaving 8 in the register.
 
-Cache coherence does not replace locks or atomic operations when threads mutate shared state.
+Execution continues at the appropriate next instruction. Modern processors need not finish an entire instruction before preparing another, and a branch can change the execution path.
 
-## Execution terms and a measurement exercise
+### Is the data near the processor?
 
-**Fetch–Decode–Execute** means fetching an instruction, identifying its operation and operands, and performing it. **Floating point** represents fractional values with limited precision; a **vector** groups values; a **branch** selects an instruction path; **serial** work must proceed sequentially.
+A **cache** holds nearby copies to reduce repeated data waits. Every value need not come from RAM on every access.
 
-**SIMD (Single Instruction Multiple Data, applying an instruction to multiple data elements)** applies one instruction to several data elements, unlike multiple cores running independent instruction streams. A GPU **kernel** is a compute program, not an OS kernel. **Branch divergence** makes grouped work take differing paths and can reduce efficiency. **Unified memory** simplifies the programming view but does not always eliminate physical transfers.
+| Location | Role in our example |
+|---|---|
+| Register | Holds the value used directly: 5, then 8 |
+| CPU cache | May supply nearby copies of instructions or data |
+| RAM | Holds parts of an active program's instructions and data |
 
-If 50% of a program's time cannot be parallelized, infinitely accelerating the other half leaves at least 50% of the original time: maximum speedup is two. This illustrates **Amdahl's law**.
+**L1, L2, and L3** are common cache levels; their organization and sharing vary. The table does not require every read to visit every level in sequence.
 
-**Worked measurement:** After warm-up, record 9,10,10,11,30 milliseconds under the same conditions. The median is 10; the mean is 14. Do not discard 30 without investigating. Record input size and transfer costs as well.
+### Why GHz alone is not a performance result
 
-## Check your understanding
+The processor **clock** provides a cycle rhythm. **GHz, gigahertz**, means a billion cycles per second, not a billion completed tasks or a requirement that each instruction takes one cycle.
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Why can a 3.5GHz CPU outperform a 4GHz CPU?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> IPC, architecture, caches, core count, power limits, and workload all affect completed work.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>How does a hardware thread differ from a core?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> A thread shares execution resources within a core; it is not another complete physical core.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>When is a GPU a poor choice?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> For small, serial, heavily branching work or when data-transfer cost exceeds computation.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>How does locality improve speed?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Nearby access reuses cache lines; scattered access creates misses and waits for RAM.</div></details></section>
-</div>
+Processors with different clock rates may complete different amounts of work in the same time because of instruction types, waits, internal organization, heat, and power. Waiting to obtain an instruction or value is different from doing the addition itself.
 
-## Next step
+## Check the foundation first
 
-After completing this practice, continue with [When does parallel work help?](/en/programming-basics/computer-in-depth/15-parallel-work/).
+1. R holds 5 and the instruction is “add 3.” What specifies the work, what holds the value, and what is the result?
+2. Replacing “add 3” with “add 4” changes the instruction or the starting value?
+3. Why might a higher-clocked processor still wait for data?
+4. Is a cache a substitute for a saved disk file?
+
+<details>
+<summary>Review after attempting</summary>
+
+1. The instruction specifies addition, the register holds 5, and the result is 8. The control unit coordinates execution and the ALU adds in our model.
+2. The instruction changes. The starting value remains 5, so the result becomes 9.
+3. Clock rate does not eliminate memory-access time or other resource waits.
+4. No. It keeps copies to reduce waits, not a promise of file persistence after power loss.
+
+</details>
+
+If you can explain the journey, continue to [number and character representation](/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/). The folded sections below are references, not prerequisites for a first program.
+
+## Optional depth: what changes execution speed?
+
+These sections explain names encountered while investigating performance. Open one when needed; do not memorize all of them on a first pass.
+
+<details>
+<summary>Cores, hardware threads, and work per cycle</summary>
+
+A **core** has physical execution resources and can run an independent instruction stream. A **hardware thread** is an execution context sharing core resources, not a complete additional core.
+
+**IPC, Instructions Per Cycle**, is the average number of instructions completed per cycle. Clock rate and IPC measure different things; memory behavior, code, heat, and power limits also matter.
+
+Additional cores help when work can be divided. **Serial work** must proceed sequentially. A **lock** coordinates access to shared data and may make work wait.
+
+**Amdahl's law** describes how the serial portion limits overall speedup. If half the original time cannot be divided, making the other half nearly instantaneous still leaves at least half the original time: a theoretical maximum speedup of two, before coordination overhead.
+
+</details>
+
+<details>
+<summary>Cache levels and nearby access</summary>
+
+Registers are among a core's smallest and fastest working locations. L1 is typically small and very fast, L2 larger, and L3 larger again and often shared across cores. This is a common pattern, not every processor's exact layout.
+
+A **cache line** is a block transferred as a unit rather than an individual byte. **Locality** means using nearby data spatially or reusing it soon in time.
+
+Reading adjacent elements may reuse the same blocks. A **cache miss** means the requested data is absent from the level being checked; another level or RAM may supply it. Scattered access may increase misses and waits depending on data size and access pattern.
+
+**Cache coherence** coordinates copies across cores. It does not make “read, increment, write” one indivisible action.
+
+An **atomic operation** guarantees that a partially interleaved execution is not exposed under the tool's contract. Coherence does not replace locks or atomic operations needed for correct shared-state updates.
+
+A cache is not generally extra RAM directly managed by the application, nor a guarantee that writes immediately reach persistent storage.
+
+</details>
+
+<details>
+<summary>Overlapping instructions, prediction, and other operation types</summary>
+
+**Pipelining** overlaps instruction stages. A **branch** chooses an instruction path, such as taking different paths according to a condition.
+
+**Branch prediction** prepares a likely path before its condition is known. **Out-of-order execution** performs ready operations in a different internal order while preserving required results.
+
+Execution units do more than integer addition. **Floating point** represents fractional values with finite precision. A **vector** groups values that may undergo similar operations.
+
+**SIMD, Single Instruction Multiple Data**, applies an instruction to several elements. That differs from multiple cores running independent instruction streams.
+
+CPU/GPU selection, transfer costs, branch divergence, and unified memory are collected in [concurrent and parallel work](/en/programming-basics/computer-in-depth/15-parallel-work/), with definitions in their usage context.
+
+</details>
+
+<details>
+<summary>A worked measurement-reading example, not a device benchmark</summary>
+
+A **warm-up** is a preliminary run intended to reduce some startup effects. Assume five durations for the same task under the same conditions: 9, 10, 10, 11, and 30 milliseconds. These are teaching numbers, not measurements of the reader's device.
+
+The **median** is the middle value after sorting: 10. The **arithmetic mean** is the sum divided by the count: 14.
+
+Their difference highlights variation or an outlying value. Do not discard 30 without explanation; record input size, transfer costs, temperatures, and execution conditions rather than relying on one number.
+
+</details>
+
+### Optional-depth question
+
+Why do more cores or improved caches not promise a fixed speedup?
+
+<details>
+<summary>Review the optional question</summary>
+
+Most work may be serial, the data may not benefit from caching, or waiting, coordination, and transfers may consume the gain. Measure the actual workload; GHz and core counts alone are insufficient.
+
+</details>
+
+## Summary and next step
+
+The required foundation is to explain how a processor fetches, understands, and executes instructions on data, and how registers, caches, and RAM differ. Designing processors or memorizing their optimizations is not a prerequisite for writing a program.
+
+Next, study [representing numbers and characters in memory](/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/).

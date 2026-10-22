@@ -39,22 +39,8 @@ next: {"link":"/programming-basics/computer-in-depth/02-computers-data-processin
 - لا تجعل عدد الساعات هو مقياس التقدم؛ المقياس هو ما تستطيع شرحه وتنفيذه.
 - تجنّب نسخ الحل قبل محاولة تقسيم المشكلة بنفسك.
 
-## خريطة الدرس
 
-<div class="lesson-diagram" role="img" aria-label="خريطة مفاهيم: خريطة التعلّم وقواعد الدراسة">
-<p class="lesson-diagram-title">خريطة مفاهيم: خريطة التعلّم وقواعد الدراسة</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>افهم فكرة واحدة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>نفّذ مثالًا صغيرًا</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>حل من غير نسخ</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>راجع الخطأ والتغذية الراجعة</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>ارجع بتكرار متباعد</span></div>
-</div>
-</div>
+
 
 ## جرّب خطة على مسألة محددة
 

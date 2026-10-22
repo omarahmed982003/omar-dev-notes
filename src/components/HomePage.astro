@@ -1,4 +1,5 @@
 ---
+import foundationsCurriculum from '../data/foundations-curriculum.json';
 interface Props {
 	locale: 'ar' | 'en';
 }
@@ -8,7 +9,7 @@ const isArabic = locale === 'ar';
 
 // Count lesson files at build time so homepage numbers cannot become stale.
 const docModules = import.meta.glob('../content/docs/**/*.{md,mdx}');
-const trackSlugs = ['programming-basics', 'cpp', 'php', 'php-runtime', 'oop', 'auth', 'database'] as const;
+const trackSlugs = ['programming-basics', 'cpp', 'php', 'php-runtime', 'auth', 'database'] as const;
 
 const countLessons = (track: (typeof trackSlugs)[number], language: 'ar' | 'en') => {
 	const prefix = language === 'ar'
@@ -17,6 +18,10 @@ const countLessons = (track: (typeof trackSlugs)[number], language: 'ar' | 'en')
 
 	return Object.keys(docModules).filter((path) => {
 		if (!path.startsWith(prefix)) return false;
+		if (track === 'programming-basics') {
+			const route = 'programming-basics/' + path.slice(prefix.length).replace(/\.(?:md|mdx)$/, '');
+			if (!foundationsCurriculum.some(group => group.lessons.includes(route))) return false;
+		}
 		if (track === 'cpp' && /\/loops-competitive\/(?:02-competitive-programming|03-conditions-codeforces)\.(?:md|mdx)$/.test(path)) return false;
 		return !/\/(?:index|networking-next|programming-practice)\.(?:md|mdx)$/.test(path);
 	}).length;
@@ -32,13 +37,13 @@ const content = isArabic
 			eyebrow: 'مكتبة لتعلّم البرمجة',
 			title: 'افهم البرمجة خطوة بخطوة، من غير ما تحفظ كلام مش فاهمه.',
 			description:
-				'ابدأ باستخدام الكمبيوتر وحفظ الملفات، ثم اكتب أول برنامج واختر لغة تكمل بها. أقسام التوسع واضحة ومنفصلة عن طريق البداية.',
+				'افهم جهازك ونظام التشغيل، واعرف كودك بيتنفذ إزاي وبيتعامل مع الذاكرة والملفات والشبكة. بعدها اختار اللغة والمسار اللي محتاجه.',
 			primary: { label: 'ابدأ من الصفر', href: '/programming-basics/' },
 			secondary: { label: 'شوف كل المسارات', href: '#learning-paths' },
 			download: { label: 'نزّل نسخة PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
 				{ value: String(totalLessons), label: 'درس' },
-				{ value: '7', label: 'مسارات' },
+				{ value: String(trackSlugs.length), label: 'مسارات' },
 				{ value: 'AR · EN', label: 'لغتان' },
 			],
 			flowTitle: 'لو محتار تبدأ منين',
@@ -50,7 +55,7 @@ const content = isArabic
 				{
 					code: '01',
 					title: 'أساسيات الكمبيوتر والبرمجة والشبكات',
-					description: 'اتعلم استخدام الجهاز، وابنِ برنامجًا يستقبل بيانات ويحفظها، ثم اتوسع في الرياضيات وداخل الكمبيوتر والشبكات.',
+					description: 'من الهاردوير لنظام التشغيل وتنفيذ البرامج والذاكرة والملفات، وبعدها الشبكات والويب والتفكير في حل المشكلات.',
 					href: '/programming-basics/',
 					count: lessonCounts['programming-basics'],
 					level: 'البداية',
@@ -84,15 +89,6 @@ const content = isArabic
 					accent: 'cyan',
 				},
 				{
-					code: '05',
-					title: 'تنظيم البرامج باستخدام الكائنات',
-					description: 'نظّم الكود في أجزاء واضحة تمثل البيانات والسلوك، واعرف إمتى تستخدم كل طريقة.',
-					href: '/oop/',
-					count: lessonCounts.oop,
-					level: 'متوسط',
-					accent: 'amber',
-				},
-				{
 					code: '06',
 					title: 'الأمان وتسجيل الدخول والصلاحيات',
 					description: 'احمِ المستخدم وبياناته، وحدد مين يقدر يدخل ومين يقدر ينفّذ كل عملية.',
@@ -116,13 +112,13 @@ const content = isArabic
 			eyebrow: 'A programming learning library',
 			title: 'Understand programming step by step, without memorizing what you do not understand.',
 			description:
-				'Start with using a computer and saving files, then write your first program and choose a language. Later reference sections are separate from the beginner route.',
+				'Understand your hardware and operating system, how code runs, and how programs use memory, files, and networks. Then choose the language and track you need.',
 			primary: { label: 'Start from zero', href: '/en/programming-basics/' },
 			secondary: { label: 'See all tracks', href: '#learning-paths' },
 			download: { label: 'Download the complete PDF', href: '/downloads/omar-dev-notes-complete.pdf' },
 			stats: [
 				{ value: String(totalLessons), label: 'practical lessons' },
-				{ value: '7', label: 'connected tracks' },
+				{ value: String(trackSlugs.length), label: 'connected tracks' },
 				{ value: 'AR · EN', label: 'Arabic and English' },
 			],
 			flowTitle: 'Not sure where to begin?',
@@ -134,7 +130,7 @@ const content = isArabic
 				{
 					code: '01',
 					title: 'Computer, programming, and networking fundamentals',
-					description: 'Learn computer use, build a program that reads and saves data, then explore mathematics, computer internals, and networks.',
+					description: 'Start with hardware, operating systems, program execution, memory, and files; then explore networks, the web, and problem solving.',
 					href: '/en/programming-basics/',
 					count: lessonCounts['programming-basics'],
 					level: 'Start here',
@@ -166,15 +162,6 @@ const content = isArabic
 					count: lessonCounts['php-runtime'],
 					level: 'Intermediate',
 					accent: 'cyan',
-				},
-				{
-					code: '05',
-					title: 'Organizing programs with objects',
-					description: 'Organize code into clear parts that represent data and behavior, and learn when each approach helps.',
-					href: '/en/oop/',
-					count: lessonCounts.oop,
-					level: 'Intermediate',
-					accent: 'amber',
 				},
 				{
 					code: '06',

@@ -42,18 +42,7 @@ File on storage → Read into RAM → Decode image → Prepare pixels → Displa
 
 لا تعني الدورة أن كل مرحلة تحدث مرة واحدة. قد يستقبل تطبيق فيديو أجزاء صغيرة، يفك كل جزء، يخزنه في Buffer (مساحة تحتفظ ببيانات مؤقتًا أثناء انتقالها بين طرفين مختلفي السرعة)، ثم يعرضه بينما تصل الأجزاء التالية.
 
-<div class="lesson-diagram" role="img" aria-label="دورة معالجة البيانات داخل الكمبيوتر">
-<p class="lesson-diagram-title">رحلة البيانات</p>
-<div class="diagram-flow diagram-pipeline">
-<div class="diagram-node input"><span>Input</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Validation + Processing</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Output</span></div>
-<span class="diagram-arrow" aria-hidden="true">↔</span>
-<div class="diagram-node start"><span>Memory / Storage</span></div>
-</div>
-</div>
+
 
 ## مثال: فتح صورة وتعديلها
 

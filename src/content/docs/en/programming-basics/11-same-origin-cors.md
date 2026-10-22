@@ -2,17 +2,25 @@
 title: "Controlling cross-origin data access"
 description: Origins, browser boundaries, simple requests, preflight, credentials, and safe configuration.
 sidebar:
-  order: 25
+  order: 24
 prev: {"link":"/en/programming-basics/10-http-caching-compression/","label":"Web caching and compression"}
 next: {"link":"/en/programming-basics/33-browser-isolation/","label":"Resource loading and window isolation"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## Same response, blocked then readable
 
-Start the [local lab](/en/programming-basics/32-local-network-lab/) on8765. An origin consists of scheme, host, and port;8766 differs.
+An **origin** consists of scheme, host, and port;8766 differs from 8765. Begin with a no-Node reading trace:
 
-1. Open Network and click CORS: blocked read. `/cors/no` can show200 while JavaScript reports Blocked: it lacks read permission.
+| Input | Server response | Page-script result |
+|---|---|---|
+| Page 8765 requests data from 8766 | 200 without CORS permission | Cannot read the body |
+| Same request with permission for 8765 | 200 with matching Access-Control-Allow-Origin | Can read the data |
+
+This is an explanatory comparison, not a measurement from your computer. The Node.js [local lab](/en/programming-basics/32-local-network-lab/) is optional: if configured, open 8765 and try the following steps. Otherwise continue from the trace, then inspect the PHP fragment and its prerequisites below.
+
+1. Open Network and click CORS: blocked read. `/cors/no` can show 200 while JavaScript reports Blocked: it lacks read permission.
 2. Click CORS: allowed read. `/cors/yes` adds `Access-Control-Allow-Origin: http://127.0.0.1:8765`, so the page reads the same data.
 3. Compare response headers, not status alone. Direct navigation to the URL is different from a script reading another origin.
 
@@ -40,7 +48,9 @@ Credentials cannot be combined with a wildcard origin. Match a strict allow-list
 
 **CORS, Cross-Origin Resource Sharing**, is a server-declared permission for browser scripts to read selected cross-origin responses. **Credentials** include browser-managed authentication data such as cookies. An **allow-list** explicitly enumerates accepted origins.
 
-A so-called **simple request** meets the method, field, and content-type restrictions for sending without a preflight. Not every GET qualifies, and not every POST needs preflight. JSON (JavaScript Object Notation, a text format for structured values and lists) POST normally requires it; an eligible form submission may not. Response reading remains subject to CORS.
+A so-called **simple request** meets the method, field, and content-type restrictions for sending without a preflight. Not every GET qualifies, and not every POST needs preflight.
+
+JSON (JavaScript Object Notation, a text format for structured values and lists) POST normally requires it; an eligible form submission may not. Response reading remains subject to CORS.
 
 ## Preflight
 
@@ -57,7 +67,9 @@ A **preflight** is the preliminary OPTIONS permission request. A 204 means succe
 
 ## Minimal PHP handling
 
-This is a fragment inside a PHP (a programming language commonly used for server-side web processing) request handler, after its opening PHP tag and before output, not a complete login service. It illustrates CORS fields; the real request still needs authentication and authorization. See [PHP setup](/en/php/00-lab-setup/) for the runtime and local server.
+This is a fragment inside a PHP (a programming language commonly used for server-side web processing) request handler, after its opening PHP tag and before output, not a complete login service. It illustrates CORS fields; the real request still needs authentication and authorization.
+
+See [PHP setup](/en/php/00-lab-setup/) for the runtime and local server.
 
 ```php
 $allowed = ['https://app.example', 'https://admin.example'];
@@ -92,8 +104,6 @@ CORS is not authentication, authorization, or a replacement for CSRF protection.
 ## Inspect both responses
 
 Preflight permissions have a cache distinct from ordinary response content caching. Check whether OPTIONS failed or whether it succeeded but the actual response omitted the correct fields. curl does not enforce browser JavaScript response-reading policy.
-
-
 
 **no-cors** is not a way to bypass restrictions and read data. An **opaque response** hides its status and body from the page script.
 

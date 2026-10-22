@@ -2,91 +2,83 @@
 title: "Computational thinking and requirements analysis"
 description: "Computational thinking is a disciplined way to turn an unclear problem into components, rules, and steps that can be implemented and tested."
 tableOfContents: true
-prev: {"link":"/en/programming-basics/math-problem-solving/08-sets-relations/","label":"Sets, relations, and function inputs"}
-next: {"link":"/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/","label":"Algorithms, pseudocode, and decision trees"}
 sidebar:
   order: 5
+prev: {"link":"/en/programming-basics/math-problem-solving/08-sets-relations/","label":"Sets, relations, and function inputs"}
+next: {"link":"/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/","label":"Algorithms, pseudocode, and decision trees"}
 ---
 
-Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+“Build an ATM” does not specify a program. Is zero valid? Are there fees or denomination restrictions? **Requirements analysis** turns these questions into rules and testable outcomes.
 
-## Turn one requirement into tests
+This example needs [Boolean conditions](/en/programming-basics/math-problem-solving/02-variables-equations-logic/), not code or a real banking system.
 
-ATM rule: “Allow a positive multiple of 50 no greater than the balance.” Assume a balance of 200 and no fees. **Constraints** are input limits.
+## Specify a small contract
 
-| Input | Expected | Rule exercised |
+A **contract** states accepted inputs and required results. Assume balance 200, no fees, and a positive integer amount divisible by 50 that does not exceed the balance.
+
+Acceptance deducts the amount once; rejection leaves the balance unchanged. This training model does not establish identity verification, fund reservation, or safe concurrent withdrawals.
+
+| Input | Expected result | Rule tested |
 |---|---|---|
-| 150 | Accept; 50 left | Normal case |
-| 200 | Accept; 0 left | Exact upper boundary |
-| 250 | Reject | Exceeds balance |
-| 0 or −50 | Reject | Must be positive |
-| 75 | Reject | Not a multiple of 50 |
+| 150 | Accept, balance 50 | Ordinary case |
+| 200 | Accept, balance 0 | Upper boundary |
+| 250 | Reject, balance 200 | Over balance |
+| 0 or−50 | Reject, balance 200 | Must be positive |
+| 75 | Reject, balance 200 | Must be divisible by 50 |
 | Nonnumeric text | Reject before arithmetic | Input type |
 
-Separate reading, validation, then deduction/display. Rejection preserves balance. **Try:** adding a fixed fee of 10 makes withdrawal 200 invalid because total cost is 210. Update tests when the requirement changes.
+**Constraints** limit valid input and behavior. A **boundary case** is at or near an important limit. Decide the expected outcome before execution; program output is not its own proof.
 
-## Overview
+## Separate checking from action
 
-Computational thinking is a disciplined way to turn an unclear problem into components, rules, and steps that can be implemented and tested.
+Split the task into reading, validation, deduction, and display. This is **decomposition**: smaller responsibilities that can be understood separately.
 
-## Core concepts
+Reject before deduction. Deducting 75 before checking denominations changes system state before establishing validity.
 
-- Decomposition splits a problem into manageable tasks.
-- Pattern recognition reuses known structures instead of restarting.
-- Abstraction keeps relevant details and postpones irrelevant ones.
-- Algorithm design orders actions, decisions, and repetition.
-- Requirements analysis defines inputs, rules, edge cases, outputs, and success criteria.
+<figure class="teaching-figure">
+  <img src="/diagrams/foundations/math/atm-decision-en.svg" alt="A valid withdrawal deducts from balance; a rejected withdrawal leaves it unchanged." loading="lazy" />
+  <figcaption>For the rule above, 150 follows Yes and leaves 50. A request for 250 follows No and leaves 200. No fees are included.</figcaption>
+</figure>
 
-## Worked example
+## Abstraction and reusable patterns
 
-For an ATM (Automated Teller Machine): separate card validation, PIN (Personal Identification Number, a secret numeric authentication code) checking, operation selection, balance and daily-limit checks, withdrawal, balance update, and receipt generation.
+**Abstraction** retains details that affect the question and defers irrelevant ones. Machine color does not change whether 150 is affordable; balance and fees do. Abstraction must not hide a detail that changes the answer.
 
-## Corrections and common mistakes
+**Pattern recognition** notices a reusable structure: read, validate, act, display. The structure may help with shopping quantities or bookings without copying withdrawal rules into them.
 
-- Do not code before identifying rejection paths and boundaries.
-- A vague requirement such as “fast” needs a measurable criterion.
+**Algorithm design** orders precise steps, decisions, and repetitions to implement the contract. A name does not substitute for the steps.
 
-<div class="lesson-diagram" role="img" aria-label="Computational thinking from problem to testable solution">
-<p class="lesson-diagram-title">Computational thinking from problem to testable solution</p>
-<div class="diagram-flow diagram-pipeline">
-<div class="diagram-node input"><span>Requirements</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Decompose</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Find patterns</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Abstract</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Design algorithm</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Test solution</span></div>
-</div>
-</div>
+## Change tests when requirements change
 
-## Make a small requirement testable
+Add a fixed fee 10. The financial condition becomes `amount + 10 <= balance`. Request 200 now fails because 210 exceeds 200; request 150 leaves 40.
 
-For our shopping list, “accept a quantity” is vague. Specify a whole number from 1 through 100. Split the work into reading text, rejecting an empty field, converting to a number, checking the bounds, and only then adding. Test 0, 1, 100, 101, and 2.5: only 1 and 100 pass. Separating these responsibilities makes the first failing step visible.
+“Accept quantity” is also vague. If the rule is an integer 1 through 100, separate reading text, rejecting empty input, careful conversion, boundary checking, and insertion. Among `0,1,100,101,2.5` only 1 and 100 pass.
 
-For comparisons of running cost and reusable solution patterns, continue later to [algorithm comparison](/en/programming-basics/08-problem-solving-algorithms/). Here the outcome is a clear problem statement and independently predicted tests.
+“Fast” needs a measurable standard: perhaps 95% of searches complete under 500 milliseconds **under specified load and hardware**. This is a test criterion, not a universal performance promise.
 
-## Check your understanding
+## Optional depth: decomposition is not system correctness
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>How do decomposition and abstraction differ?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Decomposition splits the system into smaller problems; abstraction keeps relevant details and hides those not needed by the current solution.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>Name a vague booking-system requirement and make it testable.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> “The system is fast” is vague. A testable form is: 95% of searches finish under 500 ms at a defined load.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>How does pattern recognition prevent duplicated solutions?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> It exposes a shared structure such as validate-decide-record, allowing one reusable rule or function instead of copied logic.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Decompose an ATM withdrawal and name a critical boundary case.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Validate card/PIN, select amount, check balance and limit, dispense, update, and receipt. Test an amount exactly equal to balance or daily limit.</div></details>
-</section>
-</div>
+A real ATM can involve card and PIN verification, operation selection, balance and daily-limit checks, cash dispensing, ledger updates, and receipts. Listing these units does not establish safe ordering for every failure.
+
+A small example permits a complete state trace; larger systems need explicit failure, recovery, and concurrency treatment. Cost comparison belongs to [its own lesson](/en/programming-basics/08-problem-solving-algorithms/).
+
+## Independent practice
+
+1. Add daily limit 150 to the original fee-free contract. Predict requests 150, 200, 75 with balance 200.
+2. Define a quantity rule rejecting empty and fractional inputs and accepting 1 through 100. Write five cases before coding.
+3. How does splitting tasks differ from deferring machine color?
+
+<details>
+<summary>Answers and reasoning</summary>
+
+1. Accept 150, leaving 50. Reject 200 for the daily limit and 75 for denomination; rejections leave 200.
+2. Require a representation of an integer in the inclusive range. Cases: empty reject, 0 reject, 1 accept, 100 accept, 2.5 reject; add 101 outside the upper boundary.
+3. Splitting responsibilities is decomposition; deferring irrelevant color is abstraction.
+
+</details>
+
+## Summary
+
+Clear requirements and independent expected outcomes come before code. Continue to [algorithms and tracing](/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/).

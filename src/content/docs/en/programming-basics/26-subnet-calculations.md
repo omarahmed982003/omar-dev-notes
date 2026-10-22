@@ -2,13 +2,14 @@
 title: "Calculate a subnet from its address"
 description: "Calculate a subnet from its address"
 sidebar:
-  order: 6
-prev: {"link":"/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/","label":"Device addresses and connection settings"}
+  order: 16
+prev: {"link":"/en/programming-basics/18-wifi-practical-basics/","label":"Connect to Wi-Fi and diagnose problems"}
 next: {"link":"/en/programming-basics/27-routing-and-ipv6/","label":"Choose a route and read IPv6 addresses"}
 ---
 
-Two device addresses end in .20 and .70. Are they in one subnet? The address alone is insufficient: the mask identifies network bits. Calculate with /24 and /26 after reviewing binary representation.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+Two device addresses end in .20 and .70. Are they in one subnet? The address alone is insufficient: the mask identifies network bits. Calculate with /24 and /26 after reviewing binary representation.
 
 ## CIDR and subnetting
 

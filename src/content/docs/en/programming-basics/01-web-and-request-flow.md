@@ -3,12 +3,15 @@ title: "The internet, the web, and a request's journey"
 description: Understand the Internet, the Web, client/server roles, and the request-response journey from URL to page.
 sidebar:
   order: 1
-prev: false
+prev: {"link":"/en/programming-basics/networking-next/","label":"Networking and the web"}
 next: {"link":"/en/programming-basics/14-network-layers-lan-ethernet-arp/","label":"How devices communicate on a local network"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-When you enter a URL (Uniform Resource Locator, an address identifying a resource and how to access it), a page seems to appear in one step. It actually takes a chain of steps. This lesson gives you the map that connects DNS (Domain Name System, a distributed system answering queries about domain names), TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail), TLS (Transport Layer Security, rules for establishing an authenticated protected connection), HTTP (Hypertext Transfer Protocol, the rules for web requests and responses), and PHP (a programming language commonly used for server-side web processing) in the lessons ahead.
+When you enter a URL (Uniform Resource Locator, an address identifying a resource and how to access it), a page seems to appear in one step. It actually takes a chain of steps.
+
+This lesson gives you the map that connects DNS (Domain Name System, a distributed system answering queries about domain names), TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail), TLS (Transport Layer Security, rules for establishing an authenticated protected connection), HTTP (Hypertext Transfer Protocol, the rules for web requests and responses), and PHP (a programming language commonly used for server-side web processing) in the lessons ahead.
 
 ## Four steps before details
 
@@ -21,7 +24,7 @@ Browser ── connection + HTTP request ──> Server
 Browser <──────── HTTP response ────── Server
 ```
 
-DNS supplies an address; page content does not flow through it. Proxy and encryption details come in their lessons. **Predict:** a nonexistent name fails before a page request; a reachable server can return404 for a missing resource.
+DNS supplies an address; page content does not flow through it. Proxy and encryption details come in their lessons. **Predict:** a nonexistent name fails before a page request; a reachable server can return 404 for a missing resource.
 
 ## Begin with the mental model
 
@@ -92,7 +95,7 @@ Use `/dev/null` instead of `NUL` on Linux and macOS. `-v` prints connection, TLS
 ## Common mistakes
 
 - **“DNS opens the page.”** DNS returns an address; HTTP requests the resource.
-- **“Nginx executes PHP itself.”** It commonly forwards the request to PHP-FPM.
+- **“A web server executes every program itself.”** Not necessarily. Nginx, a web-request server, commonly forwards PHP work to PHP-FPM, a manager of PHP execution processes; the server lesson explains that boundary.
 - **“A `200` response means everything is correct.”** A successful response may still contain incorrect business output.
 - **“Every visit reaches the database.”** A cache or static file may answer earlier.
 - **“A server must be a large machine.”** It is a role that a small program on your computer can perform.
@@ -112,4 +115,4 @@ Use `/dev/null` instead of `NUL` on Linux and macOS. `-v` prints connection, TLS
 2. How can one computer be both client and server?
    - **Answer:** They are program roles. A browser can start the request while a local development server receives it on the same machine.
 3. Where should you look if DNS and TLS succeed but the server returns `403`?
-   - **Answer:** The request reached HTTP, and `403` says the server understood it but denied access. Inspect identity, permissions, and web-server or WAF rules.
+   - **Answer:** The request reached HTTP, and `403` says the server understood it but denied access. Inspect identity, permissions, and web-server rules or a WAF, a web application firewall applying request policies.

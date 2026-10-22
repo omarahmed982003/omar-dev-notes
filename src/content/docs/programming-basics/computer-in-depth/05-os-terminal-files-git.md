@@ -2,65 +2,114 @@
 title: "اقرأ ملفاتك واكتبها بالطرفية"
 description: "اقرأ ملفاتك واكتبها بالطرفية"
 sidebar:
-  order: 12
-prev: {"link":"/programming-basics/computer-in-depth/14-running-code/","label":"من خطوات الحل إلى برنامج يعمل"}
+  order: 10
+prev: {"link":"/programming-basics/computer-in-depth/13-buffers-and-durability/","label":"نقل البيانات ومتى يصبح الحفظ ثابتًا"}
 next: {"link":"/programming-basics/computer-in-depth/17-terminal-environment/","label":"قنوات الأوامر والصلاحيات والبيئة"}
 ---
 
-الطرفية مفيدة لما عايز تكرر أوامر أو تشوف نتيجة عملية بوضوح. هنستخدم PowerShell على Windows ونشتغل في مجلد تدريب جديد. المطلوب تعرف تحفظ ملفًا وتحدد مكانه؛ لا تحتاج مشروعًا جاهزًا.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## الطرفية غير مفسّر الأوامر
+## هنوصل لنفس الملف بطريقتين
 
-**Terminal — الطرفية** نافذة تعرض إدخالًا وخرجًا نصيًا. **Shell — مفسّر أوامر** البرنامج الذي يقرأ الأمر ويشغله ويربطه بأوامر أخرى. PowerShell وBash وzsh وcmd أمثلة لمفسّرات أوامر، ولكل واحد قواعده.
+لما برنامج يقول «الملف مش موجود»، يمكن المشكلة في نقطة البداية، مش في الملف. هنفهم اسم الملف ومساره، ثم نقرأه بمسار نسبي ومطلق داخل تدريب جديد.
 
-**Process — عملية** نسخة برنامج تعمل الآن. مفسّر الأوامر قد ينفذ الأمر بنفسه أو يبدأ عملية أخرى. **Escaping — حماية رمز من التفسير الخاص** تختلف بين المفسّرات؛ مثلًا كتابة علامة اقتباس داخل نص لها صياغة تعتمد على الأداة. لا تنقل صياغة أمر من Bash إلى PowerShell بافتراض التطابق.
+التجربة بـPowerShell على Windows؛ ده اختيار لغة أوامر محددة، مش مثال PHP. ما تستخدمش نفس الصياغة في Bash بافتراض التطابق.
 
-## مكانك ومسار الملف
+## Terminal غير Shell
 
-**Working directory — مجلد العمل الحالي** نقطة البداية للمسار النسبي. **Path — مسار** يحدد مكان ملف، مش اسمه وحده.
+**Terminal — طرفية** واجهة تعرض الجلسة النصية. **Shell — مفسر أوامر** برنامج يفهم الأمر ويشغله؛ PowerShell وBash وzsh وcmd أمثلة بقواعد مختلفة.
 
-- **Absolute path — مسار مطلق** يبدأ من جذر النظام أو القرص، مثل `C:\Users\Learner\note.txt`.
-- **Relative path — مسار نسبي** يبدأ من مجلدك الحالي، مثل `.\note.txt`.
-- `.` تعني المجلد الحالي، و`..` المجلد الأب الذي يحتويه.
-- **Extension — امتداد** نهاية الاسم مثل .txt؛ لا يثبت وحده نوع البيانات الفعلي.
+**Command — أمر** اسم عملية تطلبها، و**Arguments — معاملات** قيم تحدد تعمل إيه وعلى أي بيانات. **Parameter — خيار مسمى** زي `-Name` يوضح معنى القيمة اللي بعده.
 
-لو الأمر قال إن الملف مش موجود، اعرض مجلد العمل أولًا؛ يمكن الملف موجود في مكان مختلف، فلا تغيّر اسمه عشوائيًا.
+المفسر قد ينفذ أمرًا داخليًا أو يبدأ **Process — عملية برنامج شغالة**. **Escaping — حماية رمز من تفسيره الخاص** و**Quoting — وضع النص بين علامات اقتباس** لهم قواعد تختلف بين المفسرات.
 
-## مساحة تدريب وأوامر تقرأ نتيجتها
+## الملف والمجلد والمسار
 
-افتح PowerShell على Windows. الأوامر التالية تنشئ مجلد تدريب جديدًا داخل مجلد المستخدم، ثم ملفًا نصيًا. لا تعتمد على وجود مجلد صاحب الشرح. لو المجلد موجود بالفعل، اختر اسمًا جديدًا:
+**File — ملف** بيانات مع **Metadata — بيانات وصفية** زي الحجم والأوقات والمالك. **Directory — مجلد** ينظم أسماء الملفات والمجلدات.
+
+**Filesystem — نظام ملفات** يدير ربط الأسماء بالبيانات على التخزين. **Path — مسار** يحدد طريق الوصول، مش الاسم وحده.
+
+**Working directory — مجلد العمل** نقطة بداية تفسير المسار النسبي. **Absolute path — مسار مطلق** يحدد المكان من جذر القرص، زي `C:\Users\Learner\note.txt`.
+
+**Relative path — مسار نسبي** يعتمد على نقطة البداية، زي `.\note.txt`. الرمز `.` يعني المكان الحالي، و`..` المجلد الأب؛ تغيير مجلد العمل يغير معنى النسبي، مش بيانات الملف.
+
+**Extension — امتداد** نهاية اسم زي .txt. **Format — صيغة** تنظيم محتوى البيانات؛ تغيير الاسم وحده لا يحول صورة إلى نص.
+
+## الهوية والوصول قبل الإدارة
+
+**User — مستخدم** هوية، و**Group — مجموعة** هويات قد تشترك في إذن. **Permissions — صلاحيات** تحدد عمليات زي القراءة والكتابة والتنفيذ.
+
+Unix يستخدم عادة أذونات للمالك والمجموعة والباقين، وWindows يستخدم **ACL — قائمة تحكم في الوصول** تربط هويات بأذونات. التنفيذ المسموح لا يثبت إن الملف آمن.
+
+**Administrator وRoot** هويات إدارة واسعة الصلاحيات. ما تشغّلش كل شيء بيها علشان تخفي رفض وصول؛ افحص الهوية والمسار والإذن المطلوب أولًا.
+
+**Handle أوFile descriptor — مقبض أو واصف ملف** مرجع يمنحه النظام للبرنامج بعد فتح المورد. الاسم يُستخدم للوصول، والمقبض يُستخدم أثناء التعامل؛ التفاصيل تختلف بين الأنظمة.
+
+## تجربة لا تستبدل ملفًا موجودًا
+
+افتح PowerShell داخل مكان تملك الكتابة فيه. الأوامر تنشئ مجلدًا اسمه `terminal practice` داخل المكان الحالي؛ لو الاسم موجود توقف واختر اسمًا جديدًا، ولا تكمل فوق تدريب سابق.
+
+قبل الكود: `Get-Location` يعرض المكان، و`Test-Path` يختبر الوجود، و`if` ينفذ شرطًا، و`throw` يوقف الخطوات بخطأ. `New-Item` ينشئ مجلدًا؛ `Set-Location` يغير المكان.
+
+`Set-Content` يكتب النص وقد يستبدل ملفًا، لذلك لا يأتي إلا بعد إنشاء مجلد جديد. `Get-Content` يقرأ، و`Resolve-Path` يستخرج المسار المطلق. `-LiteralPath` يعني «المسار كما هو» من غير مطابقة أنماط.
 
 ```powershell
-Set-Location $HOME
-New-Item -ItemType Directory -Name terminal-practice
-Set-Location .\terminal-practice
-Set-Content -LiteralPath '.\note.txt' -Value 'Hello'
 Get-Location
+if (Test-Path -LiteralPath '.\terminal practice') { throw 'Choose a new practice folder name' }
+New-Item -ItemType Directory -Name 'terminal practice' -ErrorAction Stop
+Set-Location -LiteralPath '.\terminal practice'
+Set-Content -LiteralPath '.\note.txt' -Value 'Hello' -ErrorAction Stop
 Get-ChildItem
 Get-Content -LiteralPath '.\note.txt'
+$practiceFile = (Resolve-Path -LiteralPath '.\note.txt').Path
+Set-Location ..
+Get-Content -LiteralPath $practiceFile
+Get-Content -LiteralPath '.\terminal practice\note.txt'
 ```
 
-Set-Location يغيّر مجلد العمل، و$HOME متغير جاهز يشير لمجلد حسابك. New-Item ينشئ عنصرًا، وItemType يحدد أنه مجلد. Set-Content يكتب النص؛ لو استخدمته على ملف موجود يستبدل محتواه، لذلك اشتغل في مجلد التدريب الجديد. Get-Location يعرض المكان، وGet-ChildItem يعرض عناصره، وGet-Content يقرأ الملف. المتوقع رؤية note.txt ثم Hello. Tab يساعد في إكمال الاسم.
+`Get-ChildItem` يعرض العناصر، و`-ErrorAction Stop` يوقف الأمر عند الفشل. `$practiceFile` متغير يحتفظ بالمسار؛ الخاصية `.Path` تستخرج نصه.
 
-**Quoting — وضع النص بين علامات اقتباس** يحافظ على مسار فيه مسافات. **Wildcard — نمط اختيار** مثل النجمة قد يطابق ملفات كثيرة؛ LiteralPath يعامل المسار كما هو. **Recursive — شامل المجلدات الداخلية** يوسع نطاق العملية، لذلك راجع المسار قبل نقل أو حذف.
+المتوقع ظهور note.txt، وHello ثلاث مرات من قراءات مختلفة. بعد الرجوع للأب، `.\note.txt` لم يعد يشير لنفس الموضع، لكن المطلق والمسار النسبي الأطول يصلان لنفس الملف.
 
+لو ظهر رفض وصول أو اسم موجود، توقف واقرأ الرسالة. ما ترفعش صلاحيات الجهاز ولا تمسح المجلد لإجبار التجربة.
 
-## قبل تجربة أمر واسع
+## الاسم والنسخة مش نفس الشيء
 
-اعرض المكان ومحتوياته، واقرأ المساعدة بواسطة Get-Help أوالخيار --help إذا كانت الأداة تدعمه. اقتبس المسار الذي فيه مسافات. **Bulk operation — عملية على عناصر كثيرة** و**Recursive — شاملة المجلدات الداخلية** توسع نطاق التعديل؛ جرّب على ملفات التدريب أولًا وراجع المسار قبل النقل والحذف.
+إعادة تسمية داخل نفس نظام الملفات قد تعدل البيانات الوصفية بسرعة. نقل ملف بين أقراص قد يحتاج نسخ البيانات ثم حذف الأصل، فالكلفة والضمان مختلفان.
 
-لا تضع أسرارًا داخل نص الأمر إذا كان سيظهر في تاريخ الأوامر أو قائمة العمليات. **Script — ملف أوامر** يشغّل خطوات متتابعة؛ عليه فحص رمز الانتهاء والأخطاء عند الاعتماد على برامج أخرى.
+**Symbolic link — رابط رمزي** يشير لمسار، مش نسخة من بياناته ولا نسخة احتياطية. تغيير الهدف أو اختفاؤه يؤثر على الوصول من الرابط.
 
+## قبل أمر يمس ملفات كثيرة
 
-## تأكد من فهمك
+**Wildcard — نمط مطابقة** زي `*` قد يختار ملفات كثيرة. **Recursive — شامل المجلدات الداخلية** يوسع النطاق؛ **Bulk operation — عملية جماعية** تؤثر على عناصر متعددة.
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>ما الفرق بين Terminal وShell؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> Terminal تعرض الجلسة، وShell تفسر الأوامر وتبدأ العمليات وتربط الـStreams.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>لماذا يفشل Relative Path أحيانًا رغم وجود الملف؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأنه يُفسر من Working Directory الحالية، وقد تختلف عن مجلد Script أوالمشروع.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>لماذا نفصل stdout عن stderr؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> حتى تظل البيانات القابلة للمعالجة نظيفة بينما يمكن عرض أوتسجيل التشخيص منفصلًا.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>هل Environment Variable خزنة أسرار؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لا؛ هي قناة إعداد وقد تتسرب. استخدم Secret Manager وصلاحيات وتدويرًا ومنعًا للتسجيل.</div></details></section>
-</div>
+افحص المكان والأسماء أولًا، واقرأ `Get-Help` للأوامر أو `--help` لو البرنامج يدعمها. Tab يساعد على إكمال الاسم، لكنه مش مراجعة لصحة الهدف.
 
-## الخطوة التالية
+`$HOME` متغير جاهز لمجلد المستخدم، وليس هو مجلد العمل دائمًا. ما تستخدمش مجلد المستخدم كله هدفًا لنقل أو حذف متكرر.
 
-كمّل في [قنوات الأوامر والصلاحيات والبيئة](/programming-basics/computer-in-depth/17-terminal-environment/) بعد تنفيذ التجربة هنا.
+لا تضع أسرارًا في سطر قد يظهر في تاريخ الأوامر. **Script — ملف أوامر** ينفذ خطوات؛ عليه التعامل مع الأخطاء ورموز انتهاء البرامج، كما نشرح في الدرس التالي.
+
+## راجع فهمك
+
+1. ليه الملف نفسه يُقرأ بالمسار المطلق بعد تغيير مجلد العمل؟
+2. هل تغيير .jpg إلى .txt غيّر البيانات؟
+3. هل الرابط الرمزي نسخة احتياطية؟
+4. ماذا تفعل قبل تكرار تجربة المجلد؟
+
+<details>
+<summary>التفسير بعد المحاولة</summary>
+
+1. المطلق لا يعتمد على نقطة البداية الحالية؛ النسبي يعتمد عليها.
+2. لأ؛ الاسم غير صيغة المحتوى.
+3. لأ؛ هو مرجع لمسار.
+4. اختر اسم تدريب جديد وتحقق أنه غير موجود؛ لا تستبدل ملفات قديمة.
+
+</details>
+
+## الخلاصة
+
+حدد هويتك ومكانك والمسار قبل تنفيذ الأمر. الخطوة الجاية [بيئة البرنامج وقنوات الخرج](/programming-basics/computer-in-depth/17-terminal-environment/).
+
+## مرجع
+
+[Microsoft: قواعد اقتباس PowerShell](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules)

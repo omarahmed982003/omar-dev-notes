@@ -2,26 +2,27 @@
 title: "Designing data interfaces"
 description: REST, RPC, GraphQL, resources, status codes, errors, pagination, versioning, and contracts.
 sidebar:
-  order: 29
+  order: 28
 prev: {"link":"/en/programming-basics/30-webhook-delivery/","label":"Receive a webhook and handle repeated delivery"}
 next: {"link":"/en/programming-basics/16-http2-http3-quic/","label":"How HTTP/2 and HTTP/3 differ"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## One product contract before interface styles
 
-An **API, Application Programming Interface**, defines how programs request data or actions. Its **contract** specifies accepted requests and responses. Test this contract on8766 in the [lab](/en/programming-basics/32-local-network-lab/):
+An **API, Application Programming Interface**, defines how programs request data or actions. Its **contract** specifies accepted requests and responses. Read the following contract's inputs and expected outputs without running a tool. For optional execution, the Node.js [lab](/en/programming-basics/32-local-network-lab/) serves it on 8766:
 
 | Request | Status | Content |
 |---|---|---|
-| GET `/api/products/1` |200|numeric id, text name, numeric price20, currencyEGP|
+| GET `/api/products/1` |200|numeric id, text name, numeric price 20, currency EGP|
 | GET `/api/products/2` |404|error.code NOT_FOUND|
 | GET `/api/products/abc` |400|error.code INVALID_ID|
 | POST `/api/products/1` |405|Allow lists GET and HEAD|
 
 GET requests reading; this route rejects POST processing. JSON fields have names and values like the earlier product object. Open the first URL, then run `curl.exe -i -X POST http://127.0.0.1:8766/api/products/1`; `-X` selects the method.
 
-Write expectations before testing. Success includes field types and meaning, not only200. Creating products needs another input, validation, and authorization contract before comparing REST, RPC, and GraphQL.
+Write expectations before testing. Success includes field types and meaning, not only 200. Creating products needs another input, validation, and authorization contract before comparing REST, RPC, and GraphQL.
 
 ## Before the details
 
@@ -29,7 +30,11 @@ A good API (Application Programming Interface, a defined contract for requesting
 
 An **API, Application Programming Interface**, is a contract another program can use. An **endpoint** combines an address and operation. A **contract** specifies inputs, types, results, and failures.
 
-**CRUD (Create Read Update Delete, the four common data operations)** means Create, Read, Update, Delete. **REST, Representational State Transfer**, organizes around resources and constraints such as client/server separation and stateless requests; a JSON (JavaScript Object Notation, a text format for structured values and lists) endpoint alone does not establish all REST constraints. **RPC, Remote Procedure Call**, requests a named remote operation. **GraphQL** selects fields against a typed **schema**; a **resolver** retrieves a field, and complexity limits bound expensive queries.
+**CRUD (Create Read Update Delete, the four common data operations)** means Create, Read, Update, Delete.
+
+**REST, Representational State Transfer**, organizes around resources and constraints such as client/server separation and stateless requests; a JSON (JavaScript Object Notation, a text format for structured values and lists) endpoint alone does not establish all REST constraints.
+
+**RPC, Remote Procedure Call**, requests a named remote operation. **GraphQL** selects fields against a typed **schema**; a **resolver** retrieves a field, and complexity limits bound expensive queries.
 
 ## Choose a style for the problem
 
@@ -64,7 +69,9 @@ Use consistent nouns. Return `201` and `Location` for creation, `204` when no bo
 
 Keep a stable error shape and never expose stack traces or SQL.
 
-Problem Details standardizes HTTP error descriptions. In the example, type links to the error category, title summarizes it, and status matches the HTTP status. errors and request_id are extension fields for validation failures and request tracing. A stack trace lists execution locations; SQL is a database query language, not a suitable public error explanation.
+Problem Details standardizes HTTP error descriptions. In the example, type links to the error category, title summarizes it, and status matches the HTTP status. errors and request_id are extension fields for validation failures and request tracing.
+
+A stack trace lists execution locations; SQL is a database query language, not a suitable public error explanation.
 
 ## Pagination and filtering
 
@@ -107,6 +114,8 @@ Publish a testable OpenAPI/schema contract. Include authentication, rate limits,
 
 **Backward compatible** means old clients continue working under their contract. **Deprecation** announces a transition before removal. **OpenAPI** describes API inputs and outputs in a machine-readable form.
 
-An **Idempotency-Key** identifies a retryable operation. Bind it to the actor, operation, validated input, and saved result, and prevent concurrent duplicate execution. Retention time is part of the contract. **Rate limits** cap requests per interval; **quotas** cap total consumption. A 429 can include **Retry-After**, when to retry. **Observability** uses evidence such as logs and measurements to explain operation.
+An **Idempotency-Key** identifies a retryable operation. Bind it to the actor, operation, validated input, and saved result, and prevent concurrent duplicate execution. Retention time is part of the contract. **Rate limits** cap requests per interval; **quotas** cap total consumption.
+
+A 429 can include **Retry-After**, when to retry. **Observability** uses evidence such as logs and measurements to explain operation.
 
 **Worked check:** Reusing the same key with a different body should produce a documented conflict, for example 409, rather than silently executing a new action. Also test that old clients tolerate an optional added field and do not rely on JSON field order.

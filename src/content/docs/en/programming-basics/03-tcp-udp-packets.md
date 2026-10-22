@@ -1,136 +1,287 @@
 ---
-title: "Moving data with TCP and UDP"
-description: Understand encapsulation, handshakes, ordering, retransmission, and when TCP, UDP, or QUIC supplies the needed behavior.
+title: "TCP: from the first SYN to connection closure"
+description: "Connections, byte streams, ordering, retransmission, flow and congestion control, closure, and diagnosis with a local PHP lab."
 sidebar:
-  order: 10
-prev: {"link":"/en/programming-basics/19-dns-protection/","label":"DNS failures and protection"}
-next: {"link":"/en/programming-basics/20-transport-diagnostics/","label":"Closing connections and diagnosing packet size"}
+  order: 7
+prev: {"link":"/en/programming-basics/21-url-encoding/","label":"Characters and encoding in web addresses"}
+next: {"link":"/en/programming-basics/udp/","label":"UDP: independent messages without a TCP connection"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-After DNS (Domain Name System, a distributed system answering queries about domain names) returns an IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) address, data still has to move. A network may lose, delay, or reorder pieces. IP, TCP (Transmission Control Protocol, ordered byte transport with loss recovery; connections can still fail), and UDP (User Datagram Protocol, independent messages without built-in delivery or ordering guarantees) divide the work of handling that problem.
+A network can lose, delay, duplicate, or reorder data. When sending a file or request, your application needs an ordered sequence of bytes and must handle failure if delivery cannot complete. TCP provides this transport service.
 
-## A number locating bytes
+Prerequisites: **IP** addresses and routes packets between devices. A **port** is a number used to identify a transport endpoint within a device. DNS can discover an address; TCP can also connect directly to an address without a DNS lookup.
 
-Imagine sending `ABCDEF`: in a simplified stream, ABC starts at100 and DEF at103. A **sequence number** locates bytes in TCP, not a purchase order. A receiver waiting for103 can acknowledge earlier data while missing data is recovered.
+**Reading route:** follow the first pass through the foundation stopping point below. Recovery, congestion, and diagnosis follow in this same topic-owned page.
 
-Delivered bytes do not prove business success. An **idempotent** operation has the same intended state effect when repeated, such as “set closed,” unlike “add10.” Keep this distinction when retrying.
+## The service TCP provides
 
-## From a message to signals
+**Transmission Control Protocol** supplies an ordered **byte stream** between endpoints. A byte contains eight bits. TCP handles loss, ordering, and duplicates within a connection, but does not preserve application-message boundaries.
 
-A large page is not sent as one magical object. Data moves down layers, and each layer adds information for its job:
+Two writes containing `Hello` and `World` might be read as `HelloWorld` or as smaller pieces. The number of writes need not match the number of reads. The application needs framing, such as a newline terminator or a length prefix.
 
-```text
-HTTP data
-   ↓ + transport header
-TCP segment or UDP datagram
-   ↓ + IP header
-IP packet
-   ↓ + local-link header
-Ethernet/Wi-Fi frame
-   ↓
-Bits or signals
-```
+Reliability does not mean the network cannot fail. Timeouts, resources, and recovery limits still exist. A connection is transport state maintained by endpoints, not an exclusively reserved physical circuit.
 
-Headers can contain ports at the transport layer, source and destination IPs at the network layer, TCP sequence numbers and flags, and an IP TTL (Time To Live, a DNS cache lifetime or an IPv4 forwarding limit depending on context) or hop limit. Adding these layers is **encapsulation**; the receiver removes them in reverse.
+## Identify the endpoints
 
-The NIC (Network Interface Card, hardware providing a network connection) handles the local link, frames, and signals. A router selects the packet's next hop, and an ISP (Internet Service Provider, an organization providing internet connectivity) connects your network to others. Later lessons examine frames, MAC (Media Access Control, an interface address used for local-link communication) addresses, and routing in detail.
-
-## TCP: a reliable, ordered stream
-
-TCP presents an ordered **byte stream** to the application. A connection normally begins with a three-way handshake:
+A typical TCP connection is identified by each endpoint's IP address and port:
 
 ```text
-Client                         Server
-  | -------- SYN ------------> |  request and synchronize
-  | <----- SYN + ACK ---------- |  accept and acknowledge
-  | -------- ACK ------------> |  client acknowledges
-  | ===== Application data ===> |
+Client 127.0.0.1:51024  <-->  Server 127.0.0.1:9099
 ```
 
-Four values distinguish a connection: source IP, source port, destination IP, and destination port. One computer can therefore open many connections to the same server.
+`127.0.0.1` refers to the local computer. The operating system normally assigns the client a temporary source port. The server listens on a known port. Another client can reach the same server using a different source endpoint.
 
-### How TCP hides loss and reordering
+A **socket** is the application's communication interface. A server **listens** for connections and **accepts** a connection to obtain a connected resource. Accepting a connection is separate from receiving an application message.
 
-```text
-Sent:         1  2  3  4
-Received:     1  2  _  4
-Action:       acknowledge progress; retransmit 3
-Application:  1  2  3  4
+## Establish a connection
+
+The usual three-way handshake is:
+
+
+
+**SYN** synchronizes sequence numbers. **ACK** acknowledges progress expected from the peer. Each direction has an independent sequence space. SYN consumes one sequence number, explaining the increment shown.
+
+<figure class="teaching-figure">
+  <img src="/diagrams/foundations/network/tcp-handshake-en.svg" alt="The client sends SYN with sequence 100; the server sends SYN+ACK with sequence 700 and acknowledgement 101; the client acknowledges 701." loading="lazy" />
+  <figcaption>Read top to bottom. This example uses x = 100 and y = 700. Each SYN consumes one sequence number, so the acknowledgement names the next one. Establishing TCP is not user authentication.</figcaption>
+</figure>
+
+Completing this handshake means a TCP endpoint accepted the connection. It does not prove user authorization, application health, or database availability.
+
+## Close the connection
+
+Each direction can close independently. **FIN** means no more data will be sent in that direction. The peer acknowledges it and can finish its remaining output. The usual bidirectional close involves FIN and ACK for both directions, but messages can combine; four distinct packets are not compulsory.
+
+A **half-close** ends sending while reception continues. **RST** resets a connection abruptly. Applications must distinguish a complete application message from EOF, end of the stream, or an error.
+
+## Local PHP lab: a message is not a connection
+
+Execution is optional after [PHP setup](/en/php/00-lab-setup/). **CLI, command-line interface**, runs the file from a terminal. Without execution, trace input Hello plus a newline: accept a connection, read one framed message, return Received: Hello. Connection acceptance is not the application response. For execution use a fresh training directory. Start a server and client in separate terminals. Bind only to `127.0.0.1:9099`; no internet exposure is required.
+
+Save `tcp-server.php`:
+
+```php
+<?php
+declare(strict_types=1);
+
+$server = stream_socket_server('tcp://127.0.0.1:9099', $code, $message);
+if ($server === false) {
+    throw new RuntimeException($message, $code);
+}
+echo 'Listening', PHP_EOL;
+$client = stream_socket_accept($server, 15);
+if ($client === false) {
+    fclose($server);
+    throw new RuntimeException('No client connected');
+}
+stream_set_timeout($client, 5);
+$line = fgets($client, 128);
+if ($line !== "Hello\n") {
+    fclose($client);
+    fclose($server);
+    throw new RuntimeException('Expected one short newline-terminated message');
+}
+$response = "Received: Hello\n";
+while ($response !== '') {
+    $written = fwrite($client, $response);
+    if ($written === false || $written === 0) {
+        throw new RuntimeException('Write failed');
+    }
+    $response = substr($response, $written);
+}
+fclose($client);
+fclose($server);
 ```
 
-Sequence numbers locate data, and acknowledgements tell the sender what arrived. When TCP infers loss, it retransmits and holds later data until it can expose an ordered stream.
-
-:::note
-A TCP ACK means the transport layer received the required data. It does not mean PHP (a programming language commonly used for server-side web processing) stored an order or that the business operation succeeded.
-:::
-
-## Two windows solve two problems
-
-- **Flow control** protects the receiver through its advertised receive window.
-- **Congestion control** protects the network by changing the sender's congestion window in response to congestion and loss signals.
-- The smaller window helps limit how much data may remain in flight.
-
-Retransmission is not free: it adds delay, and loss may cause congestion control to reduce the sending rate.
-
-## UDP: independent datagrams
-
-UDP sends independent messages without a traditional handshake. It does not itself guarantee arrival, order, or duplicate suppression. Its header is simpler, while the application or a higher protocol decides whether to add those behaviors.
-
-| Property | TCP | UDP |
-|---|---|---|
-| Data shape | Byte stream | Independent datagrams |
-| Traditional connection handshake | Yes | No |
-| Built-in ordering and retransmission | Yes | No |
-| Examples | HTTP/1.1 (Hypertext Transfer Protocol, the rules for web requests and responses) and HTTP/2, mail, files | DNS, games, live media |
-
-“UDP is faster” is an oversimplification. It may have less protocol overhead, but performance depends on the network and what the application builds above it.
-
-## Where QUIC fits
-
-HTTP/3 uses **QUIC (a UDP-based transport protocol adding reliable streams and protected communication) over UDP**. UDP supplies a widely deployable base; QUIC adds reliability, encryption, congestion control, and multiple streams. Using UDP does not force a higher-level protocol to lose data.
-
-## Run a network experiment
+Run:
 
 ```bash
-ping example.com
-tracert example.com
+php tcp-server.php
 ```
 
-Use `traceroute` instead of `tracert` on Linux and macOS. A ping result may resemble:
+The server prints `Listening` and accepts one client within 15 seconds. After acceptance it applies a five-second read timeout. Save `tcp-client.php` and start it in a second terminal while the server waits:
+
+```php
+<?php
+declare(strict_types=1);
+
+$socket = stream_socket_client('tcp://127.0.0.1:9099', $code, $message, 5);
+if ($socket === false) {
+    throw new RuntimeException($message, $code);
+}
+stream_set_timeout($socket, 5);
+$request = "Hello\n";
+while ($request !== '') {
+    $written = fwrite($socket, $request);
+    if ($written === false || $written === 0) {
+        throw new RuntimeException('Write failed');
+    }
+    $request = substr($request, $written);
+}
+$response = fgets($socket, 128);
+fclose($socket);
+if ($response !== "Received: Hello\n") {
+    throw new RuntimeException('Missing or incomplete response');
+}
+echo $response;
+```
+
+```bash
+php tcp-client.php
+```
+
+Expected client output:
 
 ```text
-Reply from 93.184.216.34: time=42ms
+Received: Hello
 ```
 
-- `ping` uses ICMP (Internet Control Message Protocol, network diagnostics and error messages), not TCP or UDP.
-- `time=42ms` is an approximate round trip, not page-load time.
-- No reply does not prove the host is down; ICMP may be filtered.
-- `tracert` shows visible hops, while `*` can mean a hop chose not to answer.
+Here, `fgets` reads until a newline, a length limit, or end of the resource. The newline is **application framing**. The write loops are necessary because `fwrite` can accept fewer bytes than requested. This bounded teaching protocol rejects missing, incomplete, or oversized messages; it does not accept arbitrary-length input.
 
-## Common mistakes
+The server accepts one client and exits. The client first establishes TCP, then sends its message, then verifies an application response. These are different success conditions. This example does not encrypt the connection.
 
-- Mixing up segment, packet, and frame; each belongs to a layer.
-- Treating a TCP ACK as application success.
-- Assuming TCP prevents disconnection; it repairs some loss but a connection can still fail.
-- Assuming UDP is always unsuitable; it is a useful base when a higher protocol supplies its chosen behavior.
-- Treating `ping` as a complete HTTP test; they use different protocols.
+## Delivery is not business completion
 
-## Practical problems
+A **TCP ACK** concerns transport reception, not an order committed to a database. A server might execute a payment, then lose the connection before its response reaches the client. A disconnect alone cannot tell the client whether the payment happened.
 
-<details><summary>A payment was charged twice even though the app uses TCP. Why did TCP not prevent it?</summary><p>TCP prevents duplicate byte delivery within a connection, but it cannot stop a client from retrying an HTTP request after an ambiguous disconnect. The application needs an idempotency key or transactional duplicate protection.</p></details>
+Retrying can repeat the business operation. **Idempotency** is application-level protection against duplicating the intended effect, often using a unique request key and recorded outcome. TCP suppresses duplicate stream bytes within a connection; applications must handle repeated requests across connections.
 
-<details><summary>Packet 4 arrives before packet 3. What does a TCP application observe?</summary><p>TCP holds the later data and waits for or requests the missing data, then exposes an ordered stream. The cost is delayed reading until the gap closes.</p></details>
+## Foundation stop: connection, message, and outcome
 
-<details><summary>Why might a game choose UDP?</summary><p>Old state may become useless before a retransmission arrives. The game can send newer state and implement the ordering or recovery policy that matches its needs.</p></details>
+Explain the handshake, distinguish connection from application message, and account for partial reads/writes. Compare orderly FIN with abrupt RST, and explain why an ACK does not prove payment completion.
+
+If you can trace Hello and its reply without inventing TCP message boundaries, continue along the foundation route. The following depth proceeds through byte numbers, size, receiver/path windows, closure details, and diagnosis. Return after a first local web application.
+
+## Sequence numbers and acknowledgements
+
+For a simplified data range starting at 1000, bytes `ABC` occupy 1000–1002 and `DEF` start at 1003. Sequence numbers locate bytes rather than numbering purchase orders or merely counting packets.
+
+An ordinary **cumulative ACK** identifies the next expected byte. An ACK of 1003 acknowledges the contiguous preceding bytes. TCP can retain later data while recovering a missing range, then deliver an ordered stream.
+
+```text
+Received:      ABC     [gap]     GHI
+Application:   ABC
+After recovery: ABCDEF GHI in order
+```
+
+**Retransmission** resends data inferred to be lost using timers and acknowledgement information. Delay or reordering can make that inference imperfect. **Selective acknowledgements, SACK**, let the receiver report additional received ranges to help recovery.
+
+Later bytes may wait behind a gap. This is transport **head-of-line blocking**: data exists but cannot yet be exposed as the next ordered bytes.
+
+### Follow a lost range with actual numbers
+
+Send ABC, DEF, then GHI, three bytes per group. Assume a receiver that retains out-of-order data. These are selected acknowledgement points for teaching, not a rule that every segment receives an immediate separate ACK.
+
+| Event | Data byte range | Receiver response in this trace | Available to the application |
+|---|---|---|---|
+| ABC arrives |1000–1002| ACK 1003 |ABC|
+| DEF is lost |1003–1005| Receiver does not observe it |ABC|
+| GHI arrives beyond the gap |1006–1008| ACK 1003: byte 1003 is still missing |ABC; retain GHI internally |
+| Retransmitted DEF arrives |1003–1005| ACK 1009: bytes through 1008 are now contiguous |ABCDEFGHI|
+
+ACK 1003 does not claim the receiver has seen no higher byte. It identifies the next byte needed for **contiguous progress**. Once DEF fills the gap, GHI is already present, allowing ACK 1009.
+
+Assume the sender retransmits after a suitable timeout. **One duplicate ACK alone does not mandate immediate retransmission**. Recovery algorithms and timers vary; this explains ordering and progress rather than simulating every TCP implementation.
+
+**Independent trace:** Start at 2000. JKL arrives, MNO is lost, then PQR arrives. Each group has three bytes. What ACK follows PQR, and what ACK follows recovery of MNO?
+
+<details>
+<summary>Review after attempting the trace</summary>
+
+JKL occupies 2000–2002. The gap starts at 2003, so ACK 2003 remains despite receiving 2006–2008. Recovery makes bytes through 2008 contiguous, giving ACK 2009. The ordered TCP stream does not expose PQR past the gap.
+
+</details>
+
+## Segments and path size
+
+Application bytes travel through layers:
+
+```text
+Application bytes → TCP segment → IP packet → Ethernet/Wi-Fi frame
+```
+
+Each layer adds a **header** containing its control information. TCP includes ports, sequence numbers, and flags. IP includes addresses and routing-related information. MAC addresses concern the local link; routers select an IP packet's next hop.
+
+**MTU** limits the higher-layer payload a link can carry. **MSS** is the maximum amount of TCP data a peer advertises it can receive per segment, excluding TCP/IP headers. MSS and MTU are not interchangeable; options and path information affect actual segmentation.
+
+A large application message is not necessarily one equally large packet.
+
+**Path MTU Discovery** tries to find a usable path size. Filtering relevant control messages can make small exchanges succeed while larger transfers stall. This is one diagnostic hypothesis, not the explanation for every failed upload.
+
+A **checksum** detects some accidental corruption. It is not protection against an attacker forging traffic. TCP alone does not encrypt application data; a protocol such as TLS supplies protected communication.
+
+## Receiver capacity versus network congestion
+
+**Flow control** protects the receiver through its advertised receive window, `rwnd`. **Congestion control** adapts to conditions along the network path through the sender's congestion window, `cwnd`.
+
+The smaller window helps bound unacknowledged data in flight, accounting for data already outstanding. A faster CPU does not automatically repair a congested network or an application that is not reading.
+
+Different congestion-control algorithms use different policies. Do not assume every implementation has an identical reaction to loss.
+
+### Calculate remaining room, not just the window size
+
+Assume rwnd is 6000 bytes, cwnd is 4000, and 3000 bytes are already outstanding. The simple bound is 4000, leaving `4000 − 3000 = 1000` bytes of **new data**, not another 4000 on top.
+
+If rwnd becomes zero, ordinary new-data transmission pauses; protocol window probes may still occur. If cwnd is smaller, increasing receiver buffering alone does not remove the congestion limit.
+
+**Try:** rwnd=6000, cwnd=5000, outstanding data 3500. How much room remains in this model?
+
+<details>
+<summary>Review the calculation</summary>
+
+`min(6000, 5000) − 3500 = 1500` bytes. This is a simplified ordinary-flow calculation, not a timing equation or promise of immediate transmission; recovery and scheduling details also matter.
+
+</details>
+
+## Closure depth: TIME_WAIT and keepalive
+
+**TIME_WAIT** is a normal state following orderly closure at the relevant endpoint. It helps handle delayed segments and retransmitted closing messages. Reducing it indiscriminately changes protocol behavior.
+
+TCP **keepalive** can detect some dead idle peers according to its configuration. It differs from HTTP connection reuse and does not replace an application deadline.
+
+## Diagnose observed failures
+
+For `Connection refused`, check whether a service is listening on the intended endpoint. A rejecting network policy can also produce refusal. A timeout can reflect dropped traffic, routing trouble, or an unresponsive peer; the error alone does not identify the cause.
+
+On Windows PowerShell:
+
+```powershell
+Get-NetTCPConnection -LocalPort 9099 -ErrorAction SilentlyContinue
+```
+
+On Linux:
+
+```bash
+ss -tn
+```
+
+A short connection may end before inspection. A **packet capture** records traffic and can reveal handshakes, acknowledgements, retransmissions, and closure. It may expose sensitive content, so use a local lab.
+
+`ping` uses ICMP rather than TCP. Success does not prove that a TCP server accepts connections on a particular port.
 
 ## Check your understanding
 
-1. Order the units during sending: **application data → segment/datagram → IP packet → frame.**
-2. How do flow control and congestion control differ? **The first protects the receiver; the second protects the network.**
-3. Is HTTP/3 unreliable because it uses UDP? **No. QUIC adds the required reliability, encryption, and congestion control.**
+<details><summary>Two writes were read together. Is TCP broken?</summary>
+No. It supplies a byte stream. Define application framing with a delimiter, length, or protocol format.
+</details>
 
+<details><summary>An ACK arrived but payment processing failed. Is that contradictory?</summary>
+No. The ACK concerns transport. Payment validation, transactions, and application responses are separate.
+</details>
 
-## Next step
+<details><summary>A handshake succeeds but a large upload stalls. What should you inspect?</summary>
+Check whether the application reads, whether deadlines expire, whether retransmissions occur, and whether path size causes trouble. Gather evidence instead of assuming MTU is the cause.
+</details>
 
-After completing this practice, continue with [Closing connections and diagnosing packet size](/en/programming-basics/20-transport-diagnostics/).
+<details><summary>How do FIN and RST differ?</summary>
+FIN orderly ends one sending direction while the opposite direction can continue. RST abruptly resets the connection.
+</details>
+
+## References
+
+- [TCP specification — RFC 9293](https://www.rfc-editor.org/rfc/rfc9293.html)
+- [PHP stream_socket_server](https://www.php.net/manual/en/function.stream-socket-server.php)
+- [PHP stream_socket_client](https://www.php.net/manual/en/function.stream-socket-client.php)
+- [PHP fwrite and partial writes](https://www.php.net/manual/en/function.fwrite.php)

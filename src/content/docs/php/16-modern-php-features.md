@@ -9,7 +9,7 @@ sidebar:
 
 ميزة جديدة قد تغير Syntax فيفشل الملف **قبل التنفيذ** على إصدار أقدم. `if (PHP_VERSION_ID >= ...)` داخل نفس الملف لا تحمي صياغة لا يفهمها Parser. اختار الحد الأدنى في Composer، واختبره فعلًا، ثم تعلم الميزة لأنها تحل مشكلة محددة.
 
-الدرس خريطة قراءة على مرحلتين: أولًا Generators وWeakMap وFibers لفهم دورة التنفيذ والذاكرة، ثم أنواع وميزات كائنات للتعرف عليها. تفاصيل OOP في [مسارها](/oop/)، مش مطلوب تبني Framework هنا.
+الدرس خريطة قراءة على مرحلتين: أولًا Generators وWeakMap وFibers لفهم دورة التنفيذ والذاكرة، ثم أنواع وميزات كائنات للتعرف عليها. تفاصيل OOP في مسارها، مش مطلوب تبني Framework هنا.
 
 ## خريطة زمنية لإصدارات صادرة
 
@@ -162,7 +162,7 @@ readonly blocked reassignment
 
 Array تمر من فرع union، والكائن يحقق Countable وStringable معًا. readonly class تجعل Instance properties المقيدة بالنوع readonly وتمنع dynamic properties؛ ليست deep immutability: كائن داخل property قد تتغير حالته. constructor promotion اختصار لتعريف property واستقبالها، ظهرت من 8.0، لكن readonly class نفسها 8.2.
 
-Enums من 8.1 مجموعة حالات مغلقة؛ backed enum تستخدم from التي ترمي ValueError لو القيمة غير موجودة أو tryFrom التي ترجع null. readonly property من 8.1، وnever لدالة لا ترجع طبيعيًا، مثل التي تنهي أو ترمي دائمًا. اقرأ التفاصيل في [OOP](/oop/) و[نظام الأنواع](/php/03-types/).
+Enums من 8.1 مجموعة حالات مغلقة؛ backed enum تستخدم from التي ترمي ValueError لو القيمة غير موجودة أو tryFrom التي ترجع null. readonly property من 8.1، وnever لدالة لا ترجع طبيعيًا، مثل التي تنهي أو ترمي دائمًا. اقرأ التفاصيل في OOP و[نظام الأنواع](/php/03-types/).
 
 ## Attributes: بيانات وصفية تحتاج مَن يقرأها
 

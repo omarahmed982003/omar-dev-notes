@@ -4,9 +4,10 @@ description: كيف تنتقل بيانات التطبيق عبر طبقات ا�
 sidebar:
   order: 2
 prev: {"link":"/programming-basics/01-web-and-request-flow/","label":"الإنترنت والويب ورحلة الطلب"}
-next: {"link":"/programming-basics/28-lan-segmentation/","label":"تقسيم الشبكة ومنع دوران الإطارات"}
+next: {"link":"/programming-basics/15-addressing-dhcp-nat-routing-ipv6/","label":"إعدادات عنوان الجهاز والاتصال"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## جهازان وراوتر
 
@@ -16,7 +17,9 @@ Laptop A ── Switch ── Laptop B
              Router ── other networks
 ```
 
-**Switch — مُبدّل** يصل الأجهزة داخل الشبكة، و**Router — موجّه** ينقل بينها وبين شبكات أخرى. افترض A=192.168.1.20 وB=192.168.1.30، وكلاهما /24، أي أول24بت تحدد الشبكة. A يعرف من القناع أن B محلي. يستخدم ARP، سؤالًا محليًا عن عنوان واجهة B، ثم يرسل **إطارًا** يحمل البيانات وعنوان واجهة B عبر المبدّل. **MAC** عنوان الواجهة على الوصلة.
+**Switch — مُبدّل** يصل الأجهزة داخل الشبكة، و**Router — موجّه** ينقل بينها وبين شبكات أخرى. افترض A=192.168.1.20 وB=192.168.1.30، وكلاهما /24، أي أول 24 بت تحدد الشبكة. A يعرف من القناع أن B محلي. يستخدم ARP، سؤالًا محليًا عن عنوان واجهة B، ثم يرسل **إطارًا** يحمل البيانات وعنوان واجهة B عبر المبدّل.
+
+**MAC** عنوان الواجهة على الوصلة.
 
 لو الوجهة خارج الشبكة، إطار A المحلي يتجه إلى واجهة الراوتر، بينما عنوان IP للوجهة يظل الوجهة البعيدة في المثال الذي لا يطبق ترجمة عناوين. **جرّب على الورق:** أرسل من B إلى A، ثم من B إلى شبكة أخرى؛ مَن يستقبل الإطار المحلي في كل مرة؟ A، ثم الراوتر.
 
@@ -36,11 +39,17 @@ Ethernet frame على وصلة Ethernet، أو Wi-Fi frame على وصلة Wi-Fi
 إشارات مناسبة للوصلة
 ```
 
-الطبقات مش أجهزة منفصلة بالضرورة؛ هي تقسيم للمسؤوليات. HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب) يهتم بمعنى الطلب، TCP (Transmission Control Protocol؛ نقل بايتات بترتيب مع معالجة الفقد، مع احتمال فشل الاتصال) يهتم بالاتصال والترتيب، IP (Internet Protocol؛ قواعد عنونة الحزم وتوجيهها بين الشبكات، وعنوان IP رقم يحدد واجهة في هذا السياق) يهتم بالوصول بين الشبكات، وEthernet (معيار شائع للاتصال على شبكة محلية سلكية)/Wi-Fi (اتصال لاسلكي بالشبكة المحلية؛ لا يضمن اتصالها بالإنترنت) يهتمان بالنقلة الحالية داخل الـLink.
+الطبقات مش أجهزة منفصلة بالضرورة؛ هي تقسيم للمسؤوليات.
 
-لو الوجهة خارج شبكتك المحلية، جهازك لا يبحث عن MAC (Media Access Control؛ عنوان تستخدمه واجهة الشبكة للتواصل على الوصلة المحلية) الخاص بالسيرفر البعيد. هو يحتاج MAC الخاص بالـDefault Gateway (البوابة الافتراضية: الراوتر الذي نرسل له الوجهات التي لا نملك لها مسارًا أدق)، ويرسل له الـFrame (إطار: وحدة بيانات تخص الوصلة المحلية مثل Ethernet)، وبعدها كل Router يبني Frame جديدة للنقلة التالية. عنوان IP يصف الوجهة عبر الرحلة، بينما MAC تتغير من Link لآخر.
+HTTP (Hypertext Transfer Protocol؛ قواعد طلب الموارد والرد عليها في الويب) يهتم بمعنى الطلب، TCP (Transmission Control Protocol؛ نقل بايتات بترتيب مع معالجة الفقد، مع احتمال فشل الاتصال) يهتم بالاتصال والترتيب، IP (Internet Protocol؛ قواعد عنونة الحزم وتوجيهها بين الشبكات، وعنوان IP رقم يحدد واجهة في هذا السياق) يهتم بالوصول بين الشبكات، وEthernet (معيار شائع للاتصال على شبكة محلية سلكية)/Wi-Fi (اتصال لاسلكي بالشبكة المحلية؛ لا يضمن اتصالها بالإنترنت) يهتمان بالنقلة الحالية داخل الـLink.
 
-ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل لعنوان IPv4 على الشبكة المحلية) هو السؤال المحلي: «مين عنده عنوان IPv4 (Internet Protocol version 4؛ إصدار عناوين الشبكة ذي32 بتًا) ده؟ ابعتلي MAC بتاعك». النتيجة تدخل Cache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب) لمدة، لكنها غير موثوقة أمنيًا بمفردها؛ ARP Spoofing ممكن يربط IP بعنوان مهاجم داخل نفس الشبكة.
+لو الوجهة خارج شبكتك المحلية، جهازك لا يبحث عن MAC (Media Access Control؛ عنوان تستخدمه واجهة الشبكة للتواصل على الوصلة المحلية) الخاص بالسيرفر البعيد.
+
+هو يحتاج MAC الخاص بالـDefault Gateway (البوابة الافتراضية: الراوتر الذي نرسل له الوجهات التي لا نملك لها مسارًا أدق)، ويرسل له الـFrame (إطار: وحدة بيانات تخص الوصلة المحلية مثل Ethernet)، وبعدها كل Router يبني Frame جديدة للنقلة التالية. عنوان IP يصف الوجهة عبر الرحلة، بينما MAC تتغير من Link لآخر.
+
+ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل لعنوان IPv4 على الشبكة المحلية) هو السؤال المحلي: «مين عنده عنوان IPv4 (Internet Protocol version 4؛ إصدار عناوين الشبكة ذي 32 بتًا) ده؟ ابعتلي MAC بتاعك».
+
+النتيجة تدخل Cache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب) لمدة، لكنها غير موثوقة أمنيًا بمفردها؛ ARP Spoofing ممكن يربط IP بعنوان مهاجم داخل نفس الشبكة.
 
 ## لماذا نقسم الاتصال إلى طبقات؟
 
@@ -50,7 +59,7 @@ ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل �
 |---|---|---|
 | Application | HTTP وDNS (Domain Name System؛ نظام يجيب عن أسئلة أسماء النطاقات، ومنها عناوينها) وTLS (Transport Layer Security؛ قواعد حماية الاتصال بالتشفير والتحقق) | Message/Data |
 | Transport | TCP وUDP (User Datagram Protocol؛ نقل رسائل مستقلة بلا ضمان مدمج لوصولها أو ترتيبها) | Segment (مقطع TCP يحمل جزءًا من تدفق البايتات)/Datagram (رسالة مستقلة لها حدود في بروتوكول النقل) |
-| Internet | IPv4 وIPv6 (Internet Protocol version 6؛ إصدار عناوين الشبكة ذي128 بتًا) | Packet (حزمة: وحدة بيانات IP التي تُوجّه بين الشبكات) |
+| Internet | IPv4 وIPv6 (Internet Protocol version 6؛ إصدار عناوين الشبكة ذي 128 بتًا) | Packet (حزمة: وحدة بيانات IP التي تُوجّه بين الشبكات) |
 | Link | Ethernet وWi-Fi | Frame |
 
 تضيف كل طبقة Header (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة) عند الإرسال، وتزيل الطبقة المقابلة هذا الـHeader عند الاستقبال. تسمى العملية Encapsulation.
@@ -69,7 +78,9 @@ ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل �
 
 ## Switch وRouter
 
-يحوّل Switch الـFrames داخل LAN اعتمادًا على MAC. يربط Router شبكات IP مختلفة ويختار Next Hop اعتمادًا على Routing Table. قد يجمع الجهاز المنزلي وظائف Router وSwitch وWi-Fi Access Point وDHCP (Dynamic Host Configuration Protocol؛ خدمة تمنح الجهاز إعدادات الشبكة تلقائيًا) وNAT (Network Address Translation؛ تغيير عناوين IP أثناء مرور الحزم بين شبكات) في صندوق واحد، لكن كل وظيفة تظل مختلفة منطقيًا.
+يحوّل Switch الـFrames داخل LAN اعتمادًا على MAC. يربط Router شبكات IP مختلفة ويختار Next Hop اعتمادًا على Routing Table.
+
+قد يجمع الجهاز المنزلي وظائف Router وSwitch وWi-Fi Access Point وDHCP (Dynamic Host Configuration Protocol؛ خدمة تمنح الجهاز إعدادات الشبكة تلقائيًا) وNAT (Network Address Translation؛ تغيير عناوين IP أثناء مرور الحزم بين شبكات) في صندوق واحد، لكن كل وظيفة تظل مختلفة منطقيًا.
 
 ## تدريب عملي
 
@@ -84,7 +95,6 @@ ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل �
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>إلى أي MAC يرسل جهاز Packet متجهة إلى الإنترنت؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> إلى MAC الخاص بالـDefault Gateway، مع بقاء IP الوجهة هو IP الخادم البعيد.</div></details></section>
 </div>
 
-
 ## الخطوة التالية
 
-كمّل في [تقسيم الشبكة ومنع دوران الإطارات](/programming-basics/28-lan-segmentation/) بعد تنفيذ التجربة هنا.
+[إعدادات عنوان الجهاز والاتصال](/programming-basics/15-addressing-dhcp-nat-routing-ipv6/).

@@ -43,125 +43,11 @@ export default defineConfig({
       "link": "programming-basics"
     },
     {
-      "label": "الرياضيات وحل المشكلات",
+      "label": "أساسيات المبرمج: الجهاز ونظام التشغيل",
       "translations": {
-        "en": "Math and problem solving"
+        "en": "Programmer foundations: hardware and operating systems"
       },
-      "collapsed": true,
-      "items": [
-        {
-          "label": "الرياضيات وحل المشكلات",
-          "translations": {
-            "en": "Math and problem solving"
-          },
-          "link": "programming-basics/math-problem-solving"
-        },
-        {
-          "label": "النسب والمتوسط والقوى",
-          "translations": {
-            "en": "Ratios, averages, and powers"
-          },
-          "link": "programming-basics/math-problem-solving/01-arithmetic-foundations"
-        },
-        {
-          "label": "القسمة والباقي ودقة الحساب",
-          "translations": {
-            "en": "Division, remainders, and numerical precision"
-          },
-          "link": "programming-basics/math-problem-solving/07-division-and-precision"
-        },
-        {
-          "label": "المتغيرات والمعادلات والمنطق البولياني",
-          "translations": {
-            "en": "Variables, equations, and Boolean logic"
-          },
-          "link": "programming-basics/math-problem-solving/02-variables-equations-logic"
-        },
-        {
-          "label": "المجموعات والعلاقات ومدخلات الدالة",
-          "translations": {
-            "en": "Sets, relations, and function inputs"
-          },
-          "link": "programming-basics/math-problem-solving/08-sets-relations"
-        },
-        {
-          "label": "التفكير الحاسوبي وتحليل المتطلبات",
-          "translations": {
-            "en": "Computational thinking and requirements analysis"
-          },
-          "link": "programming-basics/math-problem-solving/04-computational-thinking"
-        },
-        {
-          "label": "الخوارزميات وPseudocode وأشجار القرار",
-          "translations": {
-            "en": "Algorithms, pseudocode, and decision trees"
-          },
-          "link": "programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees"
-        },
-        {
-          "label": "المخططات الانسيابية والحلقات والتصحيح",
-          "translations": {
-            "en": "Flowcharts, loops, and debugging"
-          },
-          "link": "programming-basics/math-problem-solving/06-flowcharts-loops-debugging"
-        },
-        {
-          "label": "مقارنة الخوارزميات وطرق تنظيم البيانات",
-          "translations": {
-            "en": "Comparing algorithms and data structures"
-          },
-          "link": "programming-basics/08-problem-solving-algorithms"
-        },
-        {
-          "label": "ليه الحلقة صحيحة وبتنتهي؟",
-          "translations": {
-            "en": "Why does a loop work and stop?"
-          },
-          "link": "programming-basics/math-problem-solving/13-loop-reasoning"
-        },
-        {
-          "label": "حوّل أنماط الحل إلى خطوات",
-          "translations": {
-            "en": "Turn solution patterns into steps"
-          },
-          "link": "programming-basics/math-problem-solving/09-solution-patterns"
-        },
-        {
-          "label": "اختَر بين الحل الجشع وحفظ النتائج",
-          "translations": {
-            "en": "Choose between greedy steps and saved results"
-          },
-          "link": "programming-basics/math-problem-solving/10-greedy-dynamic-programming"
-        },
-        {
-          "label": "القياس والوحدات والأعداد الأولية",
-          "translations": {
-            "en": "Measurement, units, and prime numbers"
-          },
-          "link": "programming-basics/math-problem-solving/03-applied-math-graphs-primes"
-        },
-        {
-          "label": "المتتابعات والعد والاحتمال",
-          "translations": {
-            "en": "Sequences, counting, and probability"
-          },
-          "link": "programming-basics/math-problem-solving/11-counting-probability"
-        },
-        {
-          "label": "ارسم العلاقات وابحث عن طريق",
-          "translations": {
-            "en": "Draw relationships and search for a path"
-          },
-          "link": "programming-basics/math-problem-solving/12-graphs-and-search"
-        }
-      ]
-    },
-    {
-      "label": "داخل الكمبيوتر وأدوات التطوير",
-      "translations": {
-        "en": "Computer internals and development tools"
-      },
-      "collapsed": true,
+      "collapsed": false,
       "items": [
         {
           "label": "داخل الكمبيوتر وأدوات التطوير",
@@ -171,25 +57,25 @@ export default defineConfig({
           "link": "programming-basics/computer-in-depth"
         },
         {
-          "label": "خريطة التعلّم وقواعد الدراسة",
-          "translations": {
-            "en": "Learning roadmap and study rules"
-          },
-          "link": "programming-basics/computer-in-depth/01-learning-roadmap"
-        },
-        {
-          "label": "الكمبيوتر والبيانات ودورة المعالجة",
-          "translations": {
-            "en": "Computers, data, and the processing cycle"
-          },
-          "link": "programming-basics/computer-in-depth/02-computers-data-processing"
-        },
-        {
           "label": "مكوّنات الهاردوير واللوحة الأم",
           "translations": {
             "en": "Hardware components and motherboard architecture"
           },
           "link": "programming-basics/computer-in-depth/03-hardware-architecture"
+        },
+        {
+          "label": "السوفتوير: من الكود لبرنامج شغال",
+          "translations": {
+            "en": "Software: from source code to a running program"
+          },
+          "link": "programming-basics/computer-in-depth/software-and-runtime"
+        },
+        {
+          "label": "نظام التشغيل: البنية والأنواع وطريقة العمل",
+          "translations": {
+            "en": "Operating-system architecture and types"
+          },
+          "link": "programming-basics/computer-in-depth/06-operating-systems"
         },
         {
           "label": "كيف ينفّذ المعالج التعليمات؟",
@@ -199,11 +85,18 @@ export default defineConfig({
           "link": "programming-basics/computer-in-depth/04-cpu-gpu"
         },
         {
-          "label": "إمتى يفيد تشغيل أعمال كثيرة معًا؟",
+          "label": "تمثيل الأعداد والحروف في الذاكرة",
           "translations": {
-            "en": "When does parallel work help?"
+            "en": "Representing numbers and characters in memory"
           },
-          "link": "programming-basics/computer-in-depth/15-parallel-work"
+          "link": "programming-basics/computer-in-depth/03-binary-languages-algorithms"
+        },
+        {
+          "label": "تمثيل الصور والصوت والفيديو ووحدات الحجم",
+          "translations": {
+            "en": "Images, audio, video, and size units"
+          },
+          "link": "programming-basics/computer-fundamentals/18-media-and-units"
         },
         {
           "label": "العناوين والذاكرة الافتراضية",
@@ -227,34 +120,6 @@ export default defineConfig({
           "link": "programming-basics/computer-in-depth/13-buffers-and-durability"
         },
         {
-          "label": "نظام التشغيل: البنية والأنواع وطريقة العمل",
-          "translations": {
-            "en": "Operating-system architecture and types"
-          },
-          "link": "programming-basics/computer-in-depth/06-operating-systems"
-        },
-        {
-          "label": "تمثيل الأعداد والحروف في الذاكرة",
-          "translations": {
-            "en": "Representing numbers and characters in memory"
-          },
-          "link": "programming-basics/computer-in-depth/03-binary-languages-algorithms"
-        },
-        {
-          "label": "تمثيل الصور والصوت والفيديو ووحدات الحجم",
-          "translations": {
-            "en": "Representing images, audio, video, and size units"
-          },
-          "link": "programming-basics/computer-fundamentals/18-media-and-units"
-        },
-        {
-          "label": "من خطوات الحل إلى برنامج يعمل",
-          "translations": {
-            "en": "From solution steps to running code"
-          },
-          "link": "programming-basics/computer-in-depth/14-running-code"
-        },
-        {
           "label": "اقرأ ملفاتك واكتبها بالطرفية",
           "translations": {
             "en": "Read and write files from a terminal"
@@ -269,11 +134,18 @@ export default defineConfig({
           "link": "programming-basics/computer-in-depth/17-terminal-environment"
         },
         {
-          "label": "احفظ تاريخ ملفاتك وادمج التغييرات",
+          "label": "إمتى يفيد تشغيل أعمال كثيرة معًا؟",
           "translations": {
-            "en": "Record file history and merge changes"
+            "en": "When does parallel work help?"
           },
-          "link": "programming-basics/computer-in-depth/09-git-debugging"
+          "link": "programming-basics/computer-in-depth/15-parallel-work"
+        },
+        {
+          "label": "من خطوات الحل إلى برنامج يعمل",
+          "translations": {
+            "en": "From solution steps to running code"
+          },
+          "link": "programming-basics/computer-in-depth/14-running-code"
         },
         {
           "label": "اختبر السلوك وحدّد سبب الخطأ",
@@ -281,13 +153,6 @@ export default defineConfig({
             "en": "Test behavior and locate a defect"
           },
           "link": "programming-basics/computer-in-depth/16-testing-and-debugging"
-        },
-        {
-          "label": "مجالات التقنية والذكاء الاصطناعي والعقلية الهندسية",
-          "translations": {
-            "en": "Technology fields, AI, and the engineering mindset"
-          },
-          "link": "programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset"
         }
       ]
     },
@@ -306,11 +171,11 @@ export default defineConfig({
           "link": "programming-basics/networking-next"
         },
         {
-          "label": "الاتصال ونقل البيانات",
+          "label": "المرور الأول — أساس الشبكات والويب",
           "translations": {
-            "en": "Connections and data transport"
+            "en": "First pass — network and web foundations"
           },
-          "collapsed": true,
+          "collapsed": false,
           "items": [
             {
               "label": "الإنترنت والويب ورحلة الطلب",
@@ -327,39 +192,11 @@ export default defineConfig({
               "link": "programming-basics/14-network-layers-lan-ethernet-arp"
             },
             {
-              "label": "تقسيم الشبكة ومنع دوران الإطارات",
-              "translations": {
-                "en": "Segment networks and prevent frame loops"
-              },
-              "link": "programming-basics/28-lan-segmentation"
-            },
-            {
-              "label": "اتصل بشبكة Wi-Fi وافهم مشاكلها",
-              "translations": {
-                "en": "Connect to Wi-Fi and diagnose problems"
-              },
-              "link": "programming-basics/18-wifi-practical-basics"
-            },
-            {
               "label": "إعدادات عنوان الجهاز والاتصال",
               "translations": {
                 "en": "Device addresses and connection settings"
               },
               "link": "programming-basics/15-addressing-dhcp-nat-routing-ipv6"
-            },
-            {
-              "label": "احسب حدود الشبكة من عنوانها",
-              "translations": {
-                "en": "Calculate a subnet from its address"
-              },
-              "link": "programming-basics/26-subnet-calculations"
-            },
-            {
-              "label": "اختيار الطريق وقراءة عناوين IPv6",
-              "translations": {
-                "en": "Choose a route and read IPv6 addresses"
-              },
-              "link": "programming-basics/27-routing-and-ipv6"
             },
             {
               "label": "كيف يتحول اسم الموقع إلى عنوان؟",
@@ -368,36 +205,6 @@ export default defineConfig({
               },
               "link": "programming-basics/02-dns-and-ip"
             },
-            {
-              "label": "أخطاء البحث عن العناوين وحماية DNS",
-              "translations": {
-                "en": "DNS failures and protection"
-              },
-              "link": "programming-basics/19-dns-protection"
-            },
-            {
-              "label": "نقل البيانات باستخدام TCP وUDP",
-              "translations": {
-                "en": "Moving data with TCP and UDP"
-              },
-              "link": "programming-basics/03-tcp-udp-packets"
-            },
-            {
-              "label": "إغلاق الاتصال وتشخيص حجم الحزم",
-              "translations": {
-                "en": "Closing connections and diagnosing packet size"
-              },
-              "link": "programming-basics/20-transport-diagnostics"
-            }
-          ]
-        },
-        {
-          "label": "الويب والاتصال الآمن",
-          "translations": {
-            "en": "The web and protected connections"
-          },
-          "collapsed": true,
-          "items": [
             {
               "label": "عنوان الويب والمنافذ وبروتوكول HTTP",
               "translations": {
@@ -411,6 +218,20 @@ export default defineConfig({
                 "en": "Characters and encoding in web addresses"
               },
               "link": "programming-basics/21-url-encoding"
+            },
+            {
+              "label": "TCP: الاتصال من أول SYN لحد الإغلاق",
+              "translations": {
+                "en": "TCP: from establishment to closure"
+              },
+              "link": "programming-basics/03-tcp-udp-packets"
+            },
+            {
+              "label": "UDP: رسائل مستقلة",
+              "translations": {
+                "en": "UDP: independent messages"
+              },
+              "link": "programming-basics/udp"
             },
             {
               "label": "اقرأ طلب HTTP وردّه",
@@ -434,13 +255,6 @@ export default defineConfig({
               "link": "programming-basics/06-https-tls-certificates"
             },
             {
-              "label": "كيف يتفق الطرفان على اتصال مشفّر؟",
-              "translations": {
-                "en": "How peers establish an encrypted connection"
-              },
-              "link": "programming-basics/23-tls-handshake-details"
-            },
-            {
               "label": "كيف يعرض المتصفح الصفحة؟",
               "translations": {
                 "en": "How the browser displays a page"
@@ -448,27 +262,62 @@ export default defineConfig({
               "link": "programming-basics/09-browser-rendering-devtools"
             },
             {
-              "label": "تحميل البرامج وترتيب مهام المتصفح",
-              "translations": {
-                "en": "Load scripts and schedule browser tasks"
-              },
-              "link": "programming-basics/29-browser-scheduling"
-            }
-          ]
-        },
-        {
-          "label": "تطبيقات الويب والخوادم",
-          "translations": {
-            "en": "Web applications and servers"
-          },
-          "collapsed": true,
-          "items": [
-            {
               "label": "جهّز معمل الطلب والرد على جهازك",
               "translations": {
                 "en": "Set up a local request-and-response lab"
               },
               "link": "programming-basics/32-local-network-lab"
+            }
+          ]
+        },
+        {
+          "label": "ارجع بعد التطبيق — تعمق وتشخيص",
+          "translations": {
+            "en": "Return after practice — depth and diagnosis"
+          },
+          "collapsed": true,
+          "items": [
+            {
+              "label": "تقسيم الشبكة ومنع دوران الإطارات",
+              "translations": {
+                "en": "Segment networks and prevent frame loops"
+              },
+              "link": "programming-basics/28-lan-segmentation"
+            },
+            {
+              "label": "اتصل بشبكة Wi-Fi وافهم مشاكلها",
+              "translations": {
+                "en": "Connect to Wi-Fi and diagnose problems"
+              },
+              "link": "programming-basics/18-wifi-practical-basics"
+            },
+            {
+              "label": "احسب حدود الشبكة من عنوانها",
+              "translations": {
+                "en": "Calculate a subnet from its address"
+              },
+              "link": "programming-basics/26-subnet-calculations"
+            },
+            {
+              "label": "اختيار الطريق وقراءة عناوين IPv6",
+              "translations": {
+                "en": "Choose a route and read IPv6 addresses"
+              },
+              "link": "programming-basics/27-routing-and-ipv6"
+            },
+            {
+              "label": "MTU: حجم الحزم وتشخيص المسار",
+              "translations": {
+                "en": "MTU: packet size and path diagnosis"
+              },
+              "link": "programming-basics/20-transport-diagnostics"
+            },
+            {
+              "label": "تحميل البرامج وترتيب مهام المتصفح",
+              "translations": {
+                "en": "Load scripts and schedule browser tasks"
+              },
+              "link": "programming-basics/29-browser-scheduling"
             },
             {
               "label": "رحلة الطلب داخل الخادم",
@@ -564,6 +413,138 @@ export default defineConfig({
           ]
         }
       ]
+    },
+    {
+      "label": "الرياضيات وحل المشكلات",
+      "translations": {
+        "en": "Math and problem solving"
+      },
+      "collapsed": true,
+      "items": [
+        {
+          "label": "الرياضيات وحل المشكلات",
+          "translations": {
+            "en": "Math and problem solving"
+          },
+          "link": "programming-basics/math-problem-solving"
+        },
+        {
+          "label": "حسب الحاجة — الحساب والمنطق وخطوات الحل",
+          "translations": {
+            "en": "As needed — arithmetic, logic, and solution steps"
+          },
+          "collapsed": false,
+          "items": [
+            {
+              "label": "النسب والمتوسط والقوى",
+              "translations": {
+                "en": "Ratios, averages, and powers"
+              },
+              "link": "programming-basics/math-problem-solving/01-arithmetic-foundations"
+            },
+            {
+              "label": "القسمة والباقي ودقة الحساب",
+              "translations": {
+                "en": "Division, remainders, and numerical precision"
+              },
+              "link": "programming-basics/math-problem-solving/07-division-and-precision"
+            },
+            {
+              "label": "المتغيرات والمعادلات والمنطق البولياني",
+              "translations": {
+                "en": "Variables, equations, and Boolean logic"
+              },
+              "link": "programming-basics/math-problem-solving/02-variables-equations-logic"
+            },
+            {
+              "label": "المجموعات والعلاقات ومدخلات الدالة",
+              "translations": {
+                "en": "Sets, relations, and function inputs"
+              },
+              "link": "programming-basics/math-problem-solving/08-sets-relations"
+            },
+            {
+              "label": "التفكير الحاسوبي وتحليل المتطلبات",
+              "translations": {
+                "en": "Computational thinking and requirements analysis"
+              },
+              "link": "programming-basics/math-problem-solving/04-computational-thinking"
+            },
+            {
+              "label": "الخوارزميات وPseudocode وأشجار القرار",
+              "translations": {
+                "en": "Algorithms, pseudocode, and decision trees"
+              },
+              "link": "programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees"
+            },
+            {
+              "label": "المخططات الانسيابية والحلقات والتصحيح",
+              "translations": {
+                "en": "Flowcharts, loops, and debugging"
+              },
+              "link": "programming-basics/math-problem-solving/06-flowcharts-loops-debugging"
+            }
+          ]
+        },
+        {
+          "label": "بعد أساس اللغة — تطبيقات وتعمق",
+          "translations": {
+            "en": "After language fundamentals — applications and depth"
+          },
+          "collapsed": true,
+          "items": [
+            {
+              "label": "مقارنة الخوارزميات وطرق تنظيم البيانات",
+              "translations": {
+                "en": "Comparing algorithms and data structures"
+              },
+              "link": "programming-basics/08-problem-solving-algorithms"
+            },
+            {
+              "label": "ليه الحلقة صحيحة وبتنتهي؟",
+              "translations": {
+                "en": "Why does a loop work and stop?"
+              },
+              "link": "programming-basics/math-problem-solving/13-loop-reasoning"
+            },
+            {
+              "label": "حوّل أنماط الحل إلى خطوات",
+              "translations": {
+                "en": "Turn solution patterns into steps"
+              },
+              "link": "programming-basics/math-problem-solving/09-solution-patterns"
+            },
+            {
+              "label": "اختَر بين الحل الجشع وحفظ النتائج",
+              "translations": {
+                "en": "Choose between greedy steps and saved results"
+              },
+              "link": "programming-basics/math-problem-solving/10-greedy-dynamic-programming"
+            },
+            {
+              "label": "القياس والوحدات والأعداد الأولية",
+              "translations": {
+                "en": "Measurement, units, and prime numbers"
+              },
+              "link": "programming-basics/math-problem-solving/03-applied-math-graphs-primes"
+            },
+            {
+              "label": "المتتابعات والعد والاحتمال",
+              "translations": {
+                "en": "Sequences, counting, and probability"
+              },
+              "link": "programming-basics/math-problem-solving/11-counting-probability"
+            },
+            {
+              "label": "ارسم العلاقات وابحث عن طريق",
+              "translations": {
+                "en": "Draw relationships and search for a path"
+              },
+              "link": "programming-basics/math-problem-solving/12-graphs-and-search"
+            }
+          ]
+        }
+      ]
     }
   ]
 },
@@ -597,11 +578,6 @@ export default defineConfig({
 					label: 'تشغيل PHP وأدوات الإنتاج',
 					translations: { en: 'PHP Runtime & Production' },
 					items: [{ autogenerate: { directory: 'php-runtime' } }],
-				},
-				{
-					label: 'البرمجة كائنية التوجه',
-					translations: { en: 'Object-Oriented Programming' },
-					items: [{ autogenerate: { directory: 'oop' } }],
 				},
 				{
 					label: 'الأمان والمصادقة والصلاحيات',

@@ -1,40 +1,40 @@
 ---
-title: "Computer, programming, and networking fundamentals"
-description: "Learn computer use, build and test a small program, then explore mathematics, computer internals, and networks."
+title: "Programmer foundations: computers, software, and networks"
+description: "Hardware, operating systems, code execution, memory, and files before networks, the web, and problem solving."
 sidebar:
   order: 0
 ---
 
-Learn computer use, build and test a small program, then explore mathematics, computer internals, and networks.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## Using your computer
+Learn what happens when code runs: which component executes instructions, where data lives, why programs wait, and how one program communicates with another.
 
-[Open this section](/en/programming-basics/computer-fundamentals/)
+Start with hardware only as far as it serves programmers. Then concentrate on software and operating-system services. General examples use PHP, with Laravel when a framework helps; a language-specific track uses its own language.
 
-Create and find files, use programs safely, and understand how data and hardware fit together.
+## 1. Computers and operating systems
 
-## Programming fundamentals and practice
+Begin with [computers and operating systems](/en/programming-basics/computer-in-depth/).
 
-[Open this section](/en/programming-basics/programming-practice/)
+Connect CPU, RAM, and storage, then distinguish source code, programs, and processes. Follow script execution, file access, CPU scheduling, memory use, and permissions.
 
-Progress from one result to user input, text, error handling, saved data, and a shopping-list project.
+The sequence is **hardware overview → software and runtime → operating system → CPU, data, and media → memory → files and environment → concurrency, algorithms, and debugging**.
 
-## Math and problem solving
+## 2. Networks and the web
 
-[Open this section](/en/programming-basics/math-problem-solving/)
+Continue with [networks and the web](/en/programming-basics/networking-next/) after understanding processes and files. The networking path introduces ports before TCP.
 
-Learn arithmetic and logic as needed, then practice describing, tracing, and comparing solutions.
+Trace connectivity, name resolution, transport, web requests, encryption, and servers. Explain observations and locate failures.
 
-## Computer internals and development tools
+## 3. Thinking and mathematics for code
 
-[Open this section](/en/programming-basics/computer-in-depth/)
+Use [mathematics and problem solving](/en/programming-basics/math-problem-solving/) as needed for conditions, remainders, numeric precision, solution steps, and cost comparisons. Completing every mathematical topic is not a prerequisite for starting a language.
 
-Return to memory, execution, operating systems, the terminal, and version history after writing programs.
+## Know when to move on
 
-## Networking and the web
+The network guide distinguishes a 13-lesson first pass from 19 return-for-depth lessons. Mathematics similarly separates early support from applications after language fundamentals. Follow local stopping points; the 60 lessons are a reference and learning path, not 60 prerequisites before your first program.
 
-[Open this section](/en/programming-basics/networking-next/)
+## How to study
 
-Begin with local connections and Wi-Fi, then addresses, web requests, and encryption. Application-server topics follow separately.
+Read the problem and follow an example from input to result. Predict the result before running it, then change one condition and test your explanation. Explain new terms in context and briefly recall prerequisites with links.
 
-After the programming project, you can start [C++](/en/cpp/) or [PHP](/en/php/) and use the later sections when their questions arise.
+After execution fundamentals, choose [PHP](/en/php/) for web applications or [C++](/en/cpp/) if that is the language you are studying.

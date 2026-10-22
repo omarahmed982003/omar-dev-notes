@@ -11,11 +11,8 @@ Identify basic components through their jobs, without opening the computer or me
 
 ## Follow one file opening
 
-```text
-SSD/HDD → RAM → CPU → Screen
-```
 
-Arrows show data or processed results, not a direct wire between every pair. An **SSD** is solid-state storage; an **HDD** uses rotating disks. Both retain files after shutdown. **RAM** is fast working memory. The **CPU** executes instructions on data; the screen displays a prepared result.
+An **SSD** is solid-state storage; an **HDD** uses rotating disks. Both retain files after shutdown. **RAM** is fast working memory. The **CPU** executes instructions on data; the screen displays a prepared result.
 
 Open an image: storage supplies its data, memory holds it, and processing prepares display. **Check:** increasing storage capacity does not automatically add RAM; they solve different problems.
 

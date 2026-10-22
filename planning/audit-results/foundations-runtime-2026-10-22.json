@@ -1,0 +1,137 @@
+{
+  "date": "2026-10-22",
+  "php": "PHP 8.4.23 (cli) (built: Jul  1 2026 04:47:16) (NTS Visual C++ 2022 x64)",
+  "work": "C:\\my_docs\\tmp\\foundations-content-tests\\run-cs50x0",
+  "checks": [
+    {
+      "name": "60 unique lessons retained; network 13/19 and mathematics 7/7 stage boundaries",
+      "passed": true
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/01-arithmetic-foundations",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/07-division-and-precision",
+      "passed": true,
+      "examples": 2
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/02-variables-equations-logic",
+      "passed": true,
+      "examples": 2
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/08-sets-relations",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/04-computational-thinking",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/05-algorithms-pseudocode-decision-trees",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/06-flowcharts-loops-debugging",
+      "passed": true,
+      "examples": 2
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: 08-problem-solving-algorithms",
+      "passed": true,
+      "examples": 2
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/13-loop-reasoning",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/09-solution-patterns",
+      "passed": true,
+      "examples": 2
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/10-greedy-dynamic-programming",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/03-applied-math-graphs-primes",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/11-counting-probability",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "mathematics parity, prerequisite links, and PHP execution: math-problem-solving/12-graphs-and-search",
+      "passed": true,
+      "examples": 0
+    },
+    {
+      "name": "Each Node-dependent lesson declares optional execution locally; tracing does not route through a database",
+      "passed": true
+    },
+    {
+      "name": "totalsByCustomer: normal, empty, zero, missing, negative, wrong type, maximum integer, overflow",
+      "passed": true
+    },
+    {
+      "name": "two pointers: both movements, absent, distinct positions, duplicates, negative, bounds, invalid input",
+      "passed": true
+    },
+    {
+      "name": "loop: zero, one, normal, independent boundary, deliberate off-by-one",
+      "passed": true
+    },
+    {
+      "name": "server catch over HTTP Arabic: 200 → 500 → 200; private error log only",
+      "passed": true
+    },
+    {
+      "name": "server catch over HTTP English: 200 → 500 → 200; private error log only",
+      "passed": true
+    },
+    {
+      "name": "PHP session over HTTP: 1 → 2 with cookie; 1 without cookie; HttpOnly and SameSite=Lax",
+      "passed": true
+    },
+    {
+      "name": "CORP/COEP browser lab: same-origin blocked, cross-origin displayed, absent blocked",
+      "passed": true,
+      "outcomes": [
+        {
+          "policy": "same-origin",
+          "isolated": true,
+          "width": 0,
+          "complete": true
+        },
+        {
+          "policy": "cross-origin",
+          "isolated": true,
+          "width": 180,
+          "complete": true
+        },
+        {
+          "policy": "absent",
+          "isolated": true,
+          "width": 0,
+          "complete": true
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Optional Node labs were reviewed, not all executed.",
+    "Windows editor-memory GUI experiment was not executed; its paper values are illustrative."
+  ]
+}

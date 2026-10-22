@@ -2,79 +2,79 @@
 title: "Ratios, averages, and powers"
 description: "Ratios, averages, and powers"
 tableOfContents: true
-prev: false
-next: {"link":"/en/programming-basics/math-problem-solving/07-division-and-precision/","label":"Division, remainders, and numerical precision"}
 sidebar:
   order: 1
+prev: {"link":"/en/programming-basics/math-problem-solving/","label":"Math and problem solving"}
+next: {"link":"/en/programming-basics/math-problem-solving/07-division-and-precision/","label":"Division, remainders, and numerical precision"}
 ---
 
-Use this section after [values, decisions, and loops](/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/). Review arithmetic when needed; graphs, complexity, and dynamic programming are later extensions, not first-program prerequisites.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+Choose a calculation that expresses the requirement, not just a familiar symbol. The worked examples need ordinary addition, subtraction, multiplication, and division, not a programming language.
 
+## Build one invoice step by step
 
-## One calculation with meaning
+You buy 3 notebooks at 20 pounds each. **Quantity** counts units; **unit price** prices one unit. The subtotal is `3 × 20 = 60` pounds.
 
-Three notebooks at 20 cost `3×20=60`. A 10% discount is `60×10÷100=6`, leaving 54. **Try:** price 30 and quantity 2 still total 60. The power `2³` is `2×2×2=8`; `√25=5` because `5×5=25`. The percent sign in prose differs from a language’s remainder operator.
+A **percentage** expresses parts per hundred. A 10% discount removes 10 from every 100 pounds, not a fixed 10 pounds from any invoice.
 
-## Overview
+| Step | Calculation | Meaning |
+|---|---|---|
+| Subtotal | 3 × 20 = 60 | Invoice pounds |
+| Discount | 60 × 10 ÷ 100 = 6 | Pounds removed |
+| Final amount | 60 − 6 = 54 | Pounds paid |
 
-Core arithmetic appears directly in programs: remainder, percentages, rates, averages, powers, roots, and precedence. Connect every formula to the problem meaning before calculating.
+Buying 2 notebooks at 30 also totals 60. Equal results can come from different inputs; keep each number's meaning.
 
-## Core concepts
+## Ratio or rate?
 
-- Remainder supports parity checks, cycles, and time conversion.
-- A percentage is a part per hundred; discount = price × rate ÷ 100.
-- A rate compares quantities with different units, such as km/hour.
-- Arithmetic mean is sum divided by count and is sensitive to outliers.
-- Use parentheses, powers, multiplication/division, then addition/subtraction; multiplication/division and addition/subtraction associate left to right. Powers and programming operators may associate differently; use parentheses to state intent.
+A **ratio** compares quantities: 2 out of 5 is `2/5 = 0.4 = 40%`. The fraction, decimal, and percentage express the same proportion.
 
-## Worked example
+A **rate** compares quantities with different units. Downloading 60 megabytes in 3 seconds gives `60 ÷ 3 = 20` megabytes/second. Units are part of the answer.
 
-For a price of 800 with a 15% discount, the discount is 120 and the final price is 680. Subtracting 15 directly confuses a percentage with an amount.
+Convert to compatible units before combining values. Two seconds plus 300 milliseconds is 2300 milliseconds, or 2.3 seconds; one second contains 1000 milliseconds.
 
-## Corrections and common mistakes
+## An average does not describe everything
 
-- Avoid integer division when the result may contain a fraction.
-- Carry units through calculations to catch invalid formulas.
+The **arithmetic mean** is the sum divided by the count. For `2, 4, 9`, the sum is 15 and the mean is 5.
 
-## Lesson map
+The **median** is the middle value after sorting: 4 here. With an even count, average the middle two. For `2, 4, 9, 25` the median is `(4+9)/2 = 6.5`, but the mean is 10.
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Math foundations: remainder, ratios, averages, and powers">
-<p class="lesson-diagram-title">Concept map: Math foundations: remainder, ratios, averages, and powers</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>Value and meaning</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Choose the operation</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Calculate with units</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Test zero and boundaries</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Interpret the result</span></div>
-</div>
-</div>
+An **outlier** is unusually far from most values; 25 pulls the mean upward. An average response time can hide slow requests. The calculation is correct but may be an incomplete description.
 
-## Check your understanding
+An empty list has no arithmetic mean. Choose an explicit outcome, such as “no data, ” instead of dividing by zero or inventing a zero mean.
 
-<div class="lesson-quiz" role="list">
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">01</span><p>Why can 9/5 break a temperature conversion in some languages?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> With two integer operands, integer division produces 1. Use 9.0/5.0 or convert an operand to a floating type.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">02</span><p>An 800 item gets 15% off, then 15% tax. Does it return to 800?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> No. Discount gives 680; tax is then 102, producing 782. The two percentages use different bases.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">03</span><p>When can the arithmetic mean be misleading?</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Outliers or skewed data can dominate it; the median and the distribution may communicate the situation better.</div></details>
-</section>
-<section class="quiz-card" role="listitem">
-<div class="quiz-question-row"><span class="quiz-number">04</span><p>Convert 10,000 seconds into hours, minutes, and seconds using division and remainder.</p></div>
-<details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Explained answer:</strong> Hours are 2 with 2800 left; minutes are 46 with 40 left, so the result is 2:46:40.</div></details>
-</section>
-</div>
+## Powers and roots
 
-## Next step
+A **power** abbreviates repeated multiplication: `2³ = 2×2×2 = 8`. Two is the base and three the exponent. A nonzero base to power zero is 1: `5⁰=1`.
 
-After completing this practice, continue with [Division, remainders, and numerical precision](/en/programming-basics/math-problem-solving/07-division-and-precision/).
+The **square root** symbol selects the nonnegative number whose square equals the given nonnegative value: `√25=5`. The equation `x²=25` has two solutions, 5 and −5; the root symbol itself selects the nonnegative one.
+
+Repeated choice counts can grow as powers. See [counting](/en/programming-basics/math-problem-solving/11-counting-probability/) later; it is not a prerequisite here.
+
+## Parentheses settle the intended calculation
+
+In ordinary arithmetic, calculate parentheses, powers, multiplication/division, then addition/subtraction. Multiplication and division have equal precedence and proceed left to right; so do addition and subtraction.
+
+`20 / 5 × 2 = 8`, whereas `20 / (5 × 2) = 2`.
+
+Programming symbols can differ. In prose, `%` denotes a percentage; in PHP it calculates a remainder. PHP exponentiation uses `**`, not `^`. [The next lesson](/en/programming-basics/math-problem-solving/07-division-and-precision/) explains remainders and division.
+
+## Try independently
+
+1. Apply a 15% discount to 800, then a 15% tax to the discounted amount. Does it return to 800?
+2. Find the mean and median of `10, 10, 10, 90`. Which better describes the common values?
+3. Calculate `18 / 3 × 2` and `18 / (3 × 2)`. State units if the starting quantity is a duration and the other numbers are unitless.
+
+<details>
+<summary>Answers and reasoning</summary>
+
+1. Discount 120, discounted amount 680, tax 102, final 782. The percentages use different bases.
+2. Mean 30 and median 10. The median better reflects the repeated values here, but retain 90 as a potentially important unusual case.
+3. Twelve and three, respectively. With seconds as the starting unit and unitless factors, both answers are seconds.
+
+</details>
+
+## Summary
+
+Start with meaning and units, then select the operation. A percentage is not a fixed amount; a mean is not the whole distribution. Continue to [division, remainders, and numerical precision](/en/programming-basics/math-problem-solving/07-division-and-precision/).

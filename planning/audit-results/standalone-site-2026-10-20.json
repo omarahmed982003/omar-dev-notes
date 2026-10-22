@@ -1,0 +1,100 @@
+{
+  "results": [
+    {
+      "route": "/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/en/",
+      "status": 200,
+      "dir": "ltr"
+    },
+    {
+      "route": "/programming-basics/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "dir": "rtl",
+      "languageCounterpart": "/en/programming-basics/computer-in-depth/software-and-runtime/"
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/06-operating-systems/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "dir": "rtl",
+      "languageCounterpart": "/en/programming-basics/03-tcp-udp-packets/"
+    },
+    {
+      "route": "/programming-basics/udp/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "dir": "ltr",
+      "languageCounterpart": "/programming-basics/computer-in-depth/software-and-runtime/"
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "dir": "ltr",
+      "languageCounterpart": "/programming-basics/03-tcp-udp-packets/"
+    },
+    {
+      "route": "/en/programming-basics/udp/",
+      "status": 200,
+      "dir": "ltr"
+    },
+    {
+      "route": "/en/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "dir": "ltr"
+    },
+    {
+      "route": "/cpp/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/php/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/php-runtime/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/auth/",
+      "status": 200,
+      "dir": "rtl"
+    },
+    {
+      "route": "/database/",
+      "status": 200,
+      "dir": "rtl"
+    }
+  ],
+  "retiredOopStatus": 404,
+  "pageErrors": []
+}

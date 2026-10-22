@@ -1,33 +1,119 @@
 ---
-title: "Images, sound, and size units"
-description: "Images, sound, and size units"
+title: "Images, audio, video, and size units"
+description: "Pixels, sampled sound, video frames, codecs, containers, compression, and correct size calculations."
 sidebar:
-  order: 7
-prev: {"link":"/en/programming-basics/computer-fundamentals/02-binary-data-representation/","label":"How computers represent numbers and text"}
-next: {"link":"/en/programming-basics/computer-fundamentals/03-hardware-architecture/","label":"The computer components you use"}
+  order: 6
+prev: {"link":"/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/","label":"Representing numbers and characters in memory"}
+next: {"link":"/en/programming-basics/computer-in-depth/05-ram-memory-buffers/","label":"Addresses and virtual memory"}
 ---
 
-After representing numbers and characters, use bytes to represent images and sound. Calculate each example before moving on; only simple multiplication and division are needed.
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
+A byte is eight bits in the systems used here. Those bytes can describe an image, sound, or video because a format tells software how to interpret them.
 
-## Images and sound
+We will calculate raw sizes: before compression and file metadata. The goal is to understand relationships, not memorize one recording preset.
 
-A digital image can be represented as a grid of **pixels**, small colored points. **RGB**, Red Green Blue, describes amounts of three color channels. A common representation uses one byte per channel: 255,0,0 is red, and 0,0,0 is black. A 2×2 image has four pixels; at three bytes per pixel, raw color data needs 12 bytes. The actual file size may differ because of file metadata, compression, or another pixel representation.
+## Images: a grid of pixels
 
-Sound can be represented by **samples**, measurements of a signal at successive times. The **sample rate** is the number of measurements per second. One channel at 8000 samples per second and 16 bits per sample needs `8000×16÷8 = 16000` raw bytes per second. These are example settings, not a rule for every recording.
+A **raster image** is a grid of **pixels**, individual points with color values. **Resolution** here means the grid dimensions, such as `1920 × 1080`, not the file's byte size.
 
-**Compression** reduces representation size. Lossless compression can recover the exact original data; lossy compression discards some detail. Text and executable programs need exact recovery, while some image and audio uses tolerate selected losses.
+A **color channel** stores a component of color. In **RGB**, red, green, and blue each use one byte in our example, so each pixel takes three bytes.
 
-## Size and transfer-rate units
+| RGB values | Example color |
+|---|---|
+| `255, 0, 0` | Red |
+| `0, 0, 0` | Black |
+| `255, 255, 255` | White |
 
-Lowercase b means bit; uppercase B means byte. `kB = 1000 B` and `MB = 1,000,000 B`. Binary units have distinct names: `KiB = 1024 B` and `MiB = 1,048,576 B`. Some interfaces use ambiguous labels, so check the intended unit.
+A 3-by-2 image has six pixels: `3 × 2 × 3 = 18 B` of raw color data. Doubling both width and height multiplies the pixel count by four, not two.
 
-A rate of `8 Mb/s` is eight million bits per second, theoretically `1 MB/s` before protocol overhead and other limits. File size measures data; transfer rate measures data per unit of time.
+An **alpha channel** may add transparency information, and other formats use different bit depths. **Vector images** describe shapes and paths instead of storing every pixel's color. The calculation is not a universal image-file formula.
 
-## Keep the calculations separate
+## Audio: successive signal measurements
 
-1. Mono audio,4000 samples/second,16bits/sample,one second: `4000×16÷8=8000` raw bytes. Doubling only duration gives16000.
-2. Program files require lossless compression to recover identical bytes. Display images may accept lossy compression if retained detail meets the purpose.
-3.16Mb/s theoretically equals2MB/s before overhead.10MB needs at least five seconds at that constant theoretical rate, potentially longer in practice.
+A **sample** measures a signal at an instant. **Sample rate** is measurements per second, expressed in **Hz**, or hertz: occurrences per second.
 
-Write units beside values; confusing bits with bytes changes the result by eight.
+**Bit depth** is the number of bits available for each sample value. Audio **channels** are separate sound paths: mono has one and stereo has two. This is a different use of “channel” from image color channels.
+
+For raw **PCM, pulse-code modulation**, representing samples numerically, calculate:
+
+```text
+bytes = sample rate × bit depth × channels × seconds ÷ 8
+```
+
+For example, `8000 × 16 × 1 × 1 ÷ 8 = 16000 B` for one second. Two seconds need `32000 B`; two channels instead of one double it again.
+
+These are teaching settings, not recommendations for every recording. Rate, bit depth, and channels describe different properties; increasing a number does not automatically repair a poor source.
+
+## Video: frames, sound, and timing
+
+A **frame** is an image in a video sequence. **Frame rate** is frames per second, usually written FPS.
+
+For raw RGB frames of `100 × 100` pixels, three bytes per pixel, ten frames per second, and two seconds:
+
+```text
+100 × 100 × 3 × 10 × 2 = 600000 B
+```
+
+This counts **raw video only**, excluding audio and file metadata. Compressed video need not store every frame as a complete independent image; it may encode relationships and differences between frames.
+
+A **codec** provides rules and tools for encoding and decoding media, often including compression. A **container**, such as MP4, packages video, audio, timing, and other information.
+
+MP4 is therefore a container name, not a guarantee of one codec or quality level. This use of “container” is unrelated to application containers that isolate an application's execution environment.
+
+## Compression trades space for other costs
+
+**Compression** represents data in less space. **Lossless** compression allows the original data to be recovered exactly, as required for restoring program or text files unchanged.
+
+**Lossy** compression discards some information to reduce size. It may suit displayed images or recordings if the result meets the use case. A smaller file is not evidence of higher quality.
+
+Decompression costs computation, and display requires memory. An image's compressed disk size need not equal its decoded size in RAM.
+
+## File size is not transfer rate
+
+**B** denotes bytes; **b** denotes bits. A byte is eight bits in these examples.
+
+| Unit | Value |
+|---|---|
+| kB | `1000 B` |
+| MB | `1000000 B` |
+| KiB | `1024 B` |
+| MiB | `1048576 B` |
+
+**Bitrate** measures bits per unit of time, such as Mb/s. It is not image resolution or frame rate.
+
+A rate of `8 Mb/s` is theoretically `1 MB/s`. A `10 MB` file takes at least ten seconds at that constant rate, often longer because of protocol overhead, congestion, or other stages. Some tools use ambiguous labels: check the actual unit.
+
+## Compare actual files safely
+
+Choose two images, recordings, or videos you created or may use. Inspect file properties in your existing viewer: size, duration where applicable, dimensions, and codec or container if shown.
+
+Record the tool and settings rather than assuming identical encodings. Compare one changed factor at a time; lower resolution or shorter duration does not alone explain all compressed-size differences.
+
+If the viewer cannot report a codec, write “not observed” rather than guessing it from .mp4. Do not upload private media or install an unknown utility to complete the exercise.
+
+## Try, then check
+
+1. How many raw bytes for a `4 × 3` image at three bytes per pixel?
+2. How many bytes for two seconds of mono PCM at 4000 samples/second and 16 bits/sample?
+3. Can an MP4 file's 10 MB size identify its resolution or codec?
+4. What is the theoretical minimum for 10 MB at 16 Mb/s?
+
+<details>
+<summary>Check the reasoning</summary>
+
+1. `4 × 3 × 3 = 36 B`.
+2. `4000 × 16 × 1 × 2 ÷ 8 = 16000 B`.
+3. No: inspect its tracks and encoding. Size alone does not establish quality.
+4. `16 ÷ 8 = 2 MB/s`, so five seconds theoretically, before additional overhead.
+
+</details>
+
+## Summary
+
+Formats give bytes meaning. Settings, duration, and compression affect size and processing cost. Next, trace active bytes through [memory](/en/programming-basics/computer-in-depth/05-ram-memory-buffers/).
+
+## References
+
+- [NIST: bytes and binary prefixes](https://physics.nist.gov/cuu/Units/binary.html).
+- [MDN: media containers](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Formats/Containers).

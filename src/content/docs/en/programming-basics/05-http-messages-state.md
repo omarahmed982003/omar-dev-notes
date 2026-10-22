@@ -2,11 +2,12 @@
 title: "Read an HTTP request and response"
 description: "Read an HTTP request and response"
 sidebar:
-  order: 14
-prev: {"link":"/en/programming-basics/21-url-encoding/","label":"Characters and encoding in web addresses"}
+  order: 9
+prev: {"link":"/en/programming-basics/udp/","label":"UDP: independent messages without a TCP connection"}
 next: {"link":"/en/programming-basics/22-http-state-and-updates/","label":"Remembering users and protecting updates"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## Read one message before tracing a session
 
@@ -32,7 +33,9 @@ Content-Length: 27
 {"product_id":42,"count":2}
 ```
 
-The example body is **27 UTF-8 (Unicode Transformation Format with 8-bit units, encoding Unicode character numbers as bytes) bytes**, with no trailing newline. Content-Length counts bytes, not visible characters. Bearer ey... is a placeholder credential, not a usable token. **JSON, JavaScript Object Notation**, is structured text mapping names such as count to values such as 2.
+The example body is **27 UTF-8 (Unicode Transformation Format with 8-bit units, encoding Unicode character numbers as bytes) bytes**, with no trailing newline. Content-Length counts bytes, not visible characters. Bearer ey... is a placeholder credential, not a usable token.
+
+**JSON, JavaScript Object Notation**, is structured text mapping names such as count to values such as 2.
 
 A **safe** method requests no change to resource state; incidental logging is allowed. An **idempotent** method has the same intended state effect when repeated, although response codes may differ. DELETE can be idempotent without being safe. A **representation** is returned data describing a resource.
 
@@ -48,7 +51,6 @@ Location: /api/orders/901
 
 Response classes are 1xx informational, 2xx success, 3xx redirection/cache, 4xx request/client error, and 5xx server error. 401 generally indicates missing/invalid authentication; 403 indicates understood but unauthorized.
 
-
 ## Practical problems
 
 <details><summary>How do <code>401</code> and <code>403</code> differ?</summary><p>401 means valid authentication is required; 403 means permission was refused; it does not prove the identity was known.</p></details>
@@ -57,7 +59,6 @@ Response classes are 1xx informational, 2xx success, 3xx redirection/cache, 4xx 
 
 <details><summary>Should GET transfer account credit?</summary><p>No. GET is expected to be safe and may be repeated by browsers or crawlers. Use a state-changing method with protection and safe retry design.</p></details>
 
-
 ## Next step
 
-After completing this practice, continue with [Remembering users and protecting updates](/en/programming-basics/22-http-state-and-updates/).
+[Remembering users and protecting updates](/en/programming-basics/22-http-state-and-updates/).

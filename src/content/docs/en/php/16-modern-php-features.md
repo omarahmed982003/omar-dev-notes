@@ -9,7 +9,7 @@ sidebar:
 
 A new syntax feature can make a file fail **before execution** on an older PHP version. An `if (PHP_VERSION_ID >= ...)` in that same file cannot protect syntax its parser does not understand. Declare a minimum in Composer, actually test it, and adopt a feature to solve a concrete problem.
 
-Read in two passes: generators, WeakMap, and fibers explain execution/memory; then recognize newer type/object features. Detailed OOP belongs in [its track](/en/oop/), without building a framework here.
+Read in two passes: generators, WeakMap, and fibers explain execution/memory; then recognize newer type/object features. Detailed OOP belongs in its track, without building a framework here.
 
 ## A timeline of released versions
 
@@ -162,7 +162,7 @@ readonly blocked reassignment
 
 The array uses one union branch; the object satisfies both Countable and Stringable. A readonly class makes typed instance properties readonly and disallows dynamic properties. It is not deep immutability: an object stored in a property may still mutate internally. Constructor promotion, shorthand for defining and receiving properties, arrived in 8.0; readonly classes arrived in 8.2.
 
-PHP 8.1 enums represent a closed set of cases. Backed enums use from, which throws ValueError for unknown values, or tryFrom, which returns null. Readonly properties also arrived in 8.1; never marks functions that do not return normally, such as those always terminating or throwing. See [OOP](/en/oop/) and [types](/en/php/03-types/).
+PHP 8.1 enums represent a closed set of cases. Backed enums use from, which throws ValueError for unknown values, or tryFrom, which returns null. Readonly properties also arrived in 8.1; never marks functions that do not return normally, such as those always terminating or throwing. See OOP and [types](/en/php/03-types/).
 
 ## Attributes: metadata needs a reader
 

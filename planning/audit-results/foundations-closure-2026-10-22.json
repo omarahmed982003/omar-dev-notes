@@ -1,0 +1,318 @@
+{
+  "date": "2026-10-22",
+  "work": "C:\\my_docs\\tmp\\foundations-closure\\run-evzLL8",
+  "results": [
+    {
+      "check": "bilingual code, reading marker, and folded exercise: 21-url-encoding",
+      "passed": true
+    },
+    {
+      "check": "bilingual code, reading marker, and folded exercise: 15-addressing-dhcp-nat-routing-ipv6",
+      "passed": true
+    },
+    {
+      "check": "bilingual code, reading marker, and folded exercise: 17-proxies-cdn-waf-observability",
+      "passed": true
+    },
+    {
+      "check": "bilingual code, reading marker, and folded exercise: 29-browser-scheduling",
+      "passed": true
+    },
+    {
+      "check": "bilingual code, reading marker, and folded exercise: 03-tcp-udp-packets",
+      "passed": true
+    },
+    {
+      "check": "PHP URL round trips: Arabic, ampersand, plus, empty, zero, fragment, percent, reserved characters",
+      "passed": true,
+      "cases": 8
+    },
+    {
+      "check": "PHP form-space decoding, literal plus, unsafe join, decoding once/twice, and parsed string type",
+      "passed": true
+    },
+    {
+      "check": "NAT/PAT paper mapping: two internal peers, distinct external ports, return targets, unmatched mapping",
+      "passed": true
+    },
+    {
+      "check": "TCP paper receiver: retained out-of-order data, cumulative ACK recovery, independent trace, remaining window room",
+      "passed": true
+    },
+    {
+      "check": "CDN paper model: independent PoPs, freshness, stale validation, changed origin, separate language keys",
+      "passed": true,
+      "originFetches": 4
+    },
+    {
+      "check": "real browser event-loop output: published example",
+      "passed": true,
+      "output": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    {
+      "check": "real browser event-loop output: independent extra synchronous line",
+      "passed": true,
+      "output": [
+        "A",
+        "B",
+        "X",
+        "C",
+        "D"
+      ]
+    },
+    {
+      "check": "real browser event-loop output: independent direct invocation",
+      "passed": true,
+      "output": [
+        "A",
+        "C",
+        "B",
+        "D"
+      ]
+    },
+    {
+      "check": "controlled browser loading fixture: defer",
+      "passed": true,
+      "order": [
+        "config",
+        "app:ready"
+      ]
+    },
+    {
+      "check": "controlled browser loading fixture: async",
+      "passed": true,
+      "order": [
+        "app:missing",
+        "config"
+      ]
+    },
+    {
+      "check": "controlled browser loading fixture: module",
+      "passed": true,
+      "order": [
+        "dependency",
+        "module:ready"
+      ]
+    },
+    {
+      "check": "published page layout and language: /programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 320,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 390,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 1280,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 320,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 390,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/21-url-encoding/",
+      "passed": true,
+      "width": 1280,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 320,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 390,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 1280,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 320,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 390,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "passed": true,
+      "width": 1280,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 320,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 390,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 1280,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 320,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 390,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/17-proxies-cdn-waf-observability/",
+      "passed": true,
+      "width": 1280,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 320,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 390,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 1280,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 320,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 390,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/29-browser-scheduling/",
+      "passed": true,
+      "width": 1280,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 320,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 390,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 1280,
+      "direction": "rtl",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 320,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 390,
+      "direction": "ltr",
+      "overflow": false
+    },
+    {
+      "check": "published page layout and language: /en/programming-basics/03-tcp-udp-packets/",
+      "passed": true,
+      "width": 1280,
+      "direction": "ltr",
+      "overflow": false
+    }
+  ],
+  "limitations": [
+    "NAT, CDN, and TCP numeric traces are prepared models checked for consistency, not live router/CDN/packet-capture experiments.",
+    "No production CDN, DNS, firewall, deployment, or account was changed.",
+    "Browser output order is tested; no fixed millisecond or real-world performance improvement is asserted."
+  ]
+}

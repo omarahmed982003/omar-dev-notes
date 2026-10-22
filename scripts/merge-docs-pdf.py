@@ -26,8 +26,10 @@ for number, page in enumerate(writer.pages, 1):
     stream.seek(0)
     page.merge_page(PdfReader(stream).pages[0])
 writer.add_metadata({"/Title": "Omar Programming Library - Complete Arabic and English Edition"})
-with output.open("wb") as target:
+staging = output.with_name(output.stem + ".staging.pdf")
+with staging.open("wb") as target:
     writer.write(target)
-assert len(PdfReader(output).pages) == total
+assert len(PdfReader(staging).pages) == total
+staging.replace(output)
 print(json.dumps({"pages": total, "parts": parts}))
 

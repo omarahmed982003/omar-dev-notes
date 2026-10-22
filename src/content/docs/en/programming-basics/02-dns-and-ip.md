@@ -2,13 +2,18 @@
 title: "How a domain name becomes an address"
 description: Understand why a service needs a name and an address, and how DNS reaches an authoritative answer through caches.
 sidebar:
-  order: 8
-prev: {"link":"/en/programming-basics/27-routing-and-ipv6/","label":"Choose a route and read IPv6 addresses"}
-next: {"link":"/en/programming-basics/19-dns-protection/","label":"DNS failures and protection"}
+  order: 4
+prev: {"link":"/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/","label":"Device addresses and connection settings"}
+next: {"link":"/en/programming-basics/04-url-ports-http/","label":"Web addresses, ports, and HTTP"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-The client in the previous lesson needed the server's address before it could connect. Keep two jobs separate: **an IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) address is a routable destination, while DNS (Domain Name System, a distributed system answering queries about domain names) finds suitable addresses for a name**.
+The client in the previous lesson needed the server's address before it could connect.
+
+Keep two jobs separate: **an IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) address is a routable destination, while DNS (Domain Name System, a distributed system answering queries about domain names) finds suitable addresses for a name**.
+
+**Reading route:** follow the lookup through its query exercise and foundation stopping point below. Focus on A, AAAA, CNAME, and resolver versus website address; mail/text records, diagnosis, and protection can wait until after a first application.
 
 ## Read a lookup result
 
@@ -22,7 +27,9 @@ Name:    example.com
 Address: 203.0.113.10
 ```
 
-The first Server/Address identify the answering resolver, not the website. The later Name/Address describe the queried name. 203.0.113.10 is a documentation address, not a destination to try. **Non-authoritative** means the answer was not obtained directly from the domain’s authoritative server; it does not by itself mean incorrect. Real output may contain multiple or IPv6 addresses.
+The first Server/Address identify the answering resolver, not the website. The later Name/Address describe the queried name. 203.0.113.10 is a documentation address, not a destination to try.
+
+**Non-authoritative** means the answer was not obtained directly from the domain’s authoritative server; it does not by itself mean incorrect. Real output may contain multiple or IPv6 addresses.
 
 ## The mental model: a distributed address book
 
@@ -64,15 +71,6 @@ One name may return several addresses for load distribution or locality. DNS loc
 7. The authoritative server returns the final record.
 8. The resolver returns and caches the answer according to its TTL (Time To Live, a DNS cache lifetime or an IPv4 forwarding limit depending on context).
 
-```text
-Browser/OS cache
-      ↓ cache miss
-Recursive resolver
-      ↓
-Root → TLD → Authoritative
-                    ↓
-                IP + TTL
-```
 
 :::caution[Important correction]
 The browser does not normally query root and TLD servers itself, and the full journey is not repeated for every request. The recursive resolver performs it when no valid cached answer exists.
@@ -105,6 +103,34 @@ Address: 93.184.216.34
 - An `AAAA` query may return IPv6 or report no record.
 - An `MX` query asks about mail servers, not the website.
 
+## Foundation stop: draw a question and answer
+
+Input is example.com plus type A; output is an IPv4 address or another lookup outcome, not page content. Identify the queried resolver and website address, then explain why A can work while AAAA is absent. Explain why a cache avoids repeating the complete lookup.
+
+Then follow the guide's next foundation lesson. The following sections are diagnosis and depth for return after a local web request, not a requirement to memorize every transport or security detail before HTML.
+
+## Lookup failures and DNS transport
+
+**NXDOMAIN** reports that the queried name does not exist. **NODATA** describes an existing name without records of the requested type.
+
+**SERVFAIL** reports failure to complete processing, potentially involving server or signature-validation problems. A **timeout** means no response arrived within the wait, not proof of a nonexistent name.
+
+Traditional DNS uses port 53 over UDP or TCP. A **truncated** response did not fit the current response limit; the client may retry over TCP. TCP is not exclusively for zone transfers.
+
+Cache, hosts-file, and browser lookup order is not identical across systems. A browser with its own encrypted-DNS policy may differ from a system lookup tool. Compare tools and resolver sources before drawing conclusions.
+
+<span id="dns-security"></span>
+
+## Missing answers and DNS protection
+
+A and AAAA return IPv4 and IPv6 addresses; CNAME aliases another name; MX identifies mail receivers; TXT carries text; NS identifies authoritative servers. **Negative caching** saves an answer that a name or record type does not exist, so a newly added record need not appear immediately to every client.
+
+**DNSSEC, Domain Name System Security Extensions**, adds signatures that supporting resolvers validate through a trust chain; it does not encrypt queries. **DoH (DNS over HTTPS (HTTP carried over a TLS-protected connection))** and **DoT (DNS over TLS)** protect transport to a resolver, not the honesty of the returned website.
+
+**Worked check:** An A query succeeds and an AAAA query has no address. That does not invalidate A or prove that the website is down. To inspect details including TTL where shown, try `nslookup -debug -type=A example.com`, then AAAA, MX, and NS. Separate answer records from other sections.
+
+The resolver, values, and remaining lifetimes vary.
+
 ## Common mistakes
 
 - Treating DNS as a connection to the server; it only discovers an address.
@@ -127,7 +153,7 @@ Address: 93.184.216.34
 2. What happens when TTL expires? **The cached answer is no longer valid, so the client or resolver must query again.**
 3. Does successful DNS mean the site will open? **No. DNS supplies an address; connection, TLS, HTTP, and application stages remain.**
 
+## References
 
-## Next step
-
-After completing this practice, continue with [DNS failures and protection](/en/programming-basics/19-dns-protection/).
+- [DNS transport over TCP — RFC 7766](https://www.rfc-editor.org/rfc/rfc7766)
+- [Negative caching — RFC 2308](https://www.rfc-editor.org/rfc/rfc2308)

@@ -162,6 +162,14 @@ body:has(.home-shell) .content-panel { padding-top: 0; }
 
 .sl-markdown-content > :first-child { margin-top: 0; }
 
+/* Reading rhythm for foundations only; other course layouts stay unchanged. */
+.foundations-reading-scope { display: none; }
+.sl-markdown-content:has(.foundations-reading-scope) { line-height: 1.95; }
+.sl-markdown-content:has(.foundations-reading-scope) > p { margin-block: 1.15em; }
+.sl-markdown-content:has(.foundations-reading-scope) > ul > li,
+.sl-markdown-content:has(.foundations-reading-scope) > ol > li { margin-block: 0.55em; }
+.sl-markdown-content:has(.foundations-reading-scope) details > summary { cursor: pointer; }
+
 .sl-markdown-content h1,
 .sl-markdown-content h2,
 .sl-markdown-content h3,
@@ -289,6 +297,37 @@ samp {
 	border: 1px solid var(--docs-border);
 	border-radius: 0.85rem;
 	box-shadow: var(--docs-shadow);
+}
+
+/* Keep source code and text diagrams stable inside RTL foundations pages. */
+body:has(track-sidebar[data-track-index='0']) .sl-markdown-content pre,
+body:has(track-sidebar[data-track-index='0']) .sl-markdown-content pre code,
+body:has(track-sidebar[data-track-index='0']) .sl-markdown-content .ec-line,
+body:has(track-sidebar[data-track-index='0']) .sl-markdown-content .ec-line .code {
+ direction: ltr; text-align: left; unicode-bidi: isolate;
+}
+
+/* An overview is available at full size; its adjacent prose carries the detail. */
+.sl-markdown-content:has(.foundations-reading-scope) .request-journey-figure { margin: 1.75rem 0; }
+.sl-markdown-content:has(.foundations-reading-scope) .request-journey-figure img { display: block; width: 100%; height: auto; cursor: zoom-in; }
+.sl-markdown-content:has(.foundations-reading-scope) .request-journey-figure figcaption { margin-top: 1rem; line-height: 1.9; }
+
+/* Purpose-built figures in programmer foundations; legacy course maps are untouched. */
+.sl-markdown-content:has(.foundations-reading-scope) .teaching-figure {
+ margin: 1.5rem 0 2rem;
+ padding: clamp(0.4rem, 1.5vw, 0.9rem);
+ border: 1px solid var(--docs-border);
+ border-radius: 0.85rem;
+ background: var(--docs-surface);
+ max-width: 100%;
+}
+.sl-markdown-content:has(.foundations-reading-scope) .teaching-figure > img {
+ display: block; width: 100%; height: auto; max-width: 26rem;
+ margin: 0 auto; border: 0; border-radius: 0; box-shadow: none;
+}
+.sl-markdown-content:has(.foundations-reading-scope) .teaching-figure > figcaption {
+ margin: 0.9rem 0 0; font-size: 0.95rem; line-height: 1.9;
+ color: var(--sl-color-gray-2); overflow-wrap: anywhere;
 }
 
 .lesson-diagram {

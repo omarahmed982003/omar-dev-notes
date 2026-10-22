@@ -2,15 +2,18 @@
 title: "Poll or receive a server stream"
 description: "Poll or receive a server stream"
 sidebar:
-  order: 27
+  order: 26
 prev: {"link":"/en/programming-basics/33-browser-isolation/","label":"Resource loading and window isolation"}
 next: {"link":"/en/programming-basics/30-webhook-delivery/","label":"Receive a webhook and handle repeated delivery"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
-## Run polling, then streaming
+## Compare polling and streaming, then optionally run them
 
-In the [lab](/en/programming-basics/32-local-network-lab/), open Network:
+**Polling** asks repeatedly. **SSE, Server-Sent Events**, streams text events from server to browser. Without Node.js, trace one requirement: receive times1,2,3. Polling produces three requests and responses; this SSE example uses one extended request carrying three events. This compares message patterns, not fixed performance.
+
+Execution is optional using the Node.js [lab](/en/programming-basics/32-local-network-lab/). If configured, open Network for the following steps. Otherwise reason from the counts above and continue to the explanation and PHP fragment:
 
 1. Click Poll three times: request, read time, wait briefly, repeat. Expect three times and three `/proxy-clock` requests.
 2. Clear the Network display and click Receive three events. **SSE, Server-Sent Events**, carries text events from server to browser: one `/proxy-events` request contains events1,2,3 before the example closes it.
@@ -40,7 +43,9 @@ WebSockets add connection state, heartbeat, backpressure, and scaling concerns. 
 
 ## Server-Sent Events
 
-The following fragment sends one event from a PHP (a programming language commonly used for server-side web processing) handler after its opening tag; it is not a complete streaming server. event names the event, data supplies content, and a blank line ends the event. X-Accel-Buffering asks Nginx not to buffer this response. flush attempts to push output, but other buffers and proxies also matter. The browser's **EventSource** interface normally implements reconnection; the server must retain data needed to honor Last-Event-ID.
+The following fragment sends one event from a PHP (a programming language commonly used for server-side web processing) handler after its opening tag; it is not a complete streaming server. event names the event, data supplies content, and a blank line ends the event.
+
+X-Accel-Buffering asks Nginx not to buffer this response. flush attempts to push output, but other buffers and proxies also matter. The browser's **EventSource** interface normally implements reconnection; the server must retain data needed to honor Last-Event-ID.
 
 ```php
 header('Content-Type: text/event-stream');
@@ -69,7 +74,6 @@ Browsers reconnect automatically. Event IDs and `Last-Event-ID` can support resu
 
 <details><summary>Why must webhook handling be idempotent?</summary><p>A sender may retry after a timeout even if processing succeeded. Repeated delivery must not repeat the business effect.</p></details>
 
-
 ## Next step
 
-After completing this practice, continue with [Receive a webhook and handle repeated delivery](/en/programming-basics/30-webhook-delivery/).
+[Receive a webhook and handle repeated delivery](/en/programming-basics/30-webhook-delivery/).

@@ -37,22 +37,8 @@ Choose a tiny program such as a discount calculator. Define its inputs, rules, a
 - Do not measure progress only in hours; measure what you can explain and build.
 - Do not copy a solution before attempting to decompose the problem.
 
-## Lesson map
 
-<div class="lesson-diagram" role="img" aria-label="Concept map: Learning roadmap and study rules">
-<p class="lesson-diagram-title">Concept map: Learning roadmap and study rules</p>
-<div class="diagram-flow diagram-grid">
-<div class="diagram-node input"><span>Understand one idea</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Build a small example</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node process"><span>Solve without copying</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node decision"><span>Review errors and feedback</span></div>
-<span class="diagram-arrow" aria-hidden="true">→</span>
-<div class="diagram-node output"><span>Return with spaced practice</span></div>
-</div>
-</div>
+
 
 ## Practice on a specific problem
 

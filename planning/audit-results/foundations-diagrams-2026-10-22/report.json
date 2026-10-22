@@ -1,0 +1,2834 @@
+{
+  "date": "2026-10-22",
+  "sources": [
+    {
+      "file": "src\\content\\docs\\programming-basics\\01-web-and-request-flow.md",
+      "route": "/programming-basics/01-web-and-request-flow/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\02-dns-and-ip.md",
+      "route": "/programming-basics/02-dns-and-ip/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\03-tcp-udp-packets.md",
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\04-url-ports-http.md",
+      "route": "/programming-basics/04-url-ports-http/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\05-http-messages-state.md",
+      "route": "/programming-basics/05-http-messages-state/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\06-https-tls-certificates.md",
+      "route": "/programming-basics/06-https-tls-certificates/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\07-server-side-path.md",
+      "route": "/programming-basics/07-server-side-path/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\08-problem-solving-algorithms.md",
+      "route": "/programming-basics/08-problem-solving-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\08-server-proxy-api-gateway.md",
+      "route": "/programming-basics/08-server-proxy-api-gateway/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\09-browser-rendering-devtools.md",
+      "route": "/programming-basics/09-browser-rendering-devtools/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\10-http-caching-compression.md",
+      "route": "/programming-basics/10-http-caching-compression/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\11-same-origin-cors.md",
+      "route": "/programming-basics/11-same-origin-cors/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\12-realtime-webhooks.md",
+      "route": "/programming-basics/12-realtime-webhooks/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\13-api-design.md",
+      "route": "/programming-basics/13-api-design/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\14-network-layers-lan-ethernet-arp.md",
+      "route": "/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\15-addressing-dhcp-nat-routing-ipv6.md",
+      "route": "/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\16-http2-http3-quic.md",
+      "route": "/programming-basics/16-http2-http3-quic/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\17-proxies-cdn-waf-observability.md",
+      "route": "/programming-basics/17-proxies-cdn-waf-observability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\18-wifi-practical-basics.md",
+      "route": "/programming-basics/18-wifi-practical-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\19-dns-protection.md",
+      "route": "/programming-basics/19-dns-protection/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\20-transport-diagnostics.md",
+      "route": "/programming-basics/20-transport-diagnostics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\21-url-encoding.md",
+      "route": "/programming-basics/21-url-encoding/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\22-http-state-and-updates.md",
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\23-tls-handshake-details.md",
+      "route": "/programming-basics/23-tls-handshake-details/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\24-request-protection.md",
+      "route": "/programming-basics/24-request-protection/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\25-request-observation.md",
+      "route": "/programming-basics/25-request-observation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\26-subnet-calculations.md",
+      "route": "/programming-basics/26-subnet-calculations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\27-routing-and-ipv6.md",
+      "route": "/programming-basics/27-routing-and-ipv6/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\28-lan-segmentation.md",
+      "route": "/programming-basics/28-lan-segmentation/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\29-browser-scheduling.md",
+      "route": "/programming-basics/29-browser-scheduling/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\30-webhook-delivery.md",
+      "route": "/programming-basics/30-webhook-delivery/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\31-proxy-policies.md",
+      "route": "/programming-basics/31-proxy-policies/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\32-local-network-lab.md",
+      "route": "/programming-basics/32-local-network-lab/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\33-browser-isolation.md",
+      "route": "/programming-basics/33-browser-isolation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\01-learning-roadmap.md",
+      "route": "/programming-basics/computer-fundamentals/01-learning-roadmap/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\01-using-your-computer.md",
+      "route": "/programming-basics/computer-fundamentals/01-using-your-computer/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\02-binary-data-representation.md",
+      "route": "/programming-basics/computer-fundamentals/02-binary-data-representation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\02-computers-data-processing.md",
+      "route": "/programming-basics/computer-fundamentals/02-computers-data-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\02-files-and-folders.md",
+      "route": "/programming-basics/computer-fundamentals/02-files-and-folders/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\03-binary-languages-algorithms.md",
+      "route": "/programming-basics/computer-fundamentals/03-binary-languages-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\03-hardware-architecture.md",
+      "route": "/programming-basics/computer-fundamentals/03-hardware-architecture/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\03-programs-installation-safety.md",
+      "route": "/programming-basics/computer-fundamentals/03-programs-installation-safety/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\04-cpu-gpu.md",
+      "route": "/programming-basics/computer-fundamentals/04-cpu-gpu/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\04-tech-fields-ai-engineering-mindset.md",
+      "route": "/programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\05-os-terminal-files-git.md",
+      "route": "/programming-basics/computer-fundamentals/05-os-terminal-files-git/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\05-ram-memory-buffers.md",
+      "route": "/programming-basics/computer-fundamentals/05-ram-memory-buffers/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\06-operating-systems.md",
+      "route": "/programming-basics/computer-fundamentals/06-operating-systems/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\07-internet-browser-basics.md",
+      "route": "/programming-basics/computer-fundamentals/07-internet-browser-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\08-first-program.md",
+      "route": "/programming-basics/computer-fundamentals/08-first-program/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\09-git-debugging.md",
+      "route": "/programming-basics/computer-fundamentals/09-git-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\09-values-and-calculations.md",
+      "route": "/programming-basics/computer-fundamentals/09-values-and-calculations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\10-decisions-and-repetition.md",
+      "route": "/programming-basics/computer-fundamentals/10-decisions-and-repetition/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\11-functions-and-lists.md",
+      "route": "/programming-basics/computer-fundamentals/11-functions-and-lists/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\12-input-validation.md",
+      "route": "/programming-basics/computer-fundamentals/12-input-validation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\13-text-processing.md",
+      "route": "/programming-basics/computer-fundamentals/13-text-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\14-runtime-errors.md",
+      "route": "/programming-basics/computer-fundamentals/14-runtime-errors/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\15-saving-data.md",
+      "route": "/programming-basics/computer-fundamentals/15-saving-data/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\16-shopping-project.md",
+      "route": "/programming-basics/computer-fundamentals/16-shopping-project/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\17-local-server.md",
+      "route": "/programming-basics/computer-fundamentals/17-local-server/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\18-media-and-units.md",
+      "route": "/programming-basics/computer-fundamentals/18-media-and-units/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-fundamentals\\index.md",
+      "route": "/programming-basics/computer-fundamentals/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\01-learning-roadmap.md",
+      "route": "/programming-basics/computer-in-depth/01-learning-roadmap/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\02-computers-data-processing.md",
+      "route": "/programming-basics/computer-in-depth/02-computers-data-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\03-binary-languages-algorithms.md",
+      "route": "/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\03-hardware-architecture.md",
+      "route": "/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\04-cpu-gpu.md",
+      "route": "/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\04-tech-fields-ai-engineering-mindset.md",
+      "route": "/programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\05-os-terminal-files-git.md",
+      "route": "/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\05-ram-memory-buffers.md",
+      "route": "/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\06-operating-systems.md",
+      "route": "/programming-basics/computer-in-depth/06-operating-systems/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\09-git-debugging.md",
+      "route": "/programming-basics/computer-in-depth/09-git-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\12-memory-allocation.md",
+      "route": "/programming-basics/computer-in-depth/12-memory-allocation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\13-buffers-and-durability.md",
+      "route": "/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\14-running-code.md",
+      "route": "/programming-basics/computer-in-depth/14-running-code/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\15-parallel-work.md",
+      "route": "/programming-basics/computer-in-depth/15-parallel-work/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\16-testing-and-debugging.md",
+      "route": "/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\17-terminal-environment.md",
+      "route": "/programming-basics/computer-in-depth/17-terminal-environment/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\index.md",
+      "route": "/programming-basics/computer-in-depth/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\computer-in-depth\\software-and-runtime.md",
+      "route": "/programming-basics/computer-in-depth/software-and-runtime/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\index.md",
+      "route": "/programming-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\01-arithmetic-foundations.md",
+      "route": "/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\02-variables-equations-logic.md",
+      "route": "/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\03-applied-math-graphs-primes.md",
+      "route": "/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\04-computational-thinking.md",
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\05-algorithms-pseudocode-decision-trees.md",
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\06-flowcharts-loops-debugging.md",
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\07-division-and-precision.md",
+      "route": "/programming-basics/math-problem-solving/07-division-and-precision/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\08-sets-relations.md",
+      "route": "/programming-basics/math-problem-solving/08-sets-relations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\09-solution-patterns.md",
+      "route": "/programming-basics/math-problem-solving/09-solution-patterns/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\10-greedy-dynamic-programming.md",
+      "route": "/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\11-counting-probability.md",
+      "route": "/programming-basics/math-problem-solving/11-counting-probability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\12-graphs-and-search.md",
+      "route": "/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\13-loop-reasoning.md",
+      "route": "/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\math-problem-solving\\index.md",
+      "route": "/programming-basics/math-problem-solving/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\networking-next.md",
+      "route": "/programming-basics/networking-next/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\programming-practice.md",
+      "route": "/programming-basics/programming-practice/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\programming-basics\\udp.md",
+      "route": "/programming-basics/udp/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\01-web-and-request-flow.md",
+      "route": "/en/programming-basics/01-web-and-request-flow/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\02-dns-and-ip.md",
+      "route": "/en/programming-basics/02-dns-and-ip/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\03-tcp-udp-packets.md",
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\04-url-ports-http.md",
+      "route": "/en/programming-basics/04-url-ports-http/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\05-http-messages-state.md",
+      "route": "/en/programming-basics/05-http-messages-state/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\06-https-tls-certificates.md",
+      "route": "/en/programming-basics/06-https-tls-certificates/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\07-server-side-path.md",
+      "route": "/en/programming-basics/07-server-side-path/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\08-problem-solving-algorithms.md",
+      "route": "/en/programming-basics/08-problem-solving-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\08-server-proxy-api-gateway.md",
+      "route": "/en/programming-basics/08-server-proxy-api-gateway/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\09-browser-rendering-devtools.md",
+      "route": "/en/programming-basics/09-browser-rendering-devtools/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\10-http-caching-compression.md",
+      "route": "/en/programming-basics/10-http-caching-compression/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\11-same-origin-cors.md",
+      "route": "/en/programming-basics/11-same-origin-cors/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\12-realtime-webhooks.md",
+      "route": "/en/programming-basics/12-realtime-webhooks/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\13-api-design.md",
+      "route": "/en/programming-basics/13-api-design/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\14-network-layers-lan-ethernet-arp.md",
+      "route": "/en/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\15-addressing-dhcp-nat-routing-ipv6.md",
+      "route": "/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\16-http2-http3-quic.md",
+      "route": "/en/programming-basics/16-http2-http3-quic/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\17-proxies-cdn-waf-observability.md",
+      "route": "/en/programming-basics/17-proxies-cdn-waf-observability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\18-wifi-practical-basics.md",
+      "route": "/en/programming-basics/18-wifi-practical-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\19-dns-protection.md",
+      "route": "/en/programming-basics/19-dns-protection/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\20-transport-diagnostics.md",
+      "route": "/en/programming-basics/20-transport-diagnostics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\21-url-encoding.md",
+      "route": "/en/programming-basics/21-url-encoding/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\22-http-state-and-updates.md",
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\23-tls-handshake-details.md",
+      "route": "/en/programming-basics/23-tls-handshake-details/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\24-request-protection.md",
+      "route": "/en/programming-basics/24-request-protection/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\25-request-observation.md",
+      "route": "/en/programming-basics/25-request-observation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\26-subnet-calculations.md",
+      "route": "/en/programming-basics/26-subnet-calculations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\27-routing-and-ipv6.md",
+      "route": "/en/programming-basics/27-routing-and-ipv6/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\28-lan-segmentation.md",
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\29-browser-scheduling.md",
+      "route": "/en/programming-basics/29-browser-scheduling/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\30-webhook-delivery.md",
+      "route": "/en/programming-basics/30-webhook-delivery/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\31-proxy-policies.md",
+      "route": "/en/programming-basics/31-proxy-policies/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\32-local-network-lab.md",
+      "route": "/en/programming-basics/32-local-network-lab/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\33-browser-isolation.md",
+      "route": "/en/programming-basics/33-browser-isolation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\01-learning-roadmap.md",
+      "route": "/en/programming-basics/computer-fundamentals/01-learning-roadmap/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\01-using-your-computer.md",
+      "route": "/en/programming-basics/computer-fundamentals/01-using-your-computer/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\02-binary-data-representation.md",
+      "route": "/en/programming-basics/computer-fundamentals/02-binary-data-representation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\02-computers-data-processing.md",
+      "route": "/en/programming-basics/computer-fundamentals/02-computers-data-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\02-files-and-folders.md",
+      "route": "/en/programming-basics/computer-fundamentals/02-files-and-folders/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\03-binary-languages-algorithms.md",
+      "route": "/en/programming-basics/computer-fundamentals/03-binary-languages-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\03-hardware-architecture.md",
+      "route": "/en/programming-basics/computer-fundamentals/03-hardware-architecture/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\03-programs-installation-safety.md",
+      "route": "/en/programming-basics/computer-fundamentals/03-programs-installation-safety/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\04-cpu-gpu.md",
+      "route": "/en/programming-basics/computer-fundamentals/04-cpu-gpu/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\04-tech-fields-ai-engineering-mindset.md",
+      "route": "/en/programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\05-os-terminal-files-git.md",
+      "route": "/en/programming-basics/computer-fundamentals/05-os-terminal-files-git/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\05-ram-memory-buffers.md",
+      "route": "/en/programming-basics/computer-fundamentals/05-ram-memory-buffers/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\06-operating-systems.md",
+      "route": "/en/programming-basics/computer-fundamentals/06-operating-systems/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\07-internet-browser-basics.md",
+      "route": "/en/programming-basics/computer-fundamentals/07-internet-browser-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\08-first-program.md",
+      "route": "/en/programming-basics/computer-fundamentals/08-first-program/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\09-git-debugging.md",
+      "route": "/en/programming-basics/computer-fundamentals/09-git-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\09-values-and-calculations.md",
+      "route": "/en/programming-basics/computer-fundamentals/09-values-and-calculations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\10-decisions-and-repetition.md",
+      "route": "/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\11-functions-and-lists.md",
+      "route": "/en/programming-basics/computer-fundamentals/11-functions-and-lists/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\12-input-validation.md",
+      "route": "/en/programming-basics/computer-fundamentals/12-input-validation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\13-text-processing.md",
+      "route": "/en/programming-basics/computer-fundamentals/13-text-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\14-runtime-errors.md",
+      "route": "/en/programming-basics/computer-fundamentals/14-runtime-errors/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\15-saving-data.md",
+      "route": "/en/programming-basics/computer-fundamentals/15-saving-data/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\16-shopping-project.md",
+      "route": "/en/programming-basics/computer-fundamentals/16-shopping-project/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\17-local-server.md",
+      "route": "/en/programming-basics/computer-fundamentals/17-local-server/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\18-media-and-units.md",
+      "route": "/en/programming-basics/computer-fundamentals/18-media-and-units/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-fundamentals\\index.md",
+      "route": "/en/programming-basics/computer-fundamentals/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\01-learning-roadmap.md",
+      "route": "/en/programming-basics/computer-in-depth/01-learning-roadmap/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\02-computers-data-processing.md",
+      "route": "/en/programming-basics/computer-in-depth/02-computers-data-processing/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\03-binary-languages-algorithms.md",
+      "route": "/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\03-hardware-architecture.md",
+      "route": "/en/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\04-cpu-gpu.md",
+      "route": "/en/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\04-tech-fields-ai-engineering-mindset.md",
+      "route": "/en/programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\05-os-terminal-files-git.md",
+      "route": "/en/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\05-ram-memory-buffers.md",
+      "route": "/en/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\06-operating-systems.md",
+      "route": "/en/programming-basics/computer-in-depth/06-operating-systems/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\09-git-debugging.md",
+      "route": "/en/programming-basics/computer-in-depth/09-git-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\12-memory-allocation.md",
+      "route": "/en/programming-basics/computer-in-depth/12-memory-allocation/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\13-buffers-and-durability.md",
+      "route": "/en/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\14-running-code.md",
+      "route": "/en/programming-basics/computer-in-depth/14-running-code/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\15-parallel-work.md",
+      "route": "/en/programming-basics/computer-in-depth/15-parallel-work/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\16-testing-and-debugging.md",
+      "route": "/en/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\17-terminal-environment.md",
+      "route": "/en/programming-basics/computer-in-depth/17-terminal-environment/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\index.md",
+      "route": "/en/programming-basics/computer-in-depth/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\computer-in-depth\\software-and-runtime.md",
+      "route": "/en/programming-basics/computer-in-depth/software-and-runtime/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\index.md",
+      "route": "/en/programming-basics/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\01-arithmetic-foundations.md",
+      "route": "/en/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\02-variables-equations-logic.md",
+      "route": "/en/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\03-applied-math-graphs-primes.md",
+      "route": "/en/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\04-computational-thinking.md",
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\05-algorithms-pseudocode-decision-trees.md",
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\06-flowcharts-loops-debugging.md",
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "diagrams": 1
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\07-division-and-precision.md",
+      "route": "/en/programming-basics/math-problem-solving/07-division-and-precision/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\08-sets-relations.md",
+      "route": "/en/programming-basics/math-problem-solving/08-sets-relations/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\09-solution-patterns.md",
+      "route": "/en/programming-basics/math-problem-solving/09-solution-patterns/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\10-greedy-dynamic-programming.md",
+      "route": "/en/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\11-counting-probability.md",
+      "route": "/en/programming-basics/math-problem-solving/11-counting-probability/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\12-graphs-and-search.md",
+      "route": "/en/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\13-loop-reasoning.md",
+      "route": "/en/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\math-problem-solving\\index.md",
+      "route": "/en/programming-basics/math-problem-solving/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\networking-next.md",
+      "route": "/en/programming-basics/networking-next/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\programming-practice.md",
+      "route": "/en/programming-basics/programming-practice/",
+      "diagrams": 0
+    },
+    {
+      "file": "src\\content\\docs\\en\\programming-basics\\udp.md",
+      "route": "/en/programming-basics/udp/",
+      "diagrams": 0
+    }
+  ],
+  "routes": [
+    {
+      "route": "/programming-basics/01-web-and-request-flow/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/02-dns-and-ip/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/04-url-ports-http/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/05-http-messages-state/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/06-https-tls-certificates/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/07-server-side-path/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/08-problem-solving-algorithms/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/08-server-proxy-api-gateway/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/09-browser-rendering-devtools/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/10-http-caching-compression/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/11-same-origin-cors/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/12-realtime-webhooks/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/13-api-design/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/16-http2-http3-quic/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/17-proxies-cdn-waf-observability/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/18-wifi-practical-basics/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/19-dns-protection/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/21-url-encoding/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/23-tls-handshake-details/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/24-request-protection/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/25-request-observation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/26-subnet-calculations/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/27-routing-and-ipv6/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/28-lan-segmentation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/29-browser-scheduling/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/30-webhook-delivery/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/31-proxy-policies/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/32-local-network-lab/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/33-browser-isolation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/01-learning-roadmap/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/01-using-your-computer/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/02-binary-data-representation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/02-computers-data-processing/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/02-files-and-folders/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/03-binary-languages-algorithms/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/03-hardware-architecture/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/03-programs-installation-safety/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/04-cpu-gpu/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/05-os-terminal-files-git/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/05-ram-memory-buffers/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/06-operating-systems/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/07-internet-browser-basics/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/08-first-program/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/09-git-debugging/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/09-values-and-calculations/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/10-decisions-and-repetition/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/11-functions-and-lists/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/12-input-validation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/13-text-processing/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/14-runtime-errors/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/15-saving-data/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/16-shopping-project/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/17-local-server/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/18-media-and-units/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-fundamentals/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/01-learning-roadmap/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/02-computers-data-processing/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/06-operating-systems/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/09-git-debugging/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/12-memory-allocation/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/14-running-code/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/15-parallel-work/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/17-terminal-environment/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/07-division-and-precision/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/08-sets-relations/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/09-solution-patterns/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/11-counting-probability/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/networking-next/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/programming-practice/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/programming-basics/udp/",
+      "status": 200,
+      "direction": "rtl",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/01-web-and-request-flow/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/02-dns-and-ip/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/04-url-ports-http/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/05-http-messages-state/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/06-https-tls-certificates/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/07-server-side-path/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/08-problem-solving-algorithms/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/08-server-proxy-api-gateway/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/09-browser-rendering-devtools/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/10-http-caching-compression/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/11-same-origin-cors/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/12-realtime-webhooks/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/13-api-design/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/14-network-layers-lan-ethernet-arp/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/15-addressing-dhcp-nat-routing-ipv6/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/16-http2-http3-quic/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/17-proxies-cdn-waf-observability/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/18-wifi-practical-basics/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/19-dns-protection/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/20-transport-diagnostics/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/21-url-encoding/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/23-tls-handshake-details/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/24-request-protection/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/25-request-observation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/26-subnet-calculations/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/27-routing-and-ipv6/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/29-browser-scheduling/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/30-webhook-delivery/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/31-proxy-policies/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/32-local-network-lab/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/33-browser-isolation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/01-learning-roadmap/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/01-using-your-computer/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/02-binary-data-representation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/02-computers-data-processing/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/02-files-and-folders/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/03-binary-languages-algorithms/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/03-hardware-architecture/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/03-programs-installation-safety/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/04-cpu-gpu/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/04-tech-fields-ai-engineering-mindset/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/05-os-terminal-files-git/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/05-ram-memory-buffers/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/06-operating-systems/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/07-internet-browser-basics/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/08-first-program/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/09-git-debugging/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/09-values-and-calculations/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/10-decisions-and-repetition/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/11-functions-and-lists/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/12-input-validation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/13-text-processing/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/14-runtime-errors/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/15-saving-data/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/16-shopping-project/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/17-local-server/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/18-media-and-units/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-fundamentals/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/01-learning-roadmap/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/02-computers-data-processing/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/03-binary-languages-algorithms/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/03-hardware-architecture/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/04-cpu-gpu/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/04-tech-fields-ai-engineering-mindset/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/05-os-terminal-files-git/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/05-ram-memory-buffers/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/06-operating-systems/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/09-git-debugging/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/12-memory-allocation/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/13-buffers-and-durability/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/14-running-code/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/15-parallel-work/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/16-testing-and-debugging/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/17-terminal-environment/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/computer-in-depth/software-and-runtime/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/01-arithmetic-foundations/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/02-variables-equations-logic/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/03-applied-math-graphs-primes/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/07-division-and-precision/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/08-sets-relations/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/09-solution-patterns/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/10-greedy-dynamic-programming/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/11-counting-probability/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/12-graphs-and-search/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/13-loop-reasoning/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/networking-next/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/programming-practice/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    },
+    {
+      "route": "/en/programming-basics/udp/",
+      "status": 200,
+      "direction": "ltr",
+      "width": 320,
+      "overflow": false,
+      "languageSwitch": true
+    }
+  ],
+  "figures": [
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-03-tcp-udp-packets-320.png"
+    },
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-03-tcp-udp-packets-390.png"
+    },
+    {
+      "route": "/programming-basics/03-tcp-udp-packets/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-03-tcp-udp-packets-1280.png"
+    },
+    {
+      "route": "/programming-basics/07-server-side-path/",
+      "width": 320,
+      "imageWidth": 284.8125,
+      "screenshot": "ar-07-server-side-path-320.png"
+    },
+    {
+      "route": "/programming-basics/07-server-side-path/",
+      "width": 390,
+      "imageWidth": 354.8125,
+      "screenshot": "ar-07-server-side-path-390.png"
+    },
+    {
+      "route": "/programming-basics/07-server-side-path/",
+      "width": 1280,
+      "imageWidth": 624,
+      "screenshot": "ar-07-server-side-path-1280.png"
+    },
+    {
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-22-http-state-and-updates-320.png"
+    },
+    {
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-22-http-state-and-updates-390.png"
+    },
+    {
+      "route": "/programming-basics/22-http-state-and-updates/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-22-http-state-and-updates-1280.png"
+    },
+    {
+      "route": "/programming-basics/28-lan-segmentation/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-28-lan-segmentation-320.png"
+    },
+    {
+      "route": "/programming-basics/28-lan-segmentation/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-28-lan-segmentation-390.png"
+    },
+    {
+      "route": "/programming-basics/28-lan-segmentation/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-28-lan-segmentation-1280.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-04-computational-thinking-320.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-04-computational-thinking-390.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-04-computational-thinking-1280.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-05-algorithms-pseudocode-decision-trees-320.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-05-algorithms-pseudocode-decision-trees-390.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-05-algorithms-pseudocode-decision-trees-1280.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "ar-06-flowcharts-loops-debugging-320.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "ar-06-flowcharts-loops-debugging-390.png"
+    },
+    {
+      "route": "/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "ar-06-flowcharts-loops-debugging-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-03-tcp-udp-packets-320.png"
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-03-tcp-udp-packets-390.png"
+    },
+    {
+      "route": "/en/programming-basics/03-tcp-udp-packets/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-03-tcp-udp-packets-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/07-server-side-path/",
+      "width": 320,
+      "imageWidth": 284.8125,
+      "screenshot": "en-07-server-side-path-320.png"
+    },
+    {
+      "route": "/en/programming-basics/07-server-side-path/",
+      "width": 390,
+      "imageWidth": 354.8125,
+      "screenshot": "en-07-server-side-path-390.png"
+    },
+    {
+      "route": "/en/programming-basics/07-server-side-path/",
+      "width": 1280,
+      "imageWidth": 624,
+      "screenshot": "en-07-server-side-path-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-22-http-state-and-updates-320.png"
+    },
+    {
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-22-http-state-and-updates-390.png"
+    },
+    {
+      "route": "/en/programming-basics/22-http-state-and-updates/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-22-http-state-and-updates-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-28-lan-segmentation-320.png"
+    },
+    {
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-28-lan-segmentation-390.png"
+    },
+    {
+      "route": "/en/programming-basics/28-lan-segmentation/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-28-lan-segmentation-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-04-computational-thinking-320.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-04-computational-thinking-390.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/04-computational-thinking/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-04-computational-thinking-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-05-algorithms-pseudocode-decision-trees-320.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-05-algorithms-pseudocode-decision-trees-390.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-05-algorithms-pseudocode-decision-trees-1280.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 320,
+      "imageWidth": 270.03125,
+      "screenshot": "en-06-flowcharts-loops-debugging-320.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 390,
+      "imageWidth": 340.03125,
+      "screenshot": "en-06-flowcharts-loops-debugging-390.png"
+    },
+    {
+      "route": "/en/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/",
+      "width": 1280,
+      "imageWidth": 416,
+      "screenshot": "en-06-flowcharts-loops-debugging-1280.png"
+    }
+  ],
+  "svgText": [
+    {
+      "asset": "/diagrams/foundations/math/atm-decision-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/math/atm-decision-en.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/math/loop-back-edge-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/math/loop-back-edge-en.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/math/maximum-tree-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/math/maximum-tree-en.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/cookie-session-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/cookie-session-en.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/switch-loop-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/switch-loop-en.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/tcp-handshake-ar.svg",
+      "clipped": false
+    },
+    {
+      "asset": "/diagrams/foundations/network/tcp-handshake-en.svg",
+      "clipped": false
+    }
+  ],
+  "browserErrors": []
+}

@@ -2,11 +2,12 @@
 title: "Web caching and compression"
 description: Freshness, validation, Cache-Control, ETag, Vary, CDNs, gzip, and Brotli.
 sidebar:
-  order: 24
+  order: 23
 prev: {"link":"/en/programming-basics/31-proxy-policies/","label":"Load distribution and proxy policies"}
 next: {"link":"/en/programming-basics/11-same-origin-cors/","label":"Controlling cross-origin data access"}
 ---
 
+<span class="foundations-reading-scope" aria-hidden="true"></span>
 
 ## Three moments for one representation
 
@@ -14,11 +15,11 @@ A **cache** saves a reusable copy. The lab’s `/cache` sends `ETag: "lesson-v1"
 
 | Moment | Action | Result |
 |---|---|---|
-| First request | No copy exists |200 with content |
+| First request | No copy exists | 200 with content |
 | Ordinary request while fresh | Browser may reuse its copy if policy allows | No origin body download needed |
-| After expiry | Ask whether the version changed |304 if unchanged; reuse saved body |
+| After expiry | Ask whether the version changed | 304 if unchanged; reuse saved body |
 
-Start the [lab](/en/programming-basics/32-local-network-lab/) and run:
+The table is a complete no-Node reading trace: input is a request before or after freshness expiry; output is a saved response or conditional 304. Predict each row before proceeding. For **optional execution**, configure the Node.js [lab](/en/programming-basics/32-local-network-lab/) and run the commands below. An independent PHP example appears in the conditional-request section:
 
 ```powershell
 curl.exe -i http://127.0.0.1:8766/cache
@@ -28,7 +29,9 @@ curl.exe -i -H "@cache-headers.txt" http://127.0.0.1:8766/cache
 
 `Set-Content` writes the request header to a practice file; `-H "@cache-headers.txt"` reads it unchanged, preserving quotation marks across PowerShell versions.
 
-Expect200 then304 without a body. `If-None-Match` supplies the stored version tag. curl does not implement a browser cache here: the second command explicitly simulates revalidation. In Network leave Disable cache unchecked; reload can force revalidation and is not always an ordinary request. Understand this sequence before policy and compression details.
+Expect 200 then 304 without a body. `If-None-Match` supplies the stored version tag. curl does not implement a browser cache here: the second command explicitly simulates revalidation. In Network leave Disable cache unchecked; reload can force revalidation and is not always an ordinary request.
+
+Understand this sequence before policy and compression details.
 
 ## Before the details
 
@@ -67,7 +70,9 @@ Never mark personalized data `public`.
 
 ## Compression
 
-gzip and Brotli reduce text assets such as HTML (Hypertext Markup Language, a language describing page structure), CSS (Cascading Style Sheets, rules describing element appearance), and JSON (JavaScript Object Notation, a text format for structured values and lists). Configure them in the web server or CDN, avoid recompressing already compressed images without evidence, and vary cached representations by `Accept-Encoding`.
+gzip and Brotli reduce text assets such as HTML (Hypertext Markup Language, a language describing page structure), CSS (Cascading Style Sheets, rules describing element appearance), and JSON (JavaScript Object Notation, a text format for structured values and lists).
+
+Configure them in the web server or CDN, avoid recompressing already compressed images without evidence, and vary cached representations by `Accept-Encoding`.
 
 ## Checklist
 
@@ -97,15 +102,34 @@ A **cache key** determines which requests share a saved response. Omitting a res
 
 **Worked check:** A public price page varies by language and supported compression. Distinguish variants using appropriate Vary fields and cache configuration. Do not share a personalized account response. Set-Cookie alone does not automatically forbid every shared cache from storing; choose an explicit policy.
 
-**Freshness** allows direct reuse; **validation** asks whether a stored version remains valid. **ETag** identifies a version, Last-Modified states its modification time, and the corresponding conditional fields request a check. **gzip** and **Brotli** are compression formats. Fingerprinted filenames contain a content identifier so a changed asset can use a different URL (Uniform Resource Locator, an address identifying a resource and how to access it). **Hit ratio** is the fraction of lookups served from the cache.
+**Freshness** allows direct reuse; **validation** asks whether a stored version remains valid. **ETag** identifies a version, Last-Modified states its modification time, and the corresponding conditional fields request a check. **gzip** and **Brotli** are compression formats.
+
+Fingerprinted filenames contain a content identifier so a changed asset can use a different URL (Uniform Resource Locator, an address identifying a resource and how to access it). **Hit ratio** is the fraction of lookups served from the cache.
 
 In the lab below, a **weak entity tag** begins W/ and can indicate equivalent content without promising identical bytes. GET/HEAD If-None-Match uses weak comparison. The downloadable router, rather than the short include snippet alone, supplies the complete runnable example.
 
 ## Conditional requests, step by step
 
-Use the [local lab](/en/php/00-lab-setup/), start `php -S 127.0.0.1:8097 http-router.php`, then run `php http-client-lab.php` in a second terminal. Inspect `http-router.php` and `src/Http.php`: the route accepts GET/HEAD only, computes the current representation’s ETag, parses a list of entity tags, and uses weak comparison for If-None-Match. `W/"abc"` can match `"abc"`; `*` matches an existing representation. Splitting on every comma is wrong because a quoted tag may contain a comma. Matching GET/HEAD returns 304 with no body; HEAD without a match returns 200 with headers and no body. This endpoint rejects other methods with 405; a general write endpoint would use 412 for a failed If-None-Match precondition. Malformed fields receive 400 under this application policy.
+Use the [local lab](/en/php/00-lab-setup/), start `php -S 127.0.0.1:8097 http-router.php`, then run `php http-client-lab.php` in a second terminal.
+
+Inspect `http-router.php` and `src/Http.php`: the route accepts GET/HEAD only, computes the current representation’s ETag, parses a list of entity tags, and uses weak comparison for If-None-Match. `W/"abc"` can match `"abc"`; `*` matches an existing representation.
+
+Splitting on every comma is wrong because a quoted tag may contain a comma. Matching GET/HEAD returns 304 with no body; HEAD without a match returns 200 with headers and no body.
+
+This endpoint rejects other methods with 405; a general write endpoint would use 412 for a failed If-None-Match precondition. Malformed fields receive 400 under this application policy.
 
 Exercise: send a nonmatching tag, a matching weak tag in a list, and `*`. Expect 200, 304, and 304. These tags describe the actual selected representation: if compression or language changes its bytes, use an appropriate variant strategy and Vary headers.
 
-
 [RFC 9110, If-None-Match](https://httpwg.org/specs/rfc9110.html#field.if-none-match)
+
+**Worked check:** A second request is faster without a cache indicator. Do not declare a cache hit; connection reuse or load changes can explain it. In your own service, combine Age, cache-status fields, and logs.
+
+The **origin** is the source server; **edge/PoP (Point of Presence)** is a distributed serving location. A **cache key** groups requests sharing a representation. A content **hash** fingerprints data; it is not encryption. **Purge/invalidation** removes or expires a stored copy and may propagate gradually.
+
+Comparing purge completion across locations requires actual separate measurement locations; two commands on one device do not establish global propagation. Public sites need not expose request IDs on their 404 or 500 responses.
+
+## Check this topic
+
+<div class="lesson-quiz" role="list">
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>How can a bad cache key leak data?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> If it ignores identity or another response-varying dimension, the CDN can serve one user's representation to another.</div></details></section>
+</div>
