@@ -62,8 +62,12 @@ Recognized commands include:
 - `اعمل درس .NET`
 - `ضيفه في الدوكس`
 - `عدّل .NET`
+- `English Mode`
+- `ابدأ English`
+- `كمل English`
+- `ذاكرني English`
 
-If the active module is genuinely unclear and the requested action could modify files, ask whether the target is Git, OOP, or .NET before editing.
+If the active module is genuinely unclear and the requested action could modify files, ask which named track is intended before editing.
 
 Once selected, keep that module active for the current discussion until the student explicitly switches modules or clearly identifies another module.
 
@@ -75,6 +79,39 @@ Never mix:
 - Phase groups.
 - Study progress.
 - Lesson source material.
+
+# English Workflow
+
+## Authoritative English Study Files
+
+Before every English study session, read these files completely:
+
+```text
+study/ENGLISH_MASTER_PROMPT.md
+study/ENGLISH_PROGRESS.md
+```
+
+- `ENGLISH_MASTER_PROMPT.md` defines the A1–B1 curriculum, integrated-skill teaching method, assessment gates, and evidence rules.
+- `ENGLISH_PROGRESS.md` is the only source of truth for the exact checkpoint, per-skill baseline, scores, evidence, and next action.
+- Do not infer the learner's level from chat fluency or grammar answers alone.
+- Keep this private study track separate from programming tracks and public course documentation.
+
+## English Study Session
+
+When the student selects English or asks to continue studying it:
+
+1. Read both authoritative English files completely.
+2. Continue from the exact `Next Action` in `ENGLISH_PROGRESS.md`.
+3. Teach and assess one small target at a time in clear Egyptian Arabic, increasing English use gradually.
+4. Integrate Grammar, Vocabulary, Listening, Speaking, Reading, Writing, and Pronunciation rather than treating Grammar completion as level completion.
+5. Ask one question at a time and wait for the student's attempt.
+6. Do not provide a model answer before an independent assessment attempt.
+7. Require actual audio or live spoken evidence for Pronunciation when the interface permits it; writing alone is not pronunciation evidence.
+8. Require actual audio/video input for Listening; a transcript-only task is Reading.
+9. Correct a limited set of high-priority errors, explain the pattern, and request a retry.
+10. Use everyday contexts first and gradually add programming, Documentation, workplace, and interview English from A2.
+
+After a session changes progress, update `study/ENGLISH_PROGRESS.md` and the concise English row in `STUDY_SESSION_CONTEXT.md`. Do not create public lessons automatically when a checkpoint passes.
 
 ## Inspect Before Editing
 
@@ -398,6 +435,8 @@ When the student says `عدّل OOP`:
 If a shared component must change, explain why, keep the change minimal, and test all affected modules.
 
 # Shared Content Standards
+
+Technical-term editorial rule (2026-10-23): In Arabic teaching and documentation, keep technical concept names in English (for example runtime, variable, function, array, request, response). Explain each on its first meaningful appearance, including an early heading, example or diagram, with its meaning, purpose and a small example when useful. Do not replace the name with an Arabic translation or transliteration. Ordinary explanatory Arabic remains natural Egyptian Arabic. Follow the contextual first-use audit in planning/content-writing-guide.md; never apply blind replacements inside code, API names or routes.
 
 For all public lessons:
 

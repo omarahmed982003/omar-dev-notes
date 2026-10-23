@@ -1,5 +1,7 @@
 ---
 title: 7. Environment variables and configuration
+prev: {"link":"/en/php-runtime/08-cli-ini-extensions/","label":"PHP CLI, php.ini, and extensions"}
+next: {"link":"/en/php-runtime/01-composer-dependencies/","label":"Composer and dependency management"}
 description: getenv, $_ENV, putenv, .env files, typed validation, and secret handling with PHP-FPM.
 sidebar:
   order: 7
@@ -74,6 +76,8 @@ Commit a non-secret `.env.example`, ignore the real `.env`, and keep it outside 
 
 ## Parse once into typed configuration
 
+This example requires PHP 8.2+ for `readonly class` and prior knowledge of classes and constructors. Its accepted environment names are an explicit application contract; adapt them deliberately for another project.
+
 ```php
 final readonly class AppConfig
 {
@@ -86,13 +90,18 @@ final readonly class AppConfig
 
     public static function fromEnvironment(): self
     {
-        $dsn = getenv('DATABASE_DSN');
+        $dsn = $_ENV['DATABASE_DSN'] ?? getenv('DATABASE_DSN');
         if ($dsn === false || $dsn === '') {
             throw new RuntimeException('DATABASE_DSN is required');
         }
 
+        $environment = $_ENV['APP_ENV'] ?? (($raw = getenv('APP_ENV')) === false ? 'production' : $raw);
+        if (!in_array($environment, ['local', 'testing', 'staging', 'production'], true)) {
+            throw new RuntimeException('APP_ENV is invalid');
+        }
+
         $debug = filter_var(
-            getenv('APP_DEBUG') ?: 'false',
+            $_ENV['APP_DEBUG'] ?? (($raw = getenv('APP_DEBUG')) === false ? 'false' : $raw),
             FILTER_VALIDATE_BOOL,
             FILTER_NULL_ON_FAILURE,
         );
@@ -101,7 +110,7 @@ final readonly class AppConfig
         }
 
         $timeout = filter_var(
-            getenv('HTTP_TIMEOUT_MS') ?: '5000',
+            $_ENV['HTTP_TIMEOUT_MS'] ?? (($raw = getenv('HTTP_TIMEOUT_MS')) === false ? '5000' : $raw),
             FILTER_VALIDATE_INT,
             ['options' => ['min_range' => 100, 'max_range' => 60_000]],
         );
@@ -110,7 +119,7 @@ final readonly class AppConfig
         }
 
         return new self(
-            getenv('APP_ENV') ?: 'production',
+            $environment,
             $debug,
             $dsn,
             $timeout,
@@ -120,6 +129,8 @@ final readonly class AppConfig
 ```
 
 Validate once at startup and inject configuration instead of calling `getenv()` throughout domain classes.
+
+Defaults apply to absence, not explicitly invalid values. HTTP_TIMEOUT_MS='0' is present but outside the range. createImmutable loads $_ENV and $_SERVER by default, not getenv; this example reads $_ENV before falling back to process environment. This source precedence is deliberate. Never print secret values during diagnosis.
 
 ## FPM and secrets
 
@@ -151,10 +162,25 @@ Use the [downloadable lab](/en/php/00-lab-setup/) for supplied scripts. Commands
 Execute this checkpoint inside the lesson environment:
 
 ~~~bash
-php config-check.php
+php app-config-check.php
 ~~~
 
-**Success criterion:** Startup fails early when a required variable is absent and prints loaded configuration names, never secret values.
+The downloadable `app-config-check.php` contains the same AppConfig shown above, not the older LESSON_MODE exercise. In a disposable PowerShell window inside the lab directory:
+
+~~~powershell
+$env:DATABASE_DSN = 'sqlite::memory:'
+$env:HTTP_TIMEOUT_MS = '0'
+php app-config-check.php
+$LASTEXITCODE
+Remove-Item Env:HTTP_TIMEOUT_MS
+php app-config-check.php
+$LASTEXITCODE
+Remove-Item Env:DATABASE_DSN
+~~~
+
+The first run rejects the timeout with exit 2; the second uses the default, prints key names only, and exits 0. Do not use a terminal holding your project's real configuration; cleanup removes the teaching values from this shell. In Bash use `DATABASE_DSN='sqlite::memory:' HTTP_TIMEOUT_MS=0 php app-config-check.php` for rejection and omit the timeout assignment to test absence.
+
+**Success criterion:** Startup fails early when DATABASE_DSN is absent or a value is invalid, without printing secret values.
 
 Record the exit code and observed evidence. If reality differs, explain the environmental or design assumption that failed instead of editing the expectation to match a defect.
 

@@ -1,5 +1,7 @@
 ---
 title: 15. Profiling, SLI/SLO, and OpenTelemetry
+prev: {"link":"/en/php-runtime/12-queues-workers-scheduling/","label":"Queues, workers, and scheduling"}
+next: {"link":"/en/php-runtime/16-resilience-workers/","label":"Resilience and worker management"}
 description: Performance profiling, flame graphs, service objectives, and trace-context propagation across services.
 sidebar:
   order: 15

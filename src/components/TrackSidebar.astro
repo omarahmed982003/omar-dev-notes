@@ -7,13 +7,13 @@ const normalizedId = isEnglish ? routeId.replace(/^en\/?/, '') : routeId;
 const tracks = [
 	{ code: '01', slug: 'programming-basics', ar: 'أساسيات الكمبيوتر والبرمجة والشبكات', en: 'Computer, Programming & Networking Fundamentals' },
 	{ code: '02', slug: 'cpp', ar: 'البرمجة بلغة C++', en: 'Programming with C++' },
-	{ code: '03', slug: 'php', ar: 'تطوير الويب بلغة PHP', en: 'Web Development with PHP' },
-	{ code: '04', slug: 'php-runtime', ar: 'تشغيل تطبيقات PHP', en: 'Running PHP Applications' },
+	{ code: '03', slug: 'php', ar: 'PHP: اللغة والتطبيقات والإنتاج', en: 'PHP: Language, Applications & Production' },
 	{ code: '06', slug: 'auth', ar: 'الأمان وتسجيل الدخول والصلاحيات', en: 'Security, Sign-in & Permissions' },
 	{ code: '07', slug: 'database', ar: 'قواعد البيانات', en: 'Databases' },
 ];
 const currentIndex = tracks.findIndex(
-	(track) => normalizedId === track.slug || normalizedId.startsWith(track.slug + '/'),
+	(track) => normalizedId === track.slug || normalizedId.startsWith(track.slug + '/')
+		|| (track.slug === 'php' && (normalizedId === 'php-runtime' || normalizedId.startsWith('php-runtime/'))),
 );
 const pickerLabel = isEnglish ? 'Choose a learning track' : 'اختر مسار التعلّم';
 const currentTrack = currentIndex >= 0 ? tracks[currentIndex] : null;
@@ -316,8 +316,7 @@ const currentTrack = currentIndex >= 0 ? tracks[currentIndex] : null;
 	.track-sidebar[data-track-index='1'] .track-lessons :global(.top-level > li:nth-child(2)),
 	.track-sidebar[data-track-index='2'] .track-lessons :global(.top-level > li:nth-child(3)),
 	.track-sidebar[data-track-index='3'] .track-lessons :global(.top-level > li:nth-child(4)),
-	.track-sidebar[data-track-index='4'] .track-lessons :global(.top-level > li:nth-child(5)),
-	.track-sidebar[data-track-index='5'] .track-lessons :global(.top-level > li:nth-child(6)) {
+	.track-sidebar[data-track-index='4'] .track-lessons :global(.top-level > li:nth-child(5)) {
 		display: block;
 	}
 

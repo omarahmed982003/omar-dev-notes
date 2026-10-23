@@ -1,5 +1,7 @@
 ---
 title: 5. Conditions and loops
+prev: {"link":"/en/php/06-expressions-operators/","label":"Expressions and operators"}
+next: {"link":"/en/php/cli-input-output/","label":"CLI: Input / Output"}
 description: if, switch, match, for, while, do-while, and foreach with important differences.
 sidebar:
   order: 5

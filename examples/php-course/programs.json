@@ -45,11 +45,6 @@
     "php": "8.1+"
   },
   {
-    "file": "programs/13/code.php",
-    "lesson": "/php/13-strings-unicode-regex/",
-    "php": "8.1+"
-  },
-  {
     "file": "programs/13/escaping.php",
     "lesson": "/php/13-strings-unicode-regex/",
     "php": "8.1+"
@@ -72,11 +67,6 @@
   {
     "file": "programs/14/clock.php",
     "lesson": "/php/14-datetime-timezones/",
-    "php": "8.1+"
-  },
-  {
-    "file": "programs/16/generator.php",
-    "lesson": "/php/16-modern-php-features/",
     "php": "8.1+"
   },
   {
@@ -180,16 +170,6 @@
     "php": "8.1+"
   },
   {
-    "file": "programs/07/config.php",
-    "lesson": "/php/07-functions-and-includes/",
-    "php": "8.1+"
-  },
-  {
-    "file": "programs/07/main.php",
-    "lesson": "/php/07-functions-and-includes/",
-    "php": "8.1+"
-  },
-  {
     "file": "programs/08/stream.php",
     "lesson": "/php/08-files-streams-data/",
     "php": "8.1+"
@@ -207,6 +187,51 @@
   {
     "file": "programs/08/filter.php",
     "lesson": "/php/08-files-streams-data/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/config.php",
+    "lesson": "/php/program-organization/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/07/main.php",
+    "lesson": "/php/program-organization/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/16/generator.php",
+    "lesson": "/php/generators/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/13/code.php",
+    "lesson": "/php/regex/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/beginner/greeting.php",
+    "lesson": "/php/cli-input-output/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/beginner/hello-arg.php",
+    "lesson": "/php/cli-input-output/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/beginner/validation.php",
+    "lesson": "/php/input-validation/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/beginner/expenses.php",
+    "lesson": "/php/cli-expenses-project/",
+    "php": "8.1+"
+  },
+  {
+    "file": "programs/beginner/first-tests.php",
+    "lesson": "/php/first-tests/",
     "php": "8.1+"
   }
 ]

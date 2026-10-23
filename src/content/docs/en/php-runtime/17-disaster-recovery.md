@@ -1,5 +1,7 @@
 ---
 title: 17. Disaster recovery and restore testing
+prev: {"link":"/en/php-runtime/16-resilience-workers/","label":"Resilience and worker management"}
+next: {"link":"/en/php-runtime/18-sessions-shared-state/","label":"Sessions and shared state at scale"}
 description: RPO, RTO, backups, restore order, runbooks, and practical recovery exercises.
 sidebar:
   order: 17

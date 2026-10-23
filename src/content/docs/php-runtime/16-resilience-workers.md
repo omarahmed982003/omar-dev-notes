@@ -1,5 +1,7 @@
 ---
 title: 16. المرونة وإدارة Workers
+prev: {"link":"/php-runtime/15-profiling-slo-opentelemetry/","label":"Profiling وSLI/SLO وOpenTelemetry"}
+next: {"link":"/php-runtime/17-disaster-recovery/","label":"Disaster Recovery واختبار الاستعادة"}
 description: Circuit Breaker وBulkhead وBackpressure وإشارات العمليات وإدارة Workers عبر Supervisor وsystemd.
 sidebar:
   order: 16
@@ -16,7 +18,7 @@ sidebar:
 - **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
 - **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
 - **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+- **Function:** جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
 
 
 ## المهلة أول دفاع
@@ -40,6 +42,8 @@ Bulkhead يعزل الموارد: Pool منفصل أو حد تزامن لخدم�
 Queue غير محدودة لا تحل الحمل؛ تؤجل الانهيار وتستهلك الذاكرة. راقب Queue Depth وOldest Message Age وProcessing Rate، وليس طولها وحده.
 
 ## Worker lifecycle والإشارات
+
+**Pseudocode** هنا مثال يوضح ترتيب القرارات، مش برنامج كامل تنسخه وتشغله. `reserveJob` و`handle` و`acknowledge` و`releaseOrDeadLetter` أسماء لعمليات لازم تنفذها بمكتبة الـQueue وسياسة الأخطاء عندك؛ مفيش تعريف ليها في المقطع. لتجربة فعلية محدودة راجع [معمل Queue](/php-runtime/12-queues-workers-scheduling/).
 
 عامل CLI طويل العمر يجب أن يلتقط `SIGTERM` ليتوقف بأمان بعد المهمة الحالية، ويستخدم `SIGINT` للتشغيل المحلي. يحتاج امتداد `pcntl` في بيئات Unix-like؛ Windows يتطلب آلية إدارة مختلفة.
 
@@ -133,7 +137,7 @@ WantedBy=multi-user.target
 
 الملف يشغّل اختبارات تكرار الأثر وrollback. اختبار circuit breaker يحتاج تنفيذ حالات closed/open/half-open وساعة قابلة للتحكم؛ ليس ضمن ادعاء نجاح الاختبار المحلي.
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

@@ -1,5 +1,7 @@
 ---
 title: 3. OPcache and preloading
+prev: {"link":"/en/php-runtime/05-php-fpm-processes/","label":"PHP-FPM and process management"}
+next: {"link":"/en/php-runtime/09-logging-observability/","label":"Logging and observability"}
 description: PHP bytecode caching, OPcache configuration and monitoring, data-cache differences, and preloading limits.
 sidebar:
   order: 3

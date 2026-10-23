@@ -1,5 +1,7 @@
 ---
 title: 18. Sessions وShared State عند التوسع
+prev: {"link":"/php-runtime/17-disaster-recovery/","label":"Disaster Recovery واختبار الاستعادة"}
+next: {"link":"/php-runtime/19-database-runtime-operations/","label":"اتصالات قاعدة البيانات وتشغيلها"}
 description: تخزين الجلسات وقفلها وتوزيعها بين النسخ وإدارة TTL وGC والفشل.
 sidebar:
   order: 18

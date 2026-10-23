@@ -1,5 +1,7 @@
 ---
 title: 6. Apache, Nginx, and FastCGI
+prev: {"link":"/en/php-runtime/02-curl-http-clients/","label":"cURL and HTTP clients"}
+next: {"link":"/en/php-runtime/05-php-fpm-processes/","label":"PHP-FPM and process management"}
 description: Web-server responsibilities, Apache MPMs, Nginx's event model, and PHP-FPM over Unix or TCP sockets.
 sidebar:
   order: 6

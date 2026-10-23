@@ -1,5 +1,7 @@
 ---
 title: 15. من HTTP Request إلى Router وResponse
+prev: {"link":"/php/file-uploads/","label":"File uploads: من form لتخزين private"}
+next: {"link":"/php/17-integrated-programs-debugging/","label":"مشروع دفتر الملاحظات وDebugging عملي"}
 description: Front Controller وقراءة JSON وRouting وMiddleware وبناء استجابة HTTP صحيحة دون Framework.
 sidebar:
   order: 15
@@ -119,7 +121,7 @@ echo $reply['body'];
 
 ## تتبع البرنامج من أسفل لأعلى ثم مع طلب واحد
 
-تعريف الدوال لا ينفذ أجسامها. التنفيذ الحقيقي يبدأ بقراءة body في الأسفل. نقرأ بحد 4097 Bytes عشان نكتشف تجاوز 4096 بدون تحميل كل الجسم في ذاكرة التطبيق. الخادم نفسه يحتاج حدًا لأن PHP أو الخادم قد يكون استقبل/خزن الجسم قبل وصول الكود. `parse_url(..., PHP_URL_PATH)` يستبعد query string، فـ`/health?check=1` يختار نفس المسار.
+تعريف functions لا ينفذ أجسامها. التنفيذ الحقيقي يبدأ بقراءة body في الأسفل. نقرأ بحد 4097 Bytes عشان نكتشف تجاوز 4096 بدون تحميل كل الجسم في ذاكرة التطبيق. server نفسه يحتاج حدًا لأن PHP أو server قد يكون استقبل/خزن الجسم قبل وصول الكود. `parse_url(..., PHP_URL_PATH)` يستبعد query string، فـ`/health?check=1` يختار نفس المسار.
 
 نبني Request Array ثم نستدعي middleware مع `'route'` كـCallback. Middleware تنشئ request ID وتفحص الحجم قبل parsing. لو الحجم مقبول تستدعي next؛ Router يبحث المسار أولًا، ثم method، ثم يستدعي Handler. الرد يرجع بالعكس؛ Middleware تضيف header، وEmitter ترسل status ثم headers ثم body.
 

@@ -1,5 +1,7 @@
 ---
 title: 13. Deployment وCI/CD وContainers
+prev: {"link":"/php-runtime/09-logging-observability/","label":"Logging وObservability"}
+next: {"link":"/php/","label":"دليل PHP"}
 description: Build artifacts وpipeline وhealth checks وmigrations وzero-downtime وrollback وإعداد containers.
 sidebar:
   order: 13
@@ -11,7 +13,7 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Runtime:** runtime: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
 - **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
 - **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
 
@@ -61,7 +63,7 @@ jobs:
 - image صغيرة بإصدار PHP وextensions مثبت.
 - process رئيسية واضحة وnon-root user.
 - filesystem read-only حيث يمكن.
-- config/secrets وقت التشغيل.
+- config/secrets runtime.
 - logs إلى stdout/stderr.
 - limits وgraceful shutdown.
 
@@ -104,7 +106,7 @@ Rollback ليست فقط إعادة image؛ migration قد تكون غير قا�
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 من داخل `examples/php-labs` أو الحزمة المستخرجة نفّذ:
 

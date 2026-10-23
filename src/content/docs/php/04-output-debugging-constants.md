@@ -1,5 +1,7 @@
 ---
-title: 4. الإخراج والتصحيح والثوابت
+title: "4. Output وDebugging"
+prev: {"link":"/php/03-types/","label":"أنواع البيانات ونظام الأنواع"}
+next: {"link":"/php/constants/","label":"Constants: قيم باسم ثابت"}
 description: نطبع النتيجة، نفحص القيم وقت حدوث مشكلة، ونفهم إمتى نستخدم ثابتًا بدل متغير.
 sidebar:
   order: 4
@@ -12,22 +14,22 @@ sidebar:
 ### كلمات جديدة في الدرس
 
 - **Debugger:** أداة تتبّع الأخطاء: بتوقف البرنامج خطوة خطوة عشان تشوف القيم ومسار التنفيذ.
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
-- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
-- **Cookie:** قيمة صغيرة يحفظها المتصفح ويرسلها مع الطلبات المناسبة.
+- **Session:** بيانات مؤقتة تساعد server يميّز المستخدم بين أكثر من طلب.
+- **Cookie:** قيمة صغيرة يحفظها browser ويرسلها مع الطلبات المناسبة.
 - **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
 - **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
 - **UTF-8:** طريقة شائعة لتحويل أرقام Unicode إلى بايتات تُحفظ وتُنقل.
 - **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+- **Function:** جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
 
 
 ## قبل ما نبدأ
 
 وأنت بتتعلم، محتاج تشوف نتيجتين مختلفتين: **ناتج البرنامج للمستخدم**، ومعلومات مؤقتة تساعدك أنت تفهم البرنامج بيعمل إيه. `echo` مناسبة للإخراج، أما `var_dump()` وأدوات الـDebugging فبتكشف النوع والقيمة أثناء التشخيص. خلط الاثنين في الإنتاج ممكن يعرض بيانات حساسة أو يفسد JSON وHTML.
 
-في الدرس ده هنفهم كمان الثوابت: أسماء لقيم مش المفروض تتغير أثناء التشغيل، زي اسم التطبيق أو HTTP Status معروف.
+في الدرس ده هنفهم كمان constants: أسماء لقيم مش المفروض تتغير أثناء التشغيل، زي اسم التطبيق أو HTTP Status معروف.
 
 ## `echo`: أبسط طريقة للإخراج
 
@@ -44,7 +46,7 @@ echo 'Hello ', $name, PHP_EOL;
 Hello Omar
 ```
 
-`echo` عبارة لغوية Language Construct، مش دالة عادية. علشان كده الأقواس اختيارية، وتقدر تبعت لها أكتر من قيمة مفصولة بفواصل:
+`echo` عبارة لغوية Language Construct، مش function عادية. علشان كده الأقواس اختيارية، وتقدر تبعت لها أكتر من قيمة مفصولة بفواصل:
 
 ```php
 echo 'Subtotal: ', 100, ' EGP', PHP_EOL;
@@ -186,98 +188,9 @@ error_log(json_encode([
 
 ما تسجلش Password أوSession ID أوAccess Token. خلي رسالة المستخدم بسيطة، والتفاصيل التقنية في سجل محمي.
 
-## يعني إيه ثابت؟
+## تابع الموضوع في مكانه
 
-المتغير ممكن يتغير:
-
-```php
-$attempts = 1;
-$attempts++;
-```
-
-الثابت اسم لقيمة المفروض تفضل كما هي بعد تعريفها:
-
-```php
-const APP_NAME = 'Omar Notes';
-echo APP_NAME;
-```
-
-الثابت لا يبدأ بـ`$`. استخدمه لما المعنى فعلًا ثابت في الكود، مش لمجرد منع التغيير. بيانات تختلف بين البيئات، زي Password قاعدة البيانات، مكانها Configuration/Environment مش ثابت مكتوب في Repository.
-
-## `const` و`define()`
-
-```php
-const APP_NAME = 'Omar Notes';
-define('APP_VERSION', '1.0.0');
-```
-
-- `const` تصريح لغوي، مناسب للثوابت المعروفة وقت تعريف الكود.
-- `define()` استدعاء وقت التشغيل، ولذلك ممكن يظهر داخل شرط.
-- `define()` ينشئ ثابتًا عامًا، ولا يعرّف Class Constant.
-- ما تقدرش تضع `const` المحلي داخل Function أوBlock شرطي.
-
-```php
-if (getenv('APP_ENV') === 'testing') {
-    define('FAKE_EXTERNAL_SERVICES', true);
-}
-```
-
-حتى لو ده مسموح، Configuration Object غالبًا أوضح في التطبيقات الكبيرة من ثوابت عامة بتظهر حسب مسار التنفيذ.
-
-## Class Constants
-
-```php
-final class HttpStatus
-{
-    public const OK = 200;
-    public const NOT_FOUND = 404;
-}
-
-echo HttpStatus::NOT_FOUND;
-```
-
-وجود الثابت داخل Class بيربط الاسم بالمفهوم بدل نشر أسماء عامة. ولو الحالات تمثل مجموعة مغلقة لها سلوك وقيمة، Enum قد تكون أنسب.
-
-## Magic Constants
-
-PHP توفر أسماء تتغير قيمتها حسب مكانها في الملف:
-
-```php
-echo __LINE__, PHP_EOL;
-echo __FILE__, PHP_EOL;
-echo __DIR__, PHP_EOL;
-echo __FUNCTION__, PHP_EOL;
-echo __CLASS__, PHP_EOL;
-echo __METHOD__, PHP_EOL;
-echo __NAMESPACE__, PHP_EOL;
-```
-
-اسمها “Magic” لأن المحرك يحسب قيمتها من السياق. أهم مثال عملي هو `__DIR__`:
-
-```php
-$config = require __DIR__ . '/../config/app.php';
-```
-
-المسار هنا يبدأ من مجلد الملف نفسه، مش من Current Working Directory اللي شغلت منه الأمر. ده يخلي `require` أكثر ثباتًا.
-
-## Predefined Constants
-
-PHP والـExtensions تعرف ثوابت جاهزة:
-
-```php
-echo PHP_VERSION, PHP_EOL;
-echo PHP_OS_FAMILY, PHP_EOL;
-echo PHP_INT_MAX, PHP_EOL;
-echo PHP_EOL;
-```
-
-بعض الثوابت موجودة فقط لو Extension معينة متثبتة. استخدم `defined('CONSTANT_NAME')` لو الوجود اختياري:
-
-```php
-if (defined('JSON_THROW_ON_ERROR')) {
-    echo 'JSON exception flag is available';
-}
-```
+[Constants: قيم باسم ثابت](/php/constants/) يشرح الفكرة بتفاصيلها؛ اتبع متطلباته قبل التطبيق.
 
 ## برنامج صغير قابل للتجربة
 
@@ -319,9 +232,7 @@ echo "Total: {$totalCents} cents", PHP_EOL;
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>إيه الناتج والقيمة الموجودة في <code>$result</code> بعد <code>$result = print 'Hi';</code>؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> يتم إخراج <code>Hi</code>، وتأخذ <code>$result</code> القيمة الصحيحة <code>1</code>.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>ليه <code>echo false;</code> مش كفاية علشان تعرف قيمة المتغير؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأنها تخرج كنص فارغ تقريبًا. <code>var_dump(false)</code> تعرض النوع والقيمة بوضوح: <code>bool(false)</code>.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>API ترجع JSON، لكن العميل يقول إن JSON غير صالحة. إيه أول حاجة تدور عليها؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> دور على أي <code>var_dump</code> أوWarning أوHTML خرج قبل أو بعد JSON، وتأكد من Content-Type ومن إن المسار يطبع Document JSON واحدة فقط.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>إمتى تستخدم <code>__DIR__</code> في مسار ملف؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لما المسار لازم يكون محسوبًا بالنسبة لمكان الملف الحالي، بغض النظر عن المجلد اللي بدأ منه تشغيل البرنامج.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>هل كلمة مرور قاعدة البيانات مناسبة كـ<code>const</code> داخل الكود؟ ليه؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لا. هي Secret وتختلف بين البيئات وتحتاج Rotation؛ تُحقن من Environment أوSecret Manager ولا تُحفظ في Repository.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>صحح معادلة خصم كتبت <code>$final = $priceCents - $percent;</code>.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> احسب الخصم أولًا: <code>$discount = (int) round($priceCents * ($percent / 100));</code> ثم اطرحه. اختبر 0% و100% وقيمة عادية وحدد سياسة التقريب.</div></details></section>
+<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>صحح معادلة خصم كتبت <code>$final = $priceCents - $percent;</code>.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> احسب الخصم أولًا: <code>$discount = (int) round($priceCents * ($percent / 100));</code> ثم اطرحه. اختبر 0% و100% وقيمة عادية وحدد سياسة التقريب.</div></details></section>
 </div>
 
 ## ملخص الدرس
@@ -330,7 +241,7 @@ echo "Total: {$totalCents} cents", PHP_EOL;
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

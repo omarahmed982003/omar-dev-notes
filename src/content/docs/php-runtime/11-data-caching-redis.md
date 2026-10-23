@@ -1,5 +1,7 @@
 ---
 title: 11. Data Caching وRedis
+prev: {"link":"/php-runtime/04-memory-garbage-collection/","label":"ذاكرة PHP وGarbage Collection"}
+next: {"link":"/php-runtime/12-queues-workers-scheduling/","label":"Queues وWorkers وScheduling"}
 description: Cache-aside وTTL وinvalidation وstampede وdistributed locks والفرق عن OPcache وHTTP cache.
 sidebar:
   order: 11
@@ -11,9 +13,9 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
-- **Session:** بيانات مؤقتة تساعد الخادم يميّز المستخدم بين أكثر من طلب.
+- **Session:** بيانات مؤقتة تساعد server يميّز المستخدم بين أكثر من طلب.
 - **Token:** قيمة تمثل هوية أو صلاحية محددة بدل إرسال كلمة السر كل مرة.
 
 
@@ -84,7 +86,7 @@ return json_decode($json, true, flags: JSON_THROW_ON_ERROR);
 
 الناتج المحلي database=11 stale_cache=10 ثم obsolete_refill=rejected يوضح السباق. ده نموذج ترتيب أحداث؛ فحص TTL والانقطاع والحمل يحتاج Redis حقيقيًا.
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

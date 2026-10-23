@@ -1,5 +1,7 @@
 ---
 title: 15. From HTTP request to router and response
+prev: {"link":"/en/php/file-uploads/","label":"File uploads and private storage"}
+next: {"link":"/en/php/17-integrated-programs-debugging/","label":"Notebook project and practical debugging"}
 description: Front controllers, JSON bodies, routing, middleware, and correct HTTP responses without a framework.
 sidebar:
   order: 15

@@ -1,5 +1,21 @@
 # Study Session Context and Handoff
 
+## تنفيذ تدرج PHP وقاعدة المصطلحات — 2026-10-23
+
+بعد موافقة الطالب، أضيفت 11 صفحة موضوعية بكل لغة داخل PHP، وبقت الكارد 51 صفحة لكل لغة: 48 درسًا ومختبر ودليلان. الترتيب خمس مراحل من `src/data/php-curriculum.json`؛ السابق/التالي ودليلا `/php/` و`/en/php/` يتبعانه، والروابط القديمة محفوظة. أضيف CLI/Validation/مشروع مصروفات/Tests بسيطة، وفُصل Constants وScope وRequest input وOrganization وUploads وRegex وGenerators، ونُقلت أسئلة الموضوعات معها. أُصلح Config/Overflow/مثال PHPUnit ومنفذ FPM، ووُسمت المقاطع غير المستقلة وحدود Queue بدقة. التقرير الحالي `planning/php-learning-path-and-terminology-2026-10-23.md` يحدّث حالة مراجعة الدمج السابقة، ولا يلغي سجلها التاريخي.
+
+قاعدة إلزامية في `planning/content-writing-guide.md` و`AGENTS.md`: اسم المصطلح التقني بالإنجليزي، والشرح بالمصري عند أول ظهور بمعناه ووظيفته ومثال عند الحاجة؛ لا استبدال Runtime بترجمة عربية، ولا قاموس آلي مزدحم أوتعريف مؤجل. روجعت صفحات الأساسيات النشطة الـ64 لغويًا ومصطلحيًا فقط، من غير فتح نطاق جديد؛ الأمثلة وترتيبها لم تتغير. الفحص الآلي مساعد، مش إثبات فهم كل مصطلح لكل قارئ.
+
+نجحت اختبارات PHP المحلية وHTTP وPHPUnit، وبناء 402 صفحة وفهرس 421 HTML، وفحص 102 مسار و84 حالة عرض، وفحوص Regression الأساسيات الحالية. Docker غير مثبت، فتكامل Redis/FPM/PostgreSQL/Collector وCrash الحقيقي للـQueue **غير منفذين**؛ لا اعتماد تشغيل إنتاجي ولا ادعاء إغلاق بوابة Release/Restore الفعلية. حزم ZIP جُددت، وPDF لم يتجدد. لا تغيير لأي Progress، ولا جلسة دراسة أوcommit/push/deploy.
+
+## دمج كارد PHP والتشغيل — 2026-10-23
+
+جُمعت كارد PHP وPHP Runtime في مدخل PHP واحد بقسمين للغة والتشغيل. الروابط والمحتوى القديم محفوظة؛ /php/ و/en/php/ دليلان موحدان بمراحل و/php-runtime/ دليل القسم التشغيلي داخل نفس الكارد. التقرير `planning/php-unified-card-review-2026-10-23.md` يسجل التكرار وفجوات التدرج والمعامل، ومنها عامل Redis الذي يزيل الرسالة قبل المعالجة وعقدdefault للإعدادات؛ الدمج ليس إصلاحًا شاملًا أواعتمادًا نهائيًا للمحتوى. لم تُغيّر ملفاتProgress ولا دروس المسارات الأخرى أوPDF الثنائي. فحص الدمج في `scripts/verify-php-unified-card.mjs`؛ حدود التحقق الفعلي في التقرير وتسليم المحادثة.
+
+## مسار English من A1 إلى B1 — 2026-10-23
+
+أضيف بطلب الطالب مسار دراسة خاص ومستقل في `study/ENGLISH_MASTER_PROMPT.md` و`study/ENGLISH_PROGRESS.md`. يغطي Grammar وVocabulary وListening وSpeaking وReading وWriting وPronunciation وفق نواتج CEFR، مع English يومي ثم تقني/مهني تدريجيًا. أضيف `Reading Ladder`: نصوص A1 قصيرة ثم Graded Readers ثم قصص A2–B1 وقراءة/صوت B1، والمدرس يسند المادة في موضعها بعد قياس القراءة. بدأ `0.1 Diagnostic Assessment` بسؤال الخلفية وعينة كتابة مستقلة؛ الحالة `In Progress` والمستوى غير مقاس حتى تكتمل مهارات التشخيص. أوامر العودة: `English Mode` أو`ابدأ English` أو`كمل English`. لا صفحات عامة ولا تعديل لمسارات البرمجة بسبب الإنشاء.
+
 ## مسار دراسة دوكس Laravel الرسمية — 2026-10-23
 
 أضيف `study/LARAVEL_DOCS_MASTER_PROMPT.md` و`study/LARAVEL_DOCS_PROGRESS.md` بطلب الطالب، كمسار مستقل مبني على فهرس دوكس Laravel 13.x الرسمي مع تثبيت الإصدار ومراجعة المصدر وقت الدرس. أمر الاختيار «ابدأ Laravel Docs» أو«كمل دوكس Laravel». البداية 0.1 تشخيص المتطلبات، والحالة Not Started والدرجة Not assessed؛ لا دراسة أوتثبيت أوتعديل موقع تم بسبب إنشاء الملفات. افصل هذا المسار عن مرحلة10 داخل web-zero-to-mastery وعن Laravel Query؛ إذا قيل «كمل Laravel» بلا تحديد اسأل أي مسار مقصود، ولا تنقل الدرجات أوتغير تقدم المسارين القديمين. اقرأ الملفين كاملين قبل الجلسة، وProgress الجديد وحده مصدر موضع التوقف.
@@ -138,6 +154,7 @@ npm run preview
 | System Design | Not Started | Module 0 — Requirements, constraints and scope |
 | GitHub Portfolio | Not Started | Repository foundation and MVP scope |
 | Laravel Official Docs | Not Started | 0.1 — تشخيص المتطلبات؛ لا درجة نجاح للتشخيص |
+| English A1–B1 | In Progress | Phase 0 — `0.1 Diagnostic Assessment`؛ ننتظر عينة الكتابة الأولى |
 
 ### ملاحظات تعارض قديمة لا يعتمد عليها
 
@@ -159,6 +176,7 @@ npm run preview
 | System Design | `study/SYSTEM_DESIGN_MASTER_PROMPT.md` | `study/SYSTEM_DESIGN_PROGRESS.md` |
 | GitHub Portfolio | `study/GITHUB_PORTFOLIO_PROJECT_IDEAS.md` | `study/GITHUB_PORTFOLIO_PROGRESS.md` |
 | Laravel Official Docs | `study/LARAVEL_DOCS_MASTER_PROMPT.md` | `study/LARAVEL_DOCS_PROGRESS.md` |
+| English A1–B1 | `study/ENGLISH_MASTER_PROMPT.md` | `study/ENGLISH_PROGRESS.md` |
 
 المرجع المركزي لبقية الخطة والمسارات المقترحة مستقبلًا هو `study/BACKEND_ARCHITECT_STUDY_MAP.md`، لكنه ليس مصدرًا لحالة التقدم.
 
@@ -252,6 +270,10 @@ npm run preview
 ### GitHub Portfolio
 
 مسار تنفيذي لتحويل الدراسة إلى أدلة هندسية قابلة للعرض: مشروعات Backend موثقة تحتوي README وdiagrams وADRs وtests وbenchmarks وrunbooks وقرارات قابلة للدفاع عنها.
+
+### English A1–B1
+
+مسار متكامل قائم على مهام CEFR، لا على حفظ Grammar فقط. يشخّص كل مهارة أولًا، ثم يبني A1 وA2 وB1 عبر فهم وإنتاج وتفاعل فعلي. بوابات المستوى تحتاج Listening وSpeaking وReading وWriting مستقلة، مع Vocabulary وGrammar in use وPronunciation واضحة. من A2 يدخل English الخاص بالبرمجة والعمل تدريجيًا، ولا يُعد النص دليل Listening أوWriting دليل Pronunciation.
 
 ## 9. قواعد نشر وتعديل الدوكس
 

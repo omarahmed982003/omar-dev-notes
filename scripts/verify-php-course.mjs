@@ -25,7 +25,8 @@ for (const file of fs.readdirSync('src/content/docs/php').filter(f => /^(0[5-9]|
     assert.deepEqual(ab.map(b => [b.language, b.code]), eb.map(b => [b.language, b.code]), file + ': bilingual code/output parity');
     const questions = text => (text.match(/<details>/g) || []).length;
     assert.equal(questions(ar), questions(en), file + ': exercise count');
-    assert.ok(questions(ar) >= 3, file + ': exercises');
+    // Regex questions now belong to the standalone Regex lesson, not Strings.
+    assert.ok(questions(ar) >= (file.startsWith('13-') ? 2 : 3), file + ': exercises');
     report.parity.push({ lesson: file, codeBlocks: ab.length, exercises: questions(ar), arCharacters: ar.length, enCharacters: en.length });
     docs[file.slice(0, 2)] = ab;
     for (const [locale, source, list] of [['ar', ar, ab], ['en', en, eb]]) {
@@ -125,7 +126,8 @@ const sessionLab = path.join(work, 'session-lab');
 fs.mkdirSync(path.join(sessionLab, 'public'), { recursive: true });
 const sessionBlocks = docs['09'].filter(b => b.language === 'php');
 fs.writeFileSync(path.join(sessionLab, 'public/preferences.php'), sessionBlocks[0].code);
-fs.writeFileSync(path.join(sessionLab, 'public/upload.php'), sessionBlocks.find(b => b.code.includes("$_FILES['avatar']")).code);
+const uploadBlocks = blocks(fs.readFileSync(path.join(root, 'src/content/docs/php/file-uploads.md'), 'utf8'));
+fs.writeFileSync(path.join(sessionLab, 'public/upload.php'), uploadBlocks.find(b => b.code.includes("$_FILES['avatar']")).code);
 await serve(sessionLab, false, {}, async base => {
     const jar = newJar();
     let result = await request(base, '/preferences.php', {}, jar);

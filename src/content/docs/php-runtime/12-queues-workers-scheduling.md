@@ -1,5 +1,7 @@
 ---
 title: 12. Queues وWorkers وScheduling
+prev: {"link":"/php-runtime/11-data-caching-redis/","label":"Data Caching وRedis"}
+next: {"link":"/php-runtime/15-profiling-slo-opentelemetry/","label":"Profiling وSLI/SLO وOpenTelemetry"}
 description: Jobs وat-least-once delivery وidempotency وretries وbackoff وDLQ وgraceful shutdown وCron.
 sidebar:
   order: 12
@@ -11,7 +13,7 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
 - **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
 
@@ -75,7 +77,7 @@ delay = min(cap, base * 2^attempt) + random_jitter
 
 المثال يطبع طلبًا جديدًا ثم نفس الطلب مع duplicate=true. محاولات queue وdead-letter تحتاج وسيط رسائل وعاملًا في بيئة اختبار، وليست جزءًا من هذا البرنامج.
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 
@@ -96,7 +98,29 @@ docker compose -f production/compose.yaml -f production/compose.full.yaml logs q
 docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:queue
 ~~~
 
-يجب أن يظهر `processed=<job_id>` ويعود طول القائمة إلى صفر. أوقف worker، أرسل job وتأكد أنها تبقى، ثم أعده وأثبت المعالجة. أرسل نفس `job_id` يدويًا مرتين واختبر سجل duplicate.
+يظهر `processed=<job_id>` ويعود طول `lesson:queue` و`lesson:processing` إلى صفر. **Reservation** نقل الرسالة لقائمة `processing` قبل تنفيذها؛ مش حذفها وإهمالها لو الـWorker اتعطل. عند الرجوع يقرأ الـWorker الرسالة المعلقة الأول.
+
+الأثر التعليمي هنا زيادة `lesson:effect-count` فقط. Script بلغة Lua ينفّذ تسجيل `job_id` والزيادة و**Ack** — تأكيد إنهاء الرسالة وإزالتها من `processing` — كعملية Redis واحدة. الـID المكرر يطبع `duplicate=` من غير زيادة جديدة. الرسالة المخالفة لعقد JSON تروح `lesson:dead`، وهي **Dead-Letter Queue** للاحتفاظ بالرسالة المرفوضة وفحص سببها.
+
+### جرّب Crash من غير فقد الرسالة
+
+بعد تشغيل الخدمات، أوقف الـWorker المعتاد عشان التجربة تفضل بواحد فقط:
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml stop queue-worker
+curl -fsS -X POST http://127.0.0.1:8080/queue
+docker compose -f production/compose.yaml -f production/compose.full.yaml run --rm -e CRASH_AFTER_RESERVE=1 queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:processing
+docker compose -f production/compose.yaml -f production/compose.full.yaml start queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli get lesson:effect-count
+~~~
+
+الـrun المقصود يفشل بكود 3 ويطبع `simulated_crash pending=1`. طول `processing` بعدها 1؛ الرجوع يعالجها ويقلل الطول إلى 0 ويزيد العداد مرة. سجّل قيمة العداد قبل التجربة وقارن الفرق، لأن ممكن تكون عالجت رسائل قبلها.
+
+:::caution[حدود المعمل]
+شغّل Worker واحد فقط. مفيش Lease، وهي ملكية مؤقتة تمنع عاملين من معالجة نفس الرسالة، ولا Retry/Backoff للأخطاء المؤقتة في الكود ده. Redis في Compose مؤقت وبلا Persistence، أي حفظ قابل للاسترجاع بعد فقد العملية، وسياسة Eviction قد تحذف مفاتيح عند ضغط الذاكرة. الضمان هنا محدود بتعطل الـWorker مع استمرار Redis وبياناته، مش تعطل Redis ولا تعدد Workers. ما تستبدلش زيادة العداد باستدعاء دفع أو بريد وتفترض نفس الضمان. `BRPOPLPUSH` ما زال مدعومًا لكنه Deprecated من Redis 6.2؛ البديل الحديث `BLMOVE RIGHT LEFT`، وده لوحده برضه مش بروتوكول Queue كامل. [مرجع Redis](https://redis.io/docs/latest/commands/brpoplpush/).
+:::
 
 
 ## اربط النقاط ببعض

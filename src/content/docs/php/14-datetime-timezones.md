@@ -1,5 +1,7 @@
 ---
 title: 14. التاريخ والوقت والمناطق الزمنية
+prev: {"link":"/php/10-namespaces-autoloading/","label":"Namespaces وComposer وأدوات الجودة"}
+next: {"link":"/php/request-input/","label":"Request input وSuperglobals"}
 description: DateTimeImmutable وUTC وtimezones وDST وParsing وIntervals والتخزين الصحيح.
 sidebar:
   order: 14
@@ -35,7 +37,7 @@ bool(true)
 
 ننشئ تاريخًا في UTC، ثم setTimezone تحول العرض. `getTimestamp` عدد الثواني منذ Unix epoch لنفس اللحظة، فيتساوى. `Y-m-d` سنة-شهر-يوم، `H:i:s` ساعة-دقيقة-ثانية؛ الحرف i للدقائق، مش m. `P` يطبع offset. `DateTimeInterface::ATOM` صيغة جاهزة للنقل مع offset. آخر سطر يثبت أن modify لم تغير utc.
 
-**غلط:** استدعاء `$utc->modify('+1 day');` وتجاهل العودة ثم توقع تاريخ جديد. الصحيح إسناد النتيجة. اختار DateTimeImmutable عشان مشاركة الكائن بين الدوال لا تسبب تغييرًا مفاجئًا.
+**غلط:** استدعاء `$utc->modify('+1 day');` وتجاهل العودة ثم توقع تاريخ جديد. الصحيح إسناد النتيجة. اختار DateTimeImmutable عشان مشاركة الكائن بين functions لا تسبب تغييرًا مفاجئًا.
 
 ## Parsing صارم: المحرك ممكن يصلح تاريخًا أنت عايز ترفضه
 

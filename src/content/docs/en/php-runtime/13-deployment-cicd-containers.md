@@ -1,5 +1,7 @@
 ---
 title: 13. Deployment, CI/CD, and containers
+prev: {"link":"/en/php-runtime/09-logging-observability/","label":"Logging and observability"}
+next: {"link":"/en/php/","label":"PHP guide"}
 description: Reproducible artifacts, pipelines, health checks, migrations, zero-downtime rollout, and rollback.
 sidebar:
   order: 13

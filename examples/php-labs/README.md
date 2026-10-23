@@ -70,6 +70,12 @@ docker compose -f production/compose.yaml -f production/compose.full.yaml down
 The credentials are fixed teaching values and must never be copied to a real environment. The Redis data and PostgreSQL cluster use temporary filesystems, so `down` intentionally removes all state. Acceptance requires a Redis-backed visit counter, the PostgreSQL probe row, one processed job, and an exported `lesson.telemetry` span.
 
 
+### Queue protocol and limitations
+
+Run a single worker only. It reserves with BRPOPLPUSH into lesson:processing, recovers pending work on startup, and atomically records a job ID, increments lesson:effect-count, and acknowledges with Lua. Invalid payloads move to lesson:dead. With the normal worker stopped, send a job and run the worker with CRASH_AFTER_RESERVE=1: it must exit 3, leaving one pending message. Restart normally and verify the counter increases once. Resubmitting the same 32-character lowercase hexadecimal job_id must not increase it again.
+
+This is a worker-crash exercise while Redis stays alive, not a production queue implementation. There are no concurrent-worker leases or transient-error retries. Redis has no persistence here and eviction can remove markers. A remote payment/email effect cannot be made atomic by the Redis script. BRPOPLPUSH is supported but deprecated; BLMOVE is its modern alternative.
+
 ## Real local HTTP
 
 In one terminal inside the lab folder:

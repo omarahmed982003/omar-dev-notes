@@ -1,5 +1,7 @@
 ---
 title: 15. Profiling وSLI/SLO وOpenTelemetry
+prev: {"link":"/php-runtime/12-queues-workers-scheduling/","label":"Queues وWorkers وScheduling"}
+next: {"link":"/php-runtime/16-resilience-workers/","label":"المرونة وإدارة Workers"}
 description: تحليل الأداء وFlame Graphs وبناء مؤشرات الخدمة وانتقال Trace Context بين الخدمات.
 sidebar:
   order: 15
@@ -11,7 +13,7 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
 - **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
 
@@ -37,7 +39,7 @@ try {
 }
 ```
 
-هذا قياس لعملية واحدة، وليس Profiler كاملًا. لا تضف Timer يدويًا حول كل دالة؛ استخدم Profiler وAPM وInstrumentation عند الحدود المهمة.
+هذا قياس لعملية واحدة، وليس Profiler كاملًا. لا تضف Timer يدويًا حول كل function؛ استخدم Profiler وAPM وInstrumentation عند الحدود المهمة.
 
 ## قراءة Flame Graph
 
@@ -100,7 +102,7 @@ Batch processor مناسب للإنتاج، لكن العملية قصيرة ا�
 
 العينة الثابتة تنتج p50=10ms وp95=100ms وp99=100ms؛ المتوسط 28ms. القياس الفعلي وتصدير trace تدريب منفصل على الخدمة.
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 
@@ -114,7 +116,7 @@ php profiling-lab.php
 
 ## اربط النقاط ببعض
 
-أضف instrumentation حقيقيًا لـHTTP وdatabase وqueue وحدد exporter وresource attributes. Histogram يحتاج buckets مناسبة وتفسير quantiles من backend؛ لا تجمع percentiles حسابيًا. اربط تحسين flame graph بتغير SLI لا بمجرد انخفاض دالة واحدة.
+أضف instrumentation حقيقيًا لـHTTP وdatabase وqueue وحدد exporter وresource attributes. Histogram يحتاج buckets مناسبة وتفسير quantiles من backend؛ لا تجمع percentiles حسابيًا. اربط تحسين flame graph بتغير SLI لا بمجرد انخفاض function واحدة.
 
 #### دورة التجربة
 

@@ -1,6 +1,8 @@
 # PHP course examples / أمثلة منهج PHP
 
-Read PHP lessons 5–17 in either language. Both editions use identical code.
+Follow the staged guide at /php/ or /en/php/, not the historical numeric filenames. Both editions use identical exported code.
+
+- Start in programs/beginner: greeting.php reads STDIN; hello-arg.php reads a CLI argument; validation.php checks the quantity contract; expenses.php combines the language tools; first-tests.php runs three checks and returns nonzero on failure. These programs need PHP CLI only, not Composer or a database.
 
 - programs/05 through programs/16: complete console programs. Run each from its own lesson folder, for example: php programs/05/grade.php. programs/07/main.php loads its sibling config.php.
 - programs.json lists minimum PHP versions. pipe.php and features85.php need PHP 8.5; contact.php needs 8.4; dnf.php needs 8.2. Use a currently supported PHP installation. Unicode examples need mbstring and intl.

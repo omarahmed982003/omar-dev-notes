@@ -1,5 +1,7 @@
 ---
 title: 1. Composer وإدارة الاعتماديات
+prev: {"link":"/php-runtime/07-environment-configuration/","label":"Environment variables وConfiguration"}
+next: {"link":"/php-runtime/10-testing-quality/","label":"الاختبارات وجودة الكود"}
 description: composer.json وcomposer.lock وinstall وupdate وrequire-dev وPSR-4 وتجهيز الإنتاج.
 sidebar:
   order: 1
@@ -102,9 +104,9 @@ composer check-platform-reqs --lock --no-dev
 ```
 
 - `--no-dev` يستبعد أدوات التطوير، لكنه لا يعني أن `require-dev` غير مهم أثناء الاختبار.
-- `--optimize-autoloader` يحوّل قواعد PSR إلى class map محسّنة؛ استخدمه في الإنتاج لا أثناء التطوير المتغير بسرعة.
-- يمكن استعمال `--classmap-authoritative` بعد الاختبار، لكنه يكسر الأصناف التي تُولّد وقت التشغيل إذا لم تدخل الخريطة.
-- لا تستخدم `--ignore-platform-reqs` كحل دائم؛ قد تثبّت كودًا لا يدعمه إصدار PHP أو Extension على الخادم.
+- `--optimize-autoloader` يحوّل قواعد PSR إلى class map محسّنة؛ استخدمه في الإنتاج لا أثناء التطوير variable بسرعة.
+- يمكن استعمال `--classmap-authoritative` بعد الاختبار، لكنه يكسر الأصناف التي تُولّد runtime إذا لم تدخل الخريطة.
+- لا تستخدم `--ignore-platform-reqs` كحل دائم؛ قد تثبّت كودًا لا يدعمه إصدار PHP أو Extension على server.
 - راجع Composer scripts/plugins لأنها كود قابل للتنفيذ أثناء التثبيت. لا تثبّت مشروعًا غير موثوق بصلاحيات عالية.
 
 ## سير عمل موصى به
@@ -123,7 +125,7 @@ composer check-platform-reqs --lock --no-dev
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل `examples/php-labs` أو النسخة المستخرجة من الحزمة:
 

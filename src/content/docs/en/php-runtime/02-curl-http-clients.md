@@ -1,11 +1,31 @@
 ---
 title: 2. cURL and HTTP clients
+prev: {"link":"/en/php-runtime/14-dependency-supply-chain-security/","label":"Dependency and supply-chain security"}
+next: {"link":"/en/php-runtime/06-web-servers-fastcgi/","label":"Apache, Nginx, and FastCGI"}
 description: libcurl, PHP's extension, Guzzle, timeouts, TLS, JSON requests, and error handling.
 sidebar:
   order: 2
 ---
 
 ## Before you start
+
+Requires HTTP, JSON, exceptions, and the curl extension in the same CLI executable used for the test. The `api.example.com` and `$token` snippets below are explanatory fragments, not a running service. Guzzle needs an installed Composer package and `vendor/autoload.php`; the snippet is not a standalone program.
+
+### Start with the complete local exercise
+
+In `examples/php-labs`, start a server in one terminal:
+
+~~~bash
+php -S 127.0.0.1:8097 http-router.php
+~~~
+
+In a second terminal in the same directory:
+
+~~~bash
+php http-client-lab.php
+~~~
+
+Expect `status=200`, `server_error=500`, `conditional=304`, and `timeout_handled=yes`. A conditional request supplies information about a cached version; 304 means no new representation body is needed in this case. A timeout bounds waiting and must be handled as failure. Stop the server with Ctrl+C. This tests local HTTP, not TLS, FPM, or production capacity.
 
 Read this lesson in three passes: understand the problem, follow the example, then try the final check yourself. The terms below are explained before they are used in detail.
 

@@ -1,5 +1,7 @@
 ---
 title: 8. Files, streams, JSON, and CSV
+prev: {"link":"/en/php/program-organization/","label":"Program organization and entry points"}
+next: {"link":"/en/php/10-namespaces-autoloading/","label":"Namespaces, Composer, and quality tools"}
 description: Stream wrappers and contexts, open modes, permissions, JSON, serialization, and CSV.
 sidebar:
   order: 8

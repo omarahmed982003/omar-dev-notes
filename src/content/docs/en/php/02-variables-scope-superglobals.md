@@ -1,5 +1,7 @@
 ---
-title: 2. Variables, scope, and superglobals
+title: "2. Variables and references"
+prev: {"link":"/en/php/01-introduction-and-syntax/","label":"PHP introduction and syntax"}
+next: {"link":"/en/php/03-types/","label":"Data types and the type system"}
 description: Variables from first principles, value and reference assignment, scope, and how request data reaches a PHP program through superglobals.
 sidebar:
   order: 2
@@ -177,221 +179,13 @@ echo $user['email'];
 
 Never turn arbitrary user input directly into variable names. It hides allowed fields and makes validation and reasoning difficult.
 
-## What is scope?
+## Continue with Variable scope and lifetime
 
-**Scope** is the region where a variable name is visible. A variable created inside a function is local to that function; a file-level variable is not automatically visible inside it.
+[Read the standalone topic](/en/php/scope/) after the prerequisites. Its original examples and mechanisms are preserved there.
 
-```php
-$taxRate = 0.14;
+## Continue after language fundamentals
 
-function showLocalScope(): void
-{
-    $message = 'I exist inside this function';
-    echo $message;
-
-    // echo $taxRate; // not automatically visible
-}
-
-showLocalScope();
-// echo $message; // not visible here
-```
-
-Prefer explicit parameters:
-
-```php
-function priceWithTax(int $priceCents, float $taxRate): int
-{
-    return (int) round($priceCents * (1 + $taxRate));
-}
-
-echo priceWithTax(10000, 0.14); // 11400
-```
-
-The dependency is visible, and the function is easy to test with chosen inputs.
-
-## `global` and `$GLOBALS`
-
-PHP allows access to file-level state:
-
-```php
-$total = 100;
-
-function addTaxUsingGlobal(float $rate): float
-{
-    global $total;
-    return $total * (1 + $rate);
-}
-```
-
-The same state is available through `$GLOBALS['total']`. Both forms hide a dependency. If distant code changes `$total`, this function's result changes. Passing the value explicitly is normally easier to understand and test.
-
-## Local `static` variables
-
-A local `static` variable is initialized once and keeps its value between calls in the current process:
-
-```php
-function nextId(): int
-{
-    static $id = 0;
-    return ++$id;
-}
-
-echo nextId(), PHP_EOL; // 1
-echo nextId(), PHP_EOL; // 2
-echo nextId(), PHP_EOL; // 3
-```
-
-This is not permanent storage. A new process starts over. Hidden state can also complicate tests, so do not use a local static variable as a database or shared cache.
-
-## Scope of included files
-
-An `include` or `require` inherits the scope at the inclusion point:
-
-```php
-function loadConfig(): array
-{
-    $environment = 'development';
-    return require __DIR__ . '/config.php';
-}
-```
-
-`config.php` can see `$environment` because inclusion happened inside the function. Prefer configuration files that return a clear value instead of silently modifying many surrounding variables.
-
-## Superglobals bring request data into PHP
-
-PHP places request and environment data in special arrays available in every scope:
-
-| Variable | Typical content |
-|---|---|
-| `$_GET` | Query-string values after `?` |
-| `$_POST` | Fields from form-encoded POST bodies |
-| `$_SERVER` | Request, server, and available header information |
-| `$_FILES` | Uploaded-file metadata |
-| `$_COOKIE` | Cookies sent by the client |
-| `$_SESSION` | Session data after `session_start()` |
-| `$GLOBALS` | Global symbol table |
-
-For this URL:
-
-```text
-http://localhost:8000/?page=2&category=books
-```
-
-you can read:
-
-```php
-$page = $_GET['page'] ?? '1';
-$category = $_GET['category'] ?? 'all';
-```
-
-All client-controlled data is untrusted, even when it looks normal.
-
-## Read, validate, convert, and encode
-
-These are separate steps:
-
-1. Read while handling absence.
-2. Validate against application rules.
-3. Convert to a useful internal type.
-4. Encode when outputting into a specific context.
-
-```php
-$rawPage = $_GET['page'] ?? null;
-$page = filter_var($rawPage, FILTER_VALIDATE_INT, [
-    'options' => ['min_range' => 1, 'max_range' => 1000],
-]);
-
-if ($page === false) {
-    $page = 1;
-}
-```
-
-A checkbox list may arrive as an array:
-
-```text
-?order_ids[]=10&order_ids[]=20
-```
-
-```php
-function positiveIds(mixed $input, int $maximumCount = 100): array
-{
-    if (!is_array($input) || !array_is_list($input) || count($input) > $maximumCount) {
-        throw new InvalidArgumentException('Expected a bounded list of IDs');
-    }
-    $ids = [];
-    foreach ($input as $raw) {
-        if ((!is_string($raw) && !is_int($raw))
-            || preg_match('/\A[1-9][0-9]*\z/', (string) $raw) !== 1) {
-            throw new InvalidArgumentException('Invalid ID');
-        }
-        $id = filter_var($raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
-        if ($id === false) {
-            throw new InvalidArgumentException('ID exceeds integer range');
-        }
-        $ids[] = $id;
-    }
-    return $ids;
-}
-
-try {
-    $orderIds = positiveIds($_GET['order_ids'] ?? []);
-} catch (InvalidArgumentException) {
-    http_response_code(422);
-    exit('Invalid order IDs');
-}
-```
-
-Conversion is not validation: `intval("12x")` silently produces 12. Require a list of at most 100 canonical positive integer IDs and reject nested arrays, zero, leading zeros, and overflow. The empty list is allowed. After validation, separately check that the authenticated user may access every selected order.
-
-Validation is not output encoding. A valid name still needs `htmlspecialchars()` in HTML and a value still needs a prepared statement when used in SQL.
-
-## Why `eval()` is dangerous
-
-`eval()` executes a string as PHP source:
-
-```php
-$code = 'echo "hello";';
-eval($code);
-```
-
-If that string comes from a user, you have allowed them to execute server code. Ordinary applications do not need this. Use functions, callback maps, or `match` instead:
-
-```php
-$operations = [
-    'trim' => static fn (string $value): string => trim($value),
-    'upper' => static fn (string $value): string => strtoupper($value),
-];
-
-$result = $operations['trim']('  hello  ');
-```
-
-## Complete example: greeting from a URL
-
-```php
-<?php
-declare(strict_types=1);
-
-$rawName = $_GET['name'] ?? 'Guest';
-
-if (!is_string($rawName)) {
-    $rawName = 'Guest';
-}
-
-$name = trim($rawName);
-if ($name === '' || mb_strlen($name) > 50) {
-    $name = 'Guest';
-}
-
-$safeName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-?>
-<!doctype html>
-<html lang="en">
-<head><meta charset="utf-8"><title>Greeting</title></head>
-<body><h1>Hello <?= $safeName ?></h1></body>
-</html>
-```
-
-Test `?name=Omar`, an empty name, `?name[]=Omar`, and a name containing HTML. Each case checks a different assumption.
+[Request input and superglobals](/en/php/request-input/) owns HTTP input, validation, and output encoding. Study it after functions and arrays.
 
 ## Value flow
 
@@ -404,10 +198,6 @@ Request value → Read → Check type and rules → Store clearly → Encode for
 <div class="lesson-quiz" role="list">
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">01</span><p>Predict <code>$a = 5; $b = $a; $b++; echo "$a,$b";</code>.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> <code>5,6</code>; normal assignment produces logically independent values.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">02</span><p>What changes if assignment uses <code>&</code>?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> With <code>$b =& $a</code>, the result becomes <code>6,6</code> because the names are linked.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why is an explicit parameter easier to test than <code>global</code> state?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> All dependencies appear in the call, so a test can supply them. A global dependency can change elsewhere without being visible in the function signature.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>Why is casting <code>?page=abc</code> directly to <code>int</code> insufficient?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Casting can produce zero and hide invalid input. Validate an integer in the allowed range, then deliberately choose a default or error.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>How do validation and HTML encoding differ?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Validation checks application rules. Encoding makes a value data rather than executable markup in a specific output context.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>Why should a local static counter not store permanent visit counts?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> It lasts only in one process; traffic may use other processes or servers, and the state disappears when that process ends. Use shared persistent storage.</div></details></section>
 </div>
 
 ## Summary

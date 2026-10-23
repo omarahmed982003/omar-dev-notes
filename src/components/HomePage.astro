@@ -9,7 +9,7 @@ const isArabic = locale === 'ar';
 
 // Count lesson files at build time so homepage numbers cannot become stale.
 const docModules = import.meta.glob('../content/docs/**/*.{md,mdx}');
-const trackSlugs = ['programming-basics', 'cpp', 'php', 'php-runtime', 'auth', 'database'] as const;
+const trackSlugs = ['programming-basics', 'php'] as const;
 
 const countLessons = (track: (typeof trackSlugs)[number], language: 'ar' | 'en') => {
 	const prefix = language === 'ar'
@@ -17,12 +17,12 @@ const countLessons = (track: (typeof trackSlugs)[number], language: 'ar' | 'en')
 		: `../content/docs/en/${track}/`;
 
 	return Object.keys(docModules).filter((path) => {
-		if (!path.startsWith(prefix)) return false;
+		const runtimePrefix = language === 'ar' ? '../content/docs/php-runtime/' : '../content/docs/en/php-runtime/';
+		if (!path.startsWith(prefix) && !(track === 'php' && path.startsWith(runtimePrefix))) return false;
 		if (track === 'programming-basics') {
 			const route = 'programming-basics/' + path.slice(prefix.length).replace(/\.(?:md|mdx)$/, '');
 			if (!foundationsCurriculum.some(group => group.lessons.includes(route))) return false;
 		}
-		if (track === 'cpp' && /\/loops-competitive\/(?:02-competitive-programming|03-conditions-codeforces)\.(?:md|mdx)$/.test(path)) return false;
 		return !/\/(?:index|networking-next|programming-practice)\.(?:md|mdx)$/.test(path);
 	}).length;
 };
@@ -63,48 +63,12 @@ const content = isArabic
 				},
 				{
 					code: '02',
-					title: 'البرمجة بلغة C++',
-					description: 'اتعلّم كتابة البرامج من أول القيم والمتغيرات لحد الشروط والتكرار وبناء مشروعات صغيرة.',
-					href: '/cpp/',
-					count: lessonCounts.cpp,
-					level: 'مبتدئ ← متوسط',
-					accent: 'orange',
-				},
-				{
-					code: '03',
-					title: 'تطوير الويب بلغة PHP',
-					description: 'اتعلّم أساسيات اللغة واستخدمها في استقبال الطلبات والتعامل مع الملفات والجلسات.',
+					title: 'PHP: من أساس اللغة لتشغيل التطبيقات',
+					description: 'اتعلّم اللغة وابنِ تطبيق ويب، وبعدها افهم Composer وPHP-FPM والاختبارات والأداء والنشر؛ مسار واحد بمراحل واضحة.',
 					href: '/php/',
 					count: lessonCounts.php,
-					level: 'مبتدئ ← متوسط',
+					level: 'مبتدئ ← متقدم',
 					accent: 'violet',
-				},
-				{
-					code: '04',
-					title: 'تشغيل تطبيقات PHP',
-					description: 'افهم الأدوات والخدمات اللي بتشغّل تطبيق PHP وتخليه أسرع وأكثر استقرارًا.',
-					href: '/php-runtime/',
-					count: lessonCounts['php-runtime'],
-					level: 'متوسط',
-					accent: 'cyan',
-				},
-				{
-					code: '06',
-					title: 'الأمان وتسجيل الدخول والصلاحيات',
-					description: 'احمِ المستخدم وبياناته، وحدد مين يقدر يدخل ومين يقدر ينفّذ كل عملية.',
-					href: '/auth/',
-					count: lessonCounts.auth,
-					level: 'متوسط ← متقدم',
-					accent: 'rose',
-				},
-				{
-					code: '07',
-					title: 'قواعد البيانات',
-					description: 'خزّن البيانات واقرأها وعدّلها بأمان، واتعلّم تنظمها عشان تفضل سريعة وواضحة.',
-					href: '/database/',
-					count: lessonCounts.database,
-					level: 'متوسط',
-					accent: 'green',
 				},
 			],
 		}
@@ -138,48 +102,12 @@ const content = isArabic
 				},
 				{
 					code: '02',
-					title: 'Programming with C++',
-					description: 'Write programs from values and variables through decisions, repetition, and small projects.',
-					href: '/en/cpp/',
-					count: lessonCounts.cpp,
-					level: 'Beginner → intermediate',
-					accent: 'orange',
-				},
-				{
-					code: '03',
-					title: 'Web development with PHP',
-					description: 'Learn the language and use it to handle requests, files, and user sessions.',
+					title: 'PHP: Language, Applications & Production',
+					description: 'Learn PHP, build a web application, then explore Composer, PHP-FPM, testing, performance, and deployment in one staged track.',
 					href: '/en/php/',
 					count: lessonCounts.php,
-					level: 'Beginner → intermediate',
+					level: 'Beginner → advanced',
 					accent: 'violet',
-				},
-				{
-					code: '04',
-					title: 'Running PHP applications',
-					description: 'Understand the tools and services that keep a PHP application fast and reliable.',
-					href: '/en/php-runtime/',
-					count: lessonCounts['php-runtime'],
-					level: 'Intermediate',
-					accent: 'cyan',
-				},
-				{
-					code: '06',
-					title: 'Security, sign-in, and permissions',
-					description: 'Protect users and their data, then control who can enter and perform each action.',
-					href: '/en/auth/',
-					count: lessonCounts.auth,
-					level: 'Intermediate → advanced',
-					accent: 'rose',
-				},
-				{
-					code: '07',
-					title: 'Databases',
-					description: 'Store, read, and update data safely, then organize it so it stays fast and clear.',
-					href: '/en/database/',
-					count: lessonCounts.database,
-					level: 'Intermediate',
-					accent: 'green',
 				},
 			],
 		};
@@ -261,7 +189,7 @@ const arrow = isArabic ? '←' : '→';
 	<section class="learning-paths" id="learning-paths" aria-labelledby="paths-title">
 		<div class="section-heading">
 			<div>
-				<p class="section-kicker">01 — 07</p>
+				<p class="section-kicker">01 — 02</p>
 				<h2 id="paths-title">{content.sectionTitle}</h2>
 			</div>
 			<p>{content.sectionDescription}</p>
@@ -562,13 +490,6 @@ const arrow = isArabic ? '←' : '→';
 		gap: 1rem;
 	}
 
-	.path-card:last-child {
-		grid-column: 1 / -1;
-		min-height: 11.5rem;
-	}
-
-	.path-card:last-child .card-copy p { max-width: 72ch; }
-
 	.method-grid {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -713,7 +634,6 @@ const arrow = isArabic ? '←' : '→';
 		.request-visual,
 		.request-visual:hover { transform: none; }
 		.paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-		.path-card:last-child { grid-column: 1 / -1; min-height: 11.5rem; }
 	}
 
 	@media (max-width: 42rem) {
@@ -747,7 +667,6 @@ const arrow = isArabic ? '←' : '→';
 
 		.paths-grid { grid-template-columns: 1fr; }
 		.path-card { min-height: 13rem; }
-		.path-card:last-child { grid-column: auto; min-height: 13rem; }
 		.method-grid { grid-template-columns: 1fr; }
 		.method-grid article + article { border-inline-start: 0; border-top: 1px solid var(--sl-color-hairline); }
 	}

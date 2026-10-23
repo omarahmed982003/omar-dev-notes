@@ -1,5 +1,7 @@
 ---
 title: 14. Dependency and supply-chain security
+prev: {"link":"/en/php-runtime/10-testing-quality/","label":"Testing and code quality"}
+next: {"link":"/en/php-runtime/02-curl-http-clients/","label":"cURL and HTTP clients"}
 description: Composer audit, policies, platform checks, lock files, plugins, scripts, and CI verification.
 sidebar:
   order: 14

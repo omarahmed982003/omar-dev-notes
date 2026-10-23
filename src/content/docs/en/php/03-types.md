@@ -1,5 +1,7 @@
 ---
 title: 3. Data types and the type system
+prev: {"link":"/en/php/02-variables-scope-superglobals/","label":"Variables and references"}
+next: {"link":"/en/php/04-output-debugging-constants/","label":"Output and debugging"}
 description: "Types from first principles: strings, numbers, booleans, null, arrays, objects, declarations, and advanced callable and iterable types."
 sidebar:
   order: 3
@@ -233,6 +235,10 @@ Use `??` when a missing key is expected: `$country = $user['country'] ?? 'Unknow
 
 ## Objects and classes
 
+:::note[First-pass stopping point]
+For your first PHP pass, scalar types, null, and the idea of arrays are enough. Continue through the sidebar to Output and the language foundations. The following sections are a reference to revisit after functions and OOP; the complete request example also requires Input validation and Request input. Advanced types are not a gate to your first program.
+:::
+
 An object is an instance of a class that combines state and behavior:
 
 ```php
@@ -417,6 +423,9 @@ declare(strict_types=1);
 
 function readPositiveInt(mixed $value): ?int
 {
+    if (!is_string($value) && !is_int($value)) {
+        return null;
+    }
     $result = filter_var($value, FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 1],
     ]);
@@ -433,11 +442,17 @@ if ($priceCents === null || $quantity === null) {
     exit;
 }
 
+if ($priceCents > intdiv(PHP_INT_MAX, $quantity)) {
+    http_response_code(422);
+    exit('Total exceeds integer range');
+}
 $totalCents = $priceCents * $quantity;
 echo "Total: {$totalCents} cents";
 ```
 
 Test a valid request, alphabetic price, zero quantity, and a missing value. The example connects untrusted `mixed` input, validation, nullable results, strict comparison, and integer money.
+
+Overflow means the result exceeds the int range. Check before multiplying, not after a conversion to float. Reject bool, float, and array explicitly at the input boundary.
 
 ## Common mistakes
 
@@ -457,7 +472,6 @@ Test a valid request, alphabetic price, zero quantity, and a missing value. The 
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>Why can <code>0.1 + 0.2 === 0.3</code> be false?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Finite binary floating-point cannot exactly represent every decimal fraction. Compare with a domain-appropriate tolerance or use exact decimal/integer representation.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>When should you use <code>array_key_exists()</code> rather than <code>isset()</code>?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> When key presence matters even if the stored value is <code>null</code>.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>How should an application narrow a <code>mixed</code> price from an external request?</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Answer:</strong> Accept uncertainty only at the boundary, validate and convert to an integer number of cents, and let internal domain functions require that clear <code>int</code> contract.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>Write a generator that yields even numbers from 2 to a maximum.</p></div><details class="quiz-answer"><summary><span class="quiz-show">Show answer</span><span class="quiz-hide">Hide answer</span></summary><div class="quiz-answer-body"><strong>Solution outline:</strong> Start a loop at 2, increment by 2, and <code>yield</code> each number while it is below or equal to the maximum.</div></details></section>
 </div>
 
 ## Summary

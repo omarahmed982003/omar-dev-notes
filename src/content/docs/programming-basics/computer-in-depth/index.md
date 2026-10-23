@@ -7,15 +7,15 @@ sidebar:
 
 <span class="foundations-reading-scope" aria-hidden="true"></span>
 
-لما برنامج يتأخر أو يستهلك ذاكرة أو يفشل يفتح ملف، حفظ قواعد اللغة مش كفاية علشان تعرف السبب. محتاج تعرف البرنامج بيطلب إيه من الجهاز ونظام التشغيل بيتعامل مع الطلب إزاي.
+لما برنامج يتأخر أو يستهلك ذاكرة أو يفشل يفتح ملف، حفظ قواعد اللغة مش كفاية علشان تعرف السبب. محتاج تعرف البرنامج بيطلب إيه من الجهاز وOperating System بيتعامل مع الطلب إزاي.
 
-هنبدأ بالهاردوير بالقدر اللي يخدم المبرمج، وبعدها ندخل في السوفتوير والتنفيذ. درس المقدمة بيفرق بين الكود والبرنامج والعملية والـRuntime والمكتبة والـFramework قبل ما تحتاج تستخدم المصطلحات دي في نظام التشغيل.
+هنبدأ بالهاردوير بالقدر اللي يخدم المبرمج، وبعدها ندخل في السوفتوير والتنفيذ. درس المقدمة بيفرق بين الكود والبرنامج والعملية والـRuntime والمكتبة والـFramework قبل ما تحتاج تستخدم المصطلحات دي في Operating System.
 
 ## امشِ بالترتيب ده
 
 - [مكوّنات الهاردوير واللوحة الأم](/programming-basics/computer-in-depth/03-hardware-architecture/)
 - [السوفتوير: من الكود لبرنامج شغال](/programming-basics/computer-in-depth/software-and-runtime/)
-- [نظام التشغيل: البنية والأنواع وطريقة العمل](/programming-basics/computer-in-depth/06-operating-systems/)
+- [Operating System: البنية والأنواع وطريقة العمل](/programming-basics/computer-in-depth/06-operating-systems/)
 - [كيف ينفّذ المعالج التعليمات؟](/programming-basics/computer-in-depth/04-cpu-gpu/)
 - [تمثيل الأعداد والحروف في الذاكرة](/programming-basics/computer-in-depth/03-binary-languages-algorithms/)
 - [تمثيل الصور والصوت والفيديو ووحدات الحجم](/programming-basics/computer-fundamentals/18-media-and-units/)

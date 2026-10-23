@@ -1,5 +1,7 @@
 ---
 title: 6. Expressions and operators
+prev: {"link":"/en/php/constants/","label":"Constants and their scope"}
+next: {"link":"/en/php/05-control-flow/","label":"Conditions and loops"}
 description: Values, precedence, arithmetic, assignment, comparison, logic, arrays, execution, and pipes.
 sidebar:
   order: 6

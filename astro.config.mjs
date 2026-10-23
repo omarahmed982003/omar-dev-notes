@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import phpCurriculum from './src/data/php-curriculum.json' with { type: 'json' };
 
 // https://astro.build/config
 export default defineConfig({
@@ -571,13 +572,9 @@ export default defineConfig({
 					],
 				},
 				{
-					label: 'PHP',
-					items: [{ autogenerate: { directory: 'php' } }],
-				},
-				{
-					label: 'تشغيل PHP وأدوات الإنتاج',
-					translations: { en: 'PHP Runtime & Production' },
-					items: [{ autogenerate: { directory: 'php-runtime' } }],
+					label: 'PHP: من أساس اللغة لتشغيل التطبيقات',
+					translations: { en: 'PHP: Language, Applications & Production' },
+					items: phpCurriculum,
 				},
 				{
 					label: 'الأمان والمصادقة والصلاحيات',

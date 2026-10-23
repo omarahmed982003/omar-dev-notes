@@ -1,0 +1,404 @@
+[
+  {
+    "label": "ابدأ هنا",
+    "translations": {
+      "en": "Start here"
+    },
+    "collapsed": false,
+    "items": [
+      {
+        "label": "PHP: من أساس اللغة لتشغيل التطبيقات",
+        "translations": {
+          "en": "PHP: Language, Applications & Production"
+        },
+        "link": "php"
+      },
+      {
+        "label": "تجهيز المختبرات وتشغيل الأمثلة",
+        "translations": {
+          "en": "Set up the labs and run examples"
+        },
+        "link": "php/00-lab-setup"
+      }
+    ]
+  },
+  {
+    "label": "أساس اللغة",
+    "translations": {
+      "en": "Language foundations"
+    },
+    "collapsed": false,
+    "items": [
+      {
+        "label": "مقدمة وصياغة PHP",
+        "translations": {
+          "en": "PHP introduction and syntax"
+        },
+        "link": "php/01-introduction-and-syntax"
+      },
+      {
+        "label": "Variables وReferences",
+        "translations": {
+          "en": "Variables and references"
+        },
+        "link": "php/02-variables-scope-superglobals"
+      },
+      {
+        "label": "أنواع البيانات ونظام الأنواع",
+        "translations": {
+          "en": "Data types and the type system"
+        },
+        "link": "php/03-types"
+      },
+      {
+        "label": "Output وDebugging",
+        "translations": {
+          "en": "Output and debugging"
+        },
+        "link": "php/04-output-debugging-constants"
+      },
+      {
+        "label": "Constants: قيم باسم ثابت",
+        "translations": {
+          "en": "Constants and their scope"
+        },
+        "link": "php/constants"
+      },
+      {
+        "label": "التعبيرات والمؤثرات",
+        "translations": {
+          "en": "Expressions and operators"
+        },
+        "link": "php/06-expressions-operators"
+      },
+      {
+        "label": "الشروط والحلقات",
+        "translations": {
+          "en": "Conditions and loops"
+        },
+        "link": "php/05-control-flow"
+      },
+      {
+        "label": "CLI: Input / Output",
+        "translations": {
+          "en": "CLI: Input / Output"
+        },
+        "link": "php/cli-input-output"
+      },
+      {
+        "label": "Functions وCallbacks",
+        "translations": {
+          "en": "Functions and callbacks"
+        },
+        "link": "php/07-functions-and-includes"
+      },
+      {
+        "label": "Scope: مين يقدر يشوف الـvariable؟",
+        "translations": {
+          "en": "Variable scope and lifetime"
+        },
+        "link": "php/scope"
+      },
+      {
+        "label": "Errors وExceptions",
+        "translations": {
+          "en": "Errors and exceptions"
+        },
+        "link": "php/11-errors-exceptions"
+      },
+      {
+        "label": "المصفوفات وأدوات التحويل",
+        "translations": {
+          "en": "Arrays and transformation tools"
+        },
+        "link": "php/12-arrays-functional-tools"
+      },
+      {
+        "label": "Input validation: من string لقيمة موثوقة",
+        "translations": {
+          "en": "Input validation: turn external data into trusted values"
+        },
+        "link": "php/input-validation"
+      },
+      {
+        "label": "Strings وUnicode",
+        "translations": {
+          "en": "Strings and Unicode"
+        },
+        "link": "php/13-strings-unicode-regex"
+      },
+      {
+        "label": "Regex: افحص شكل string واقرأ النتيجة",
+        "translations": {
+          "en": "Regex: validate a string shape"
+        },
+        "link": "php/regex"
+      },
+      {
+        "label": "مشروع CLI: مصروفات من غير web",
+        "translations": {
+          "en": "CLI project: expenses before the web"
+        },
+        "link": "php/cli-expenses-project"
+      },
+      {
+        "label": "أول Test آلي يحمي البرنامج",
+        "translations": {
+          "en": "Your first automated test"
+        },
+        "link": "php/first-tests"
+      }
+    ]
+  },
+  {
+    "label": "من برنامج صغير لتطبيق web",
+    "translations": {
+      "en": "From a small program to the web"
+    },
+    "collapsed": true,
+    "items": [
+      {
+        "label": "Program organization: ملفات ونقطة دخول واضحة",
+        "translations": {
+          "en": "Program organization and entry points"
+        },
+        "link": "php/program-organization"
+      },
+      {
+        "label": "الملفات والـ Streams وJSON وCSV",
+        "translations": {
+          "en": "Files, streams, JSON, and CSV"
+        },
+        "link": "php/08-files-streams-data"
+      },
+      {
+        "label": "Namespaces وComposer وأدوات الجودة",
+        "translations": {
+          "en": "Namespaces, Composer, and quality tools"
+        },
+        "link": "php/10-namespaces-autoloading"
+      },
+      {
+        "label": "التاريخ والوقت والمناطق الزمنية",
+        "translations": {
+          "en": "Date, time, and timezones"
+        },
+        "link": "php/14-datetime-timezones"
+      },
+      {
+        "label": "Request input وSuperglobals",
+        "translations": {
+          "en": "Request input and superglobals"
+        },
+        "link": "php/request-input"
+      },
+      {
+        "label": "Cookies وSessions",
+        "translations": {
+          "en": "Cookies and sessions"
+        },
+        "link": "php/09-uploads-cookies-sessions"
+      },
+      {
+        "label": "File uploads: من form لتخزين private",
+        "translations": {
+          "en": "File uploads and private storage"
+        },
+        "link": "php/file-uploads"
+      },
+      {
+        "label": "من HTTP Request إلى Router وResponse",
+        "translations": {
+          "en": "From HTTP request to router and response"
+        },
+        "link": "php/15-request-router-response"
+      },
+      {
+        "label": "مشروع دفتر الملاحظات وDebugging عملي",
+        "translations": {
+          "en": "Notebook project and practical debugging"
+        },
+        "link": "php/17-integrated-programs-debugging"
+      }
+    ]
+  },
+  {
+    "label": "تشغيل التطبيق والتحقق منه",
+    "translations": {
+      "en": "Run and verify the application"
+    },
+    "collapsed": true,
+    "items": [
+      {
+        "label": "قسم التشغيل وأدوات الإنتاج — PHP",
+        "translations": {
+          "en": "Runtime & Production Section — PHP"
+        },
+        "link": "php-runtime"
+      },
+      {
+        "label": "PHP CLI وphp.ini والامتدادات",
+        "translations": {
+          "en": "PHP CLI, php.ini, and extensions"
+        },
+        "link": "php-runtime/08-cli-ini-extensions"
+      },
+      {
+        "label": "Environment variables وConfiguration",
+        "translations": {
+          "en": "Environment variables and configuration"
+        },
+        "link": "php-runtime/07-environment-configuration"
+      },
+      {
+        "label": "Composer وإدارة الاعتماديات",
+        "translations": {
+          "en": "Composer and dependency management"
+        },
+        "link": "php-runtime/01-composer-dependencies"
+      },
+      {
+        "label": "الاختبارات وجودة الكود",
+        "translations": {
+          "en": "Testing and code quality"
+        },
+        "link": "php-runtime/10-testing-quality"
+      },
+      {
+        "label": "أمان الاعتماديات وSupply Chain",
+        "translations": {
+          "en": "Dependency and supply-chain security"
+        },
+        "link": "php-runtime/14-dependency-supply-chain-security"
+      },
+      {
+        "label": "cURL وعملاء HTTP",
+        "translations": {
+          "en": "cURL and HTTP clients"
+        },
+        "link": "php-runtime/02-curl-http-clients"
+      },
+      {
+        "label": "Apache وNginx وFastCGI",
+        "translations": {
+          "en": "Apache, Nginx, and FastCGI"
+        },
+        "link": "php-runtime/06-web-servers-fastcgi"
+      },
+      {
+        "label": "PHP-FPM وإدارة العمليات",
+        "translations": {
+          "en": "PHP-FPM and process management"
+        },
+        "link": "php-runtime/05-php-fpm-processes"
+      },
+      {
+        "label": "OPcache وPreloading",
+        "translations": {
+          "en": "OPcache and preloading"
+        },
+        "link": "php-runtime/03-opcache-preloading"
+      },
+      {
+        "label": "Logging وObservability",
+        "translations": {
+          "en": "Logging and observability"
+        },
+        "link": "php-runtime/09-logging-observability"
+      },
+      {
+        "label": "Deployment وCI/CD وContainers",
+        "translations": {
+          "en": "Deployment, CI/CD, and containers"
+        },
+        "link": "php-runtime/13-deployment-cicd-containers"
+      }
+    ]
+  },
+  {
+    "label": "ارجع للتعمق بعد التطبيق",
+    "translations": {
+      "en": "Return for depth after practice"
+    },
+    "collapsed": true,
+    "items": [
+      {
+        "label": "Generators: بيانات على قد الاحتياج",
+        "translations": {
+          "en": "Generators and incremental processing"
+        },
+        "link": "php/generators"
+      },
+      {
+        "label": "خريطة ميزات PHP الحديثة 8.0–8.5",
+        "translations": {
+          "en": "Modern PHP 8.0–8.5 roadmap"
+        },
+        "link": "php/16-modern-php-features"
+      },
+      {
+        "label": "ذاكرة PHP وGarbage Collection",
+        "translations": {
+          "en": "PHP memory and garbage collection"
+        },
+        "link": "php-runtime/04-memory-garbage-collection"
+      },
+      {
+        "label": "Data Caching وRedis",
+        "translations": {
+          "en": "Data caching and Redis"
+        },
+        "link": "php-runtime/11-data-caching-redis"
+      },
+      {
+        "label": "Queues وWorkers وScheduling",
+        "translations": {
+          "en": "Queues, workers, and scheduling"
+        },
+        "link": "php-runtime/12-queues-workers-scheduling"
+      },
+      {
+        "label": "Profiling وSLI/SLO وOpenTelemetry",
+        "translations": {
+          "en": "Profiling, SLI/SLO, and OpenTelemetry"
+        },
+        "link": "php-runtime/15-profiling-slo-opentelemetry"
+      },
+      {
+        "label": "المرونة وإدارة Workers",
+        "translations": {
+          "en": "Resilience and worker management"
+        },
+        "link": "php-runtime/16-resilience-workers"
+      },
+      {
+        "label": "Disaster Recovery واختبار الاستعادة",
+        "translations": {
+          "en": "Disaster recovery and restore testing"
+        },
+        "link": "php-runtime/17-disaster-recovery"
+      },
+      {
+        "label": "Sessions وShared State عند التوسع",
+        "translations": {
+          "en": "Sessions and shared state at scale"
+        },
+        "link": "php-runtime/18-sessions-shared-state"
+      },
+      {
+        "label": "اتصالات قاعدة البيانات وتشغيلها",
+        "translations": {
+          "en": "Database connections and runtime operations"
+        },
+        "link": "php-runtime/19-database-runtime-operations"
+      },
+      {
+        "label": "PHP طويلة العمر وWorker Runtimes",
+        "translations": {
+          "en": "Long-running PHP and worker runtimes"
+        },
+        "link": "php-runtime/20-long-running-php"
+      }
+    ]
+  }
+]

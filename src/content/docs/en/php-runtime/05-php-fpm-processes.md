@@ -1,5 +1,7 @@
 ---
 title: 5. PHP-FPM and process management
+prev: {"link":"/en/php-runtime/06-web-servers-fastcgi/","label":"Apache, Nginx, and FastCGI"}
+next: {"link":"/en/php-runtime/03-opcache-preloading/","label":"OPcache and preloading"}
 description: FastCGI, master and workers, pools, static/dynamic/ondemand modes, capacity, and monitoring.
 sidebar:
   order: 5
@@ -12,8 +14,7 @@ Read this lesson in three passes: understand the problem, follow the example, th
 ### New terms in this lesson
 
 - **HTTP:** The rules used to exchange requests and responses on the web.
-- **Queue:** A line of background jobs waiting to be processed.
-- **Worker:** A background process that takes jobs from a queue and runs them.
+- **Worker:** An execution unit assigned work. Here it is a PHP process handling a request, not a queue consumer. A process is a running program instance with its own identity and resources.
 
 
 - **OPcache:** Memory that keeps compiled PHP instructions for later requests.
@@ -108,7 +109,7 @@ Start the `examples/php-labs/production` environment as described in its README,
 
 ~~~bash
 curl -sS -o /dev/null -w "status=%{http_code} total=%{time_total}
-" http://localhost/health
+" http://127.0.0.1:8080/health
 ~~~
 
 **Success criterion:** The health check returns 200 and `docker compose ps` reports both services healthy. Under controlled load the worker count stays bounded; correlate delay with the FPM queue rather than guessing. In Windows PowerShell, replace `/dev/null` with `NUL`.

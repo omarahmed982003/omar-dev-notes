@@ -1,5 +1,7 @@
 ---
-title: تشغيل PHP وأدوات الإنتاج
+title: "قسم التشغيل وأدوات الإنتاج — PHP"
+prev: {"link":"/php/","label":"دليل PHP"}
+next: {"link":"/php-runtime/08-cli-ini-extensions/","label":"PHP CLI وphp.ini والامتدادات"}
 description: من Composer وOPcache وPHP-FPM إلى الاختبارات وRedis والطوابير والنشر والمراقبة والمرونة والتعافي.
 sidebar:
   order: 0
@@ -9,9 +11,17 @@ sidebar:
 
 المسار ده يشرح الأدوات والطبقات اللي بتحيط بتطبيق PHP بعد كتابة الكود. هتتعرف بالتدريج على مسؤولية مدير الحزم وعميل HTTP وخادم الويب وPHP-FPM، وإزاي تفرّق بين دور كل جزء.
 
-## لماذا هو قسم مستقل؟
+## مكانه داخل مسار PHP
 
-هذه الموضوعات ليست جزءًا من OOP، وليست مجرد صياغة للغة PHP. إنها طبقة **Runtime & Production**: تثبيت الاعتماديات، تحميل الأصناف، تنفيذ PHP بكفاءة، الاتصال بخدمات خارجية، إدارة العمليات، وتمرير الإعدادات بأمان.
+ده القسم الثاني من [مسار PHP: من أساس اللغة لتشغيل التطبيقات](/php/)، مش كارد منفصلة. **Runtime** runtime، و**Production** بيئة الخدمة الفعلية: هنا نفهم تشغيل الكود والاعتماديات والعمليات والإعدادات. الفصل داخل نفس الكارد عشان المبتدئ مايتوهش بين أساس اللغة والتشغيل المتقدم.
+
+## اختار نقطة الدخول
+
+ابدأ بعد تطبيق PHP صغير وفهم functions وComposer وHTTP. اقرأ8 ثم7 ثم1 و10: بيئة التشغيل، إعداد التطبيق، اعتمادياته واختباراته. بعد أساس Linux افهم6 ثم5 ثم3 ثم9 ثم13: web server وFPM وOPcache والسجلات والنشر.2 لعميل HTTP عند احتياج تكامل خارجي، و14 لتعميق أمان الاعتماديات قبل اعتماد release.
+
+الدروس4 و11 و12 و15–20 تعميق بعد التطبيق: الذاكرة والـcache والطوابير والقياس والمرونة والتعافي والتوسع. تجارب DB تحتاج SQL ومعاملات، وFPM وsystemd وpcntl تحتاج Linux أوبيئة Linux معزولة؛ مش أوامر Windows أصلية. أرقام العناوين محفوظة للمراجع، مش ترتيب متطلبات صارمًا.
+
+Composer هنا يعمق الإنتاج بعد مشروع الدرس10 في قسم اللغة، وTesting هنا يوسع الاختبارات المبكرة؛ مش مطلوب تعيد تعلم التعريفات كأنها موضوع جديد. احتفظ بنتيجة كل تجربة وحدودها، وما تعتبرش النموذج المحلي إثبات تشغيل Redis أوFPM فعليين.
 
 ## خريطة الدروس
 
@@ -41,7 +51,7 @@ sidebar:
 كل تمرين يمر بخمس خطوات: توقّع النتيجة، شغّل الأمر، أحدث عطلًا مقصودًا، اجمع دليلًا من الخروج أو logs أو metrics، ثم أصلح السبب وأعد الاختبار. نجاح الأمر وحده ليس دليلًا كافيًا من دون معيار قبول يمكن مراجعته.
 
 :::tip[الخيط الذي يربط الدروس]
-المتصفح يتصل بخادم الويب، والخادم يمرر طلب PHP إلى FPM، والـWorker يشغّل كودًا حمّله Composer ويستفيد من OPcache، وقد يستدعي خدمة خارجية عبر cURL. الإعدادات والأسرار تصل من البيئة، والذاكرة تُدار داخل كل Worker.
+browser يتصل بخادم الويب، وserver يمرر طلب PHP إلى FPM، والـWorker يشغّل كودًا حمّله Composer ويستفيد من OPcache، وقد يستدعي خدمة خارجية عبر cURL. الإعدادات والأسرار تصل من البيئة، والذاكرة تُدار داخل كل Worker.
 :::
 
 ## مسار طلب إنتاجي مختصر
@@ -56,7 +66,7 @@ Client
   <- HTTP response
 ```
 
-> الأمثلة تستهدف PHP 8.x. إعدادات الخادم أمثلة تعليمية ويجب تكييف المستخدمين والمسارات والسعة مع نظام التشغيل والموارد الفعلية.
+> الأمثلة تستهدف PHP 8.x. إعدادات server أمثلة تعليمية ويجب تكييف المستخدمين والمسارات والسعة مع Operating System والموارد الفعلية.
 
 ## مراجع رسمية
 
@@ -65,7 +75,7 @@ Client
 - [OPcache](https://www.php.net/manual/en/book.opcache.php) و[Preloading](https://www.php.net/opcache.preloading.php)
 - [Garbage Collection في PHP](https://www.php.net/manual/en/features.gc.php)
 - [PHP-FPM](https://www.php.net/manual/en/install.fpm.php)
-- [إعداد الجلسات](https://www.php.net/manual/en/session.configuration.php) و[إدارة اتصالات PDO](https://www.php.net/manual/en/pdo.connections.php)
+- [إعداد sessions](https://www.php.net/manual/en/session.configuration.php) و[إدارة اتصالات PDO](https://www.php.net/manual/en/pdo.connections.php)
 - [FrankenPHP Worker Mode](https://frankenphp.dev/docs/worker/)
 - [Nginx FastCGI](https://nginx.org/en/docs/http/ngx_http_fastcgi_module.html) و[Apache MPM](https://httpd.apache.org/docs/2.4/mpm.html)
 - [getenv()](https://www.php.net/getenv) و[`$_ENV`](https://www.php.net/manual/en/reserved.variables.environment.php)

@@ -1,5 +1,7 @@
 ---
 title: 18. Sessions and shared state at scale
+prev: {"link":"/en/php-runtime/17-disaster-recovery/","label":"Disaster recovery and restore testing"}
+next: {"link":"/en/php-runtime/19-database-runtime-operations/","label":"Database connections and runtime operations"}
 description: Session storage, locking, horizontal scaling, expiration, garbage collection, and failure behavior.
 sidebar:
   order: 18

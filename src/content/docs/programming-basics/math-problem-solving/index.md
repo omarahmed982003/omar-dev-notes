@@ -15,15 +15,15 @@ sidebar:
 
 1. [النسب والمتوسط والقوى](/programming-basics/math-problem-solving/01-arithmetic-foundations/)
 2. [القسمة والباقي ودقة الحساب](/programming-basics/math-problem-solving/07-division-and-precision/)
-3. [المتغيرات والمعادلات والمنطق البولياني](/programming-basics/math-problem-solving/02-variables-equations-logic/)
-4. [المجموعات والعلاقات ومدخلات الدالة](/programming-basics/math-problem-solving/08-sets-relations/)
+3. [variables والمعادلات والمنطق البولياني](/programming-basics/math-problem-solving/02-variables-equations-logic/)
+4. [المجموعات والعلاقات ومدخلات function](/programming-basics/math-problem-solving/08-sets-relations/)
 5. [التفكير الحاسوبي وتحليل المتطلبات](/programming-basics/math-problem-solving/04-computational-thinking/)
 6. [الخوارزميات وPseudocode وأشجار القرار](/programming-basics/math-problem-solving/05-algorithms-pseudocode-decision-trees/)
 7. [المخططات الانسيابية والحلقات والتصحيح](/programming-basics/math-problem-solving/06-flowcharts-loops-debugging/)
 
 ## نقطة توقف، مش سلسلة شروط جديدة
 
-قبل الخوارزميات الأكبر، جرّب مسألة كمية أو خصم أو مجموع بنفسك. حدد المدخل، وتوقع الناتج، واختبر حدًا، وفسر حالة فشل. كمل [أساسيات PHP](/php/) لحد ما تتعود على القوائم والدوال والشروط والحلقات، وبعدها ارجع للمسار التالي بالأدوات دي.
+قبل الخوارزميات الأكبر، جرّب مسألة كمية أو خصم أو مجموع بنفسك. حدد المدخل، وتوقع الناتج، واختبر حدًا، وفسر حالة فشل. كمل [أساسيات PHP](/php/) لحد ما تتعود على القوائم وfunctions والشروط والحلقات، وبعدها ارجع للمسار التالي بالأدوات دي.
 
 المثال المحلول مش هو المحاولة المستقلة. حاول قبل فتح الإجابة المطوية، وقارن النتيجة وطريقة التفكير معًا.
 

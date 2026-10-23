@@ -1,5 +1,7 @@
 ---
 title: 2. cURL وعملاء HTTP
+prev: {"link":"/php-runtime/14-dependency-supply-chain-security/","label":"أمان الاعتماديات وSupply Chain"}
+next: {"link":"/php-runtime/06-web-servers-fastcgi/","label":"Apache وNginx وFastCGI"}
 description: libcurl وامتداد PHP وGuzzle والمهلات وTLS وإرسال JSON ومعالجة الأخطاء.
 sidebar:
   order: 2
@@ -7,11 +9,29 @@ sidebar:
 
 ## قبل ما تبدأ
 
+الدرس محتاج HTTP وJSON وExceptions، وامتداد `curl` في نفس PHP CLI اللي هتشغّل به الاختبار. أمثلة `api.example.com` و`$token` تحت **Fragments**: مقاطع لشرح إعداد العميل، مش خدمة حقيقية أوبرنامج كامل. مثال Guzzle يحتاج تثبيت الحزمة و`vendor/autoload.php` داخل مشروع Composer؛ ما تنفذش المقطع لوحده.
+
+### تجربة محلية كاملة قبل المقاطع
+
+من مجلد `examples/php-labs` افتح terminal أول وشغّل:
+
+~~~bash
+php -S 127.0.0.1:8097 http-router.php
+~~~
+
+ومن terminal تاني في نفس المجلد:
+
+~~~bash
+php http-client-lab.php
+~~~
+
+المتوقع `status=200` و`server_error=500` و`conditional=304` و`timeout_handled=yes`. **Conditional request** طلب بيبعت معلومة عن نسخة مخزنة؛ رد 304 بيقول إن مفيش محتوى جديد مطلوب إرساله في الحالة دي. **Timeout** حد انتظار؛ انتهاء الحد هنا لازم يتعالج كفشل، مش نجاح. أوقف server المحلي بـCtrl+C. دي تجربة HTTP على جهازك، مش إثبات TLS أوFPM أوتحمل حمل إنتاجي.
+
 ذاكر الدرس على 3 خطوات: افهم المشكلة الأول، تابع المثال، وبعدها جرّب الجزء العملي بنفسك. المصطلحات الجديدة الموجودة تحت متشرحة قبل ما ندخل في التفاصيل.
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **DNS:** خدمة بتحوّل اسم الموقع إلى عنوان رقمي يقدر الجهاز يوصل له.
 - **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
 - **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
@@ -137,7 +157,7 @@ $data = json_decode(
 
 - اضبط مهلة اتصال ومدة كلية؛ الافتراضات غير المحدودة قد تحتجز FPM worker.
 - أعد المحاولة فقط للأخطاء المؤقتة، مع exponential backoff وjitter.
-- لا تُعد POST غير idempotent تلقائيًا إلا بوجود idempotency key يدعمه الخادم.
+- لا تُعد POST غير idempotent تلقائيًا إلا بوجود idempotency key يدعمه server.
 - احترم `Retry-After` مع 429/503.
 - ضع حدًا لحجم الاستجابة واستخدم streaming للملفات الكبيرة.
 
@@ -151,7 +171,7 @@ $data = json_decode(
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

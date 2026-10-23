@@ -1,5 +1,7 @@
 ---
 title: 16. Resilience and worker management
+prev: {"link":"/en/php-runtime/15-profiling-slo-opentelemetry/","label":"Profiling, SLI/SLO, and OpenTelemetry"}
+next: {"link":"/en/php-runtime/17-disaster-recovery/","label":"Disaster recovery and restore testing"}
 description: Circuit breakers, bulkheads, backpressure, process signals, and worker supervision with systemd or Supervisor.
 sidebar:
   order: 16
@@ -32,6 +34,8 @@ A bulkhead isolates capacity through a separate pool or concurrency limit. Backp
 Monitor queue depth, oldest-message age, processing throughput, and failure rate together.
 
 ## Worker lifecycle and signals
+
+This is **pseudocode** illustrating control flow, not a standalone executable program. `reserveJob`, `handle`, `acknowledge`, and `releaseOrDeadLetter` are operations you must implement with your queue library and failure policy. For a bounded executable exercise, use the [queue lab](/en/php-runtime/12-queues-workers-scheduling/).
 
 A long-running CLI worker should handle `SIGTERM`, stop reserving new work, finish or safely release the current job, close resources, and exit. `pcntl` applies to Unix-like environments; Windows service management requires a different mechanism.
 

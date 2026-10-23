@@ -1,5 +1,7 @@
 ---
 title: 20. PHP طويلة العمر وWorker Runtimes
+prev: {"link":"/php-runtime/19-database-runtime-operations/","label":"اتصالات قاعدة البيانات وتشغيلها"}
+next: {"link":"/php/","label":"دليل PHP"}
 description: تشغيل FrankenPHP وRoadRunner وSwoole بأمان وإعادة ضبط الحالة والذاكرة والإشارات والنشر.
 sidebar:
   order: 20
@@ -44,7 +46,7 @@ function handle(ServerRequestInterface $request): ResponseInterface
 
 ## الإشارات والنشر
 
-عند SIGTERM توقف عن قبول عمل جديد، أكمل الجاري ضمن grace period، صدّر telemetry المتبقية ثم اخرج. يجب أن تتجاوز مهلة المنصة مدة الإنهاء المتوقعة. rollout يحتاج توافق الجلسات والـqueue payload وقاعدة البيانات مع نسختين في الوقت نفسه.
+عند SIGTERM توقف عن قبول عمل جديد، أكمل الجاري ضمن grace period، صدّر telemetry المتبقية ثم اخرج. يجب أن تتجاوز مهلة المنصة مدة الإنهاء المتوقعة. rollout يحتاج توافق sessions والـqueue payload وقاعدة البيانات مع نسختين في الوقت نفسه.
 
 ## اختيار النموذج
 

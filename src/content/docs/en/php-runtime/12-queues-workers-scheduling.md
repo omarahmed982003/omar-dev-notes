@@ -1,5 +1,7 @@
 ---
 title: 12. Queues, workers, and scheduling
+prev: {"link":"/en/php-runtime/11-data-caching-redis/","label":"Data caching and Redis"}
+next: {"link":"/en/php-runtime/15-profiling-slo-opentelemetry/","label":"Profiling, SLI/SLO, and OpenTelemetry"}
 description: Jobs, at-least-once delivery, idempotency, retry, backoff, DLQs, graceful shutdown, and cron.
 sidebar:
   order: 12
@@ -92,7 +94,27 @@ docker compose -f production/compose.yaml -f production/compose.full.yaml logs q
 docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:queue
 ~~~
 
-The log must contain `processed=<job_id>` and the list length must return to zero. Stop the worker, submit a job and prove it remains queued, then restart the worker. Submit the same `job_id` twice manually and inspect the duplicate record.
+Expect `processed=<job_id>` and empty `lesson:queue` and `lesson:processing` lists. Reservation moves a message to `processing` before work; startup recovers pending work first. A Lua script records the ID, increments the teaching effect `lesson:effect-count`, and acknowledges/removes the pending message in one Redis operation. Duplicate IDs log `duplicate=` without incrementing again. Invalid JSON/contracts move to the dead-letter list `lesson:dead` for investigation.
+
+### Inject a worker crash
+
+Stop the usual worker so only one worker participates:
+
+~~~bash
+docker compose -f production/compose.yaml -f production/compose.full.yaml stop queue-worker
+curl -fsS -X POST http://127.0.0.1:8080/queue
+docker compose -f production/compose.yaml -f production/compose.full.yaml run --rm -e CRASH_AFTER_RESERVE=1 queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli llen lesson:processing
+docker compose -f production/compose.yaml -f production/compose.full.yaml start queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml logs queue-worker
+docker compose -f production/compose.yaml -f production/compose.full.yaml exec redis redis-cli get lesson:effect-count
+~~~
+
+The intentional failure exits 3 with `simulated_crash pending=1`. The processing length is then 1; restarting processes it, removes it, and increments the effect once. Compare the counter before and after, rather than assuming a fresh database.
+
+:::caution[Lab boundaries]
+Use one worker only. There are no leases (time-limited ownership for concurrent workers) or transient-failure retry/backoff in this implementation. Compose Redis is temporary with persistence disabled; its eviction policy may remove keys under memory pressure. Recovery applies only to a worker crash while Redis and its data survive, not Redis failure or concurrent workers. Replacing the counter with a payment/email call crosses a different atomicity boundary. `BRPOPLPUSH` remains supported but was deprecated in Redis 6.2; its modern replacement is `BLMOVE RIGHT LEFT`, which alone is not a complete queue protocol either. [Redis reference](https://redis.io/docs/latest/commands/brpoplpush/).
+:::
 
 
 ## Connect the ideas

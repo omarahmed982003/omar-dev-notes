@@ -1,5 +1,7 @@
 ---
 title: 1. PHP introduction and syntax
+prev: {"link":"/en/php/","label":"PHP guide"}
+next: {"link":"/en/php/02-variables-scope-superglobals/","label":"Variables and references"}
 description: A calm start from zero—where PHP runs, how a request reaches it, and how to write, run, and safely embed your first PHP program.
 sidebar:
   order: 1

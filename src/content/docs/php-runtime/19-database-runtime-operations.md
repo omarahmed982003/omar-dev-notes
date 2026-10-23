@@ -1,5 +1,7 @@
 ---
 title: 19. اتصالات قاعدة البيانات وتشغيلها
+prev: {"link":"/php-runtime/18-sessions-shared-state/","label":"Sessions وShared State عند التوسع"}
+next: {"link":"/php-runtime/20-long-running-php/","label":"PHP طويلة العمر وWorker Runtimes"}
 description: ميزانية الاتصالات وPDO والمهلات والاتصالات المستديمة والمعاملات والنسخ والاستعداد للفشل.
 sidebar:
   order: 19
@@ -14,7 +16,7 @@ sidebar:
 - **Connection budget:** العدد الذي تستطيع قاعدة البيانات تحمله والمخصص لكل خدمة.
 - **Persistent connection:** اتصال يعاد استخدامه داخل عملية PHP.
 - **Pooler:** وسيط يدير مجموعة اتصالات قاعدة البيانات.
-- **Replica lag:** تأخر نسخة القراءة عن الخادم الأساسي.
+- **Replica lag:** تأخر نسخة القراءة عن server الأساسي.
 
 ## احسب الاتصالات قبل زيادة العمال
 
@@ -41,7 +43,7 @@ $pdo = new PDO($dsn, $user, $password, [
 ]);
 ~~~
 
-`ATTR_TIMEOUT` لا يضبط كل أنواع timeout في كل driver. اضبط connect وstatement وlock timeout في مستوى driver أو الخادم، وضع deadline للعملية الكاملة. لا تطبع DSN أو exception trace للمستخدم.
+`ATTR_TIMEOUT` لا يضبط كل أنواع timeout في كل driver. اضبط connect وstatement وlock timeout في مستوى driver أو server، وضع deadline للعملية الكاملة. لا تطبع DSN أو exception trace للمستخدم.
 
 ## الاتصالات المستديمة
 

@@ -1,5 +1,7 @@
 ---
 title: 11. Errors and exceptions
+prev: {"link":"/en/php/scope/","label":"Variable scope and lifetime"}
+next: {"link":"/en/php/12-arrays-functional-tools/","label":"Arrays and transformation tools"}
 description: Throwable, Error, Exception, try/catch/finally, custom exceptions, boundaries, and safe reporting.
 sidebar:
   order: 11

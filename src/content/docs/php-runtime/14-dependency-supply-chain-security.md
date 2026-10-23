@@ -1,5 +1,7 @@
 ---
 title: 14. أمان الاعتماديات وSupply Chain
+prev: {"link":"/php-runtime/10-testing-quality/","label":"الاختبارات وجودة الكود"}
+next: {"link":"/php-runtime/02-curl-http-clients/","label":"cURL وعملاء HTTP"}
 description: Composer audit والسياسات وplatform checks وlock files وplugins وscripts والتحقق في CI.
 sidebar:
   order: 14
@@ -89,7 +91,7 @@ source commit -> locked dependencies -> SBOM -> signed image digest -> deploymen
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل `examples/php-labs` أو النسخة المستخرجة من الحزمة:
 

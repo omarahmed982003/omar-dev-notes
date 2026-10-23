@@ -1,5 +1,7 @@
 ---
 title: 1. Composer and dependency management
+prev: {"link":"/en/php-runtime/07-environment-configuration/","label":"Environment variables and configuration"}
+next: {"link":"/en/php-runtime/10-testing-quality/","label":"Testing and code quality"}
 description: composer.json, composer.lock, install, update, require-dev, PSR-4, and production installs.
 sidebar:
   order: 1

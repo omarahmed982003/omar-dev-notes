@@ -1,5 +1,7 @@
 ---
-title: 13. النصوص وUnicode وRegular Expressions
+title: "13. Strings وUnicode"
+prev: {"link":"/php/input-validation/","label":"Input validation: من string لقيمة موثوقة"}
+next: {"link":"/php/regex/","label":"Regex: افحص شكل string واقرأ النتيجة"}
 description: Bytes وUTF-8 وmbstring والتطبيع والمقارنة والـRegex الآمن في PHP.
 sidebar:
   order: 13
@@ -7,7 +9,7 @@ sidebar:
 
 ## المشكلة: الاسم ثلاث حروف، لكن strlen تقول ستة
 
-PHP `string` سلسلة **Bytes**، والـByte وحدة تخزين من 8 bits. **Unicode** يعطي الرموز أرقامًا اسمها **code points**. **UTF-8** يحول code point إلى 1–4 Bytes. **Grapheme cluster** مجموعة code points يتعامل معها المستخدم غالبًا كحرف ظاهر واحد. الثلاثة قياسات مختلفة؛ لازم تختار حسب السؤال، مش حسب اسم الدالة.
+PHP `string` سلسلة **Bytes**، والـByte وحدة تخزين من 8 bits. **Unicode** يعطي الرموز أرقامًا اسمها **code points**. **UTF-8** يحول code point إلى 1–4 Bytes. **Grapheme cluster** مجموعة code points يتعامل معها المستخدم غالبًا كحرف ظاهر واحد. الثلاثة قياسات مختلفة؛ لازم تختار حسب السؤال، مش حسب اسم function.
 
 مثلًا عمر ثلاثة code points وستة Bytes. حرف e مع علامة نبرة منفصلة يبدو رمزًا واحدًا لكنه code point للحرف وآخر للعلامة. Emoji العائلة تجمع عدة رموز وروابط غير ظاهرة. الدرس PHP 8.1+، مع امتدادي `mbstring` و`intl`؛ تحقق بـ`php -m`.
 
@@ -75,44 +77,13 @@ bool(true)
 
 أول مقارنة بين Bytes مختلفة، رغم تقارب الشكل. بعد NFC تتطابق. التطبيع لا يحول كل حروف متشابهة بصريًا لنفس المعنى، ولا يصلح XSS. قرر سياسة identifiers والبحث قبل التطبيع، واحتفظ بالأصل للعرض إذا مطلوب. لا تطبع أو تغير Password من نفسك. `mb_strtolower` أنسب من strtolower للنص المتعدد، لكن case folding والترتيب اللغوي لهما قواعد؛ `Collator` من intl للترتيب المحلي عند الحاجة.
 
-## Regex: وصف شكل صغير، مش Parser لكل شيء
+## تابع الموضوع في مكانه
 
-**Regular expression** نمط يصف شكل النص. ابدأ بشرط طول ثم pattern بسيطة. `\A` بداية النص الحقيقية، و`\z` نهايته الحقيقية. `[0-9]` رقم ASCII، و`{4}` أربع مرات. `(?<id>...)` مجموعة باسم لالتقاط جزء. حرف `u` بعد delimiter يفعل UTF-8 mode؛ لا يغير كل قواعد المجال تلقائيًا.
-
-برنامج `code.php` يقبل ORD وأربع أرقام فقط:
-
-~~~php
-<?php
-function orderId(string $input): ?string
-{
-    if (strlen($input) > 32) {
-        return null;
-    }
-    $matched = preg_match('/\AORD-(?<id>[0-9]{4})\z/u', $input, $matches);
-    if ($matched === false) {
-        throw new RuntimeException(preg_last_error_msg());
-    }
-    return $matched === 1 ? $matches['id'] : null;
-}
-foreach (['ORD-1234', 'xORD-1234', "ORD-1234\n", 'ORD-0000'] as $input) {
-    echo json_encode($input), ' => ', orderId($input) ?? 'invalid', PHP_EOL;
-}
-~~~
-
-~~~text
-"ORD-1234" => 1234
-"xORD-1234" => invalid
-"ORD-1234\n" => invalid
-"ORD-0000" => 0000
-~~~
-
-الدالة تعيد النص لا int فتحافظ على الأصفار. فحص الطول قبل المحرك يحد العمل. `preg_match` تعيد 1 للتطابق و0 لعدم التطابق وfalse للخطأ؛ لا تخلط 0 وfalse. المجموعة لا تُقرأ إلا بعد نجاح المطابقة. قبول 0000 شكليًا لا يعني وجود طلب بهذا الرقم؛ التحقق من البيانات خطوة أخرى.
-
-**غلط:** `/^ORD-[0-9]{4}$/` قد يقبل موضع نهاية قبل newline أخيرة؛ `\z` أدق لعقد النص الكامل. وأنماط مثل `(a+)+` قد تسبب **backtracking** مكلفًا: المحرك يجرب تقسيمات كثيرة عند قرب الفشل. استبدلها بنمط أبسط، ضع حدود طول، وافحص أخطاء PCRE. لا تشغّل pattern مستخدم غير موثوق بحرية. JSON وHTML لهما Parsers؛ Regex ليست بديلًا عامًا.
+[Regex: افحص شكل string واقرأ النتيجة](/php/regex/) يشرح الفكرة بتفاصيلها؛ اتبع متطلباته قبل التطبيق.
 
 ## العرض والترميز حسب المكان
 
-**Validation** تقرر هل البيانات مسموحة. **Encoding** تجعل البيانات نصًا في سياق العرض بدل أن تُفهم كتعليمات. لا توجد دالة تعقيم عامة. احفظ `escaping.php`:
+**Validation** تقرر هل البيانات مسموحة. **Encoding** تجعل البيانات نصًا في سياق العرض بدل أن تُفهم كتعليمات. لا توجد function تعقيم عامة. احفظ `escaping.php`:
 
 ~~~php
 <?php
@@ -136,8 +107,6 @@ HTML text/quoted attributes تحتاج htmlspecialchars، ومعامل URL يح�
 
 <details><summary>Debugging: قص اسم عربي بـsubstr($name, 0, 1)</summary><p>تأخذ Byte واحدة وقد تنتج UTF-8 تالفة. استخدم mb_substr للـcode points أو grapheme_substr لحرف ظاهر، حسب عقدك.</p></details>
 
-<details><summary>كمّل Regex تقبل AB-123456 كاملة</summary><p><code>/\A[A-Z]{2}-[0-9]{6}\z/</code>. اختبر بداية زائدة ونهاية newline. بعدها افحص إن كان كود البلد مسموحًا؛ الشكل وحده مش قاعدة المجال.</p></details>
 
-<details><summary>preg_match رجعت false؛ هل أقول فقط إن الكود غير مطابق؟</summary><p>لا. 0 هي عدم التطابق. false خطأ نمط أو encoding أو حد محرك؛ افحص preg_last_error_msg وتعامل معه عند حد التطبيق.</p></details>
 
 شغّل `php text-lab.php` في [المختبر](/php/00-lab-setup/). دفتر الملاحظات سيحد Bytes وcode points ويتحقق من UTF-8 ثم يرمز عند العرض. [مرجع Grapheme](https://www.php.net/manual/en/function.grapheme-strlen.php).

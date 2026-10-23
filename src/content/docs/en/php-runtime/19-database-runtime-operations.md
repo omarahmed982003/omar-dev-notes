@@ -1,5 +1,7 @@
 ---
 title: 19. Database connections and runtime operations
+prev: {"link":"/en/php-runtime/18-sessions-shared-state/","label":"Sessions and shared state at scale"}
+next: {"link":"/en/php-runtime/20-long-running-php/","label":"Long-running PHP and worker runtimes"}
 description: Connection budgets, PDO timeouts, persistent state, transactions, replicas, migrations, and failure readiness.
 sidebar:
   order: 19

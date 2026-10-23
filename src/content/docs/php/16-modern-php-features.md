@@ -1,5 +1,7 @@
 ---
 title: 16. خريطة ميزات PHP الحديثة 8.0–8.5
+prev: {"link":"/php/generators/","label":"Generators: بيانات على قد الاحتياج"}
+next: {"link":"/php-runtime/04-memory-garbage-collection/","label":"ذاكرة PHP وGarbage Collection"}
 description: خريطة زمنية من PHP 8.0 إلى 8.5 تشمل WeakMap وFibers وDNF Types وReadonly Classes وProperty Hooks.
 sidebar:
   order: 16
@@ -25,46 +27,13 @@ sidebar:
 | [8.5](https://www.php.net/releases/8.5/en.php) | 2025-11-20 | Pipe, URI extension, clone with, NoDiscard, array_first/array_last, partitioned cookie option |
 
 
-التواريخ موثقة في [سجل الإصدارات](https://www.php.net/ChangeLog-8.php). الجدول يعرف مكان الميزة؛ مش شرط تحفظه. **مهم تاريخيًا:** Generators و`yield` من 5.5، و`yield from` من 7.0؛ وجودها هنا لا يجعلها ميزة PHP 8. **JIT** ترجمة وقت التشغيل، ومش ضمانًا أن موقعك أسرع؛ قياس التطبيق هو الحكم.
+التواريخ موثقة في [سجل الإصدارات](https://www.php.net/ChangeLog-8.php). الجدول يعرف مكان الميزة؛ مش شرط تحفظه. **مهم تاريخيًا:** Generators و`yield` من 5.5، و`yield from` من 7.0؛ وجودها هنا لا يجعلها ميزة PHP 8. **JIT** ترجمة runtime، ومش ضمانًا أن موقعك أسرع؛ قياس التطبيق هو الحكم.
 
 `require: {"php":"^8.3"}` يعني `>=8.3.0 <9.0.0`، فلا تدخل Hooks من 8.4 في ملف يدعي دعم 8.3. `composer check-platform-reqs` يفحص المنصة الفعلية. راجع migration/deprecations واختبر أقل وأعلى إصدار تدعمه؛ رقم إصدار جديد لا يلغي اختباراتك.
 
-## Generator: عنصر عند الطلب، مش Array كاملة
+## تابع الموضوع في مكانه
 
-**Generator** دالة تحتوي yield؛ استدعاؤها يرجع كائن تكرار، وجسمها يتقدم أثناء foreach. تحتفظ بمكانها والمتغيرات بين العناصر. `yield from` تفوض إنتاج العناصر لمصدر آخر. احفظ `generator.php`؛ الكود متوافق مع PHP 7.0+ لكن استخدم بيئة PHP مدعومة:
-
-~~~php
-<?php
-function batches(): Generator
-{
-    echo "begin", PHP_EOL;
-    yield from [10, 20];
-    yield from [30];
-    echo "end", PHP_EOL;
-}
-$items = batches();
-echo "created", PHP_EOL;
-foreach ($items as $key => $value) {
-    echo "{$key}:{$value}", PHP_EOL;
-}
-echo implode(',', iterator_to_array(batches(), false)), PHP_EOL;
-~~~
-
-~~~text
-created
-begin
-0:10
-1:20
-0:30
-end
-begin
-end
-10,20,30
-~~~
-
-created قبل begin تثبت أن الاستدعاء لم يبن القائمة. المفتاح 0 يتكرر لأن yield from تحافظ على مفاتيح المصدر؛ `iterator_to_array(..., false)` يعيد الترقيم فلا يفقد 10. الخيار الافتراضي يحافظ على المفاتيح وقد يستبدل المتكرر. التحويل إلى Array يحمل كل العناصر، فيفقد ميزة الذاكرة. لإعادة المرور أنشئ Generator جديدة؛ لا تفترض rewind بعد استهلاكها.
-
-في ملفات كبيرة اجعل Generator تقرأ سطرًا داخل try/finally وتقفل المقبض عند انتهائها أو تدميرها. الاحتفاظ بـGenerator متوقفة يحتفظ بمواردها. `yield from` لا تجعل القراءة غير متزامنة.
+[Generators: بيانات على قد الاحتياج](/php/generators/) يشرح الفكرة بتفاصيلها؛ اتبع متطلباته قبل التطبيق.
 
 ## WeakMap من 8.0: معلومات تتبع عمر كائن
 
@@ -162,7 +131,7 @@ readonly blocked reassignment
 
 Array تمر من فرع union، والكائن يحقق Countable وStringable معًا. readonly class تجعل Instance properties المقيدة بالنوع readonly وتمنع dynamic properties؛ ليست deep immutability: كائن داخل property قد تتغير حالته. constructor promotion اختصار لتعريف property واستقبالها، ظهرت من 8.0، لكن readonly class نفسها 8.2.
 
-Enums من 8.1 مجموعة حالات مغلقة؛ backed enum تستخدم from التي ترمي ValueError لو القيمة غير موجودة أو tryFrom التي ترجع null. readonly property من 8.1، وnever لدالة لا ترجع طبيعيًا، مثل التي تنهي أو ترمي دائمًا. اقرأ التفاصيل في OOP و[نظام الأنواع](/php/03-types/).
+Enums من 8.1 مجموعة حالات مغلقة؛ backed enum تستخدم from التي ترمي ValueError لو القيمة غير موجودة أو tryFrom التي ترجع null. readonly property من 8.1، وnever لfunction لا ترجع طبيعيًا، مثل التي تنهي أو ترمي دائمًا. اقرأ التفاصيل في OOP و[نظام الأنواع](/php/03-types/).
 
 ## Attributes: بيانات وصفية تحتاج مَن يقرأها
 
@@ -215,7 +184,7 @@ echo $contact->email, PHP_EOL;
 omar@example.com
 ~~~
 
-constructor مسموح لها بالكتابة، والقراءة public؛ كتابة خارجية تُرفض. lowercase البريد سياسة تعليمية هنا وليست قاعدة لكل نظم البريد. **Lazy object** تؤجل initialization لحين الحاجة للحالة؛ Reflection توفر ghost/proxy. تستخدمها DI/ORM غالبًا، ومش معنى lazy أن كل method تشغّل initializer فورًا. احتفظ بدالة مسماة للعمليات المعقدة بدل منطق مخفي في property. [مرجع lazy objects](https://www.php.net/manual/en/language.oop5.lazy-objects.php).
+constructor مسموح لها بالكتابة، والقراءة public؛ كتابة خارجية تُرفض. lowercase البريد سياسة تعليمية هنا وليست قاعدة لكل نظم البريد. **Lazy object** تؤجل initialization لحين الحاجة للحالة؛ Reflection توفر ghost/proxy. تستخدمها DI/ORM غالبًا، ومش معنى lazy أن كل method تشغّل initializer فورًا. احتفظ بfunction مسماة للعمليات المعقدة بدل منطق مخفي في property. [مرجع lazy objects](https://www.php.net/manual/en/language.oop5.lazy-objects.php).
 
 ## 8.5: برنامج صغير بميزات صدرت بالفعل
 
@@ -260,7 +229,6 @@ A/B
 
 <details><summary>كمّل نوع يقبل Array أو كائنًا Countable وStringable</summary><p><code>(Countable&amp;Stringable)|array</code> من 8.2. نفس الكائن لازم يحقق الواجهتين؛ union بينهما ستغير العقد.</p></details>
 
-<details><summary>توقع وقت ظهور begin عند استدعاء batches فقط</summary><p>لن يظهر حتى تبدأ التكرار. Generator مؤجلة؛ تحويلها إلى Array يستهلكها بالكامل وقد يستهلك ذاكرة كبيرة.</p></details>
 
 <details><summary>هل Fiber تقلل وقت حساب CPU طويل تلقائيًا؟</summary><p>لا. لا Thread ولا parallelism؛ من غير suspend يظل الحساب ممسكًا بالتحكم. فائدتها في تنظيم تعليق العمل مع scheduler وI/O مناسبين.</p></details>
 

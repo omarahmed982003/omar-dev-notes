@@ -1,5 +1,7 @@
 ---
-title: 7. Functions, callbacks, and includes
+title: "7. Functions and callbacks"
+prev: {"link":"/en/php/cli-input-output/","label":"CLI: Input / Output"}
+next: {"link":"/en/php/scope/","label":"Variable scope and lifetime"}
 description: Parameters, references, closures, arrow functions, callables, include, and require.
 sidebar:
   order: 7
@@ -141,32 +143,9 @@ echo implode(',', transform($values, $plusOne)), PHP_EOL;
 
 **Wrong:** passing `$double(3)` to transform passes the integer 6, not a function. Pass `$double` without invoking it. A named function can be referenced by a string such as `'trim'` (a variable function), or by `trim(...)` from PHP 8.1 as a first-class callable. Then invoke that value. Use `is_callable` for uncertain sources and never let users select arbitrary function names. Prefer a local closure over declaring a named function inside a function: the inner declaration occurs only after calling the outer function, shares function-name scope, and may be redeclared.
 
-## A two-file project: require executes a file
+## Continue with Program organization and entry points
 
-Create a folder containing `config.php` and `main.php`. This is a complete project without Composer. The first returns data; the second needs it:
-
-~~~php
-<?php
-// config.php
-return ['name' => 'Notebook', 'limit' => 3];
-~~~
-
-~~~php
-<?php
-// main.php
-$config = require __DIR__ . '/config.php';
-echo $config['name'], ': ', $config['limit'], PHP_EOL;
-~~~
-
-~~~text
-Notebook: 3
-~~~
-
-Run `php main.php`. `__DIR__` is the current file's directory, independent of the working directory. `require` executes the file and receives its return value. Without an explicit return, successful inclusion normally returns 1. Included code inherits the inclusion scope, so avoid hidden dependencies on outside variables.
-
-`include` emits a warning on failure and usually continues. Modern PHP's `require` raises an Error, interrupting the current path unless handled. The `_once` versions prevent repeated definitions. Do not expect repeated require_once calls for configuration to return the same array; a later call may return true. Never build inclusion paths from user input. Lesson 10 moves class loading to Composer.
-
-`goto` jumps to a label in the same file and scope; it cannot enter a loop or switch from outside. `goto done; echo 'skip'; done: echo 'done';` prints done, but a small function or break is usually easier to follow.
+[Read the standalone topic](/en/php/program-organization/) after the prerequisites. Its original examples and mechanisms are preserved there.
 
 ## Predict, debug, complete
 

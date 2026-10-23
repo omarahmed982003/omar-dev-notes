@@ -1,5 +1,7 @@
 ---
 title: 16. Modern PHP 8.0–8.5 roadmap
+prev: {"link":"/en/php/generators/","label":"Generators and incremental processing"}
+next: {"link":"/en/php-runtime/04-memory-garbage-collection/","label":"PHP memory and garbage collection"}
 description: A versioned roadmap covering WeakMap, Fibers, DNF types, readonly classes, property hooks, and later PHP features.
 sidebar:
   order: 16
@@ -29,42 +31,9 @@ Dates are recorded in the [changelog](https://www.php.net/ChangeLog-8.php). The 
 
 `require: {"php":"^8.3"}` means `>=8.3.0 <9.0.0`, so do not put 8.4 hooks in a file claiming 8.3 support. `composer check-platform-reqs` checks the actual platform. Review migration/deprecation notes and test your minimum and maximum supported versions; a newer number does not replace tests.
 
-## Generators: an item on demand, not a complete array
+## Continue with Generators and incremental processing
 
-A **generator** function contains yield. Calling it returns an iterator object; its body advances during foreach and retains its position/local variables between elements. `yield from` delegates element production to another iterable. Save `generator.php`; its syntax is compatible with PHP 7.0+, but run it on a supported PHP installation:
-
-~~~php
-<?php
-function batches(): Generator
-{
-    echo "begin", PHP_EOL;
-    yield from [10, 20];
-    yield from [30];
-    echo "end", PHP_EOL;
-}
-$items = batches();
-echo "created", PHP_EOL;
-foreach ($items as $key => $value) {
-    echo "{$key}:{$value}", PHP_EOL;
-}
-echo implode(',', iterator_to_array(batches(), false)), PHP_EOL;
-~~~
-
-~~~text
-created
-begin
-0:10
-1:20
-0:30
-end
-begin
-end
-10,20,30
-~~~
-
-created before begin proves that calling did not build the sequence. Key 0 repeats because yield from preserves source keys. `iterator_to_array(..., false)` renumbers and avoids losing 10; its default key-preserving behavior can overwrite duplicates. Materializing an array loads every element, losing the memory advantage. For another pass, create a new generator rather than assuming a consumed one can rewind.
-
-For large files, read lines inside try/finally and close the handle when iteration completes or the generator is destroyed. Retaining a suspended generator retains its resources. `yield from` does not make I/O asynchronous.
+[Read the standalone topic](/en/php/generators/) after the prerequisites. Its original examples and mechanisms are preserved there.
 
 ## WeakMap from 8.0: metadata tied to an object's lifetime
 
@@ -260,7 +229,6 @@ The original Draft remains unchanged. Clone with runs inside a method with write
 
 <details><summary>Complete a type accepting an array or an object both Countable and Stringable</summary><p><code>(Countable&amp;Stringable)|array</code> requires 8.2. The same object must satisfy both interfaces; a union between them changes the contract.</p></details>
 
-<details><summary>When does begin appear if you only call batches?</summary><p>Not until iteration begins. Generators are deferred; converting to an array consumes all elements and can use substantial memory.</p></details>
 
 <details><summary>Does a fiber automatically accelerate a CPU-heavy calculation?</summary><p>No threads or parallel execution are created. Without suspend, the calculation retains control. Fibers organize suspension with a scheduler and suitable I/O.</p></details>
 

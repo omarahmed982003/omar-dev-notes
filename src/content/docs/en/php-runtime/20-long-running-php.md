@@ -1,5 +1,7 @@
 ---
 title: 20. Long-running PHP and worker runtimes
+prev: {"link":"/en/php-runtime/19-database-runtime-operations/","label":"Database connections and runtime operations"}
+next: {"link":"/en/php/","label":"PHP guide"}
 description: Safely operating FrankenPHP, RoadRunner, Swoole, and Octane with state reset, memory bounds, signals, and deployment.
 sidebar:
   order: 20

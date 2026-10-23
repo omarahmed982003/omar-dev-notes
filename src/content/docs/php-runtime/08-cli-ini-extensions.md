@@ -1,5 +1,7 @@
 ---
 title: 8. PHP CLI وphp.ini والامتدادات
+prev: {"link":"/php-runtime/","label":"قسم التشغيل وأدوات الإنتاج — PHP"}
+next: {"link":"/php-runtime/07-environment-configuration/","label":"Environment variables وConfiguration"}
 description: اختلاف SAPIs واكتشاف الإعدادات وإدارة extensions وضبط التطوير والإنتاج.
 sidebar:
   order: 8
@@ -11,7 +13,7 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **Runtime:** runtime: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
 - **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
 
 
@@ -105,7 +107,7 @@ composer check-platform-reqs --lock --no-dev
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

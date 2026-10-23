@@ -1,5 +1,7 @@
 ---
 title: 6. Apache وNginx وFastCGI
+prev: {"link":"/php-runtime/02-curl-http-clients/","label":"cURL وعملاء HTTP"}
+next: {"link":"/php-runtime/05-php-fpm-processes/","label":"PHP-FPM وإدارة العمليات"}
 description: مسؤولية خادم الويب وApache MPM وNginx event loop وربط PHP-FPM عبر Unix أو TCP socket.
 sidebar:
   order: 6
@@ -11,8 +13,8 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **Runtime:** وقت التشغيل: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **Runtime:** runtime: الفترة اللي البرنامج بيكون شغال فيها فعلًا.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **IP:** عنوان رقمي بيميز جهازًا أو واجهة شبكة.
 - **TCP:** طريقة نقل بتتأكد إن البيانات وصلت كاملة وبالترتيب.
 - **TLS:** طبقة تشفير بتحمي البيانات وهي ماشية بين طرفين.
@@ -135,7 +137,7 @@ fastcgi_pass 127.0.0.1:9000;
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 شغّل `examples/php-labs/production` كما في README، ثم نفّذ:
 

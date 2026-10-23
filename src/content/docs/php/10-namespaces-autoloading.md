@@ -1,5 +1,7 @@
 ---
 title: 10. Namespaces وComposer وأدوات الجودة
+prev: {"link":"/php/08-files-streams-data/","label":"الملفات والـ Streams وJSON وCSV"}
+next: {"link":"/php/14-datetime-timezones/","label":"التاريخ والوقت والمناطق الزمنية"}
 description: تنظيم الأسماء والاستيراد والـaliases وحل الأسماء وربط Namespace بمجلد عبر Composer PSR-4.
 sidebar:
   order: 10
@@ -9,7 +11,7 @@ sidebar:
 
 مشروعك ومكتبة خارجية عندهم Class اسمها User. **Namespace** عنوان للاسم يمنع التصادم، مثل محافظتين فيهم نفس اسم الشارع. **Autoloading** حل لمشكلة أخرى: عند طلب Class، مين يحمّل ملفها؟ **Composer** مدير حزم: يجلب المكتبات المتوافقة ويولد محمّلًا للأسماء.
 
-هنستخدم Class صغيرة كحاوية للدالة فقط. تفاصيل تصميم Classes في OOP. تحتاج PHP 8.3+ وComposer 2 للمشروع التالي. تحقق بـ`php -v` و`composer --version`، وشغّل كل الأوامر من مجلد المشروع، لا من مجلد الموقع.
+هنستخدم Class صغيرة كحاوية للfunction فقط. تفاصيل تصميم Classes في OOP. تحتاج PHP 8.3+ وComposer 2 للمشروع التالي. تحقق بـ`php -v` و`composer --version`، وشغّل كل الأوامر من مجلد المشروع، لا من مجلد الموقع.
 
 ## المشروع كاملًا
 
@@ -88,7 +90,7 @@ final class PriceCalculator
 }
 ~~~
 
-`namespace` تأتي بعد declare وقبل التعريفات. الاسم الكامل للصنف أصبح App\Billing\PriceCalculator. `public function` دالة نستدعيها على الكائن. الشرط يرفض سعرًا سالبًا وكمية أقل من 1. `||` تتوقف مبكرًا، فلا نقسم على كمية صفر. مقارنة السعر بـ`intdiv(PHP_INT_MAX, $quantity)` ترفض الضرب الذي سيتجاوز الحد **قبل** تنفيذه. `\InvalidArgumentException` اسم كامل من النطاق العام.
+`namespace` تأتي بعد declare وقبل التعريفات. الاسم الكامل للصنف أصبح App\Billing\PriceCalculator. `public function` function نستدعيها على الكائن. الشرط يرفض سعرًا سالبًا وكمية أقل من 1. `||` تتوقف مبكرًا، فلا نقسم على كمية صفر. مقارنة السعر بـ`intdiv(PHP_INT_MAX, $quantity)` ترفض الضرب الذي سيتجاوز الحد **قبل** تنفيذه. `\InvalidArgumentException` اسم كامل من النطاق العام.
 
 ### 3. نقطة التشغيل: bin/demo.php
 
@@ -149,7 +151,7 @@ final class PriceCalculatorTest extends TestCase
 }
 ~~~
 
-`assertSame` تفحص النوع والقيمة؛ expectedException تُكتب قبل العملية المتوقع فشلها. الاختبارات تثبت قواعد السعر والحدود، مش أسماء المتغيرات. التشغيل الأول لإنشاء lock:
+`assertSame` تفحص النوع والقيمة؛ expectedException تُكتب قبل العملية المتوقع فشلها. الاختبارات تثبت قواعد السعر والحدود، مش أسماء variables. التشغيل الأول لإنشاء lock:
 
 ~~~bash
 composer update
@@ -164,7 +166,7 @@ composer audit
 
 **SemVer** شكل `major.minor.patch`: تغيير كاسر، إضافة متوافقة، إصلاح متوافق بحسب التزام الحزمة. `^2.1` تسمح `>=2.1.0 <3.0.0`. `~2.1.0` تسمح `>=2.1.0 <2.2.0`. `^0.3.2` تتوقف قبل `0.4.0` لأن ما قبل 1.0 أكثر تحفظًا. النطاق وعد توافق من الناشر، مش بديلًا للاختبار.
 
-`composer require vendor/package` تضيف اعتمادًا وتحدث lock؛ `composer require --dev ...` لأداة تطوير. راجع diff والأصل قبل اعتماد الحزمة. `composer audit` يفحص تنبيهات منشورة وفق بيانات وقت التشغيل؛ نجاحه لا يثبت خلو البرنامج من كل ثغرة. حدّث اعتمادًا محددًا بـ`composer update vendor/package` واختبر بعده.
+`composer require vendor/package` تضيف اعتمادًا وتحدث lock؛ `composer require --dev ...` لأداة تطوير. راجع diff والأصل قبل اعتماد الحزمة. `composer audit` يفحص تنبيهات منشورة وفق بيانات runtime؛ نجاحه لا يثبت خلو البرنامج من كل ثغرة. حدّث اعتمادًا محددًا بـ`composer update vendor/package` واختبر بعده.
 
 ## scripts والتحليل والتنسيق
 

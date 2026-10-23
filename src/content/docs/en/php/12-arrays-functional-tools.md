@@ -1,5 +1,7 @@
 ---
 title: 12. Arrays and transformation tools
+prev: {"link":"/en/php/11-errors-exceptions/","label":"Errors and exceptions"}
+next: {"link":"/en/php/input-validation/","label":"Input validation: turn external data into trusted values"}
 description: Lists, maps, destructuring, unpacking, map, filter, reduce, sorting, and memory trade-offs.
 sidebar:
   order: 12

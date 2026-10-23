@@ -1,5 +1,7 @@
 ---
 title: 14. Date, time, and timezones
+prev: {"link":"/en/php/10-namespaces-autoloading/","label":"Namespaces, Composer, and quality tools"}
+next: {"link":"/en/php/request-input/","label":"Request input and superglobals"}
 description: DateTimeImmutable, UTC, named zones, DST, strict parsing, intervals, and storage policy.
 sidebar:
   order: 14

@@ -1,5 +1,7 @@
 ---
 title: 5. الشروط والحلقات
+prev: {"link":"/php/06-expressions-operators/","label":"التعبيرات والمؤثرات"}
+next: {"link":"/php/cli-input-output/","label":"CLI: Input / Output"}
 description: if وswitch وmatch وfor وwhile وdo-while وforeach مع أهم الفروق والأخطاء.
 sidebar:
   order: 5

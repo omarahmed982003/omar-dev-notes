@@ -25,9 +25,9 @@ next: {"link":"/programming-basics/math-problem-solving/04-computational-thinkin
 
 عد الاتحاد يعطي `3+2−1=4`؛ طرحنا العنصر المشترك لأنه اتعد مرتين. تفاصيل العد والاحتمال في [درسها](/programming-basics/math-problem-solving/11-counting-probability/).
 
-## الدالة: المسموح غير اللي حصل فعلًا
+## function: المسموح غير اللي حصل فعلًا
 
-**الدالة** هنا علاقة تعطي لكل مدخل مسموح نتيجة واحدة. خُد `f(x)=x×x`، واسمح فقط بالمدخلين 1 و 2.
+**function** هنا علاقة تعطي لكل مدخل مسموح نتيجة واحدة. خُد `f(x)=x×x`، واسمح فقط بالمدخلين 1 و 2.
 
 | الاسم | المقصود في المثال |
 |---|---|
@@ -74,7 +74,7 @@ next: {"link":"/programming-basics/math-problem-solving/04-computational-thinkin
 <summary>الحل والتفسير</summary>
 
 1. الاتحاد{1, 2, 3}، التقاطع{2}، A−B={1}، B−A={3}.
-2. النتائج{4}. مسموح لمدخلين مختلفين نفس الناتج؛ الممنوع للمدخل نفسه نتيجتان في الدالة المحددة.
+2. النتائج{4}. مسموح لمدخلين مختلفين نفس الناتج؛ الممنوع للمدخل نفسه نتيجتان في function المحددة.
 3. الأولى خاطئة والثانية صحيحة.
 4. 1 أصغر من 2، لكن 2 ليست أصغر من 1.
 
@@ -82,4 +82,4 @@ next: {"link":"/programming-basics/math-problem-solving/04-computational-thinkin
 
 ## الخلاصة
 
-المجموعة تجمع عناصر مميزة، والدالة تربط كل مدخل مسموح بنتيجة واحدة، و«كل» تختلف عن «يوجد». كمل [تحليل المتطلبات](/programming-basics/math-problem-solving/04-computational-thinking/).
+المجموعة تجمع عناصر مميزة، وfunction تربط كل مدخل مسموح بنتيجة واحدة، و«كل» تختلف عن «يوجد». كمل [تحليل المتطلبات](/programming-basics/math-problem-solving/04-computational-thinking/).

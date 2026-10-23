@@ -1,5 +1,7 @@
 ---
 title: 5. PHP-FPM وإدارة العمليات
+prev: {"link":"/php-runtime/06-web-servers-fastcgi/","label":"Apache وNginx وFastCGI"}
+next: {"link":"/php-runtime/03-opcache-preloading/","label":"OPcache وPreloading"}
 description: FastCGI وMaster وWorkers وPools وأنماط static وdynamic وondemand وحساب السعة والمراقبة.
 sidebar:
   order: 5
@@ -11,11 +13,10 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **URL:** العنوان الكامل لمورد على الويب، زي صفحة أو صورة أو نقطة API.
-- **TCP:** طريقة نقل بتتأكد إن البيانات وصلت كاملة وبالترتيب.
-- **Queue:** طابور مهام تنتظر عاملًا ينفذها في الخلفية.
-- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+- **TCP:** بروتوكول ينقل Byte stream مرتبة ويعالج الفقد داخل اتصال قابل للفشل؛ مش وعد إن أي اتصال هيكتمل دائمًا.
+- **Worker:** وحدة تنفيذ بتستقبل شغل وتنفذه؛ هنا Process بتعالج Request PHP، مش Queue consumer. الـProcess نسخة شغالة من برنامج لها Memory وموارد وهوية.
 
 
 - **OPcache:** ذاكرة تحفظ نتيجة ترجمة PHP لتجنب تكرار العمل مع كل طلب.
@@ -132,13 +133,13 @@ concurrency = throughput × latency = 100 × 0.2 = 20 workers
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 شغّل بيئة `examples/php-labs/production` كما في README، ثم نفّذ:
 
 ~~~bash
 curl -sS -o /dev/null -w "status=%{http_code} total=%{time_total}
-" http://localhost/health
+" http://127.0.0.1:8080/health
 ~~~
 
 **معيار النجاح:** يرجع health check حالة 200، وتُظهر `docker compose ps` الخدمتين بحالة healthy. تحت حمل مضبوط يظل عدد workers داخل الحد، واربط التأخير بطابور FPM بدل التخمين. في PowerShell على Windows استبدل `/dev/null` بـ`NUL`.

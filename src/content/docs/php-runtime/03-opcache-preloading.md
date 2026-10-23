@@ -1,5 +1,7 @@
 ---
 title: 3. OPcache وPreloading
+prev: {"link":"/php-runtime/05-php-fpm-processes/","label":"PHP-FPM وإدارة العمليات"}
+next: {"link":"/php-runtime/09-logging-observability/","label":"Logging وObservability"}
 description: تخزين PHP bytecode وضبط OPcache ومراقبته والفرق بينه وبين cache البيانات وحدود Preloading.
 sidebar:
   order: 3
@@ -11,7 +13,7 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
 - **API:** واجهة محددة تسمح لبرنامج يطلب بيانات أو ينفّذ عملية عند برنامج آخر.
 - **Cache:** نسخة مؤقتة من البيانات هدفها تقليل وقت الانتظار والعمل المتكرر.
 - **CLI:** واجهة تتعامل معها بكتابة أوامر نصية بدل الضغط على أزرار.
@@ -19,7 +21,7 @@ sidebar:
 
 - **Composer:** مدير حزم PHP يثبت المكتبات ويجهز التحميل التلقائي.
 - **OPcache:** ذاكرة تحفظ نتيجة ترجمة PHP لتجنب تكرار العمل مع كل طلب.
-- **Redis:** مخزن سريع في الذاكرة يُستخدم للكاش والجلسات والطوابير.
+- **Redis:** مخزن سريع في الذاكرة يُستخدم للكاش وsessions والطوابير.
 
 # لماذا يعيد PHP العمل؟
 
@@ -78,7 +80,7 @@ if ($status !== false) {
 
 ## Preloading
 
-من PHP 7.4 يمكن تشغيل ملف مرة عند بدء عملية الخادم لتحميل functions/classes/interfaces/traits في ذاكرة دائمة:
+من PHP 7.4 يمكن تشغيل ملف مرة عند بدء عملية server لتحميل functions/classes/interfaces/traits في ذاكرة دائمة:
 
 ```ini
 opcache.preload=/var/www/app/config/preload.php
@@ -123,7 +125,7 @@ foreach ($files as $file) {
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

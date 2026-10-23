@@ -1,5 +1,7 @@
 ---
-title: PHP Runtime & Production
+title: "Runtime & Production Section — PHP"
+prev: {"link":"/en/php/","label":"PHP guide"}
+next: {"link":"/en/php-runtime/08-cli-ini-extensions/","label":"PHP CLI, php.ini, and extensions"}
 description: From Composer, OPcache, and PHP-FPM to testing, Redis, queues, deployment, observability, resilience, and recovery.
 sidebar:
   order: 0
@@ -9,9 +11,17 @@ sidebar:
 
 This path explains the tools and layers around PHP after the application code is written. It gradually separates dependency management, HTTP clients, web serving, and PHP-FPM so the role of each part stays clear.
 
-## Why a separate section?
+## Its place in the PHP track
 
-These subjects are neither OOP nor PHP syntax. They form the **runtime and production** layer: reproducible dependencies, autoloading, efficient execution, outbound HTTP, process capacity, and safe configuration.
+This is the second section of [PHP: Language, Applications & Production](/en/php/), not a separate homepage card. Runtime means the execution environment; production means a service used by real users. Keeping these concerns in a section distinguishes language learning from operating the application.
+
+## Choose an entry point
+
+Begin after a small PHP application and an understanding of functions, Composer, and HTTP. Read8,7,1,10 for environment, configuration, dependencies, and tests. After Linux basics, read6,5,3,9,13 for web servers, FPM, OPcache, logs, and deployment. Use2 when integrating an outbound HTTP service, and14 for deeper dependency security before approving a release.
+
+Lessons4,11,12,15–20 deepen memory, caching, queues, measurement, resilience, recovery, and scaling. Database experiments need SQL and transactions. FPM, systemd, and pcntl labs need Linux or an isolated Linux environment, not native Windows commands. Existing numbers remain reference labels rather than a strict prerequisite order.
+
+Composer here deepens production after language lesson10, and quality testing expands the earlier tests rather than restarting them. Keep each experiment's evidence and limits explicit: a local model does not demonstrate a real Redis or FPM service.
 
 ## Learning path
 

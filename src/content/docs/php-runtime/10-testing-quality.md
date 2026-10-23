@@ -1,5 +1,7 @@
 ---
 title: 10. الاختبارات وجودة الكود
+prev: {"link":"/php-runtime/01-composer-dependencies/","label":"Composer وإدارة الاعتماديات"}
+next: {"link":"/php-runtime/14-dependency-supply-chain-security/","label":"أمان الاعتماديات وSupply Chain"}
 description: PHPUnit وUnit/Integration/Feature tests وData Providers وDoubles وCoverage والتحليل الساكن والتنسيق.
 sidebar:
   order: 10
@@ -11,8 +13,8 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **HTTP:** قواعد تبادل الطلبات والردود بين المتصفح والخادم.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+- **HTTP:** قواعد تبادل الطلبات والردود بين browser وserver.
+- **Function:** جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
 
 
 ## هرم عملي
@@ -32,8 +34,19 @@ vendor/bin/phpunit
 ```
 
 ```php
+<?php
+declare(strict_types=1);
+
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+function discount(int $price, int $percent): int
+{
+    if ($price < 0 || $price > 1_000_000 || $percent < 0 || $percent > 100) {
+        throw new InvalidArgumentException('Use price 0..1000000 and percent 0..100');
+    }
+    return $price - intdiv($price * $percent, 100);
+}
 
 final class DiscountTest extends TestCase
 {
@@ -54,6 +67,8 @@ final class DiscountTest extends TestCase
 اختبر exception والحدود والـside effects، واجعل اسم الاختبار يشرح السلوك.
 
 ## Test Doubles
+
+احفظ المثال في tests/DiscountTest.php داخل مشروع Composer مجهز بـPHPUnit. المثال كامل بقيم محدودة، وسياسة الخصم تقرّب لأسفل للقيم الموجبة. شغّل vendor/bin/phpunit tests؛ المتوقع حالتان ناجحتان. أضف حالةpercent=100 وحالة سعر سالب تتوقع InvalidArgumentException. أدوات PHPStan وPHPCS أدناه تحتاج تثبيتًا وإعدادًا؛ مش أوامر متاحة تلقائيًا بعد PHP فقط.
 
 - **Stub:** يعيد بيانات مجهزة.
 - **Fake:** تنفيذ خفيف يعمل، مثل repository في الذاكرة.
@@ -111,7 +126,7 @@ Mutation testing يغير operator أو شرطًا ويتوقع فشل الاخ�
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

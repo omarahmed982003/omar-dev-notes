@@ -1,5 +1,7 @@
 ---
 title: 10. Testing and code quality
+prev: {"link":"/en/php-runtime/01-composer-dependencies/","label":"Composer and dependency management"}
+next: {"link":"/en/php-runtime/14-dependency-supply-chain-security/","label":"Dependency and supply-chain security"}
 description: PHPUnit, unit/integration/feature tests, data providers, doubles, coverage, static analysis, and style.
 sidebar:
   order: 10
@@ -32,8 +34,19 @@ vendor/bin/phpunit
 ```
 
 ```php
+<?php
+declare(strict_types=1);
+
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+
+function discount(int $price, int $percent): int
+{
+    if ($price < 0 || $price > 1_000_000 || $percent < 0 || $percent > 100) {
+        throw new InvalidArgumentException('Use price 0..1000000 and percent 0..100');
+    }
+    return $price - intdiv($price * $percent, 100);
+}
 
 final class DiscountTest extends TestCase
 {
@@ -54,6 +67,8 @@ final class DiscountTest extends TestCase
 Test boundaries, exceptions, and side effects. Make test names describe behavior.
 
 ## Doubles and coverage
+
+Save this complete example as tests/DiscountTest.php in a Composer project with compatible PHPUnit installed. Prices are deliberately bounded; discounts round down for positive values. Run vendor/bin/phpunit tests and expect two passing cases. Add100% and an invalid negative-price exception case. PHPStan and PHPCS require their own installation and configuration.
 
 A stub returns prepared data, a fake is a lightweight working implementation, and a mock verifies interaction. Prefer fakes or stubs where possible; excessive mocks couple tests to implementation.
 

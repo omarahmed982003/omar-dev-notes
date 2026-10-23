@@ -1,5 +1,7 @@
 ---
 title: "Set up the labs and run examples"
+prev: {"link":"/en/php/","label":"PHP: Language, Applications & Production"}
+next: {"link":"/en/php/","label":"PHP guide"}
 description: "PHP labs, fixtures, reproducible tests and expected results."
 sidebar:
   order: 0.5
@@ -7,7 +9,13 @@ sidebar:
 
 Prepare files you can actually run, and distinguish a local function test from a whole-service test. If variables and functions are new, begin the PHP lessons and return to each lab as you learn its prerequisites.
 
-## Setup
+## First program: minimal requirements
+
+Start with PHP CLI, a terminal, and a text editor only. CLI runs PHP through a command; the terminal is where you type it. Run `php -v`, save hello.php containing `<?php echo "Hello", PHP_EOL;` and run `php hello.php`. Expect Hello. No database, Composer, orDocker is needed for this first experiment.
+
+After functions, select the current example from the[course bundle](/downloads/php-course.zip). The SQLite, Sodium, and inventory tests below are optional until their prerequisites. Follow each lesson's version and working directory instead of running every lab at entry.
+
+## Extended lab after language fundamentals
 
 Download the [lab files](/downloads/php-labs.zip), extract them, and open a terminal inside `php-labs`. In a project checkout, use `examples/php-labs`. Install PHP 8.4 or later, then run:
 

@@ -1,5 +1,7 @@
 ---
 title: 8. PHP CLI, php.ini, and extensions
+prev: {"link":"/en/php-runtime/","label":"Runtime & Production Section — PHP"}
+next: {"link":"/en/php-runtime/07-environment-configuration/","label":"Environment variables and configuration"}
 description: SAPIs, configuration discovery, extensions, and separate development and production policy.
 sidebar:
   order: 8

@@ -1,5 +1,7 @@
 ---
 title: 9. Logging and observability
+prev: {"link":"/en/php-runtime/03-opcache-preloading/","label":"OPcache and preloading"}
+next: {"link":"/en/php-runtime/13-deployment-cicd-containers/","label":"Deployment, CI/CD, and containers"}
 description: PSR-3, structured events, request IDs, metrics, traces, redaction, and actionable alerts.
 sidebar:
   order: 9

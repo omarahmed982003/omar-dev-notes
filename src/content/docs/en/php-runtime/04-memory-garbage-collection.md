@@ -1,5 +1,7 @@
 ---
 title: 4. PHP memory and garbage collection
+prev: {"link":"/en/php/16-modern-php-features/","label":"Modern PHP 8.0–8.5 roadmap"}
+next: {"link":"/en/php-runtime/11-data-caching-redis/","label":"Data caching and Redis"}
 description: zvals, reference counting, copy-on-write, references, objects, cycles, and memory measurement.
 sidebar:
   order: 4

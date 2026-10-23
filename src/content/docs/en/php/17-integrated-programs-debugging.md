@@ -1,5 +1,7 @@
 ---
 title: 17. Notebook project and practical debugging
+prev: {"link":"/en/php/15-request-router-response/","label":"From HTTP request to router and response"}
+next: {"link":"/en/php/","label":"PHP guide"}
 description: Complete PHP programs connecting types, functions, files, requests, and exceptions, with output-prediction and debugging exercises.
 sidebar:
   order: 17

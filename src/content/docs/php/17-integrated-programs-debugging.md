@@ -1,5 +1,7 @@
 ---
 title: 17. مشروع دفتر الملاحظات وDebugging عملي
+prev: {"link":"/php/15-request-router-response/","label":"من HTTP Request إلى Router وResponse"}
+next: {"link":"/php/","label":"دليل PHP"}
 description: برامج PHP كاملة تربط الأنواع والدوال والملفات والطلبات والاستثناءات، مع تمارين توقع الناتج وتصحيح الأخطاء.
 sidebar:
   order: 17
@@ -7,7 +9,7 @@ sidebar:
 
 ## المشكلة: الأجزاء تعمل وحدها، لكن هل الطلب الكامل يعمل؟
 
-الدالة قد تكون صحيحة، لكن النموذج يرسل Array بدل نص، أو الحفظ يفشل، أو echo مبكرة تكسر redirect. عشان كده هنربط Form وValidation وSession وFiles وRouter في **دفتر ملاحظات محلي**. لكل جلسة متصفح دفترها؛ لا يوجد Login أو Database في المشروع. لما تحتاج حسابات أو تخزينًا متعدد المستخدمين انتقل إلى [الأمان](/auth/) و[قواعد البيانات](/database/) بدل اختراعها هنا.
+function قد تكون صحيحة، لكن النموذج يرسل Array بدل نص، أو الحفظ يفشل، أو echo مبكرة تكسر redirect. عشان كده هنربط Form وValidation وSession وFiles وRouter في **دفتر ملاحظات محلي**. لكل جلسة متصفح دفترها؛ لا يوجد Login أو Database في المشروع. لما تحتاج حسابات أو تخزينًا متعدد المستخدمين انتقل إلى [الأمان](/auth/) و[قواعد البيانات](/database/) بدل اختراعها هنا.
 
 كل الملفات كاملة تحت `examples/php-course/notebook` أو [حزمة أمثلة المنهج](/downloads/php-course.zip). تحتاج PHP 8.1+ وmbstring ومخزن جلسات قابلًا للكتابة. اقرأ على ثلاث جلسات: الطلب والتحقق؛ الحفظ والعرض؛ الاختبارات والتصحيح.
 
@@ -49,7 +51,7 @@ return [
 ];
 ~~~
 
-المحلي HTTP فيختار Cookie بدون Secure. الإنتاج يختار Secure=true ويحتاج HTTPS فعليًا. NOTEBOOK_STORAGE اختيار لمسار تخزين موثوق في الاختبار أو النشر؛ الافتراضي خارج public. إعداد غير معروف يفشل بدل تشغيل سياسة غير مقصودة. حد الطلب في الخادم وphp.ini يكمّل حد التطبيق؛ أخطاء الإنتاج تسجل ولا تعرض.
+المحلي HTTP فيختار Cookie بدون Secure. الإنتاج يختار Secure=true ويحتاج HTTPS فعليًا. NOTEBOOK_STORAGE اختيار لمسار تخزين موثوق في الاختبار أو النشر؛ الافتراضي خارج public. إعداد غير معروف يفشل بدل تشغيل سياسة غير مقصودة. حد الطلب في server وphp.ini يكمّل حد التطبيق؛ أخطاء الإنتاج تسجل ولا تعرض.
 
 ## 2. التحقق والتخزين والعرض: src/notebook.php
 
@@ -168,11 +170,11 @@ function renderNotes(array $notes, array $errors, array $old, string $csrf, stri
 }
 ~~~
 
-### اقرأ الدوال واحدة واحدة
+### اقرأ functions واحدة واحدة
 
-`validateNote` تبني بيانات منظفة وأخطاء. افحص is_string قبل strlen وmb_check_encoding؛ `name[]=x` لا يكسر الدالة. حد Bytes يسبق العمل على Unicode، ثم trim وحد code points. `continue` تمنع تنفيذ باقي التحقق على قيمة مرفوضة. الصفر النصي `'0'` صالح؛ لا نستخدم empty التي ترفضه.
+`validateNote` تبني بيانات منظفة وأخطاء. افحص is_string قبل strlen وmb_check_encoding؛ `name[]=x` لا يكسر function. حد Bytes يسبق العمل على Unicode، ثم trim وحد code points. `continue` تمنع تنفيذ باقي التحقق على قيمة مرفوضة. الصفر النصي `'0'` صالح؛ لا نستخدم empty التي ترفضه.
 
-`ownerDirectory` تسمح فقط بمعرّف مولد من 32 حرف hex. المتصفح لا يحدد اسم الملف؛ owner تأتي من مخزن Session على الخادم. ده فصل دفاتر الجلسات، وليس نظام حسابات يمكن استعادتها.
+`ownerDirectory` تسمح فقط بمعرّف مولد من 32 حرف hex. browser لا يحدد اسم الملف؛ owner تأتي من مخزن Session على server. ده فصل دفاتر sessions، وليس نظام حسابات يمكن استعادتها.
 
 `readNotes` تعتبر مجلدًا لم ينشأ دفترًا فارغًا. `glob` تبحث عن ملفات json المنشورة فقط، ثم نقرأ بحد حجم ونفك JSON بفشل واضح. لا نحول ملفًا تالفًا إلى «لا ملاحظات»؛ ده فقد بيانات متخفٍ. نفحص البنية، ونرتب بالوقت ثم id لكسر التعادل؛ المعرّف العشوائي لا يعني ترتيب إنشاء داخل نفس الثانية.
 
@@ -213,7 +215,7 @@ function renderNotes(array $notes, array $errors, array $old, string $csrf, stri
 </html>
 ~~~
 
-hidden csrf من الجلسة، لكن المستخدم يقدر يغير أي hidden input؛ الحماية من مقارنة الخادم، مش اختفاء الحقل. نعرض errors جنب النموذج ونحافظ على input الصحيحة بعد 422. كل اسم ونص وزمن يمر عبر escapeHtml حتى لو جاء من ملفنا؛ الثقة في مكان التخزين لا تحول النص إلى HTML مسموح. لو كتبت `<b>hello</b>` لازم تشوفها حروفًا، مش خطًا عريضًا.
+hidden csrf من الجلسة، لكن المستخدم يقدر يغير أي hidden input؛ الحماية من مقارنة server، مش اختفاء الحقل. نعرض errors جنب النموذج ونحافظ على input الصحيحة بعد 422. كل اسم ونص وزمن يمر عبر escapeHtml حتى لو جاء من ملفنا؛ الثقة في مكان التخزين لا تحول النص إلى HTML مسموح. لو كتبت `<b>hello</b>` لازم تشوفها حروفًا، مش خطًا عريضًا.
 
 الواجهة الإنجليزية هنا مقصودة لتثبيت نفس المثال في اللغتين؛ الاسم والملاحظة يقبلان العربية وUTF-8. تغيير نصوص الواجهة لا يغير منطق الدرس.
 
@@ -333,13 +335,13 @@ echo $response['body'];
 
 البيانات المرفوضة ترجع 422 مع نفس النموذج. لو وصل الدفتر 100 ملاحظة يرجع 409. في النجاح نقرأ القائمة ونحفظ، ثم نخزن الاسم وflash ونرجع 303. الـfinally تغلق Session قبل الإرسال. مع file session handler الافتراضي يظل القفل ممسوكًا خلال count ثم save؛ طلبان لنفس الجلسة لا يتجاوزان الحد بسبب قراءة نفس العدد. تغيير handler يحتاج ضمان قفل مكافئ.
 
-المتصفح يتبع Location إلى GET /. handler تقرأ flash ثم تمسحها، لذلك رسالة Note saved تظهر مرة. القراءة لا تعيد الحفظ. Emitter واحدة تطبع status والـheaders ثم body. حد الأخطاء يعطي 500 ومعرّفًا للسجل؛ logs هنا لا تحتوي النص أو Cookie.
+browser يتبع Location إلى GET /. handler تقرأ flash ثم تمسحها، لذلك رسالة Note saved تظهر مرة. القراءة لا تعيد الحفظ. Emitter واحدة تطبع status والـheaders ثم body. حد الأخطاء يعطي 500 ومعرّفًا للسجل؛ logs هنا لا تحتوي النص أو Cookie.
 
-الـ303 لا تمنع إعادة إرسال POST عمدًا ولا Double-click في كل ظرف؛ النسخة دي قد تحفظ ملاحظة ثانية عند POST ثانية. مفتاح idempotency مرحلة منفصلة عند الحاجة. انتهاء Session يفقد ربط المتصفح بالدفتر؛ تنظيف الملفات القديمة واستعادة الحسابات خارج نطاق هذه التجربة ومذكوران في README.
+الـ303 لا تمنع إعادة إرسال POST عمدًا ولا Double-click في كل ظرف؛ النسخة دي قد تحفظ ملاحظة ثانية عند POST ثانية. مفتاح idempotency مرحلة منفصلة عند الحاجة. انتهاء Session يفقد ربط browser بالدفتر؛ تنظيف الملفات القديمة واستعادة الحسابات خارج نطاق هذه التجربة ومذكوران في README.
 
 ## التشغيل ودليل النجاح
 
-من مجلد notebook، شغّل `php tests.php` أولًا: المتوقع `PASS: 15 notebook checks` للتحقق من المدخلات والتخزين والعزل وUTC والترميز. بعدها شغّل الخادم:
+من مجلد notebook، شغّل `php tests.php` أولًا: المتوقع `PASS: 15 notebook checks` للتحقق من المدخلات والتخزين والعزل وUTC والترميز. بعدها شغّل server:
 
 ~~~bash
 php -S 127.0.0.1:8083 -t public public/index.php
@@ -360,7 +362,7 @@ php -S 127.0.0.1:8083 -t public public/index.php
 | ملف JSON مخزن تالف | 500 مع reference، لا ادعاء دفتر فارغ |
 | GET /storage/... | 404؛ Document Root هي public فقط |
 
-اختبر فساد الملفات في نسخة تجارب منفصلة باستخدام NOTEBOOK_STORAGE، مش ملاحظاتك الحقيقية. الاختبارات الآلية المرفقة في المستودع تتحقق من الجلسات والعزل وCSRF وUTF-8 والإخراج والحفظ ومسارات الخطأ.
+اختبر فساد الملفات في نسخة تجارب منفصلة باستخدام NOTEBOOK_STORAGE، مش ملاحظاتك الحقيقية. الاختبارات الآلية المرفقة في المستودع تتحقق من sessions والعزل وCSRF وUTF-8 والإخراج والحفظ ومسارات الخطأ.
 
 ## Debugging: دليل قبل التعديل
 
@@ -370,7 +372,7 @@ php -S 127.0.0.1:8083 -t public public/index.php
 4. اختبر فرضية واحدة وعدل سببًا واحدًا.
 5. أضف Regression Test تفشل قبل الإصلاح وتنجح بعده.
 
-**Breakpoint** نقطة توقف في debugger قبل تنفيذ سطر. Xdebug امتداد PHP، والـIDE عميل يعرض المتغيرات والـCall Stack. ثبت الامتداد المطابق لبنية وإصدار PHP وفق [التثبيت الرسمي](https://xdebug.org/docs/install)، ثم `php --ri xdebug` للتأكد. إعداد محلي، مع سطر zend_extension لمسار ملفك الفعلي:
+**Breakpoint** نقطة توقف في debugger قبل تنفيذ سطر. Xdebug امتداد PHP، والـIDE عميل يعرض variables والـCall Stack. ثبت الامتداد المطابق لبنية وإصدار PHP وفق [التثبيت الرسمي](https://xdebug.org/docs/install)، ثم `php --ri xdebug` للتأكد. إعداد محلي، مع سطر zend_extension لمسار ملفك الفعلي:
 
 ~~~ini
 xdebug.mode=debug
@@ -379,7 +381,7 @@ xdebug.client_host=127.0.0.1
 xdebug.client_port=9003
 ~~~
 
-افتح listener في IDE واضبط path mapping لو PHP داخل container. ضع breakpoint على `$result = validateNote($_POST);` ثم أرسل النموذج مع XDEBUG_TRIGGER عن طريق browser helper/Cookie. **Step Into** تدخل الدالة، **Step Over** تنفذ السطر، و**Step Out** تكمل حتى تعود للمستدعي. راقب `$_POST['name']`، ثم errors، ثم Call Stack: index→middleware→route→validateNote.
+افتح listener في IDE واضبط path mapping لو PHP داخل container. ضع breakpoint على `$result = validateNote($_POST);` ثم أرسل النموذج مع XDEBUG_TRIGGER عن طريق browser helper/Cookie. **Step Into** تدخل function، **Step Over** تنفذ السطر، و**Step Out** تكمل حتى تعود للمستدعي. راقب `$_POST['name']`، ثم errors، ثم Call Stack: index→middleware→route→validateNote.
 
 من CLI على PowerShell: `$env:XDEBUG_TRIGGER='1'` ثم شغّل الملف، وبعد التجربة `Remove-Item Env:XDEBUG_TRIGGER`. لو لا تتوقف: راجع PHP المستخدمة وملف ini وlistener وtrigger وmapping؛ امتداد CLI لا يعني أن FPM حملته. [مرجع step debugging](https://xdebug.org/docs/step_debug). في الإنتاج لا تفعّل اتصال debugger عام؛ استخدم logs محمية وrequest ID وdisplay_errors=Off. إعدادات 11 تشرح الفرق. Log منظمة بمعلومات منقحة، لا dump لكل SESSION.
 

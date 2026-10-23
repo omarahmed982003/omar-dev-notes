@@ -1,5 +1,7 @@
 ---
 title: 3. أنواع البيانات ونظام الأنواع
+prev: {"link":"/php/02-variables-scope-superglobals/","label":"Variables وReferences"}
+next: {"link":"/php/04-output-debugging-constants/","label":"Output وDebugging"}
 description: نفهم النوع من البداية، والفرق بين النص والعدد والقيمة المنطقية وnull، ثم المصفوفات والكائنات وتصريحات الأنواع والأنواع المتقدمة.
 sidebar:
   order: 3
@@ -13,7 +15,7 @@ sidebar:
 
 - **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
 - **Loop:** حلقة تكرار تعيد تنفيذ مجموعة تعليمات وفق شرط.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+- **Function:** جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
 
 
 ## يعني إيه Data Type؟
@@ -37,11 +39,11 @@ $discount = null;     // لا توجد قيمة حاليًا
 - **Scalar:** قيمة واحدة، وتشمل `bool` و`int` و`float` و`string`.
 - **Compound:** تجمع قيمًا أو سلوكًا، مثل `array` و`object`.
 - **Special:** مثل `null` و`resource`.
-- **أنواع تستخدم في توقيع الدوال:** مثل `callable` و`iterable` و`mixed` و`void` و`never`.
+- **أنواع تستخدم في توقيع functions:** مثل `callable` و`iterable` و`mixed` و`void` و`never`.
 - **أنواع نعرّفها بنفسنا:** Classes وInterfaces وEnums.
 - **تركيبات أنواع:** Union مثل `int|string` وIntersection مثل `Countable&Iterator`.
 
-مش لازم تستخدم كل الأنواع المتقدمة من أول يوم. ابدأ بالـScalar والمصفوفات، وبعد ما تفهم الدوال والكائنات ارجع لأجزاء `callable` وIntersection Types.
+مش لازم تستخدم كل الأنواع المتقدمة من أول يوم. ابدأ بالـScalar وarrays، وبعد ما تفهم functions والكائنات ارجع لأجزاء `callable` وIntersection Types.
 
 ## `bool`: صح أو غلط
 
@@ -65,7 +67,7 @@ PHP تعتبر بعض القيم Falsey داخل الشرط:
 - `false`
 - `0` و`0.0`
 - النص الفارغ `''` والنص `'0'`
-- المصفوفة الفارغة `[]`
+- array الفارغة `[]`
 - `null`
 
 ```php
@@ -88,14 +90,14 @@ if ($middleName === null) {
 }
 ```
 
-المتغير قد يكون `null` لو أسندت له القيمة، أو قد يصبح غير معرّف بعد `unset()`:
+variable قد يكون `null` لو أسندت له القيمة، أو قد يصبح غير معرّف بعد `unset()`:
 
 ```php
 $value = 'hello';
 unset($value);
 ```
 
-المتغير غير المعرّف مش مطابق تمامًا لمتغير موجود وقيمته `null` في كل عمليات الفحص. استخدم `isset()` لما تريد تعرف إن المفتاح موجود وقيمته ليست `null`، و`array_key_exists()` لما وجود المفتاح نفسه مهم حتى لو قيمته `null`.
+variable غير المعرّف مش مطابق تمامًا لمتغير موجود وقيمته `null` في كل عمليات الفحص. استخدم `isset()` لما تريد تعرف إن المفتاح موجود وقيمته ليست `null`، و`array_key_exists()` لما وجود المفتاح نفسه مهم حتى لو قيمته `null`.
 
 ## المقارنة العادية والصارمة
 
@@ -278,6 +280,10 @@ $country = $user['country'] ?? 'Unknown';
 
 ## `object` وClass
 
+:::note[نقطة توقف للمرور الأول]
+لو دي أول مرة تذاكر PHP، كفاية دلوقتي Scalar وnull وفكرة array. كمّل من sidebar إلى Output وباقي أساس اللغة. الأجزاء الجاية مرجع ترجع له بعد functions وOOP؛ المثال الكامل تحت محتاج كمان Input validation وRequest input. مش مطلوب تتقن الأنواع المتقدمة عشان تكتب أول برنامج.
+:::
+
 الكائن Instance من Class تجمع حالة وسلوكًا:
 
 ```php
@@ -315,7 +321,7 @@ echo $status->value; // paid
 
 ## `resource`: مقبض لمورد خارجي
 
-بعض الدوال ترجع `resource` يمثل اتصالًا أو Stream مفتوحًا:
+بعض functions ترجع `resource` يمثل اتصالًا أو Stream مفتوحًا:
 
 ```php
 $handle = fopen(__FILE__, 'rb');
@@ -330,9 +336,9 @@ fclose($handle);
 
 الـResource مش محتوى الملف نفسه؛ هو Handle نستخدمه للتعامل مع المورد. امتدادات حديثة كثيرة أصبحت تعيد Objects بدل Resources، لذلك راجع نوع القيمة في التوثيق.
 
-## تصريحات الأنواع في الدوال
+## تصريحات الأنواع في functions
 
-نقدر نوضح ما تستقبله الدالة وما ترجعه:
+نقدر نوضح ما تستقبله function وما ترجعه:
 
 ```php
 function calculateTotal(int $priceCents, int $quantity): int
@@ -343,7 +349,7 @@ function calculateTotal(int $priceCents, int $quantity): int
 echo calculateTotal(1500, 3); // 4500
 ```
 
-ده يجعل عقد الدالة واضحًا ويساعد PHP وأدوات التحليل تكتشف أخطاء بدري.
+ده يجعل عقد function واضحًا ويساعد PHP وأدوات التحليل تكتشف أخطاء بدري.
 
 اكتب في بداية الملف:
 
@@ -352,13 +358,13 @@ echo calculateTotal(1500, 3); // 4500
 declare(strict_types=1);
 ```
 
-بدون Strict Types قد تحول PHP بعض قيم الـScalar عند استدعاء الدالة. مع Strict Types، تمرير `'3'` إلى Parameter من نوع `int` يرمي `TypeError` بدل التحويل التلقائي في أغلب الحالات.
+بدون Strict Types قد تحول PHP بعض قيم الـScalar عند استدعاء function. مع Strict Types، تمرير `'3'` إلى Parameter من نوع `int` يرمي `TypeError` بدل التحويل التلقائي في أغلب الحالات.
 
-القرار يُطبّق من الملف **المستدعي** للدالة. ويوجد استثناء عملي: يمكن قبول `int` حيث المطلوب `float` لأن التحويل لا يفقد الجزء الكسري الموجود أصلًا.
+القرار يُطبّق من الملف **المستدعي** للfunction. ويوجد استثناء عملي: يمكن قبول `int` حيث المطلوب `float` لأن التحويل لا يفقد الجزء الكسري الموجود أصلًا.
 
 ## Nullable وUnion Types
 
-لو الدالة قد ترجع مستخدمًا أو لا تجد شيئًا:
+لو function قد ترجع مستخدمًا أو لا تجد شيئًا:
 
 ```php
 function findUser(int $id): ?array
@@ -385,8 +391,8 @@ function normalizeId(int|string $id): int
 ## `mixed` و`void` و`never`
 
 - `mixed` يعني إن القيمة ممكن تكون من أي نوع، ومنها `null`. استخدم نوعًا أدق لو تقدر.
-- `void` يعني إن الدالة لا ترجع قيمة مفيدة.
-- `never` يعني إن الدالة لا ترجع للمستدعي أصلًا، لأنها ترمي Exception أو تستدعي `exit` أو لا تنتهي.
+- `void` يعني إن function لا ترجع قيمة مفيدة.
+- `never` يعني إن function لا ترجع للمستدعي أصلًا، لأنها ترمي Exception أو تستدعي `exit` أو لا تنتهي.
 
 ```php
 function logMessage(string $message): void
@@ -402,7 +408,7 @@ function fail(string $message): never
 
 ## `callable` وClosure
 
-الـCallable قيمة PHP تقدر تستدعيها كدالة. Callback هي Callable بنمررها علشان تتنفذ لاحقًا:
+الـCallable قيمة PHP تقدر تستدعيها كfunction. Callback هي Callable بنمررها علشان تتنفذ لاحقًا:
 
 ```php
 $double = function (int $number): int {
@@ -415,7 +421,7 @@ echo $double(4);      // 8
 echo $shortDouble(5); // 10
 ```
 
-الـClosure كائن يمثل دالة مجهولة. وفي PHP الحديثة نقدر نأخذ First-class Callable:
+الـClosure كائن يمثل function مجهولة. وفي PHP الحديثة نقدر نأخذ First-class Callable:
 
 ```php
 function clean(string $value): string
@@ -444,7 +450,7 @@ echo $formatter(' hello '); // HELLO
 
 ## `iterable` وGenerator
 
-`iterable` يقبل Array أو Object يطبق `Traversable`. ده مفيد لما الدالة محتاجة تلف على عناصر من غير ما تهتم بمصدرها:
+`iterable` يقبل Array أو Object يطبق `Traversable`. ده مفيد لما function محتاجة تلف على عناصر من غير ما تهتم بمصدرها:
 
 ```php
 function printValues(iterable $values): void
@@ -476,7 +482,7 @@ printValues(numbers(3));
 3
 ```
 
-`yield` توقف الدالة مؤقتًا وتحفظ حالتها، ثم تكمل من نفس المكان عند طلب القيمة التالية. كل Generator يطبق Iterator، لكن مش كل Iterator معمول باستخدام Generator.
+`yield` توقف function مؤقتًا وتحفظ حالتها، ثم تكمل من نفس المكان عند طلب القيمة التالية. كل Generator يطبق Iterator، لكن مش كل Iterator معمول باستخدام Generator.
 
 ## Intersection وDNF Types — للقراءة الآن
 
@@ -492,6 +498,9 @@ declare(strict_types=1);
 
 function readPositiveInt(mixed $value): ?int
 {
+    if (!is_string($value) && !is_int($value)) {
+        return null;
+    }
     $result = filter_var($value, FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 1],
     ]);
@@ -508,6 +517,10 @@ if ($priceCents === null || $quantity === null) {
     exit;
 }
 
+if ($priceCents > intdiv(PHP_INT_MAX, $quantity)) {
+    http_response_code(422);
+    exit('Total exceeds integer range');
+}
 $totalCents = $priceCents * $quantity;
 
 echo "Total: {$totalCents} cents";
@@ -523,13 +536,15 @@ echo "Total: {$totalCents} cents";
 
 المثال بيربط بين أنواع البيانات، و`mixed` على حدود المدخل غير الموثوق، والتحقق، وNullable Return، والمقارنة الصارمة، والحساب بأعداد صحيحة.
 
+الـoverflow يحصل لما الناتج يتجاوز حدود int. عشان كده نفحص قبل الضرب، مش بعد ما النتيجة تتحول إلى float. function ترفض bool وfloat وarray صراحة؛ قبول string عددية لا يعني قبول كل mixed.
+
 ## أخطاء شائعة
 
 - استخدام `==` ثم الاستغراب من تحويل الأنواع.
 - استخدام `float` للأموال من غير فهم الدقة.
 - افتراض إن كل قيمة في `$_GET` نص واحد؛ المهاجم يقدر يرسل Array.
 - استخدام `$text[0]` لتقسيم العربية.
-- جعل كل الدوال تقبل `mixed` بدل تعريف عقد واضح.
+- جعل كل functions تقبل `mixed` بدل تعريف عقد واضح.
 - إضافة Union واسع لإخفاء تصميم غير واضح.
 - استخدام `fetchAll()` أو Array ضخمة حين يمكن إنتاج العناصر تدريجيًا.
 
@@ -541,16 +556,15 @@ echo "Total: {$totalCents} cents";
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">03</span><p>ليه <code>0.1 + 0.2 === 0.3</code> قد تكون False؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لأن الكسور تُخزن بتمثيل ثنائي محدود، وبعض القيم العشرية لا تُمثل بالضبط. نقارن بتسامح مناسب أو نستخدم تمثيلًا عشريًا دقيقًا حسب المجال.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">04</span><p>متى تستخدم <code>array_key_exists()</code> بدل <code>isset()</code>؟</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> لما يهمك تعرف إن المفتاح موجود حتى لو قيمته <code>null</code>. ‏<code>isset()</code> ترجع False للمفتاح المفقود وللقيمة Null.</div></details></section>
 <section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">05</span><p>صلّح تصميم دالة سعر تقبل <code>mixed</code> من داخل التطبيق كله.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>الإجابة:</strong> اقبل <code>mixed</code> فقط عند حد خارجي لو كان المصدر غير موثوق، ثم تحقق وحوّل إلى <code>int</code> يمثل القروش. خلي دوال المجال الداخلية تقبل <code>int</code> واضحًا بدل إعادة التحقق في كل مكان.</div></details></section>
-<section class="quiz-card" role="listitem"><div class="quiz-question-row"><span class="quiz-number">06</span><p>اكتب Generator ينتج الأعداد الزوجية من 2 إلى حد أقصى، ثم اطبع أول أربع قيم.</p></div><details class="quiz-answer"><summary><span class="quiz-show">اعرض الإجابة</span><span class="quiz-hide">إخفاء الإجابة</span></summary><div class="quiz-answer-body"><strong>خط الحل:</strong> ابدأ Loop من 2 وزوّد 2 كل مرة واستخدم <code>yield</code>. عند حد أقصى 8 سيكون الناتج 2 و4 و6 و8 من غير بناء Array مسبقًا.</div></details></section>
 </div>
 
 ## ملخص الدرس
 
-النوع هو معنى القيمة والعمليات المناسبة لها. استخدم المقارنة الصارمة، وتحقق من النصوص قبل تحويلها، وما تستخدمش Float للأموال من غير قرار واعٍ. Arrays مناسبة للقوائم والخرائط، وObjects وEnums تضيف أنواعًا لها معنى. Type Declarations وStrict Types تجعل حدود الدوال أوضح، والأنواع المتقدمة موجودة علشان نستخدمها لما نوصل لمشكلتها، مش لمجرد استعراضها.
+النوع هو معنى القيمة والعمليات المناسبة لها. استخدم المقارنة الصارمة، وتحقق من النصوص قبل تحويلها، وما تستخدمش Float للأموال من غير قرار واعٍ. Arrays مناسبة للقوائم والخرائط، وObjects وEnums تضيف أنواعًا لها معنى. Type Declarations وStrict Types تجعل حدود functions أوضح، والأنواع المتقدمة موجودة علشان نستخدمها لما نوصل لمشكلتها، مش لمجرد استعراضها.
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 
@@ -558,7 +572,7 @@ echo "Total: {$totalCents} cents";
 php types-lab.php
 ~~~
 
-**معيار النجاح:** تمر الحالات الصحيحة، وترفض الدالة النوع الخاطئ في strict mode بدل تحويله بصمت؛ وثّق نوع الخطأ وكود الخروج.
+**معيار النجاح:** تمر الحالات الصحيحة، وترفض function النوع الخاطئ في strict mode بدل تحويله بصمت؛ وثّق نوع الخطأ وكود الخروج.
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 

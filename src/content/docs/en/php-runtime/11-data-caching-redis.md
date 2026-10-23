@@ -1,5 +1,7 @@
 ---
 title: 11. Data caching and Redis
+prev: {"link":"/en/php-runtime/04-memory-garbage-collection/","label":"PHP memory and garbage collection"}
+next: {"link":"/en/php-runtime/12-queues-workers-scheduling/","label":"Queues, workers, and scheduling"}
 description: Cache-aside, TTL, invalidation, stampede protection, distributed locks, and failure policy.
 sidebar:
   order: 11

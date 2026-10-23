@@ -1,5 +1,7 @@
 ---
 title: 17. Disaster Recovery واختبار الاستعادة
+prev: {"link":"/php-runtime/16-resilience-workers/","label":"المرونة وإدارة Workers"}
+next: {"link":"/php-runtime/18-sessions-shared-state/","label":"Sessions وShared State عند التوسع"}
 description: RPO وRTO والنسخ الاحتياطي والاسترجاع وRunbooks وتمارين التعافي من الكوارث.
 sidebar:
   order: 17
@@ -62,7 +64,7 @@ sidebar:
 
 الملف ينشئ لقطة SQLite تجريبية ويطبع snapshot=ok وزمن التحقق. هذا الزمن ليس RTO للإنتاج ولا يقيس RPO؛ قِس الفقد وزمن استعادة الخدمة كاملة في تدريب التعافي.
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 

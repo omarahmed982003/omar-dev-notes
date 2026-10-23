@@ -1,5 +1,7 @@
 ---
 title: 10. Namespaces, Composer, and quality tools
+prev: {"link":"/en/php/08-files-streams-data/","label":"Files, streams, JSON, and CSV"}
+next: {"link":"/en/php/14-datetime-timezones/","label":"Date, time, and timezones"}
 description: Names, imports, aliases, resolution rules, and mapping a namespace to directories with Composer PSR-4.
 sidebar:
   order: 10

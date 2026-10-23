@@ -1,5 +1,7 @@
 ---
 title: 7. متغيرات البيئة وإدارة الإعدادات
+prev: {"link":"/php-runtime/08-cli-ini-extensions/","label":"PHP CLI وphp.ini والامتدادات"}
+next: {"link":"/php-runtime/01-composer-dependencies/","label":"Composer وإدارة الاعتماديات"}
 description: getenv و$_ENV وputenv و.env وتحويل الإعدادات والتحقق منها وحماية الأسرار في PHP-FPM.
 sidebar:
   order: 7
@@ -11,9 +13,9 @@ sidebar:
 
 ### كلمات جديدة في الدرس
 
-- **Worker:** برنامج يعمل في الخلفية ويسحب المهام من الطابور وينفذها.
+- **Configuration:** قيم بتحدد سلوك التطبيق حسب البيئة من غير تعديل منطق البرنامج، زي حد الانتظار واسم البيئة.
 - **Boolean:** قيمة منطقية لها حالتان فقط: صح أو خطأ.
-- **Function:** دالة: جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
+- **Function:** جزء كود له اسم ومهمة محددة ويمكن استدعاؤه أكثر من مرة.
 
 
 - **Composer:** مدير حزم PHP يثبت المكتبات ويجهز التحميل التلقائي.
@@ -22,7 +24,7 @@ sidebar:
 
 # افصل الإعداد عن الكود
 
-متغيرات البيئة قيم يوفّرها نظام التشغيل أو container أو مدير الخدمة للعملية. تستخدم لتغيير إعدادات البيئة دون تعديل source code، مثل DSN وقيمة debug واسم البيئة.
+متغيرات البيئة قيم يوفّرها Operating System أو container أو مدير الخدمة للعملية. تستخدم لتغيير إعدادات البيئة دون تعديل source code، مثل DSN وقيمة debug واسم البيئة.
 
 ```text
 OS / container / service manager
@@ -49,7 +51,7 @@ if ($dsn === false || $dsn === '') {
 - `putenv('NAME=value')` يغيّر بيئة العملية للطلب الحالي، ولا يعني أن `$_ENV` سيتزامن تلقائيًا معه.
 
 :::caution[تصحيح مهم]
-PHP لا تقرأ ملف `.env` تلقائيًا. تحتاج framework أو مكتبة مثل `vlucas/phpdotenv` أو bootstrap خاص. في الإنتاج قد تُحقن المتغيرات مباشرة من orchestrator أو secret manager دون وجود ملف.
+PHP لا تقرأ ملف `.env` تلقائيًا. تحتاج framework أو مكتبة مثل `vlucas/phpdotenv` أو bootstrap خاص. في الإنتاج قد تُحقن variables مباشرة من orchestrator أو secret manager دون وجود ملف.
 :::
 
 ## تحميل .env في التطوير
@@ -83,6 +85,8 @@ DATABASE_DSN=mysql:host=127.0.0.1;dbname=app;charset=utf8mb4
 
 ## طبقة Config واحدة
 
+المثال يحتاج PHP 8.2+ بسبب `readonly class`، وفهم Class وConstructor من OOP. أسماء البيئة المقبولة هنا عقد المثال، وعدّلها عمدًا لو مشروعك له أسماء تانية.
+
 لا تستدعِ `getenv()` في كل class. حوّل النصوص وتحقق منها عند بدء التطبيق:
 
 ```php
@@ -97,13 +101,18 @@ final readonly class AppConfig
 
     public static function fromEnvironment(): self
     {
-        $dsn = getenv('DATABASE_DSN');
+        $dsn = $_ENV['DATABASE_DSN'] ?? getenv('DATABASE_DSN');
         if ($dsn === false || $dsn === '') {
             throw new RuntimeException('DATABASE_DSN is required');
         }
 
+        $environment = $_ENV['APP_ENV'] ?? (($raw = getenv('APP_ENV')) === false ? 'production' : $raw);
+        if (!in_array($environment, ['local', 'testing', 'staging', 'production'], true)) {
+            throw new RuntimeException('APP_ENV is invalid');
+        }
+
         $debug = filter_var(
-            getenv('APP_DEBUG') ?: 'false',
+            $_ENV['APP_DEBUG'] ?? (($raw = getenv('APP_DEBUG')) === false ? 'false' : $raw),
             FILTER_VALIDATE_BOOL,
             FILTER_NULL_ON_FAILURE,
         );
@@ -113,7 +122,7 @@ final readonly class AppConfig
         }
 
         $timeout = filter_var(
-            getenv('HTTP_TIMEOUT_MS') ?: '5000',
+            $_ENV['HTTP_TIMEOUT_MS'] ?? (($raw = getenv('HTTP_TIMEOUT_MS')) === false ? '5000' : $raw),
             FILTER_VALIDATE_INT,
             ['options' => ['min_range' => 100, 'max_range' => 60_000]],
         );
@@ -123,7 +132,7 @@ final readonly class AppConfig
         }
 
         return new self(
-            environment: getenv('APP_ENV') ?: 'production',
+            environment: $environment,
             debug: $debug,
             databaseDsn: $dsn,
             httpTimeoutMs: $timeout,
@@ -133,6 +142,8 @@ final readonly class AppConfig
 ```
 
 بهذا يفشل التطبيق مبكرًا بدل اكتشاف إعداد ناقص وسط طلب حقيقي، وتتعامل بقية الطبقات مع أنواع صحيحة.
+
+الـdefault يتطبق على الغياب فقط. قيمة HTTP_TIMEOUT_MS='0' موجودة لكنها خارج النطاق، فلا نستبدلها بـ5000. تحميل .env عبر createImmutable يملأ $_ENV و$_SERVER افتراضيًا، مش getenv؛ المثال يقرأ $_ENV أولًا ثم process environment. **Precedence** ترتيب أولوية المصادر، وهنا المصدر الأول له الأولوية؛ لا تطبع قيم الأسرار عند التشخيص.
 
 ## PHP-FPM والبيئة
 
@@ -174,15 +185,30 @@ hard-coded safe defaults
 
 ## شغّل وتحقق
 
-استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker والخادم الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
+استخدم [المختبر القابل للتنزيل](/php/00-lab-setup/) للسكربتات المرفقة. أوامر Composer وFPM وDocker وserver الحقيقي تُنفذ داخل المشروع المُجهز للخدمة، مش مجلد فاضي.
 
 نفّذ نقطة التحقق التالية داخل بيئة الدرس:
 
 ~~~bash
-php config-check.php
+php app-config-check.php
 ~~~
 
-**معيار النجاح:** يفشل التشغيل مبكرًا عند غياب متغير مطلوب، ويطبع أسماء الإعدادات المحمّلة لا قيم الأسرار.
+الملف `app-config-check.php` في المختبر بيضم نفس AppConfig المعروضة فوق، مش تجربة LESSON_MODE القديمة. جرّب من PowerShell داخل مجلد المختبر:
+
+~~~powershell
+$env:DATABASE_DSN = 'sqlite::memory:'
+$env:HTTP_TIMEOUT_MS = '0'
+php app-config-check.php
+$LASTEXITCODE
+Remove-Item Env:HTTP_TIMEOUT_MS
+php app-config-check.php
+$LASTEXITCODE
+Remove-Item Env:DATABASE_DSN
+~~~
+
+الأولى ترفض timeout وتخرج بكود 2؛ التانية تستخدم Default وتطبع أسماء المفاتيح فقط وكود 0. استخدم نافذة تدريب من غير قيم مشروعك؛ الأوامر الأخيرة تزيل القيم التدريبية من النافذة الحالية. في Bash استعمل `DATABASE_DSN='sqlite::memory:' HTTP_TIMEOUT_MS=0 php app-config-check.php` للفشل، واحذف تعيين HTTP_TIMEOUT_MS من الأمر لتجربة الغياب.
+
+**معيار النجاح:** يفشل التشغيل مبكرًا عند غياب DATABASE_DSN أووجود قيمة غير صالحة، ويطبع أسماء الإعدادات لا قيم الأسرار.
 
 دوّن كود الخروج والدليل الفعلي. إذا اختلف الناتج، فسر البيئة أو الفرضية التي اختلفت بدل تعديل «المتوقع» حتى يطابق الخطأ.
 
