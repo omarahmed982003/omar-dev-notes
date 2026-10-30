@@ -28,6 +28,24 @@ showLocalScope();
 // echo $message; // not visible here
 ```
 
+<figure class="concept-visual" aria-labelledby="php-scope-visual-title">
+<div class="visual-heading" id="php-scope-visual-title">Follow the call: which names are visible at each point?</div>
+<p class="visual-note">Open these steps in order while reading <code>showLocalScope()</code> above. This illustrates name visibility, not RAM allocation.</p>
+<details class="trace-step" open>
+<summary>1 — Before the function call</summary>
+<div class="trace-state visual-panel"><p class="visual-label">File scope</p><p dir="ltr"><code>$taxRate = 0.14</code></p><p>File-level code can use <code>$taxRate</code>. The function body has not run, so this call has not created its local <code>$message</code>.</p></div>
+</details>
+<details class="trace-step">
+<summary>2 — While showLocalScope() is running</summary>
+<div class="trace-state visual-panel"><p class="visual-label">Local scope</p><p dir="ltr"><code>$message = 'I exist inside this function'</code></p><p><code>echo $message</code> reads the local name. The file-level <code>$taxRate</code> is not automatically visible inside the function; being in the same file does not make it accessible.</p></div>
+</details>
+<details class="trace-step">
+<summary>3 — After the function returns</summary>
+<div class="trace-state visual-panel"><p class="visual-label">Back to file scope</p><p dir="ltr"><code>$taxRate → 0.14</code></p><p>File-level code can still see <code>$taxRate</code>, but cannot use the function-local name <code>$message</code>. This example does not retain its local value outside the call. A name being invisible is not a general guarantee that every associated value was immediately erased from memory.</p></div>
+</details>
+<figcaption>Scope asks “can this code use the name?” Lifetime asks “how long does the value exist?” Track the name and the value separately as you continue through the examples.</figcaption>
+</figure>
+
 Prefer explicit parameters:
 
 ```php

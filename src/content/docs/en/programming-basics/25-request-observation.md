@@ -4,7 +4,7 @@ description: "Trace requests and interpret measurements"
 sidebar:
   order: 32
 prev: {"link":"/en/programming-basics/24-request-protection/","label":"Protecting requests and limiting their rate"}
-next: {"link":"/en/programming-basics/networking-next/","label":"Networking and the web"}
+next: {"link":"/en/programming-basics/34-network-performance/","label":"Latency and bandwidth: why a fast link can still feel slow"}
 ---
 
 <span class="foundations-reading-scope" aria-hidden="true"></span>

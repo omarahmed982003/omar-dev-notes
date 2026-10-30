@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 760" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile network encapsulation diagram</title>
+  <desc id="desc">Four readable vertical cards show HTTP data wrapped by TCP, then IP, then Ethernet.</desc>
+  <defs>
+    <style>
+      .bg{fill:#0f172a}.layer{fill:#f8fafc;font:700 17px system-ui,sans-serif}.text{fill:#0f172a;font:700 14px system-ui,sans-serif}.note{fill:#cbd5e1;font:600 13px system-ui,sans-serif}.app{fill:#dbeafe;stroke:#3b82f6}.tcp{fill:#ccfbf1;stroke:#0f766e}.ip{fill:#ffedd5;stroke:#ea580c}.eth{fill:#ede9fe;stroke:#7c3aed}.box{stroke-width:2}.arrow{stroke:#94a3b8;stroke-width:3;fill:none}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#94a3b8"/></marker>
+  </defs>
+  <rect class="bg" width="360" height="760" rx="18"/>
+
+  <text class="layer" x="20" y="42">Application</text>
+  <rect class="app box" x="20" y="58" width="320" height="55" rx="8"/>
+  <text class="text" x="180" y="92" text-anchor="middle">HTTP request bytes</text>
+
+  <path class="arrow" d="M180 120v28" marker-end="url(#arrow)"/>
+  <text class="layer" x="20" y="178">Transport</text>
+  <rect class="tcp box" x="20" y="194" width="112" height="55" rx="8"/>
+  <rect class="app box" x="132" y="194" width="208" height="55" rx="8"/>
+  <text class="text" x="76" y="228" text-anchor="middle">TCP header</text>
+  <text class="text" x="236" y="228" text-anchor="middle">HTTP payload</text>
+
+  <path class="arrow" d="M180 256v28" marker-end="url(#arrow)"/>
+  <text class="layer" x="20" y="314">Internet</text>
+  <rect class="ip box" x="20" y="330" width="100" height="55" rx="8"/>
+  <rect class="tcp box" x="120" y="330" width="220" height="55" rx="8"/>
+  <text class="text" x="70" y="364" text-anchor="middle">IP header</text>
+  <text class="text" x="230" y="364" text-anchor="middle">TCP segment</text>
+
+  <path class="arrow" d="M180 392v28" marker-end="url(#arrow)"/>
+  <text class="layer" x="20" y="450">Link</text>
+  <rect class="eth box" x="20" y="466" width="115" height="55" rx="8"/>
+  <rect class="ip box" x="135" y="466" width="155" height="55" rx="8"/>
+  <rect class="eth box" x="290" y="466" width="50" height="55" rx="8"/>
+  <text class="text" x="77" y="500" text-anchor="middle">Ethernet header</text>
+  <text class="text" x="212" y="500" text-anchor="middle">IP packet</text>
+  <text class="text" x="315" y="500" text-anchor="middle">FCS</text>
+
+  <text class="note" x="180" y="574" text-anchor="middle">Each lower layer wraps the unit above.</text>
+  <text class="note" x="180" y="618" text-anchor="middle">Common no-options example:</text>
+  <text class="note" x="180" y="644" text-anchor="middle">1500 B MTU - 20 B IPv4 - 20 B TCP</text>
+  <text class="note" x="180" y="670" text-anchor="middle">= MSS near 1460 B</text>
+  <text class="note" x="180" y="714" text-anchor="middle">Options, tunnels, and link type can change it.</text>
+</svg>

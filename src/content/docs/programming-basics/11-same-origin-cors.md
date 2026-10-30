@@ -97,6 +97,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
 CORS ليست Authentication أو Authorization وليست بديلًا عن CSRF protection. عميل غير متصفح يستطيع تجاهلها، وserver يجب أن يتحقق من كل طلب.
 :::
 
+:::note[تعمق أكثر: ليه Postman ينجح وBrowser يرفض؟]
+CORS سياسة يفرضها Browser على JavaScript لحماية المستخدم؛ `curl` وPostman وتطبيق Mobile مش ملزمين بها. أحيانًا Browser يرسل Request فعلًا ثم يمنع JavaScript من قراءة Response، لذلك CORS مش Authentication ولا يمنع مهاجمًا من استدعاء API خارج Browser.
+
+الـPreflight يحصل قبل Requests غير البسيطة، مثل Method غير `GET/HEAD/POST`، أوHeader زي `Authorization`، أو`Content-Type: application/json`. Browser يرسل `OPTIONS` فيه Origin والـmethod والـheaders المطلوبة. لازم Route الـOPTIONS تصل لسياسة CORS قبل Auth guard اللي يتوقع Token عادي، وإلا الطلب الحقيقي لن يُرسل.
+
+مع Cookies استخدم Origin محددًا و`Access-Control-Allow-Credentials: true`؛ النجمة `*` لا تصلح مع Credentials. وأضف `Vary: Origin` لو Response تختلف حسب Origin حتى لا يعيد Cache سياسة موقع لموقع آخر. CORS لا يغني عن CSRF protection ولاAuthorization داخل كل Endpoint.
+:::
+
 ## مسائل عملية
 
 <details><summary>هل CORS يمنع <code>curl</code> من إرسال الطلب؟</summary><p>لا. CORS سياسة يطبقها المتصفح على JavaScript؛ يجب أن يعتمد الخادم على authentication وauthorization للحماية.</p></details>

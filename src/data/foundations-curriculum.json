@@ -56,7 +56,14 @@
       "programming-basics/16-http2-http3-quic",
       "programming-basics/17-proxies-cdn-waf-observability",
       "programming-basics/24-request-protection",
-      "programming-basics/25-request-observation"
+      "programming-basics/25-request-observation",
+      "programming-basics/34-network-performance",
+      "programming-basics/35-vpc-firewalls",
+      "programming-basics/36-network-troubleshooting",
+      "programming-basics/37-http-content-negotiation",
+      "programming-basics/38-http-large-transfers",
+      "programming-basics/39-http-connections-timeouts",
+      "programming-basics/40-http-redirects"
     ],
     "stages": [
       {
@@ -102,7 +109,14 @@
           "programming-basics/16-http2-http3-quic",
           "programming-basics/17-proxies-cdn-waf-observability",
           "programming-basics/24-request-protection",
-          "programming-basics/25-request-observation"
+          "programming-basics/25-request-observation",
+          "programming-basics/34-network-performance",
+          "programming-basics/35-vpc-firewalls",
+          "programming-basics/36-network-troubleshooting",
+          "programming-basics/37-http-content-negotiation",
+          "programming-basics/38-http-large-transfers",
+          "programming-basics/39-http-connections-timeouts",
+          "programming-basics/40-http-redirects"
         ]
       }
     ]

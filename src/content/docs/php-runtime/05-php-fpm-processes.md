@@ -46,6 +46,20 @@ Nginx/Apache -> FastCGI socket -> FPM master -> worker -> PHP response
 
 يمكن أن تخدم تطبيقين بمستخدمين وsockets منفصلة لتقليل أثر الاختراق، بدل وضع كل المواقع في pool واحدة.
 
+الـ**Listener** نقطة استقبال اتصالات FastCGI الخاصة بالـpool. لما كل workers تكون مشغولة، الاتصالات اللي لسه ما اتقبلتش ممكن تستنى في **Listen queue**: طابور محدود للاتصالات المنتظرة. الرسم التالي لقطة تعليمية فيها اتنين workers، مش قيمة موصى بيها لإعداداتك.
+
+<figure class="concept-visual" aria-labelledby="fpm-workers-visual-ar">
+<div class="visual-heading" id="fpm-workers-visual-ar">مين بيدير Workers، ومين بينفذ Request؟</div>
+<div class="visual-panel"><p class="visual-label">FPM master — إدارة</p><p>يقرأ الإعدادات ويدير إنشاء Workers وإيقافهم؛ مش مرحلة تنفيذ PHP لكل Request.</p></div>
+<div class="visual-arrow" aria-hidden="true">↓</div>
+<div class="visual-panel"><p class="visual-label">Pool — مجموعة Workers لها نفس إعدادات الخدمة</p><div class="visual-grid"><div class="visual-step"><span class="visual-tag">Worker 1</span><p>بينفّذ Request A دلوقتي.</p></div><div class="visual-step"><span class="visual-tag">Worker 2</span><p>بينفّذ Request B دلوقتي.</p></div></div></div>
+<div class="visual-panel"><p class="visual-label">مسار الطلب — منفصل عن مسار الإدارة</p><div class="visual-row" dir="ltr"><div class="visual-step">Nginx / Apache</div><span class="visual-arrow" data-arrow="forward" aria-hidden="true"></span><div class="visual-step">FastCGI listener</div><span class="visual-arrow" data-arrow="forward" aria-hidden="true"></span><div class="visual-step">Available worker</div></div></div>
+<p class="visual-note">Request C لسه محتاج Worker متاح. لو الاتنين مشغولين، ممكن ينتظر في Listen queue المحدودة؛ أو يفشل الاتصال/ينتهي انتظار خادم الويب حسب الحدود والمهلات. زيادة Workers لازم تتقاس مقابل RAM وCPU والخدمات اللي بيكلمها التطبيق.</p>
+<figcaption>السهم من Master للـpool معناه إدارة دورة حياة Workers. مسار FastCGI يروح للاستقبال ثم Worker؛ وجود Master في السطر النصي المبسّط فوق مش معناه إنه بينفذ أو يمرّر بنفسه كل Request.</figcaption>
+</figure>
+
+حدود `pm.max_children` و`listen` و`listen.backlog` موضحة في [مرجع إعداد PHP-FPM الرسمي](https://www.php.net/manual/en/install.fpm.configuration.php). تنفيذ استقبال الطلب في [PHP source](https://github.com/php/php-src/blob/master/sapi/fpm/fpm/fpm_main.c) يفصل العمل اللي بينفذه Worker عن إدارة Master.
+
 ## أوضاع Process Manager
 
 ### static

@@ -62,6 +62,13 @@ Return after understanding variables, conditions, loops, and functions and after
 17. [Deliver content and understand the origin server](/en/programming-basics/17-proxies-cdn-waf-observability/)
 18. [Protecting requests and limiting their rate](/en/programming-basics/24-request-protection/)
 19. [Trace requests and interpret measurements](/en/programming-basics/25-request-observation/)
+20. [Latency and bandwidth: why a fast link can still feel slow](/en/programming-basics/34-network-performance/)
+21. [VPC and firewalls: define service network boundaries](/en/programming-basics/35-vpc-firewalls/)
+22. [Troubleshoot from DNS through HTTP](/en/programming-basics/36-network-troubleshooting/)
+23. [Content negotiation: one resource, multiple representations](/en/programming-basics/37-http-content-negotiation/)
+24. [Large HTTP transfers: ranges, multipart, and streaming](/en/programming-basics/38-http-large-transfers/)
+25. [HTTP connections and timeout budgets](/en/programming-basics/39-http-connections-timeouts/)
+26. [HTTP redirects: move a client without changing the operation](/en/programming-basics/40-http-redirects/)
 
 ## Choose a lab without changing your learning language
 

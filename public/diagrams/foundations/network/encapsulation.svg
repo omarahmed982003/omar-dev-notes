@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-labelledby="title desc">
+  <title id="title">Network encapsulation from HTTP bytes to an Ethernet frame</title>
+  <desc id="desc">Application data becomes a TCP segment, then an IP packet, then an Ethernet frame. Each lower layer adds its own header, and Ethernet also adds an FCS trailer.</desc>
+  <defs>
+    <style>
+      .bg{fill:#0f172a}.label{fill:#e2e8f0;font:600 22px system-ui,sans-serif}.small{fill:#cbd5e1;font:500 17px system-ui,sans-serif}.boxText{fill:#0f172a;font:700 18px system-ui,sans-serif}.outline{stroke-width:2}.app{fill:#dbeafe;stroke:#3b82f6}.tcp{fill:#ccfbf1;stroke:#0f766e}.ip{fill:#ffedd5;stroke:#ea580c}.eth{fill:#ede9fe;stroke:#7c3aed}.payload{fill:#dbeafe;stroke:#3b82f6}.arrow{stroke:#94a3b8;stroke-width:3;fill:none}.note{fill:#f8fafc;font:600 16px system-ui,sans-serif}
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#94a3b8"/></marker>
+  </defs>
+  <rect class="bg" width="1000" height="520" rx="24"/>
+
+  <text class="label" x="48" y="72">Application</text>
+  <rect class="app outline" x="420" y="36" width="430" height="58" rx="8"/>
+  <text class="boxText" x="635" y="72" text-anchor="middle">HTTP request bytes</text>
+
+  <path class="arrow" d="M635 100v34" marker-end="url(#arrow)"/>
+  <text class="label" x="48" y="174">Transport</text>
+  <rect class="tcp outline" x="315" y="140" width="210" height="58" rx="8"/>
+  <rect class="payload outline" x="525" y="140" width="325" height="58" rx="8"/>
+  <text class="boxText" x="420" y="176" text-anchor="middle">TCP header</text>
+  <text class="boxText" x="687" y="176" text-anchor="middle">HTTP payload</text>
+
+  <path class="arrow" d="M635 204v34" marker-end="url(#arrow)"/>
+  <text class="label" x="48" y="278">Internet</text>
+  <rect class="ip outline" x="210" y="244" width="190" height="58" rx="8"/>
+  <rect class="tcp outline" x="400" y="244" width="450" height="58" rx="8"/>
+  <text class="boxText" x="305" y="280" text-anchor="middle">IP header</text>
+  <text class="boxText" x="625" y="280" text-anchor="middle">TCP segment</text>
+
+  <path class="arrow" d="M635 308v34" marker-end="url(#arrow)"/>
+  <text class="label" x="48" y="382">Link</text>
+  <rect class="eth outline" x="105" y="348" width="190" height="58" rx="8"/>
+  <rect class="ip outline" x="295" y="348" width="555" height="58" rx="8"/>
+  <rect class="eth outline" x="850" y="348" width="95" height="58" rx="8"/>
+  <text class="boxText" x="200" y="384" text-anchor="middle">Ethernet header</text>
+  <text class="boxText" x="572" y="384" text-anchor="middle">IP packet</text>
+  <text class="boxText" x="897" y="384" text-anchor="middle">FCS</text>
+
+  <text class="note" x="500" y="458" text-anchor="middle">Each lower layer wraps the complete unit from the layer above.</text>
+  <text class="small" x="500" y="490" text-anchor="middle">Typical Ethernet MTU: 1500 B. IPv4 20 B + TCP 20 B gives an MSS near 1460 B when there are no options.</text>
+</svg>

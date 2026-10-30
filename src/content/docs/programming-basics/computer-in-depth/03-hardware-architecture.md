@@ -11,6 +11,11 @@ next: {"link":"/programming-basics/computer-in-depth/software-and-runtime/","lab
 
 ## أول صورة: إيه اللي بيحصل لما تفتح ملف؟
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/core/hardware-data-flow.svg" alt="مسار البيانات من جهاز الإدخال إلى Operating System ثم RAM وCPU وأخيرًا الشاشة أو التخزين" loading="lazy" />
+  <figcaption>الخريطة تفرّق بين RAM كمساحة عمل مؤقتة، وCPU كمنفّذ للتعليمات، وStorage كمكان يحفظ البايتات بعد إغلاق البرنامج أو فصل الكهرباء.</figcaption>
+</figure>
+
 **Hardware — هاردوير** يعني الأجزاء المادية في الجهاز. هنحتاج مقدمة قصيرة علشان نفهم البرنامج بيستخدم إيه؛ تفاصيل التوصيلات بعد التجربة تعمق اختياري، مش شرط قبل السوفتوير.
 
 | الجزء | دوره وقت الشغل |

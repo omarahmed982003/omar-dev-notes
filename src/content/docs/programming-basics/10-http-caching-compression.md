@@ -43,6 +43,11 @@ curl.exe -i -H "@cache-headers.txt" http://127.0.0.1:8766/cache
 
 ## Freshness وValidation
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/cache-revalidation.svg" alt="قرار HTTP cache: لو النسخة fresh تُرسل مباشرة، ولو stale يُعاد التحقق ثم يستخدم 304 الجسم القديم أو 200 جسمًا جديدًا" loading="lazy" />
+  <figcaption>Freshness تمنع request كاملًا. Validation تعمل request صغيرًا، وقد يوفر رد 304 إعادة body. رد 200 يعني أن التمثيل تغيّر ويجب تحديث النسخة.</figcaption>
+</figure>
+
 ```http
 Cache-Control: public, max-age=60, s-maxage=300
 ETag: "product-42-v7"
@@ -119,6 +124,14 @@ gzip وBrotli يقللان الحجم النصي مثل HTML (Hypertext Markup L
 **Purge أو Invalidation — إبطال نسخة مخزنة** يطلب حذفها أو اعتبارها غير صالحة. التغيير قد لا يصل لكل نقطة خدمة لحظيًا. عنوان أصل ثابت يحمل رقم نسخة أو بصمة محتوى يساعد على طلب الملف الجديد صراحة؛ كلمة hash هنا بصمة من المحتوى، وليست تشفيرًا يخفيه.
 
 **تدريب محلول:** الرد أسرع في المحاولة الثانية بلا دليل cache. لا تعتبرها إصابة مؤكدة؛ قد يكون السبب إعادة استخدام اتصال أو تغير الحمل. في خدمة تملكها، اربط رؤوس Age وحالة المخزن وسجلاته. لمقارنة الإبطال من نقطتين جغرافيتين، تحتاج نقطتي قياس فعليتين؛ تشغيل نفس الأمر مرتين من جهاز واحد لا يثبت انتشار التغيير عالميًا.
+
+:::note[تعمق أكثر: Strong ETag وWeak ETag وVary]
+الـ**Strong ETag** يقول إن الـrepresentation مطابق byte-for-byte، ولذلك ينفع مع Range Requests اللي هتجمع أجزاء من نفس النسخة. الـ**Weak ETag** يبدأ عادة بـ`W/` ويقول إن النسختين متكافئتان في المعنى حتى لو اختلفت بايتات غير مهمة، مثل تنسيق أوضغط مختلف. ما تستخدمش Weak validator علشان تجمع أجزاء ملف؛ المطلوب وقتها هوية قوية للنسخة.
+
+الـETag مش لازم يكون hash مكلفًا لكل body. في بيانات قاعدة، Version column أو`updated_at` مضبوط بعقد واضح ممكن يولد Validator رخيصًا. المهم إن القيمة تتغير كلما تغير التمثيل الذي تحميه، وما تكشفش معلومة سرية أوتتكرر بين مستخدمين بطريقة تخلط Cache خاصًا.
+
+Header اسمه **Vary** يقول للـCache أي request headers تغيّر التمثيل. لو اللغة تعتمد على `Accept-Language` والضغط يعتمد على `Accept-Encoding`، لازم يدخل الاثنان في مفتاح الـCache. لكن `Vary: Cookie` أو`Vary: User-Agent` عالي التنوع ممكن يخلي كل طلب تقريبًا نسخة منفصلة ويهدم Cache hit rate؛ صمّم المفتاح بقصد وقِس النتيجة.
+:::
 
 ## راجع الموضوع ده
 

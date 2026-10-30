@@ -41,6 +41,22 @@ next: {"link":"/programming-basics/30-webhook-delivery/","label":"استقبل �
 
 اختيار WebSocket لمجرد أنه “لحظي” يضيف إدارة connections وheartbeat وbackpressure (إبطاء المنتج عندما لا يستطيع المستهلك متابعة معدل البيانات) وتوسّع أفقي. ابدأ بأبسط نمط يحقق المطلوب.
 
+## WebSocket على مستوى الاتصال
+
+WebSocket يبدأ عادة بطلب HTTP/1.1 فيه `Upgrade: websocket` و`Connection: Upgrade`. لو وافق server يرد `101 Switching Protocols`، وبعدها يحمل الاتصال **Frames — وحدات رسائل WebSocket** في الاتجاهين بدل سلسلة requests وردود HTTP عادية. مع HTTP/2 توجد آلية extended CONNECT، ودعمها يعتمد على الطرفين والوسطاء.
+
+الـFrame يحمل نوع الرسالة وطولها وبياناتها. رسائل العميل إلى server تكون **Masked — ممزوجة بمفتاح masking قصير** حسب البروتوكول؛ masking يمنع بعض التفسيرات الخاطئة عند الوسطاء، لكنه مش تشفيرًا. `wss://` يعني WebSocket داخل TLS وهو المسؤول عن السرية والتحقق.
+
+| الحدث | مسؤولية التطبيق |
+|---|---|
+| Proxy idle timeout | heartbeat مناسب ومهلات مضبوطة بوعي |
+| انقطاع الشبكة | reconnect باستخدام backoff وjitter بدل عاصفة محاولات |
+| إعادة الاتصال | إعادة authentication والاشتراك وعدم افتراض وصول الرسائل القديمة |
+| عميل بطيء | حد للـqueue وتطبيق backpressure أو فصل العميل |
+| نسخ server متعددة | broker أو routing state مشترك للوصول للنسخة المالكة للاتصال |
+
+**Backoff — زيادة وقت الانتظار تدريجيًا**، و**Jitter — اختلاف عشوائي صغير** يمنعان العملاء من إعادة المحاولة معًا. لو الرسائل لا تحتمل الضياع، أضف message ID أو sequence number وآلية استئناف؛ WebSocket وحده لا يضمن تسليمًا تجاريًا مرة واحدة.
+
 **Heartbeat** رسالة دورية لفحص بقاء الاتصال، و**Backpressure** إبطاء المنتج عندما لا يقدر المستهلك يلحق بالرسائل بدل تراكمها بلا حد. **التوسع الأفقي** إضافة نسخ خدمة لتوزيع الحمل.
 
 ## Server-Sent Events
@@ -64,6 +80,14 @@ SSE يعيد الاتصال تلقائيًا في browser ويمكن استخد�
 **EventSource** واجهة browser المعتادة لاستقبال SSE وإعادة الاتصال. حقل id يعطي الحدث معرّفًا؛ browser يستطيع إرسال Last-Event-ID في إعادة الاتصال، لكن server لازم يحتفظ بما يحتاجه لإعادة الأحداث.
 
 PHP-FPM (PHP FastCGI Process Manager؛ برنامج يدير عمليات PHP التي تستقبل عملًا من خادم الويب) يدير عمليات PHP؛ الاتصال الطويل قد يشغل عاملًا لمدة طويلة.
+
+:::note[تعمق أكثر: اختَر Polling أوSSE أوWebSocket حسب اتجاه البيانات]
+**Short polling** بسيط لكنه يعمل Requests حتى لو مفيش جديد، وتأخيره قد يصل للفاصل بين الطلبات. **Long polling** يمسك Request لحد Event أومهلة ثم Client يعيد الاتصال فورًا؛ لازم Cursor مثل `since=1042` علشان Event حصلت بين اتصالين ما تضيعش.
+
+**SSE** Response HTTP طويلة من server إلى client بنوع `text/event-stream`. كل Event ممكن تحمل `id`، وBrowser يعيد الاتصال ويرسل `Last-Event-ID` لاستكمال ما فاته. ابعت Heartbeat comments، عطّل Proxy buffering للمسار، واضبط Read timeout؛ وإلا الأحداث تتجمع وتصل دفعة واحدة رغم إن كودك عمل `flush`.
+
+**WebSocket** Full-duplex ومناسب لما الطرفان يرسلان كثيرًا، لكنه اتصال Stateful يحتاج توزيعًا واعيًا، Heartbeats، Backpressure، وحدودًا للرسائل. بعد Reconnect لا تفترض أن Subscription أوالرسائل رجعت: Client يعيد المصادقة والاشتراك ويرسل آخر Sequence معروف، وserver يقرر Replay من Store مشتركة.
+:::
 
 ## التشغيل
 

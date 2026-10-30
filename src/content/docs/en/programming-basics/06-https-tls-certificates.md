@@ -95,6 +95,11 @@ Correct ephemeral agreement and erasure of temporary secrets provide **forward s
 
 ## Starting the connection
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/tls-handshake.svg" alt="Simplified TLS 1.3 sequence from ClientHello and ServerHello through certificate proof and protected HTTP" loading="lazy" />
+  <figcaption>Key agreement establishes connection secrets, the certificate and signature prove server identity, and protected HTTP follows the Finished messages.</figcaption>
+</figure>
+
 A **handshake** is the setup exchange. This simplified diagram shows a full certificate-based TLS 1.3 handshake:
 
 ```text
@@ -127,9 +132,23 @@ Support and behavior when status cannot be checked vary by client and configurat
 
 **HSTS, HTTP Strict Transport Security**, is a policy learned over valid HTTPS that asks the browser to use HTTPS for future connections during a specified period. Some sites are also covered by preload lists. HSTS does not repair an expired or mismatched certificate.
 
+```http
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+```
+
+`max-age` is the lifetime in seconds; `includeSubDomains` extends the policy below the domain. Without a learned policy, a first visit typed as `http://` can face a downgrade attempt before an HTTPS redirect arrives. **HSTS preload** embeds a policy in supporting browsers, closing that first-visit gap, but it is a serious operational commitment: every covered host must sustain HTTPS, and removal plus browser propagation are not immediate.
+
+HSTS neither repairs an invalid certificate nor protects another domain. Do not enable `includeSubDomains` or request preload until every affected subdomain is controlled and HTTPS-ready.
+
 **ALPN, Application-Layer Protocol Negotiation**, negotiates an application protocol such as HTTP/2 within TLS. It is not another certificate type.
 
 **mTLS, Mutual TLS**, also authenticates the client with a certificate. It can identify communicating services, but the application still decides which operations that identity may perform.
+
+:::note[Deep dive: HSTS closes the first-request gap]
+An HTTP-to-HTTPS redirect happens only after the first HTTP request reaches a server. An attacker on an untrusted network can try to suppress that redirect and keep the victim on HTTP, an attack called **SSL stripping**. `Strict-Transport-Security` tells the browser to remember that a host must use HTTPS and to refuse certificate-error bypasses for `max-age`.
+
+Browsers ignore HSTS received over HTTP because an attacker could otherwise plant policy. `includeSubDomains` extends the decision to every subdomain, while **preload** places the domain in a browser-shipped list so the first visit is protected too. Both are powerful and difficult to reverse: verify every required subdomain first and test with a small `max-age` before making a long-lived commitment.
+:::
 
 ## Mistakes and understanding checks
 

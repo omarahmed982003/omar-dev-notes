@@ -43,6 +43,12 @@ Never trust `Forwarded` or `X-Forwarded-For` from arbitrary clients. Accept them
 
 Every layer adds latency and a failure point. Replicate critical layers, use meaningful health checks, roll configuration out gradually, and propagate a correlation/trace ID. A `502` usually means an invalid or unavailable upstream response; `504` means the upstream deadline expired. Confirm with both sides' logs and a trace.
 
+:::note[Deep dive: a health check is more than a 200]
+**Liveness** asks whether a process is alive and can continue; **readiness** asks whether this instance should receive new work now. If readiness requires every dependency to be perfect, a nonessential Redis outage can remove every instance and turn partial degradation into a complete outage. If it is too shallow, an instance that cannot reach its database continues receiving users.
+
+Test the capability required by the endpoint and separate startup, liveness, and readiness where the platform supports them. A load balancer needs failure and recovery thresholds to avoid flapping after one transient result. Existing requests also need bounded draining during deployment; removing an instance from new selection does not safely finish current connections by itself.
+:::
+
 ## Choosing distribution and bounding retries
 
 **Round robin** takes turns among instances, a reasonable starting point for similarly costly requests. **Least connections** prefers fewer active connections, which can help with long-lived connections but does not directly measure their work.

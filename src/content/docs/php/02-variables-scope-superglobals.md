@@ -143,6 +143,27 @@ echo $score; // ما زالت 11
 
 المرجع في PHP مش Pointer يدوي زي C، ومش محتاج تستخدمه في أغلب الكود. استخدامه من غير داعي يخلي السؤال «مين غيّر القيمة؟» أصعب جدًا. ابدأ بالإسناد العادي، واستخدم المرجع فقط لما تكون فاهم السبب والسلوك.
 
+<figure class="concept-visual" aria-labelledby="php-assignment-visual-title">
+<div class="visual-heading" id="php-assignment-visual-title">نفس الزيادة، لكن العلاقة بين الأسماء مختلفة</div>
+<div class="visual-grid">
+<section class="visual-panel">
+<p class="visual-label">Value assignment — كل اسم له قيمة مستقلة في السلوك</p>
+<div class="visual-step" data-tone="before"><span class="visual-tag">قبل الزيادة</span><p dir="ltr"><code>$a → 10</code> <span aria-hidden="true">│</span> <code>$b → 10</code></p></div>
+<div class="visual-operation" dir="ltr"><code>$b++</code><span class="visual-arrow" aria-hidden="true">↓</span></div>
+<div class="visual-step" data-tone="after"><span class="visual-tag">بعد الزيادة</span><p dir="ltr"><code>$a → 10</code> <span aria-hidden="true">│</span> <code>$b → <mark class="state-change">11</mark></code></p></div>
+<p class="visual-note">التغيير حصل لقيمة <code>$b</code> بس. <code>$a</code> فضلت زي ما هي.</p>
+</section>
+<section class="visual-panel">
+<p class="visual-label">Reference — اسمين مرتبطين بنفس القيمة المنطقية</p>
+<div class="visual-step" data-tone="before"><span class="visual-tag">قبل الزيادة</span><p dir="ltr"><code>[$score, $alias] → 10</code></p></div>
+<div class="visual-operation" dir="ltr"><code>$alias++</code><span class="visual-arrow" aria-hidden="true">↓</span></div>
+<div class="visual-step" data-tone="after"><span class="visual-tag">بعد الزيادة</span><p dir="ltr"><code>[$score, $alias] → <mark class="state-change">11</mark></code></p></div>
+<p class="visual-note">أي اسم منهم هيوصل للقيمة <code>11</code>. وبعد <code>unset($alias)</code> يفضل <code>$score → 11</code> لوحده.</p>
+</section>
+</div>
+<figcaption>الأسهم بتوضح ارتباط الاسم بالقيمة في المثالين اللي فوق، مش عناوين RAM أوشكل تخزين PHP الحقيقي. استقلال القيم في الإسناد العادي مش معناه إن PHP لازم تنسخ كل بايت فورًا.</figcaption>
+</figure>
+
 ## الكائنات لها سلوك مختلف
 
 عند إسناد Object لمتغير آخر، الاتنين variables يشيران عادة إلى نفس الكائن:

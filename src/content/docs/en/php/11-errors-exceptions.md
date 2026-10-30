@@ -19,6 +19,8 @@ This lesson uses PHP 8.1+. Recall lesson 7's call stack: exceptions travel outwa
 
 Save `withdraw.php` and run `php withdraw.php`. The **domain** is our withdrawal rule; DomainException represents a business-rule failure even when types are valid:
 
+**InvalidArgumentException** is the exception type used here to reject an unacceptable input, such as a negative withdrawal amount. **finally** is a block that runs after the `try`/`catch` path in this example, whether the withdrawal succeeds or is rejected; it prints the end-of-attempt message.
+
 ~~~php
 <?php
 declare(strict_types=1);
@@ -61,6 +63,19 @@ finished attempt
 ~~~
 
 Each iteration starts with 1000; these are independent cases, not a running bank statement. 200 returns 800. 1200 throws before return, skipping the remaining-balance echo and reaching the domain catch. -1 triggers input rejection. Finally runs for all three. Put specific catches before general ones so a broad catch does not consume them first.
+
+<figure class="concept-visual" aria-labelledby="php-exception-visual-title">
+<div class="visual-heading" id="php-exception-visual-title">Three independent attempts: where does execution branch?</div>
+<div class="visual-step"><span class="visual-tag">Start of each attempt</span><p dir="ltr"><code>try → withdraw(1000, $amount)</code></p></div>
+<div class="visual-alternatives">
+<section class="visual-panel" data-tone="success"><p class="visual-label" dir="ltr">$amount = 200</p><div class="visual-step"><code>return 800</code><p>The calculation succeeds, so the line displaying <code>$remaining</code> inside <code>try</code> executes.</p></div><p class="visual-note" dir="ltr"><code>remaining=800</code></p></section>
+<section class="visual-panel" data-tone="warning"><p class="visual-label" dir="ltr">$amount = 1200</p><div class="visual-step"><span class="visual-tag">DomainException</span><p>The balance rule rejects the withdrawal, so <code>catch (DomainException)</code> runs. The line displaying <code>$remaining</code> is skipped.</p></div><p class="visual-note" dir="ltr"><code>declined</code></p></section>
+<section class="visual-panel" data-tone="danger"><p class="visual-label" dir="ltr">$amount = -1</p><div class="visual-step"><span class="visual-tag">InvalidArgumentException</span><p>The input check rejects the value before calculating a remainder, so <code>catch (InvalidArgumentException)</code> runs.</p></div><p class="visual-note" dir="ltr"><code>invalid input</code></p></section>
+</div>
+<div class="visual-merge"><span class="visual-arrow" aria-hidden="true">↓</span><span>All three paths reach <code>finally</code> in this program</span></div>
+<div class="visual-step"><span class="visual-tag">End of each attempt</span><p dir="ltr"><code>finished attempt</code></p><p>The next <code>foreach</code> attempt begins with a fresh balance of <code>1000</code> if another value remains. After the last value, the loop ends.</p></div>
+<figcaption>These are three alternatives for one call, not three consecutive stages. A throw leaves the function and skips its remaining success path; a matching catch handles the failure, followed by finally here.</figcaption>
+</figure>
 
 An exception from a deeper function unwinds that call before searching outward. Catch does not resume at the failed line; execution continues after the handled block. An uncaught failure reaches the application boundary and normally ends the request/script.
 

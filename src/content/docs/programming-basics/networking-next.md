@@ -62,6 +62,13 @@ sidebar:
 17. [وزّع المحتوى وافهم server الأصلي](/programming-basics/17-proxies-cdn-waf-observability/)
 18. [حماية الطلبات وتحديد معدلها](/programming-basics/24-request-protection/)
 19. [تتبّع الطلب وفسّر القياسات](/programming-basics/25-request-observation/)
+20. [Latency وBandwidth: ليه الاتصال السريع ممكن يتأخر؟](/programming-basics/34-network-performance/)
+21. [VPC وFirewall: ابنِ حدود شبكة الخدمة](/programming-basics/35-vpc-firewalls/)
+22. [تشخيص الشبكة من DNS لحد HTTP](/programming-basics/36-network-troubleshooting/)
+23. [Content Negotiation: نفس المورد بأكثر من تمثيل](/programming-basics/37-http-content-negotiation/)
+24. [نقل الملفات الكبيرة: Range وMultipart وStreaming](/programming-basics/38-http-large-transfers/)
+25. [HTTP Connections وTimeout Budget](/programming-basics/39-http-connections-timeouts/)
+26. [HTTP Redirects: انقل العميل من غير ما تغيّر العملية بالغلط](/programming-basics/40-http-redirects/)
 
 ## اختار المعمل من غير ما تغيّر لغة دراستك
 

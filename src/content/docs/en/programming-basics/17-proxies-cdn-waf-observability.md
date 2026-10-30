@@ -81,6 +81,14 @@ Combine headers, response policy, key, and available edge/origin logs. Speed alo
 
 This is a prepared explanatory trace, not real network measurements or a promise about a vendor. No CDN account or deployment is needed.
 
+:::note[Deep dive: a CDN caching recipe is not one header]
+A fingerprinted static asset such as `app.a81f.css` can use `public, max-age=31536000, immutable` because a new URL identifies a new version. Changing HTML or JSON needs shorter freshness and a validator; `s-maxage` can control shared-cache freshness while `stale-while-revalidate` temporarily serves an older response during refresh.
+
+A user endpoint does not become public merely because `Cookie` is absent. Inspect authorization, query values, language, and every header that changes the representation, then use `private` or `no-store` where appropriate. Cache-key normalization can remove irrelevant tracking parameters, but removing a parameter that changes content can leak one user's response to another, so normalization is a tested contract.
+
+During origin failure, `stale-if-error` may keep a public read available, but that is a product decision: a restaurant menu a few minutes old is safer than a stale wallet balance. Observe HIT, MISS, STALE, and BYPASS together with object age and cache key instead of treating hit rate alone as success.
+:::
+
 ## Independent practice
 
 Return to the initial state: A stores v1 at time 0 with lifetime 300; the origin changes at 50; no invalidation occurs.

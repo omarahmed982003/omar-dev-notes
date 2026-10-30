@@ -156,6 +156,11 @@ If you can trace Hello and its reply without inventing TCP message boundaries, c
 
 ## Sequence numbers and acknowledgements
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/tcp-recovery.svg" alt="TCP segments are sent, one range is lost, acknowledgements keep naming the expected byte, and the missing range is retransmitted before ordered delivery" loading="lazy" />
+  <figcaption>An ACK names the next expected byte. Later bytes do not close the gap; the sender retransmits the missing range before the receiver exposes an ordered byte stream.</figcaption>
+</figure>
+
 For a simplified data range starting at 1000, bytes `ABC` occupy 1000–1002 and `DEF` start at 1003. Sequence numbers locate bytes rather than numbering purchase orders or merely counting packets.
 
 An ordinary **cumulative ACK** identifies the next expected byte. An ACK of 1003 acknowledges the contiguous preceding bytes. TCP can retain later data while recovering a missing range, then deliver an ordered stream.
@@ -240,6 +245,18 @@ If rwnd becomes zero, ordinary new-data transmission pauses; protocol window pro
 **TIME_WAIT** is a normal state following orderly closure at the relevant endpoint. It helps handle delayed segments and retransmitted closing messages. Reducing it indiscriminately changes protocol behavior.
 
 TCP **keepalive** can detect some dead idle peers according to its configuration. It differs from HTTP connection reuse and does not replace an application deadline.
+
+:::note[Deep dive: small writes, Nagle, and delayed acknowledgements]
+Sending every tiny write as its own packet wastes headers and network work. **Nagle's algorithm** tries to combine small writes: while earlier data is unacknowledged, it may delay another small write instead of sending immediately. The receiver's **delayed ACK** may also wait briefly so an acknowledgement can travel with return data. Each mechanism has a purpose, but together they can add visible delay to a chatty request/response protocol.
+
+**TCP_NODELAY** disables Nagle for a connection that values latency; many HTTP runtimes already set it. Do not toggle it by ritual. First check whether the application emits needless tiny writes, then measure latency and packet count. Combining application data into a meaningful message and avoiding repeated flushes may be the clearer fix.
+:::
+
+:::note[Deep dive: CLOSE_WAIT and congestion-control algorithms]
+`TIME_WAIT` is normally expected on the endpoint that actively closes. A growing `CLOSE_WAIT` count means the peer sent `FIN` and the operating system notified the application, but the application did not close its socket. That is usually a lifecycle bug: an unread response, an exception before cleanup, or a resource not closed in `finally`.
+
+TCP's congestion window, `cwnd`, is controlled by an algorithm. **CUBIC** is common on Linux and grows its sending rate with a curve suited to fast networks, while **BBR** estimates bandwidth and RTT rather than treating every loss as congestion. Application code rarely changes these algorithms. The useful model is that a new connection ramps up, and opening more connections is not a reliable substitute for reuse and measurement.
+:::
 
 ## Diagnose observed failures
 

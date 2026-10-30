@@ -93,6 +93,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'OPTIONS') {
 CORS is not authentication, authorization, or a replacement for CSRF protection. Non-browser clients can ignore it, so the server must validate every request.
 :::
 
+:::note[Deep dive: why Postman succeeds while a browser refuses]
+CORS is a browser-enforced policy that protects a user from cross-origin JavaScript. `curl`, Postman, and mobile applications do not enforce it. A browser may send a request and then prevent JavaScript from reading the response, so CORS is not authentication and does not prevent a non-browser attacker from calling an API.
+
+A preflight precedes a non-simple request, including a method outside `GET/HEAD/POST`, a header such as `Authorization`, or `Content-Type: application/json`. The browser sends `OPTIONS` with the origin, requested method, and requested headers. That route must reach CORS handling before an authentication guard that expects a normal token, or the real request will never be sent.
+
+For cookies, return a specific allowed origin with `Access-Control-Allow-Credentials: true`; `*` cannot be combined with credentials. Add `Vary: Origin` when the response policy changes by origin so a cache cannot reuse one site's policy for another. CORS does not replace CSRF protection or endpoint authorization.
+:::
+
 ## Practical problems
 
 <details><summary>Does CORS stop <code>curl</code> from sending a request?</summary><p>No. Browsers enforce CORS for JavaScript. The server still needs authentication and authorization.</p></details>

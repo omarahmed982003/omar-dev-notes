@@ -143,6 +143,27 @@ echo $score; // 11
 
 A PHP reference is not manual pointer arithmetic like C. Most application code does not need references. Unnecessary aliases make it difficult to answer “which code changed this value?”
 
+<figure class="concept-visual" aria-labelledby="php-assignment-visual-title">
+<div class="visual-heading" id="php-assignment-visual-title">The same increment, but a different relationship between names</div>
+<div class="visual-grid">
+<section class="visual-panel">
+<p class="visual-label">Value assignment — logically independent values</p>
+<div class="visual-step" data-tone="before"><span class="visual-tag">Before increment</span><p dir="ltr"><code>$a → 10</code> <span aria-hidden="true">│</span> <code>$b → 10</code></p></div>
+<div class="visual-operation" dir="ltr"><code>$b++</code><span class="visual-arrow" aria-hidden="true">↓</span></div>
+<div class="visual-step" data-tone="after"><span class="visual-tag">After increment</span><p dir="ltr"><code>$a → 10</code> <span aria-hidden="true">│</span> <code>$b → <mark class="state-change">11</mark></code></p></div>
+<p class="visual-note">Only <code>$b</code> changes. <code>$a</code> retains its original value.</p>
+</section>
+<section class="visual-panel">
+<p class="visual-label">Reference — two names linked to one logical value</p>
+<div class="visual-step" data-tone="before"><span class="visual-tag">Before increment</span><p dir="ltr"><code>[$score, $alias] → 10</code></p></div>
+<div class="visual-operation" dir="ltr"><code>$alias++</code><span class="visual-arrow" aria-hidden="true">↓</span></div>
+<div class="visual-step" data-tone="after"><span class="visual-tag">After increment</span><p dir="ltr"><code>[$score, $alias] → <mark class="state-change">11</mark></code></p></div>
+<p class="visual-note">Either name reads <code>11</code>. After <code>unset($alias)</code>, only <code>$score → 11</code> remains.</p>
+</section>
+</div>
+<figcaption>The arrows show name-to-value relationships in the preceding examples, not RAM addresses or PHP's physical storage layout. Independent value semantics do not require every byte to be copied immediately.</figcaption>
+</figure>
+
 ## Objects behave differently
 
 Assigning an object to another variable normally makes both variables refer to the same object:

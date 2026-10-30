@@ -19,6 +19,8 @@ sidebar:
 
 احفظ `withdraw.php` وشغّل `php withdraw.php`. **Domain** هنا قواعد السحب، وDomainException فشل قاعدة عمل رغم أن النوع صحيح:
 
+**InvalidArgumentException** نوع Exception بنستخدمه هنا لرفض مدخل غير مقبول، زي مبلغ سحب سالب. و**finally** كتلة بتتنفذ بعد مسار `try` و`catch` في المثال ده، سواء السحب نجح أو اترفض؛ هنستخدمها لرسالة نهاية كل محاولة.
+
 ~~~php
 <?php
 declare(strict_types=1);
@@ -61,6 +63,19 @@ finished attempt
 ~~~
 
 كل دورة تبدأ برصيد 1000؛ المثال يقارن حالات مستقلة، مش كشف حساب متراكم. 200 ترجع 800؛ 1200 ترمي قبل return، فيُتخطى echo remaining وتعمل catch المجال. -1 تدخل فحص المدخل. finally تعمل في الحالات الثلاث. لا تجعل catch عامة قبل الخاصة لأنها ستلتقط النوع مبكرًا.
+
+<figure class="concept-visual" aria-labelledby="php-exception-visual-title">
+<div class="visual-heading" id="php-exception-visual-title">3 محاولات مستقلة: فين بيتفرع مسار التنفيذ؟</div>
+<div class="visual-step"><span class="visual-tag">نقطة بداية كل محاولة</span><p dir="ltr"><code>try → withdraw(1000, $amount)</code></p></div>
+<div class="visual-alternatives">
+<section class="visual-panel" data-tone="success"><p class="visual-label" dir="ltr">$amount = 200</p><div class="visual-step"><code>return 800</code><p>الحساب نجح، فسطر عرض <code>$remaining</code> جوه <code>try</code> بيتنفذ.</p></div><p class="visual-note" dir="ltr"><code>remaining=800</code></p></section>
+<section class="visual-panel" data-tone="warning"><p class="visual-label" dir="ltr">$amount = 1200</p><div class="visual-step"><span class="visual-tag">DomainException</span><p>قاعدة الرصيد رفضت السحب، فـ<code>catch (DomainException)</code> هي اللي تتنفذ. سطر عرض <code>$remaining</code> يتخطى.</p></div><p class="visual-note" dir="ltr"><code>declined</code></p></section>
+<section class="visual-panel" data-tone="danger"><p class="visual-label" dir="ltr">$amount = -1</p><div class="visual-step"><span class="visual-tag">InvalidArgumentException</span><p>فحص المدخل رفض القيمة قبل حساب الرصيد، فـ<code>catch (InvalidArgumentException)</code> هي اللي تتنفذ.</p></div><p class="visual-note" dir="ltr"><code>invalid input</code></p></section>
+</div>
+<div class="visual-merge"><span class="visual-arrow" aria-hidden="true">↓</span><span>المسارات الثلاثة بتكمل للـ<code>finally</code> في البرنامج ده</span></div>
+<div class="visual-step"><span class="visual-tag">نهاية كل محاولة</span><p dir="ltr"><code>finished attempt</code></p><p>بعدها <code>foreach</code> تبدأ المحاولة اللي بعدها برصيد <code>1000</code> جديد لو فيه قيمة تانية؛ بعد آخر قيمة، الحلقة بتنتهي.</p></div>
+<figcaption>ده تفرع لنفس الاستدعاء بثلاث قيم، مش ثلاث مراحل وراء بعض. طريق <code>throw</code> يخرج من function ويتخطى باقي مسار النجاح؛ <code>catch</code> المناسبة تتعامل مع الفشل، وبعدها <code>finally</code> تنفذ هنا.</figcaption>
+</figure>
 
 لو function داخل withdraw رمت، يُلغى مسارها ثم يبحث PHP خارجها. catch لا تعيد التنفيذ للسطر الذي فشل؛ تكمل بعد الكتلة المعالجة. بدون catch يصل الفشل للحد العام وينتهي الطلب/السكربت عادة.
 

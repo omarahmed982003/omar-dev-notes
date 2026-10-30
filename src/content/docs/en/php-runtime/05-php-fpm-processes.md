@@ -41,6 +41,20 @@ Never expose FPM to an untrusted network. Bind a Unix socket or an internal inte
 
 Separate applications into pools and OS identities where isolation matters.
 
+The **listener** accepts FastCGI connections for a pool. When all workers are busy, connections not yet accepted may wait in the **listen queue**, a bounded queue of pending connections. The following snapshot uses two workers to explain capacity, not to recommend a configuration.
+
+<figure class="concept-visual" aria-labelledby="fpm-workers-visual-en">
+<div class="visual-heading" id="fpm-workers-visual-en">Who manages workers, and who executes a request?</div>
+<div class="visual-panel"><p class="visual-label">FPM master — management</p><p>Reads configuration and manages worker creation and shutdown; it is not a PHP execution stage for every request.</p></div>
+<div class="visual-arrow" aria-hidden="true">↓</div>
+<div class="visual-panel"><p class="visual-label">Pool — workers grouped under the same service settings</p><div class="visual-grid"><div class="visual-step"><span class="visual-tag">Worker 1</span><p>Executing request A now.</p></div><div class="visual-step"><span class="visual-tag">Worker 2</span><p>Executing request B now.</p></div></div></div>
+<div class="visual-panel"><p class="visual-label">Request path — separate from management</p><div class="visual-row" dir="ltr"><div class="visual-step">Nginx / Apache</div><span class="visual-arrow" data-arrow="forward" aria-hidden="true"></span><div class="visual-step">FastCGI listener</div><span class="visual-arrow" data-arrow="forward" aria-hidden="true"></span><div class="visual-step">Available worker</div></div></div>
+<p class="visual-note">Request C still needs an available worker. With both busy, its connection may wait in the bounded listen queue, or fail/time out according to listener and web-server limits. Size workers against memory, CPU, and downstream services.</p>
+<figcaption>The arrow from the master to the pool denotes lifecycle management. FastCGI goes through the listener to a worker; including the master in the simplified text line above does not mean it executes or relays every request itself.</figcaption>
+</figure>
+
+See the [official FPM configuration reference](https://www.php.net/manual/en/install.fpm.configuration.php) for `pm.max_children`, `listen`, and `listen.backlog`. The [PHP source](https://github.com/php/php-src/blob/master/sapi/fpm/fpm/fpm_main.c) separates worker request acceptance from master management.
+
 ## Process-manager modes
 
 ```ini

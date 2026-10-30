@@ -4,7 +4,7 @@ description: "تتبّع الطلب وفسّر القياسات"
 sidebar:
   order: 32
 prev: {"link":"/programming-basics/24-request-protection/","label":"حماية الطلبات وتحديد معدلها"}
-next: {"link":"/programming-basics/networking-next/","label":"الشبكات والويب"}
+next: {"link":"/programming-basics/34-network-performance/","label":"Latency وBandwidth: ليه الاتصال السريع ممكن يتأخر؟"}
 ---
 
 <span class="foundations-reading-scope" aria-hidden="true"></span>

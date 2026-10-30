@@ -30,6 +30,29 @@ next: {"link":"/programming-basics/computer-in-depth/12-memory-allocation/","lab
 
 الجدول نموذج لفهم العلاقة، مش قياس عناوين جهازك. الذاكرة الافتراضية مش مساحة RAM جديدة ولا ضمانًا إن أي حجز مهما كبر هينجح.
 
+<figure class="concept-visual" aria-labelledby="process-address-visual-ar">
+<div class="visual-heading">نفس الرقم، لكن كل Process لها سياقها</div>
+<div class="visual-grid">
+<div class="visual-panel">
+<p class="visual-label">Process A — المحرر أ</p>
+<div class="visual-step">عنوان افتراضي <code>1000</code></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<p>النظام يفسره باستخدام ربط الذاكرة الخاص بـProcess A.</p>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-step"><span class="visual-tag">مكان أ في RAM</span><p>نص الملف أ</p></div>
+</div>
+<div class="visual-panel">
+<p class="visual-label">Process B — المحرر ب</p>
+<div class="visual-step">عنوان افتراضي <code>1000</code></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<p>النظام يفسره باستخدام ربط الذاكرة الخاص بـProcess B.</p>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-step"><span class="visual-tag">مكان ب في RAM</span><p>نص الملف ب</p></div>
+</div>
+</div>
+<figcaption id="process-address-visual-ar">في المثال ده، البيانات موجودة في مكانين مختلفين رغم تطابق العنوان الافتراضي. الرقم لوحده ما يحددش البيانات من غير سياق الـProcess؛ ده نموذج تعليمي لبيانات مستقلة، والمشاركة الصريحة ممكنة بإذن.</figcaption>
+</figure>
+
 ### ليه نفس كمية البيانات ممكن تستنى مددًا مختلفة؟
 
 **Memory controller — متحكم الذاكرة** ينظم التعامل مع شرائح RAM. **Bandwidth — معدل نقل** مقدار بيانات يمكن نقلها في زمن، و**Latency — زمن انتظار** مدة الوصول لنتيجة واحدة.

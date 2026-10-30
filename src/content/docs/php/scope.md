@@ -28,6 +28,24 @@ showLocalScope();
 // echo $message; // not visible here
 ```
 
+<figure class="concept-visual" aria-labelledby="php-scope-visual-title">
+<div class="visual-heading" id="php-scope-visual-title">اتبع الاستدعاء: الاسم ظاهر لمين في كل لحظة؟</div>
+<p class="visual-note">افتح الخطوات بالترتيب وارجع لنفس مثال <code>showLocalScope()</code>. هنا بنرسم قواعد ظهور الأسماء، مش تقسيم RAM.</p>
+<details class="trace-step" open>
+<summary>1 — قبل استدعاء function</summary>
+<div class="trace-state visual-panel"><p class="visual-label">File scope</p><p dir="ltr"><code>$taxRate = 0.14</code></p><p>كود الملف يقدر يستخدم <code>$taxRate</code>. جسم function لسه ما اشتغلش، و<code>$message</code> لسه ما اتعملتش في الاستدعاء ده.</p></div>
+</details>
+<details class="trace-step">
+<summary>2 — أثناء تنفيذ <bdi dir="ltr">showLocalScope()</bdi></summary>
+<div class="trace-state visual-panel"><p class="visual-label">Local scope</p><p dir="ltr"><code>$message = 'I exist inside this function'</code></p><p>السطر <code>echo $message</code> يقرأ الاسم المحلي. لكن <code>$taxRate</code> الخارجية مش متاحة تلقائيًا جوه function؛ وجودها في نفس الملف مش كفاية.</p></div>
+</details>
+<details class="trace-step">
+<summary>3 — بعد رجوع function</summary>
+<div class="trace-state visual-panel"><p class="visual-label">Back to file scope</p><p dir="ltr"><code>$taxRate → 0.14</code></p><p>كود الملف لسه يقدر يشوف <code>$taxRate</code>، لكنه ما يقدرش يستخدم اسم <code>$message</code> المحلي. في المثال ده القيمة المحلية ما خرجتش من الاستدعاء؛ غياب الاسم من نطاق معين مش قاعدة عامة إن كل قيمة مرتبطة به اتمسحت من الذاكرة فورًا.</p></div>
+</details>
+<figcaption>Scope بيسأل «أقدر أستخدم الاسم هنا؟». Lifetime بيسأل «القيمة عايشة لحد إمتى؟». دول سؤالين مختلفين؛ اتبع الاسم والقيمة كل واحد لوحده وإنت بتكمل الأمثلة.</figcaption>
+</figure>
+
 وجود نطاقات منفصلة بيقلل التصادم والتغييرات المفاجئة. function الأفضل تستقبل اللي تحتاجه صراحة:
 
 ```php

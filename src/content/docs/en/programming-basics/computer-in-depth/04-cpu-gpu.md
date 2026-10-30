@@ -39,6 +39,20 @@ The table separates an **instruction** from **data**: “add 3” specifies work
 
 Execution continues at the appropriate next instruction. Modern processors need not finish an entire instruction before preparing another, and a branch can change the execution path.
 
+<figure class="concept-visual" aria-labelledby="cpu-cycle-visual-en">
+<div class="visual-heading">One instruction under the lens: add 3 to R</div>
+<p class="visual-note">Before instruction B: <code dir="ltr">R = 5</code>. Follow the instruction and observe when the value changes.</p>
+<div class="visual-cycle">
+<div class="visual-panel"><p class="visual-label">1 · Fetch</p><div class="visual-step">The program counter helps identify B's location, and the processor obtains that instruction.</div><span class="visual-tag"><code dir="ltr">R = 5</code></span></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-panel"><p class="visual-label">2 · Decode</p><div class="visual-step">The control unit coordinates understanding: addition is required, the added value is 3, and the working data is in R.</div><span class="visual-tag"><code dir="ltr">R = 5</code></span></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-panel"><p class="visual-label">3 · Execute</p><div class="visual-step">The ALU adds in our model, and the result is stored in R.</div><span class="visual-tag"><code dir="ltr">5 + 3 → R = 8</code></span></div>
+</div>
+<p class="visual-note">Continue at the appropriate next instruction. If there is another instruction, repeat these fetch, decode, and execute responsibilities for it.</p>
+<figcaption id="cpu-cycle-visual-en">Obtaining or decoding the instruction did not change the value; performing the addition did. This separates one instruction's responsibilities without claiming one clock cycle per stage or this strictly sequential organization in a modern processor.</figcaption>
+</figure>
+
 ### Is the data near the processor?
 
 A **cache** holds nearby copies to reduce repeated data waits. Every value need not come from RAM on every access.

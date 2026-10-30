@@ -54,6 +54,9 @@ const networkDepth = [
   '10-http-caching-compression', '11-same-origin-cors', '33-browser-isolation',
   '12-realtime-webhooks', '30-webhook-delivery', '13-api-design', '16-http2-http3-quic',
   '17-proxies-cdn-waf-observability', '24-request-protection', '25-request-observation',
+  '34-network-performance', '35-vpc-firewalls', '36-network-troubleshooting',
+  '37-http-content-negotiation', '38-http-large-transfers',
+  '39-http-connections-timeouts', '40-http-redirects',
 ].map(slug => 'programming-basics/' + slug);
 const mathOrder = leaves(math.items).map(item => item.link).filter(link => link !== 'programming-basics/math-problem-solving');
 const staged = new Map();

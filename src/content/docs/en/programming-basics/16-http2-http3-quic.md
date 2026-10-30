@@ -55,6 +55,14 @@ Using UDP does not make HTTP/3 unreliable; QUIC supplies the reliability above U
 
 HTTP/2 over TCP can withhold later bytes for all streams on that connection until the gap is filled. Compare under matching conditions rather than assuming the newer protocol wins.
 
+:::note[Deep dive: where head-of-line blocking occurs]
+With HTTP/1.1, a slow response on a connection can block later requests, so browsers opened several connections as mitigation. HTTP/2 multiplexes streams in one TCP connection and removes that HTTP-level queue, but TCP still delivers one ordered byte stream. A lost packet delays delivery of later bytes for every stream on that connection until recovery.
+
+HTTP/3 uses QUIC over UDP. QUIC orders data independently within each stream, so loss in one stream does not prevent delivery of a completed different stream. Congestion control and loss still exist, but the blocking scope changes. QUIC integrates TLS 1.3 and uses connection IDs for migration, allowing a phone to continue a connection across Wi-Fi and mobile networks when state permits.
+
+This does not mean a Laravel worker speaks QUIC directly. A CDN or load balancer commonly terminates HTTP/3 and reaches the application over HTTP/1.1 or HTTP/2. Inspect each hop rather than describing the entire path as one protocol version.
+:::
+
 ## Practical exercises
 
 <details><summary>Did HTTP/2 change semantics or transport?</summary><p>Core semantics remained while transport gained binary frames, multiplexing, and header compression.</p></details>

@@ -79,6 +79,14 @@ If a mapping expires or disappears after the translator restarts, existing conne
 
 A **firewall** enforces allow/deny policy; NAT translates. Translation neither proves a service is secure nor encrypts its content.
 
+:::note[Deep dive: special-purpose addresses are not ordinary private hosts]
+Not every non-public IPv4 address means “a machine on the home LAN.” `100.64.0.0/10` is commonly used for carrier-grade NAT, which explains why a router can have an address yet inbound port forwarding still cannot reach it. `169.254.0.0/16` is link-local: a host can use it on its local link when normal configuration is unavailable, but it is not a route to the public Internet.
+
+`169.254.169.254` deserves special care in cloud environments. Some platforms expose a metadata endpoint there so a VM can obtain instance data or temporary credentials. If an application fetches arbitrary user-supplied URLs, an SSRF vulnerability may let an attacker reach that internal service. A sound defence constrains allowed destinations, rejects local and private results after DNS resolution, checks redirects again, and enables the platform's metadata protections.
+
+For IPv6, `::1` is loopback, `fe80::/10` is link-local, and `fc00::/7` is unique-local space. The usual absence of NAT does not make a host publicly reachable; firewall and access policy still decide who may initiate a connection.
+:::
+
 ## Independent practice
 
 1. A reply targets `203.0.113.5:40001`. What is its destination after translation?

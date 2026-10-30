@@ -62,6 +62,11 @@ Address: 203.0.113.10
 
 ## رحلة الاستعلام عند غياب الـcache
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/dns-resolution.svg" alt="رحلة DNS من browser وOperating System إلى recursive resolver ثم root وTLD وauthoritative server قبل حفظ الإجابة بالـTTL" loading="lazy" />
+  <figcaption>الـrecursive resolver يمشي وراء الإحالات نيابة عن العميل. الإجابة النهائية ترجع معها TTL فتُحفظ مدة محدودة بدل إعادة الرحلة في كل مرة.</figcaption>
+</figure>
+
 1. يفحص browser إجاباته المخزنة.
 2. بحسب إعداد النظام، يفحص محلل الأسماء ملف hosts، خريطة أسماء محلية، والـOS cache (نسخة محفوظة لتقليل تكرار القراءة أو الحساب).
 3. يسأل **recursive resolver (خادم DNS ينفذ البحث عن الإجابة بالنيابة عن جهازك)** يوفره الـISP (Internet Service Provider؛ شركة أو جهة توفر الاتصال بالإنترنت) أو المؤسسة أو خدمة عامة.
@@ -134,6 +139,12 @@ DNS التقليدي يستخدم المنفذ 53 عبر UDP أو TCP. **Truncat
 **تدريب محلول:** اسم له سجل A، لكن سؤال AAAA لا يعيد عنوانًا. نستنتج أن عنوان الإصدار السادس لم يظهر في هذا الاستعلام؛ لا نستنتج تعطل سجل الإصدار الرابع أو الموقع كله. اسأل كل نوع مستقلًا.
 
 لمشاهدة تفاصيل قد تشمل TTL، أي مدة حفظ الإجابة بالثواني، استخدم `nslookup -debug -type=A example.com`. راجع حقول answer، أي الإجابة، لأن أداة الاستعلام قد تعرض أقسامًا أخرى أيضًا. كرر مع AAAA وMX وNS؛ الإجابات والوقت تختلف حسب النطاق وخادم الاستعلام.
+
+:::note[تعمق أكثر: Cache على أكثر من مستوى]
+نتيجة DNS ممكن تكون محفوظة في التطبيق أوruntime، وفي Operating System، وفي Recursive resolver، ثم عند مزود أوشبكة داخلية. تغيير Record في Authoritative server لا يمسح النسخ القديمة فورًا؛ كل Cache تحتفظ بها لحد TTL، وبعض التطبيقات تحتفظ باتصالات مفتوحة حتى بعد تغير DNS. علشان كده نجاح `dig` ضد Resolver معين لا يثبت إن Process شغالة استخدمت النتيجة نفسها.
+
+**Negative caching** يحفظ إجابة «الاسم غير موجود» مدة محددة أيضًا. لو سألت عن اسم قبل إنشائه، قد يظل `NXDOMAIN` ظاهرًا بعد الإضافة حتى تنتهي مدة الـcache. وقت التشخيص قارن Authoritative answer وRecursive answer ونتيجة التطبيق، وافحص A وAAAA لأن Happy Eyeballs قد يختار مسارًا مختلفًا.
+:::
 
 ## أخطاء شائعة
 

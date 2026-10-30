@@ -410,6 +410,55 @@ export default defineConfig({
                 "en": "Trace requests and interpret measurements"
               },
               "link": "programming-basics/25-request-observation"
+            },
+            {
+              "label": "Latency وBandwidth: افصل الزمن عن السعة",
+              "translations": {
+                "en": "Latency and bandwidth: separate delay from capacity"
+              },
+              "link": "programming-basics/34-network-performance"
+            },
+            {
+              "label": "VPC وFirewall: حدود شبكة الخدمة",
+              "translations": {
+                "en": "VPC and firewalls: service network boundaries"
+              },
+              "link": "programming-basics/35-vpc-firewalls"
+            },
+            {
+              "label": "شخّص الشبكة من DNS لحد HTTP",
+              "translations": {
+                "en": "Troubleshoot from DNS through HTTP"
+              },
+              "link": "programming-basics/36-network-troubleshooting"
+            },
+            {
+              "label": "اختيار تمثيل HTTP المناسب",
+              "translations": {
+                "en": "Choose the right HTTP representation"
+              },
+              "link": "programming-basics/37-http-content-negotiation"
+            },
+            {
+              "label": "نقل الملفات الكبيرة عبر HTTP",
+              "translations": {
+                "en": "Large file transfers over HTTP"
+              },
+              "link": "programming-basics/38-http-large-transfers"
+            },
+            {
+              "label": "إدارة اتصالات HTTP والمهلات",
+              "translations": {
+                "en": "Manage HTTP connections and timeouts"
+              },
+              "link": "programming-basics/39-http-connections-timeouts"
+            },
+            {
+              "label": "HTTP Redirects من غير تغيير العملية",
+              "translations": {
+                "en": "HTTP redirects without changing the operation"
+              },
+              "link": "programming-basics/40-http-redirects"
             }
           ]
         }

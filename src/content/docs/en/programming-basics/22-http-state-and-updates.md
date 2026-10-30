@@ -159,6 +159,12 @@ An **ETag, Entity Tag**, identifies a representation version. **If-None-Match** 
 
 Checking and writing must be **atomic**, indivisible with respect to competing updates. A separate check followed by an unprotected write still allows a race. The client rereads the current representation and chooses how to resolve the conflict.
 
+:::note[Deep dive: make If-Match a requirement, not a suggestion]
+If an endpoint is vulnerable to competing updates but accepts an update without a validator, a client can omit `If-Match` and restore the lost-update risk. **428 Precondition Required** lets the server refuse to perform the update until a precondition is supplied. Once `If-Match` is present, a mismatching ETag produces `412 Precondition Failed`; these statuses describe different failures.
+
+Laravel can validate the header before saving, but the final protection must remain atomic in the database: for example, `UPDATE ... WHERE id = ? AND version = ?` while incrementing `version`. If zero rows change, another writer won. Reading a version and later updating without that condition recreates the race the check was meant to prevent.
+:::
+
 ## A token is not another name for a session
 
 A **token** is a credential the client presents for an authorization decision. Tokens can be random or structured. **JWT, JSON Web Token**, is one claims-carrying format, not the type of every token.

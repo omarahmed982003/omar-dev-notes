@@ -31,6 +31,14 @@ IPv6 usually writes 128 bits as eight 16-bit hexadecimal groups. Omit leading ze
 
 A **firewall** applies allow/deny policy; NAT does not replace it.
 
+:::note[Deep dive: BGP, anycast, and Happy Eyeballs]
+Inside a host or VPC, the routing table normally chooses the most specific matching route. Between large Internet networks, **BGP, the Border Gateway Protocol**, lets autonomous systems such as providers and cloud companies advertise which prefixes they can reach. It is policy-driven rather than a simple geographic shortest-path calculation, so a bad announcement can attract traffic to the wrong network.
+
+**Anycast** means multiple locations advertise the same IP address. Routing usually sends a client to a nearby network location, which is why DNS and CDNs use it for latency and resilience. The address stays the same while the machine receiving a request may change as routes change, so anycast is not a substitute for session storage or data consistency.
+
+A dual-stack client does not normally wait for one address family to fail completely. **Happy Eyeballs** starts IPv6 and IPv4 connection attempts with a small delay and uses the first successful connection, preventing partially broken IPv6 from stalling the user. For diagnosis, a successful lookup or ping for one address family does not prove that the application used it; inspect the address of the actual connection.
+:::
+
 ## A device needs more than an IP address
 
 Joining Wi-Fi normally requires an address, local prefix, default gateway, and DNS (Domain Name System, a distributed system answering queries about domain names) resolver. DHCP (Dynamic Host Configuration Protocol, automatic network configuration for hosts) commonly supplies them:

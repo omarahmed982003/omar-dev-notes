@@ -101,6 +101,11 @@ curl.exe -v https://example.com/ -o NUL
 
 ## خطوات بدء الاتصال
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/tls-handshake.svg" alt="تسلسل مبسط لمصافحة TLS 1.3 من ClientHello وServerHello إلى الشهادة وإثباتها ثم HTTP المحمي" loading="lazy" />
+  <figcaption>اتفاق المفتاح يجهّز أسرار الاتصال، والشهادة والتوقيع يثبتان هوية server، وبعد رسائل Finished تبدأ بيانات HTTP المحمية.</figcaption>
+</figure>
+
 **Handshake — المصافحة** هي رسائل البداية للاتفاق والتحقق. ده رسم لمصافحة TLS 1.3 كاملة باستخدام شهادة خادم:
 
 ```text
@@ -133,9 +138,23 @@ curl.exe -v https://example.com/ -o NUL
 
 **HSTS، HTTP Strict Transport Security** سياسة يتعلمها browser من الموقع عبر HTTPS سليم، فتطلب استخدام HTTPS معه مستقبلًا خلال مدة معينة. فيه كمان قوائم تجهيز مسبق لبعض المواقع. السياسة لا تصلح شهادة منتهية أو باسم مختلف.
 
+```http
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+```
+
+`max-age` مدة تذكّر السياسة بالثواني، و`includeSubDomains` يوسعها للنطاقات الفرعية. من غير معرفة سابقة بالسياسة، أول زيارة مكتوبة `http://` قد تتعرض لمحاولة downgrade قبل وصول redirect إلى HTTPS. **HSTS preload** قائمة مدمجة في بعض browsers تمنع فجوة الزيارة الأولى، لكنها التزام تشغيلي قوي: لازم كل النطاقات المشمولة تدعم HTTPS باستمرار، وإزالة الاسم وانتشار التغيير ليست فورية.
+
+HSTS لا يصلح شهادة باطلة، ولا يحمي domain آخر، ولا يغني عن redirect صحيح وروابط HTTPS. لا تضف `includeSubDomains` أو preload على نطاق لا تتحكم في كل فروعه.
+
 **ALPN، Application-Layer Protocol Negotiation** تفاوض داخل TLS على بروتوكول التطبيق، مثل اختيار HTTP/2. هو اختيار طريقة الحوار، مش نوع شهادة إضافيًا.
 
 **mTLS، Mutual TLS** تحقق متبادل: server يطلب شهادة من العميل كمان. مفيد لتمييز خدمات تتواصل مع بعضها. شهادة العميل لا تعفي التطبيق من تحديد العمليات المسموحة للخدمة.
+
+:::note[تعمق أكثر: HSTS يغلق فجوة أول Request]
+Redirect من HTTP إلى HTTPS يحصل بعد وصول أول HTTP request، فمهاجم على شبكة غير موثوقة قد يحاول يمنع الـredirect ويكمل مع الضحية على HTTP؛ ده اسمه **SSL stripping**. Header اسمه `Strict-Transport-Security` يجعل Browser يتذكر أن الـhost لا يُفتح إلا بـHTTPS ويرفض تجاوز خطأ الشهادة خلال `max-age`.
+
+الـHSTS لا يُقبل من HTTP لأنه لو قُبل كان المهاجم يقدر يزرع Policy مزيفة. خيار `includeSubDomains` يوسع القرار لكل subdomains، و**preload** يضع النطاق في قائمة تأتي مع Browser فتُحمى أول زيارة أيضًا. الاتنين قويان وصعبان في التراجع: ما تفعّلهمش قبل التأكد إن كل subdomain المطلوب يدعم HTTPS، وابدأ بـ`max-age` صغير في التجربة ثم زوده بخطة.
+:::
 
 ## أخطاء شائعة وراجع فهمك
 

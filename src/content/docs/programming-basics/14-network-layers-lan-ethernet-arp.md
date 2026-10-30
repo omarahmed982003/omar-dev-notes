@@ -55,14 +55,36 @@ ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل �
 
 كل طبقة تحل مشكلة محددة وتقدم خدمة للطبقة الأعلى. تطبيق HTTP لا يحتاج إلى معرفة نوع كابل Ethernet، وTCP لا يحتاج إلى فهم معنى JSON (JavaScript Object Notation؛ صيغة نصية لترتيب البيانات في أسماء وقيم وقوائم). يسمح هذا الفصل بتغيير تقنية في طبقة من غير إعادة تصميم النظام كله.
 
-| نموذج TCP/IP | أمثلة | وحدة البيانات |
-|---|---|---|
-| Application | HTTP وDNS (Domain Name System؛ نظام يجيب عن أسئلة أسماء النطاقات، ومنها عناوينها) وTLS (Transport Layer Security؛ قواعد حماية الاتصال بالتشفير والتحقق) | Message/Data |
-| Transport | TCP وUDP (User Datagram Protocol؛ نقل رسائل مستقلة بلا ضمان مدمج لوصولها أو ترتيبها) | Segment (مقطع TCP يحمل جزءًا من تدفق البايتات)/Datagram (رسالة مستقلة لها حدود في بروتوكول النقل) |
-| Internet | IPv4 وIPv6 (Internet Protocol version 6؛ إصدار عناوين الشبكة ذي 128 بتًا) | Packet (حزمة: وحدة بيانات IP التي تُوجّه بين الشبكات) |
-| Link | Ethernet وWi-Fi | Frame |
+الـ**OSI model** نموذج تعليمي من سبع طبقات بيدينا أسماء مشتركة زي Layer 4 وLayer 7. أما **TCP/IP model** فهو تقسيم أقرب للبروتوكولات اللي بيشتغل بها الإنترنت فعلًا. المطابقة بينهم تقريبية؛ طبقات OSI العليا بتجتمع غالبًا داخل Application في TCP/IP.
 
-تضيف كل طبقة Header (حقل أو مقدمة معلومات تضاف للبيانات بحسب الطبقة) عند الإرسال، وتزيل الطبقة المقابلة هذا الـHeader عند الاستقبال. تسمى العملية Encapsulation.
+<table dir="ltr">
+  <thead><tr><th>OSI layer</th><th>TCP/IP layer</th><th>Data unit</th><th>Examples</th><th>Addressing</th></tr></thead>
+  <tbody>
+    <tr><td>7 Application</td><td rowspan="3">Application</td><td rowspan="3">Message / Data</td><td>HTTP, DNS, SMTP, WebSocket</td><td>URLs, hostnames</td></tr>
+    <tr><td>6 Presentation</td><td>Encoding, compression, TLS roughly</td><td>—</td></tr>
+    <tr><td>5 Session</td><td>Session setup and teardown roughly</td><td>—</td></tr>
+    <tr><td>4 Transport</td><td>Transport</td><td>Segment / Datagram</td><td>TCP, UDP, QUIC over UDP</td><td>Ports</td></tr>
+    <tr><td>3 Network</td><td>Internet</td><td>Packet</td><td>IPv4, IPv6, ICMP</td><td>IP addresses</td></tr>
+    <tr><td>2 Data link</td><td rowspan="2">Link</td><td>Frame</td><td>Ethernet, Wi-Fi, ARP</td><td>MAC addresses</td></tr>
+    <tr><td>1 Physical</td><td>Bits</td><td>Copper, fiber, radio</td><td>—</td></tr>
+  </tbody>
+</table>
+
+الجدول مش معناه إن كل Protocol محبوس حرفيًا في خانة واحدة؛ مثلًا TLS يخدم Application لكنه يعتمد على Transport تحته. فائدته إننا نعرف كل مستوى بيتعامل مع أنهي Unit وأنهي نوع Addressing.
+
+## Encapsulation: كل طبقة بتضيف إيه؟
+
+**Encapsulation** هي إن كل طبقة تحط الـData القادمة من الطبقة الأعلى جوه الـPayload بتاعها، وتضيف Header بالمعلومات اللي تخص مسؤوليتها. عند الاستقبال تحصل **Decapsulation** بالعكس: Link تزيل Frame، ثم IP يزيل معلومات Packet، ثم TCP يسلّم البايتات للتطبيق.
+
+<figure class="teaching-figure teaching-figure-wide">
+  <picture>
+    <source media="(max-width: 500px)" srcset="/diagrams/foundations/network/encapsulation-mobile.svg" />
+    <img src="/diagrams/foundations/network/encapsulation.svg" alt="HTTP request bytes تصبح Payload داخل TCP segment؛ ثم IP يضيف Header حول TCP segment؛ ثم Ethernet يضيف Header وFCS حول IP packet." loading="lazy" />
+  </picture>
+  <figcaption>الرسم يوضح التغليف، مش أحجامًا مرسومة على مقياس حقيقي. في حالة شائعة بلا Options: Ethernet MTU يساوي 1500 bytes، وIPv4 Header يساوي 20 bytes، وTCP Header يساوي 20 bytes، فيكون MSS قريبًا من 1460 bytes. وجود Options أوTunnel أوLink مختلفة يغيّر الحساب.</figcaption>
+</figure>
+
+الـTCP Header يحمل مثلًا Ports وأرقام الترتيب والتأكيد. الـIP Header يحمل Source وDestination IP. والـEthernet Header يحمل MAC للنقلة المحلية، بينما **FCS، Frame Check Sequence** قيمة تساعد الوصلة على اكتشاف تلف الـFrame.
 
 ## LAN وEthernet وMAC Address
 
@@ -81,6 +103,12 @@ ARP (Address Resolution Protocol؛ سؤال عن عنوان MAC المقابل �
 يحوّل Switch الـFrames داخل LAN اعتمادًا على MAC. يربط Router شبكات IP مختلفة ويختار Next Hop اعتمادًا على Routing Table.
 
 قد يجمع الجهاز المنزلي وظائف Router وSwitch وWi-Fi Access Point وDHCP (Dynamic Host Configuration Protocol؛ خدمة تمنح الجهاز إعدادات الشبكة تلقائيًا) وNAT (Network Address Translation؛ تغيير عناوين IP أثناء مرور الحزم بين شبكات) في صندوق واحد، لكن كل وظيفة تظل مختلفة منطقيًا.
+
+:::note[تعمق أكثر: الـEncapsulation بيتغير عند كل Hop]
+لما تطبيقك يرسل HTTP، بيانات HTTP تبقى Payload داخل TCP Segment، والـSegment داخل IP Packet، والـPacket داخل Link-layer Frame. الـRouter لا يمرر Ethernet Frame نفسها من أول الطريق لآخره: يفك Frame القادمة، يقلل Hop Limit أوTTL ويختار Route، ثم يبني Frame جديدة مناسبة للوصلة التالية. عنوانا IP يظلان عادة للطرفين، بينما MAC addresses تتغير من وصلة للتالية؛ NAT أوProxy قد يغيّر حدودًا أخرى عمدًا.
+
+مصطلح **L4 Load Balancer** يعني أن قرار التوجيه يعتمد أساسًا على عنوان IP وPort وبروتوكول النقل، فلا يرى URL داخل HTTP بالطريقة العادية. **L7 Load Balancer** ينهي HTTP أوTLS في نقطة ما ويفهم Path وHeaders، فيقدر يوجه `/api` لمجموعة و`/images` لمجموعة أخرى. الرقم هنا يشرح نوع المعلومة المتاحة للقرار، مش شهادة أن المنتج ينفذ طبقة واحدة فقط.
+:::
 
 ## تدريب عملي
 

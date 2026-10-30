@@ -62,6 +62,11 @@ One name may return several addresses for load distribution or locality. DNS loc
 
 ## A cache-miss journey
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/dns-resolution.svg" alt="DNS journey from browser and operating-system cache to a recursive resolver, root, TLD, and authoritative server before caching the answer" loading="lazy" />
+  <figcaption>The recursive resolver follows referrals for the client. The final answer returns with a TTL so it can be reused for a bounded period.</figcaption>
+</figure>
+
 1. The browser checks its cached answers.
 2. The operating system checks its hosts file and cache.
 3. It asks a **recursive resolver** supplied by an ISP (Internet Service Provider, an organization providing internet connectivity), organization, or public service.
@@ -130,6 +135,12 @@ A and AAAA return IPv4 and IPv6 addresses; CNAME aliases another name; MX identi
 **Worked check:** An A query succeeds and an AAAA query has no address. That does not invalidate A or prove that the website is down. To inspect details including TTL where shown, try `nslookup -debug -type=A example.com`, then AAAA, MX, and NS. Separate answer records from other sections.
 
 The resolver, values, and remaining lifetimes vary.
+
+:::note[Deep dive: caching exists at several levels]
+A DNS result may be cached by the application or runtime, the operating system, a recursive resolver, and an internal provider network. Changing a record at the authoritative server does not erase every copy immediately; each cache retains it until TTL expiry, and applications may keep connections open after DNS changes. A successful `dig` against one resolver therefore does not prove that a running process used the same answer.
+
+**Negative caching** also stores an answer saying that a name does not exist. If a client queried a name before it was created, `NXDOMAIN` may remain until that cache expires. Compare authoritative, recursive, and application observations, and inspect both A and AAAA records because Happy Eyeballs may select a different path.
+:::
 
 ## Common mistakes
 

@@ -44,6 +44,32 @@ TCP/UDP port ranges are 0–1023 system ports, 1024–49151 user/registered port
 
 A socket endpoint can be simplified as protocol + IP (Internet Protocol, the addressing and routing protocol; an IP address identifies a network interface in context) + port. A TCP connection is distinguished by client IP/port and server IP/port, allowing many clients to share server port 443.
 
+### Listening and accepted sockets
+
+A server binds a **listening socket**, a socket waiting for new connections, to an address and port. Accepting a client creates a separate **accepted socket** for that flow; the listener remains available for later clients.
+
+A TCP flow is identified more precisely by a **5-tuple**: transport protocol, source IP and port, and destination IP and port.
+
+| Field | Example |
+|---|---|
+| Protocol | TCP |
+| Source IP and port | `192.0.2.5:53014` |
+| Destination IP and port | `203.0.113.8:443` |
+
+TCP and UDP have separate port spaces; a TCP service on port 53 does not imply a UDP service there.
+
+An **ephemeral port** is a temporary source port normally selected by the operating system. Closed flows can remain in `TIME_WAIT` so delayed packets are not confused with a new flow. Huge numbers of short connections without reuse can exhaust available combinations or NAT state before CPU becomes the bottleneck.
+
+| Symptom | First hypothesis to test |
+|---|---|
+| `connection refused` | No listener, or an immediate firewall rejection |
+| `timeout` | Dropped traffic, an unreachable path, or a missed service deadline |
+| `address already in use` | Another listener owns the address and port |
+| `too many open files` | The process reached its open-resource limit; sockets consume descriptors |
+| Intermittent load failure | Ephemeral ports, NAT state, accept backlog, or server limits |
+
+Reuse HTTP connections, bound concurrency, and close sockets and response bodies. Then prove the hypothesis with the [network troubleshooting ladder](/en/programming-basics/36-network-troubleshooting/).
+
 For this optional practice, [install PHP](/en/php/00-lab-setup/), create a new practice folder, and save hello.php containing `<?php echo 'Hello';`. The opening tag starts PHP and echo displays text. Open a terminal in that folder and run:
 
 ```bash
@@ -53,6 +79,14 @@ php -S localhost:8000
 In `http://localhost:8000/hello.php`, the scheme is HTTP, host is localhost, port is 8000, and path is `/hello.php`. Omitting a port means the scheme’s default, not “no port”.
 
 The browser should display Hello. localhost refers to your own computer; -S starts a development server. Keep its terminal open while testing and stop it with Ctrl+C afterward.
+
+:::note[Deep dive: a socket is a resource; a port is not a connection]
+A **listening socket** is an operating-system resource bound to an address and port. When a client connects, `accept` creates a separate accepted socket for that connection while the listening socket remains available. A thousand connections to port 443 therefore do not mean a thousand programs own the same port: protocol plus both endpoint addresses and ports form the connection's **5-tuple**.
+
+The client normally receives a temporary **ephemeral port**. Creating and closing a connection for every request consumes ports, file descriptors, and NAT state, and can produce `EADDRNOTAVAIL` while CPU use is still low. The first remedy is bounded concurrency and connection reuse, together with closing response bodies and sockets that are finished.
+
+Treat errors as evidence: `EADDRINUSE` usually means a listening address is already occupied; `ECONNREFUSED` means no listener or an active rejection; a timeout usually points to silent dropping, a bad route, or a service that did not answer in time. Confirm with a tool such as `ss` or `netstat` and one controlled request rather than guessing.
+:::
 
 ## Practical problems
 

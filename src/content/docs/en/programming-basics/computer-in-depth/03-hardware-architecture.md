@@ -11,6 +11,11 @@ next: {"link":"/en/programming-basics/computer-in-depth/software-and-runtime/","
 
 ## First picture: what happens when a file opens?
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/core/hardware-data-flow.svg" alt="Data path from an input device through the operating system, RAM, CPU, and finally output or persistent storage" loading="lazy" />
+  <figcaption>RAM is temporary working space, the CPU executes instructions, and storage preserves bytes after the program or computer stops.</figcaption>
+</figure>
+
 **Hardware** means physical components. This short introduction explains what programs use; connector details after the experiment are optional depth rather than prerequisites for software.
 
 | Component | Role during work |

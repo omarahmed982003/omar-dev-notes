@@ -33,6 +33,26 @@ next: {"link":"/programming-basics/computer-in-depth/04-cpu-gpu/","label":"كي�
 
 **Permissions — صلاحيات** تحدد المسموح، زي القراءة والكتابة. وجود البرنامج على جهازك مش تصريحًا لقراءة ذاكرة برنامج حسابات أو ملفات مستخدم آخر. المشاركة ممكنة بإذن وتنظيم، مش ممنوعة مطلقًا.
 
+<figure class="concept-visual" aria-labelledby="system-call-visual-ar">
+<div class="visual-heading">فتح ملف: الطلب بيعدّي منين؟</div>
+<div class="visual-panel">
+<p class="visual-label">User mode</p>
+<div class="visual-step">التطبيق يطلب فتح <code>notes.txt</code> للقراءة.</div>
+</div>
+<span class="visual-arrow" aria-hidden="true">↓ System call</span>
+<div class="visual-panel">
+<p class="visual-label">Kernel mode</p>
+<div class="visual-step">الـKernel يراجع الطلب وهوية الـProcess والـPermissions.</div>
+</div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-grid">
+<div class="visual-panel"><span class="visual-tag">الوصول مسموح</span><p>النظام يكمل فتح الملف؛ نجاح الفتح لسه مش معناه إن كل قراءة لاحقة هتنجح.</p></div>
+<div class="visual-panel"><span class="visual-tag">الوصول مرفوض</span><p>النظام يرفض الفتح ويرجّع خطأ؛ التطبيق ما يتخطّاش القرار لمجرد إنه شغال.</p></div>
+</div>
+<p class="visual-note">في الحالتين النتيجة ترجع للتطبيق في User mode: يتعامل مع نجاح الطلب أو فشله.</p>
+<figcaption id="system-call-visual-ar">الـSystem call وسيلة لطلب خدمة محمية، مش تصريح مفتوح للجهاز. الرسم بيتتبع طلب فتح واحد؛ مش بيقول إن كل طلب من التطبيق لازم يقابله System call واحدة بالضبط.</figcaption>
+</figure>
+
 ### امشِ وراء قراءة ملف واحد
 
 هنا سيناريو ورقي: برنامج يريد قراءة `notes.txt`. **Scheduler — المجدول** يختار خيطًا جاهزًا ليأخذ وقت المعالج.

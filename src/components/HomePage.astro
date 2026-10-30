@@ -35,7 +35,7 @@ const totalLessons = trackSlugs.reduce((total, track) => total + countLessons(tr
 const content = isArabic
 	? {
 			eyebrow: 'مكتبة لتعلّم البرمجة',
-			title: 'افهم البرمجة خطوة بخطوة، من غير ما تحفظ كلام مش فاهمه.',
+			title: ['افهم الفكرة.', 'واكتب الكود بثقة.'],
 			description:
 				'افهم جهازك ونظام التشغيل، واعرف كودك بيتنفذ إزاي وبيتعامل مع الذاكرة والملفات والشبكة. بعدها اختار اللغة والمسار اللي محتاجه.',
 			primary: { label: 'ابدأ من الصفر', href: '/programming-basics/' },
@@ -74,7 +74,7 @@ const content = isArabic
 		}
 	: {
 			eyebrow: 'A programming learning library',
-			title: 'Understand programming step by step, without memorizing what you do not understand.',
+			title: ['Understand the idea.', 'Build with confidence.'],
 			description:
 				'Understand your hardware and operating system, how code runs, and how programs use memory, files, and networks. Then choose the language and track you need.',
 			primary: { label: 'Start from zero', href: '/en/programming-basics/' },
@@ -115,64 +115,85 @@ const content = isArabic
 const arrow = isArabic ? '←' : '→';
 ---
 
+
 <div class="home-shell">
+	<div class="library-bar">
+		<span dir="ltr">OMAR <span aria-hidden="true">/</span> DEV NOTES</span>
+		<span>{isArabic ? 'دروس تفهمها. وتطبيق يثبتها.' : 'Learn the why. Practice the how.'}</span>
+	</div>
+
 	<section class="home-hero" aria-labelledby="home-title">
 		<div class="hero-copy">
 			<p class="eyebrow"><span aria-hidden="true"></span>{content.eyebrow}</p>
-			<h1 id="home-title">{content.title}</h1>
+			<h1 id="home-title">{content.title[0]}<span>{content.title[1]}</span></h1>
 			<p class="hero-description">{content.description}</p>
 			<div class="hero-actions">
-				<a class="primary-action" href={content.primary.href}>
-					{content.primary.label}<span aria-hidden="true">{arrow}</span>
-				</a>
-				<a class="secondary-action" href={content.secondary.href}>
-					{content.secondary.label}<span aria-hidden="true">{arrow}</span>
-				</a>
-				<button
-					type="button"
-					class="download-action"
-					data-docs-download
-					data-download-url={content.download.href}
-				>
-					<span aria-hidden="true">↓</span>{content.download.label}
-				</button>
+				<a class="primary-action" href={content.primary.href}>{content.primary.label}<span aria-hidden="true">{arrow}</span></a>
+				<a class="secondary-action" href={content.secondary.href}>{content.secondary.label}<span aria-hidden="true">↓</span></a>
 			</div>
 			<ul class="learning-stats" aria-label={isArabic ? 'ملخص المحتوى' : 'Content summary'}>
-				{content.stats.map((stat) => (
-					<li>
-						<strong>{stat.value}</strong>
-						<span>{stat.label}</span>
-					</li>
-				))}
+				{content.stats.map((stat) => <li><strong dir="auto">{stat.value}</strong><span>{stat.label}</span></li>)}
 			</ul>
 		</div>
 
-		<div class="request-visual" role="img" aria-label={content.flowLabel}>
-			<div class="visual-topbar">
-				<span>{content.flowTitle}</span>
-				<strong>{isArabic ? 'رحلة تعلّم واضحة' : 'A clear learning journey'}</strong>
+		<aside class="learning-notebook" aria-labelledby="journey-title">
+			<div class="notebook-top">
+				<span class="notebook-label" dir="ltr"><span aria-hidden="true">⌘</span> YOUR LEARNING PATH</span>
+				<span class="notebook-edition" dir="ltr">01 — 05</span>
 			</div>
-			{[
-				isArabic ? ['افهم الأساس', 'الكمبيوتر والمنطق'] : ['Learn the foundation', 'Computers and logic'],
-				isArabic ? ['حل المشكلة', 'قسّمها لخطوات'] : ['Solve the problem', 'Break it into steps'],
-				isArabic ? ['اكتب الكود', 'طبّق بإيدك'] : ['Write the code', 'Practice it yourself'],
-				isArabic ? ['ابنِ تطبيقًا', 'اربط الأجزاء'] : ['Build an application', 'Connect the pieces'],
-				isArabic ? ['شغّله بأمان', 'اختبر واحمِ البيانات'] : ['Run it safely', 'Test and protect data'],
-			].map((step, index) => (
-				<div class="flow-line">
-					<span class="flow-number">{String(index + 1).padStart(2, '0')}</span>
-					<div><b>{step[0]}</b><small>{step[1]}</small></div>
-				</div>
+			<h2 id="journey-title">{content.flowTitle}</h2>
+			<p class="notebook-intro">{isArabic ? 'كل خطوة بتبني على اللي قبلها.' : 'Every step builds on the one before it.'}</p>
+			<ol class="journey-list">
+				{[
+					isArabic ? ['افهم الأساس', 'الكمبيوتر والمنطق'] : ['Learn the foundation', 'Computers and logic'],
+					isArabic ? ['حل المشكلة', 'قسّمها لخطوات'] : ['Solve the problem', 'Break it into steps'],
+					isArabic ? ['اكتب الكود', 'طبّق بإيدك'] : ['Write the code', 'Practice it yourself'],
+					isArabic ? ['ابنِ تطبيقًا', 'اربط الأجزاء'] : ['Build an application', 'Connect the pieces'],
+					isArabic ? ['شغّله بأمان', 'اختبر واحمِ البيانات'] : ['Run it safely', 'Test and protect data'],
+				].map((step, index) => (
+					<li class="journey-step">
+						<span class="step-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+						<div><b>{step[0]}</b><span>{step[1]}</span></div>
+						{index === 0 && <span class="start-label">{isArabic ? 'ابدأ هنا' : 'START HERE'}</span>}
+					</li>
+				))}
+			</ol>
+			<div class="notebook-footer"><span aria-hidden="true">↳</span>{isArabic ? 'افهم، جرّب، وبعدها كمّل.' : 'Understand, experiment, then move on.'}</div>
+		</aside>
+	</section>
+
+	<section class="learning-paths" id="learning-paths" aria-labelledby="paths-title">
+		<div class="section-heading">
+			<div><p class="section-kicker">{isArabic ? 'المسارات المتاحة' : 'EXPLORE THE LIBRARY'}</p><h2 id="paths-title">{content.sectionTitle}</h2></div>
+			<p>{content.sectionDescription}</p>
+		</div>
+		<div class="paths-grid">
+			{content.paths.map((path) => (
+				<a class="path-card" data-accent={path.accent} href={path.href}>
+					<div class="card-topline">
+						<span class="path-icon" aria-hidden="true">
+							{path.code === '01'
+								? <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="4" width="22" height="17" rx="3"/><path d="M12 27h8M16 21v6M12 9l-3 3 3 3m8-6 3 3-3 3m-3-7-2 9"/></svg>
+								: <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="26" height="22" rx="3"/><path d="M3 11h26M7 8h1m2 0h1m-1 8-3 3 3 3m5-6-2 8m7-8 3 3-3 3"/></svg>}
+						</span>
+						<span class="path-code">{isArabic ? 'المسار' : 'TRACK'} / {path.code}</span>
+					</div>
+					<div class="card-copy"><h3>{path.title}</h3><p>{path.description}</p></div>
+					<ul class="path-topics" aria-label={isArabic ? 'موضوعات المسار' : 'Track topics'}>
+						{(path.code === '01' ? ['Computer & OS', 'Networks', 'Problem solving'] : ['PHP', 'Web applications', 'Production']).map(topic => <li dir="ltr">{topic}</li>)}
+					</ul>
+					<div class="card-bottom">
+						<div class="card-meta"><span>{path.count} {content.lessonLabel}</span><span>{path.level}</span></div>
+						<span class="path-arrow" aria-hidden="true">{arrow}</span>
+					</div>
+				</a>
 			))}
 		</div>
 	</section>
 
 	<section class="study-method" aria-labelledby="method-title">
 		<div class="section-heading">
-			<div>
-				<p class="section-kicker">{isArabic ? 'طريقة المذاكرة' : 'How to study'}</p>
-				<h2 id="method-title">{isArabic ? 'كل درس له هدف واضح' : 'Every lesson has a clear purpose'}</h2>
-			</div>
+			<div><p class="section-kicker">{isArabic ? 'طريقة المذاكرة' : 'MAKE IT STICK'}</p><h2 id="method-title">{isArabic ? 'كل درس له هدف واضح' : 'Every lesson has a clear purpose'}</h2></div>
 			<p>{isArabic ? 'مش مطلوب تحفظ كل حاجة من أول مرة. افهم الفكرة، جرّبها بإيدك، وبعدها راجع النتيجة وسبب أي خطأ.' : 'You do not need to memorize everything on the first pass. Understand the idea, try it, then review the result and any error.'}</p>
 		</div>
 		<div class="method-grid">
@@ -180,515 +201,140 @@ const arrow = isArabic ? '←' : '→';
 				isArabic ? ['01', 'افهم الفكرة', 'ابدأ بالمشكلة اللي الدرس بيحلها، وبعدها اتعرّف على المصطلحات واحدة واحدة.'] : ['01', 'Understand the idea', 'Start with the problem, then learn each new term one at a time.'],
 				isArabic ? ['02', 'جرّب بإيدك', 'اكتب المثال وغيّر فيه؛ التجربة بتثبت الفكرة أكتر من القراءة.'] : ['02', 'Try it yourself', 'Type the example and change it; practice makes the idea stick.'],
 				isArabic ? ['03', 'راجع النتيجة', 'قارن اللي حصل باللي توقعته، وافهم الخطأ بدل ما تنسخ الحل.'] : ['03', 'Review the result', 'Compare what happened with what you expected and understand errors.'],
-			].map((item) => (
-				<article><span>{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p></article>
-			))}
+			].map(item => <article><span class="method-number" aria-hidden="true">{item[0]}</span><h3>{item[1]}</h3><p>{item[2]}</p></article>)}
 		</div>
 	</section>
 
-	<section class="learning-paths" id="learning-paths" aria-labelledby="paths-title">
-		<div class="section-heading">
-			<div>
-				<p class="section-kicker">01 — 02</p>
-				<h2 id="paths-title">{content.sectionTitle}</h2>
-			</div>
-			<p>{content.sectionDescription}</p>
-		</div>
-
-		<div class="paths-grid">
-			{content.paths.map((path) => (
-				<a class="path-card" data-accent={path.accent} href={path.href}>
-					<div class="card-topline">
-						<span class="path-code">{path.code}</span>
-						<span class="path-arrow" aria-hidden="true">{arrow}</span>
-					</div>
-					<div class="card-copy">
-						<h3>{path.title}</h3>
-						<p>{path.description}</p>
-					</div>
-					<div class="card-meta">
-						<span>{path.count} {content.lessonLabel}</span>
-						<span>{path.level}</span>
-					</div>
-				</a>
-			))}
-		</div>
-	</section>
+	<footer class="home-footer">
+		<div><span class="footer-mark" aria-hidden="true">&lt;/&gt;</span><p>{isArabic ? 'مرجعك مفتوح، كل ما تحتاج ترجع.' : 'A reference to come back to, whenever you need it.'}</p></div>
+		<button type="button" class="download-action" data-docs-download data-download-url={content.download.href}><span aria-hidden="true">↓</span>{content.download.label}</button>
+	</footer>
 </div>
 
 <style>
-	.home-shell {
-		width: min(100%, 80rem);
-		margin-inline: auto;
-		padding: clamp(1rem, 2vw, 2rem) clamp(0.25rem, 2vw, 1.5rem) 5rem;
-		overflow-x: clip;
+	.home-shell { width: min(100%, 78rem); margin-inline: auto; padding: 1.75rem clamp(0.25rem, 2vw, 1.25rem) 1.5rem; }
+	.library-bar { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1.1rem; border-bottom: 1px solid var(--docs-border); color: var(--sl-color-gray-3); font-size: 0.75rem; }
+	.library-bar > span:first-child { font: 600 0.7rem/1.8 var(--sl-font-mono); letter-spacing: 0.1em; }
+	.library-bar > span:first-child span { color: var(--sl-color-accent); margin-inline: 0.35rem; }
+	.home-hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(19rem, 0.8fr); align-items: center; gap: clamp(2rem, 5vw, 5.5rem); padding-block: clamp(2.5rem, 6vw, 5rem) 4rem; }
+	.eyebrow, .section-kicker { color: var(--sl-color-text-accent); font-size: 0.78rem; font-weight: 700; }
+	.eyebrow { display: flex; align-items: center; gap: 0.65rem; margin: 0 0 1.4rem; }
+	.eyebrow > span { width: 0.5rem; height: 0.5rem; background: var(--sl-color-accent); border-radius: 50%; }
+	h1 { margin: 0; color: var(--sl-color-white); font-size: clamp(2.6rem, 4.8vw, 4.8rem); font-weight: 750; letter-spacing: -0.045em; line-height: 1.18; }
+	h1 > span { display: block; color: var(--sl-color-white); }
+	:global([lang='ar']) h1 { font-size: clamp(2.2rem, 3.4vw, 3.7rem); line-height: 1.65; letter-spacing: -0.035em; }
+	.hero-description { max-width: 53ch; margin-block: 1.4rem 0; color: var(--sl-color-gray-2); font-size: 1.04rem; line-height: 1.95; }
+	.hero-actions { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.8rem; }
+	.hero-actions a { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; min-height: 3.2rem; padding: 0.7rem 1.25rem; border: 1px solid var(--docs-border); border-radius: 0.6rem; font-size: 0.91rem; font-weight: 700; text-decoration: none; transition: background-color 160ms ease, transform 160ms ease; }
+	.primary-action { color: var(--docs-button-text); background: var(--docs-button-bg); border-color: var(--docs-button-bg) !important; }
+	.primary-action:hover { background: color-mix(in srgb, var(--docs-button-bg) 88%, var(--sl-color-accent)); transform: translateY(-2px); }
+	.secondary-action { color: var(--sl-color-white); background: var(--docs-surface); }
+	.secondary-action:hover { background: var(--sl-color-accent-low); }
+	.learning-stats { display: flex; gap: 2rem; padding: 0; margin: 2.1rem 0 0; list-style: none; }
+	.learning-stats li { display: flex; align-items: baseline; gap: 0.45rem; }
+	.learning-stats strong { color: var(--sl-color-white); font: 650 1.1rem/1.5 var(--sl-font-mono); }
+	.learning-stats span { font-size: 0.75rem; color: var(--sl-color-gray-3); }
+	.learning-notebook { position: relative; padding: 1.5rem; border: 1px solid var(--docs-border); border-radius: 0.75rem; color: var(--sl-color-gray-2); background: var(--docs-surface); box-shadow: none; }
+	.notebook-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--docs-border); }
+	.notebook-label, .notebook-edition { font: 500 0.75rem/1.5 var(--sl-font-mono); letter-spacing: 0.06em; color: var(--sl-color-gray-3); }
+	.notebook-label { display: flex; align-items: center; gap: 0.5rem; }
+	.notebook-label > span { font-size: 1rem; color: var(--sl-color-text-accent); }
+	.learning-notebook h2 { font-size: 1.2rem; line-height: 1.65; color: var(--sl-color-white); margin: 1.4rem 0 0.3rem; }
+	.notebook-intro { margin: 0; color: var(--sl-color-gray-3); font-size: 0.8rem; }
+	.journey-list { margin: 1.35rem 0 0; padding: 0; list-style: none; }
+	.journey-step { display: flex; align-items: center; gap: 0.85rem; position: relative; min-height: 4rem; }
+	.journey-step:not(:last-child)::before { position: absolute; content: ''; inset-inline-start: 1rem; top: 2.8rem; bottom: -0.55rem; width: 1px; background: var(--docs-border); }
+	.step-number { position: relative; z-index: 1; display: grid; place-items: center; flex: 0 0 2rem; height: 2rem; border: 1px solid var(--docs-border); border-radius: 50%; background: var(--docs-surface); color: var(--sl-color-gray-2); font: 500 0.68rem/1 var(--sl-font-mono); }
+	.journey-step:first-child .step-number { color: var(--docs-button-text); background: var(--docs-button-bg); border-color: var(--docs-button-bg); }
+	.journey-step > div { display: grid; gap: 0.12rem; }
+	.journey-step b { font-size: 0.88rem; font-weight: 600; color: var(--sl-color-white); }
+	.journey-step div > span { font-size: 0.72rem; color: var(--sl-color-gray-3); }
+	.start-label { margin-inline-start: auto; padding: 0.24rem 0.45rem; border-radius: 0.3rem; color: var(--sl-color-text-accent); background: var(--sl-color-gray-6); font-size: 0.72rem; white-space: nowrap; }
+	.notebook-footer { display: flex; gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--docs-border); color: var(--sl-color-gray-3); font-size: 0.72rem; }
+	.learning-paths { scroll-margin-top: calc(var(--sl-nav-height) + 1.5rem); padding-block: 2rem 4rem; }
+	.section-heading { display: grid; grid-template-columns: 1fr minmax(14rem, 27rem); align-items: end; gap: 2rem; margin-bottom: 1.75rem; }
+	.section-kicker { margin: 0 0 0.7rem; letter-spacing: 0.04em; }
+	.section-heading h2 { margin: 0; color: var(--sl-color-white); font-size: clamp(1.6rem, 2.2vw, 2.25rem); font-weight: 700; line-height: 1.6; letter-spacing: -0.03em; }
+	.section-heading > p { margin: 0; color: var(--sl-color-gray-3); font-size: 0.9rem; line-height: 1.9; }
+	.paths-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem; }
+	.path-card { --card-color: #60a5fa; position: relative; display: flex; flex-direction: column; gap: 1.25rem; padding: clamp(1.25rem, 2.5vw, 2rem); border: 1px solid var(--docs-border); border-radius: 0.85rem; background: var(--docs-surface); text-decoration: none; color: var(--sl-color-gray-2); transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease; }
+	.path-card[data-accent='violet'] { --card-color: #a78bfa; }
+	:global([data-theme='dark']) .path-card { --card-color: #60a5fa; }
+	:global([data-theme='dark']) .path-card[data-accent='violet'] { --card-color: #a78bfa; }
+	.path-card:hover { transform: translateY(-4px); border-color: var(--card-color); box-shadow: var(--docs-shadow); }
+	.path-card:focus-visible, .hero-actions a:focus-visible, .download-action:focus-visible { outline: 3px solid var(--sl-color-accent); outline-offset: 4px; }
+	.card-topline { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+	.path-icon { display: grid; place-items: center; width: 3.15rem; height: 3.15rem; border-radius: 0.7rem; color: var(--card-color); background: color-mix(in srgb, var(--card-color) 9%, var(--docs-surface)); }
+	.path-icon svg { width: 2rem; height: 2rem; }
+	.path-code { color: var(--sl-color-gray-3); font: 500 0.67rem/1.7 var(--sl-font-mono); }
+	.card-copy { margin-block: 0 auto; }
+	.card-copy h3 { margin: 0; color: var(--sl-color-white); font-size: 1.22rem; font-weight: 700; line-height: 1.75; }
+	.card-copy p { margin: 0.7rem 0 0; color: var(--sl-color-gray-2); font-size: 0.89rem; line-height: 1.9; }
+	.path-topics { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+	.path-topics li { padding: 0.23rem 0.55rem; border: 1px solid var(--docs-border); border-radius: 0.35rem; color: var(--sl-color-gray-3); font-size: 0.67rem; }
+	.card-bottom { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-top: 1.1rem; border-top: 1px solid var(--docs-border); }
+	.card-meta { display: flex; flex-wrap: wrap; gap: 0.7rem; font-size: 0.76rem; color: var(--sl-color-gray-3); }
+	.card-meta > span + span::before { content: '·'; margin-inline-end: 0.7rem; }
+	.path-arrow { display: grid; place-items: center; flex: 0 0 2.3rem; height: 2.3rem; border: 1px solid var(--docs-border); border-radius: 50%; color: var(--card-color); font-size: 1.2rem; }
+	.study-method { padding-block: 2.5rem 4rem; border-top: 1px solid var(--docs-border); }
+	.method-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+	.method-grid article { position: relative; padding-inline-start: 3.35rem; }
+	.method-number { position: absolute; inset-inline-start: 0; top: 0.25rem; display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border: 1px solid var(--docs-border); border-radius: 50%; font: 500 0.7rem/1 var(--sl-font-mono); color: var(--sl-color-text-accent); }
+	.method-grid h3 { margin: 0 0 0.7rem; color: var(--sl-color-white); font-size: 1rem; line-height: 1.9; }
+	.method-grid p { margin: 0; color: var(--sl-color-gray-3); font-size: 0.85rem; line-height: 1.85; }
+	.home-footer { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding-block: 1.5rem; border-top: 1px solid var(--docs-border); }
+	.home-footer > div { display: flex; align-items: center; gap: 0.75rem; }
+	.footer-mark { color: var(--sl-color-text-accent); font: 600 1rem/1 var(--sl-font-mono); }
+	.home-footer p { margin: 0; color: var(--sl-color-gray-3); font-size: 0.8rem; }
+	.download-action { display: inline-flex; align-items: center; gap: 0.7rem; min-height: 2.75rem; padding: 0.5rem 0.8rem; border: 1px solid var(--docs-border); border-radius: 0.5rem; background: var(--docs-surface); color: var(--sl-color-white); font: 500 0.8rem/1.6 var(--sl-font); cursor: pointer; }
+	.download-action:hover { border-color: var(--sl-color-accent); }
+	@media (max-width: 65rem) {
+		.home-hero { grid-template-columns: minmax(0, 1.1fr) minmax(17rem, 0.9fr); gap: 2rem; }
+		.learning-notebook { padding: 1.15rem; }
+		.learning-stats { gap: 1.1rem; flex-wrap: wrap; }
 	}
-
-	.home-hero {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1.08fr) minmax(20rem, 0.92fr);
-		align-items: center;
-		gap: clamp(2rem, 6vw, 5.5rem);
-		min-height: 28rem;
-		padding-block: 1.5rem 3.25rem;
+	@media (max-width: 50rem) {
+		.home-shell { padding-top: 1rem; }
+		.home-hero { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 2.5rem; }
+		h1 { font-size: clamp(2.4rem, 8vw, 3.8rem); }
+		:global([lang='ar']) h1 { font-size: clamp(1.9rem, 6.3vw, 3rem); }
+		.hero-description { max-width: 60ch; }
+		.learning-notebook { max-width: 34rem; width: 100%; padding: 1.5rem; box-shadow: none; }
+		.section-heading { grid-template-columns: 1fr; gap: 0.75rem; }
+		.section-heading > p { max-width: 60ch; }
+		.method-grid { gap: 1rem; }
+		.method-grid article { padding-inline-start: 0; padding-top: 3rem; }
 	}
-
-	.home-hero::before {
-		position: absolute;
-		z-index: -1;
-		inset: 5% 0 auto auto;
-		width: min(28rem, 80vw);
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background: radial-gradient(circle, color-mix(in srgb, var(--sl-color-accent) 16%, transparent), transparent 68%);
-		content: '';
-		filter: blur(10px);
-		pointer-events: none;
+	@media (max-width: 38rem) {
+		.library-bar { flex-wrap: wrap; gap: 0.25rem 1rem; }
+		.library-bar > span:last-child { font-size: 0.7rem; }
+		.hero-actions a { flex: 1; padding-inline: 0.65rem; font-size: 0.85rem; }
+		.learning-stats { gap: 1.1rem; }
+		.learning-stats li { gap: 0.3rem; }
+		.learning-stats strong { font-size: 1rem; }
+		.learning-stats span { font-size: 0.67rem; }
+		.learning-notebook { padding: 1.1rem; }
+		.notebook-label { font-size: 0.68rem; }
+		.notebook-edition { font-size: 0.68rem; }
+		.paths-grid, .method-grid { grid-template-columns: 1fr; }
+		.path-card { padding: 1.3rem; }
+		.card-copy h3 { font-size: 1.12rem; }
+		.learning-paths { padding-bottom: 2.5rem; }
+		.method-grid { gap: 1.7rem; }
+		.method-grid article { padding-top: 0; padding-inline-start: 3.3rem; }
+		.study-method { padding-bottom: 2.5rem; }
+		.home-footer { flex-direction: column; align-items: start; }
 	}
-
-	.eyebrow,
-	.section-kicker {
-		margin: 0 0 1rem;
-		color: var(--sl-color-accent);
-		font-size: 0.78rem;
-		font-weight: 800;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.eyebrow {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.55rem;
-		padding: 0.45rem 0.75rem;
-		border: 1px solid color-mix(in srgb, var(--sl-color-accent) 28%, transparent);
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--sl-color-accent-low) 58%, transparent);
-	}
-
-	.eyebrow > span {
-		width: 0.48rem;
-		aspect-ratio: 1;
-		border-radius: 50%;
-		background: var(--sl-color-accent);
-		box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
-	}
-
-	h1 {
-		max-width: 15ch;
-		margin: 0;
-		color: var(--sl-color-white);
-		font-size: clamp(2.6rem, 5vw, 4.7rem);
-		font-weight: 760;
-		letter-spacing: -0.055em;
-		line-height: 1.04;
-		text-wrap: balance;
-	}
-
-	:global([data-theme='light']) h1 {
-		color: #0b1020;
-	}
-
-	.hero-description {
-		max-width: 61ch;
-		margin: 1.5rem 0 0;
-		color: var(--sl-color-gray-2);
-		font-size: clamp(1.04rem, 1.5vw, 1.2rem);
-		line-height: 1.9;
-	}
-
-	:global([data-theme='light']) .hero-description {
-		color: #465066;
-	}
-
-	.hero-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.75rem;
-		margin-top: 1.85rem;
-	}
-
-	.hero-actions a,
-	.hero-actions button {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.75rem;
-		min-height: 3rem;
-		padding: 0.72rem 1.1rem;
-		border: 1px solid transparent;
-		border-radius: 0.8rem;
-		font-weight: 750;
-		text-decoration: none;
-		font: inherit;
-		cursor: pointer;
-		transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-	}
-
-	.hero-actions a:hover,
-	.hero-actions button:hover {
-		transform: translateY(-2px);
-	}
-
-	.primary-action {
-		background: linear-gradient(135deg, #4f46e5, #2563eb);
-		box-shadow: 0 12px 30px rgb(37 99 235 / 22%);
-		color: white;
-	}
-
-	.secondary-action {
-		border-color: var(--sl-color-hairline) !important;
-		background: color-mix(in srgb, var(--sl-color-bg-nav) 78%, transparent);
-		color: var(--sl-color-text-accent);
-	}
-
-	.download-action {
-		border-color: color-mix(in srgb, #22c55e 48%, var(--sl-color-hairline)) !important;
-		background: color-mix(in srgb, #22c55e 11%, var(--sl-color-bg-nav));
-		color: color-mix(in srgb, #22c55e 72%, var(--sl-color-text));
-	}
-
-	.download-action span {
-		display: grid;
-		place-items: center;
-		width: 1.35rem;
-		height: 1.35rem;
-		border-radius: 999px;
-		background: color-mix(in srgb, #22c55e 20%, transparent);
-		font-size: 1rem;
-		font-weight: 720;
-	}
-
-	.learning-stats {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0;
-		margin: 2rem 0 0;
-		padding: 0;
-		border: 1px solid var(--sl-color-hairline);
-		border-radius: 0.9rem;
-		background: color-mix(in srgb, var(--sl-color-bg-nav) 65%, transparent);
-		box-shadow: 0 8px 24px rgb(2 6 23 / 5%);
-		list-style: none;
-	}
-
-	.learning-stats li {
-		display: grid;
-		min-width: 7.2rem;
-		gap: 0.1rem;
-		padding: 0.75rem 0.95rem;
-		border-inline-end: 1px solid var(--sl-color-hairline);
-	}
-
-	.learning-stats li:last-child { border-inline-end: 0; }
-
-	.learning-stats strong {
-		color: var(--sl-color-white);
-		font-size: 1.15rem;
-	}
-
-	:global([data-theme='light']) .learning-stats strong {
-		color: #111827;
-	}
-
-	.learning-stats span {
-		color: var(--sl-color-gray-3);
-		font-size: 0.78rem;
-		font-weight: 650;
-	}
-
-	.request-visual {
-		overflow: hidden;
-		padding: 1.1rem;
-		border: 1px solid var(--sl-color-hairline);
-		border-radius: 1.25rem;
-		background: color-mix(in srgb, var(--sl-color-bg-nav) 82%, transparent);
-		box-shadow: var(--docs-shadow);
-		transition: transform 220ms ease, box-shadow 220ms ease;
-	}
-
-	.request-visual:hover {
-		box-shadow: 0 24px 55px rgb(2 6 23 / 14%);
-		transform: translateY(-3px);
-	}
-
-	.visual-topbar {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: .35rem .35rem 1rem;
-		border-bottom: 1px solid var(--sl-color-hairline);
-		color: var(--sl-color-gray-3);
-		font-size: .75rem;
-		font-weight: 700;
-	}
-
-	.visual-topbar strong { color: var(--sl-color-white); font-size: .82rem; }
-
-	.flow-line {
-		display: grid;
-		grid-template-columns: 2.25rem 1fr;
-		align-items: center;
-		gap: 0.75rem;
-		margin-top: .7rem;
-		padding: .7rem .75rem;
-		border: 1px solid var(--sl-color-hairline);
-		border-radius: 0.75rem;
-		background: color-mix(in srgb, var(--sl-color-accent) 3%, transparent);
-	}
-
-	.flow-line div { display: grid; gap: .12rem; }
-	.flow-line b { color: var(--sl-color-white); font-size: .9rem; }
-	.flow-line small { color: var(--sl-color-gray-3); font-size: .73rem; }
-
-	.flow-number {
-		display: grid;
-		width: 2.2rem;
-		height: 2.2rem;
-		place-items: center;
-		border-radius: 50%;
-		background: color-mix(in srgb, var(--sl-color-accent) 13%, transparent);
-		color: var(--sl-color-text-accent);
-		font-size: .68rem;
-		font-weight: 850;
-	}
-
-	.study-method,
-	.learning-paths { padding-top: 4rem; border-top: 1px solid var(--sl-color-hairline); }
-
-	.section-heading {
-		display: grid;
-		grid-template-columns: 1fr minmax(18rem, 31rem);
-		align-items: end;
-		gap: 2rem;
-		margin-bottom: 1.5rem;
-	}
-
-	.section-heading h2 {
-		margin: 0;
-		color: var(--sl-color-white);
-		font-size: clamp(2rem, 3.5vw, 3.2rem);
-		letter-spacing: -0.04em;
-		line-height: 1.08;
-	}
-
-	:global([data-theme='light']) .section-heading h2 {
-		color: #111827;
-	}
-
-	.section-heading > p {
-		margin: 0;
-		color: var(--sl-color-gray-3);
-		line-height: 1.75;
-	}
-
-	.paths-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-	}
-
-	.method-grid {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		overflow: hidden;
-		margin-bottom: 4rem;
-		border: 1px solid var(--sl-color-hairline);
-		border-radius: 1rem;
-		background: color-mix(in srgb, var(--sl-color-bg-nav) 76%, transparent);
-	}
-
-	.method-grid article { padding: 1.35rem; }
-	.method-grid article + article { border-inline-start: 1px solid var(--sl-color-hairline); }
-	.method-grid article > span { color: var(--sl-color-accent); font-size: .7rem; font-weight: 850; }
-	.method-grid h3 { margin: .8rem 0 .45rem; color: var(--sl-color-white); font-size: 1.05rem; }
-	.method-grid p { margin: 0; color: var(--sl-color-gray-3); font-size: .86rem; line-height: 1.72; }
-
-	.path-card {
-		--path-accent: #60a5fa;
-		position: relative;
-		display: flex;
-		min-height: 14.5rem;
-		flex-direction: column;
-		overflow: hidden;
-		padding: 1.25rem;
-		border: 1px solid var(--sl-color-hairline);
-		border-radius: 1rem;
-		background:
-			linear-gradient(145deg, color-mix(in srgb, var(--path-accent) 7%, transparent), transparent 44%),
-			color-mix(in srgb, var(--sl-color-bg-nav) 82%, transparent);
-		box-shadow: 0 10px 28px rgb(2 6 23 / 7%);
-		color: inherit;
-		text-decoration: none;
-		transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-	}
-
-	.path-card::before {
-		position: absolute;
-		inset: 0 auto auto 0;
-		width: 100%;
-		height: 2px;
-		background: linear-gradient(90deg, var(--path-accent), transparent 75%);
-		content: '';
-	}
-
-	.path-card[data-accent='violet'] { --path-accent: #a78bfa; }
-	.path-card[data-accent='cyan'] { --path-accent: #22d3ee; }
-	.path-card[data-accent='amber'] { --path-accent: #fbbf24; }
-	.path-card[data-accent='rose'] { --path-accent: #fb7185; }
-	.path-card[data-accent='green'] { --path-accent: #34d399; }
-	.path-card[data-accent='orange'] { --path-accent: #fb923c; }
-
-	.path-card:hover,
-	.path-card:focus-visible {
-		border-color: color-mix(in srgb, var(--path-accent) 58%, var(--sl-color-hairline));
-		box-shadow: 0 18px 44px color-mix(in srgb, var(--path-accent) 13%, transparent);
-		transform: translateY(-4px);
-	}
-
-	.path-card:focus-visible {
-		outline: 3px solid color-mix(in srgb, var(--path-accent) 32%, transparent);
-		outline-offset: 3px;
-	}
-
-	.card-topline,
-	.card-meta {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
-	.path-code {
-		display: inline-grid;
-		min-width: 2.6rem;
-		height: 2.2rem;
-		place-items: center;
-		padding-inline: 0.55rem;
-		border: 1px solid color-mix(in srgb, var(--path-accent) 28%, transparent);
-		border-radius: 0.65rem;
-		background: color-mix(in srgb, var(--path-accent) 11%, transparent);
-		color: var(--path-accent);
-		font: 800 0.72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
-		letter-spacing: 0.04em;
-	}
-
-	.path-arrow {
-		color: var(--path-accent);
-		font-size: 1.35rem;
-		transition: transform 180ms ease;
-	}
-
-	.path-card:hover .path-arrow {
-		transform: translateX(calc(3px * var(--arrow-direction, 1)));
-	}
-
-	:global([dir='rtl']) .path-card { --arrow-direction: -1; }
-
-	.card-copy {
-		margin-block: 1.25rem auto;
-	}
-
-	.card-copy h3 {
-		margin: 0;
-		color: var(--sl-color-white);
-		font-size: 1.14rem;
-		font-weight: 800;
-		letter-spacing: -0.015em;
-		line-height: 1.35;
-	}
-
-	:global([data-theme='light']) .card-copy h3 {
-		color: #111827;
-	}
-
-	.card-copy p {
-		margin: 0.75rem 0 0;
-		color: var(--sl-color-gray-3);
-		font-size: 0.9rem;
-		line-height: 1.75;
-	}
-
-	.card-meta {
-		padding-top: 0.85rem;
-		border-top: 1px solid var(--sl-color-hairline-light);
-		color: var(--sl-color-gray-3);
-		font-size: 0.72rem;
-		font-weight: 650;
-	}
-
-	@media (max-width: 60rem) {
-		.home-hero {
-			grid-template-columns: 1fr;
-			min-height: auto;
-			padding-top: 2rem;
-		}
-
-		.hero-copy {
-			max-width: 48rem;
-		}
-
-		h1 { max-width: 17ch; }
-		.request-visual,
-		.request-visual:hover { transform: none; }
-		.paths-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-	}
-
-	@media (max-width: 42rem) {
-		.home-shell {
-			padding: 1.2rem 0.15rem 3.5rem;
-		}
-
-		.home-hero {
-			gap: 2.25rem;
-			padding-block: 1.25rem 2.75rem;
-		}
-
-		h1 {
-			font-size: clamp(2.25rem, 11vw, 3.2rem);
-			letter-spacing: -0.04em;
-		}
-
-		.hero-description { font-size: 1rem; }
-		.hero-actions { display: grid; grid-template-columns: 1fr; }
-		.hero-actions a,
-		.hero-actions button { width: 100%; }
-		.learning-stats { display: grid; grid-template-columns: repeat(3, 1fr); }
-		.learning-stats li { min-width: 0; padding: 0.7rem 0.55rem; text-align: center; }
-		.request-visual { border-radius: 1rem; }
-		.flow-line { grid-template-columns: 2.2rem 1fr; }
-
-		.section-heading {
-			grid-template-columns: 1fr;
-			gap: 0.75rem;
-		}
-
-		.paths-grid { grid-template-columns: 1fr; }
-		.path-card { min-height: 13rem; }
-		.method-grid { grid-template-columns: 1fr; }
-		.method-grid article + article { border-inline-start: 0; border-top: 1px solid var(--sl-color-hairline); }
-	}
-
 	@media (prefers-reduced-motion: reduce) {
-		.hero-actions a,
-		.hero-actions button,
-		.path-card,
-		.path-arrow,
-		.request-visual {
-			transition: none;
-		}
+		.hero-actions a, .path-card { transition: none; }
 	}
 </style>
 
 <script>
 	const downloadButton = document.querySelector<HTMLButtonElement>('[data-docs-download]');
-
 	downloadButton?.addEventListener('click', () => {
 		const url = downloadButton.dataset.downloadUrl;
 		if (!url) return;
-
 		const link = document.createElement('a');
 		link.href = url;
 		link.download = 'omar-dev-notes-complete.pdf';

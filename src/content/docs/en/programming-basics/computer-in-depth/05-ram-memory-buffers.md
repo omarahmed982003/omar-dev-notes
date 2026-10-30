@@ -30,6 +30,29 @@ Matching numbers do not establish shared data. The system interprets an address 
 
 The table illustrates a relationship rather than measuring your device's addresses. Virtual memory is not extra RAM or a guarantee that arbitrarily large requests will succeed.
 
+<figure class="concept-visual" aria-labelledby="process-address-visual-en">
+<div class="visual-heading">The same number, two different process contexts</div>
+<div class="visual-grid">
+<div class="visual-panel">
+<p class="visual-label">Process A — Editor A</p>
+<div class="visual-step">Virtual address <code>1000</code></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<p>The system interprets it using Process A's memory mapping.</p>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-step"><span class="visual-tag">Location A in RAM</span><p>File A's text</p></div>
+</div>
+<div class="visual-panel">
+<p class="visual-label">Process B — Editor B</p>
+<div class="visual-step">Virtual address <code>1000</code></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<p>The system interprets it using Process B's memory mapping.</p>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-step"><span class="visual-tag">Location B in RAM</span><p>File B's text</p></div>
+</div>
+</div>
+<figcaption id="process-address-visual-en">These independent data occupy different locations despite matching virtual addresses. The number alone does not identify the data without its process context. This is a teaching example, not a rule prohibiting explicitly authorized sharing.</figcaption>
+</figure>
+
 ### Why can similar amounts of data involve different waits?
 
 A **memory controller** coordinates access to RAM chips. **Bandwidth** measures data transferred per unit of time; **latency** measures waiting for one result.

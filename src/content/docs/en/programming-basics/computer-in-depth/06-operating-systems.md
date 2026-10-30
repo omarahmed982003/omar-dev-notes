@@ -33,6 +33,26 @@ A **system call** requests a system service such as opening a file. Running on a
 
 **Permissions** specify allowed actions such as reading and writing. Being installed is not permission to read an accounting program's memory or another user's files. Authorized sharing is possible; protection does not prohibit every exchange.
 
+<figure class="concept-visual" aria-labelledby="system-call-visual-en">
+<div class="visual-heading">Opening a file: where does the request go?</div>
+<div class="visual-panel">
+<p class="visual-label">User mode</p>
+<div class="visual-step">The application requests opening <code>notes.txt</code> for reading.</div>
+</div>
+<span class="visual-arrow" aria-hidden="true">↓ System call</span>
+<div class="visual-panel">
+<p class="visual-label">Kernel mode</p>
+<div class="visual-step">The kernel checks the request, process identity, and permissions.</div>
+</div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-grid">
+<div class="visual-panel"><span class="visual-tag">Access allowed</span><p>The system continues opening the file; a successful open does not guarantee that every subsequent read succeeds.</p></div>
+<div class="visual-panel"><span class="visual-tag">Access denied</span><p>The system rejects the open and returns an error. Running does not let the application bypass that decision.</p></div>
+</div>
+<p class="visual-note">Either result returns to the application in user mode, where it handles success or failure.</p>
+<figcaption id="system-call-visual-en">A system call requests a protected service rather than unrestricted device access. This follows one open request without claiming that every application request maps to exactly one system call.</figcaption>
+</figure>
+
 ### Follow one file read
 
 This is a paper scenario: a program wants `notes.txt`. The **scheduler** selects a ready thread to receive processor time.

@@ -45,6 +45,15 @@ HTTP/2 وHTTP/3 يمثلان الرسائل بصيغة ثنائية بدل ال�
 
 جسم المثال أعلاه 27 بايتًا بترميز UTF-8 (Unicode Transformation Format بوحدات 8 بت؛ ترميز أرقام رموز Unicode كبايتات)، من غير سطر جديد في نهايته. **Content-Length** يعد البايتات لا عدد الحروف؛ تغيير الجسم يحتاج إعادة حسابه. `Bearer ey...` قيمة توضيحية مختصرة وليست رمز دخول صالحًا.
 
+<figure class="concept-visual" aria-labelledby="http-message-visual-ar">
+<div class="visual-heading" id="http-message-visual-ar">شوف حدود أجزاء نفس Request</div>
+<div class="message-part" data-part="start"><div dir="ltr"><code>POST /api/orders?notify=1 HTTP/1.1</code></div><small><strong>Start line</strong><br>العملية، وبعدها الهدف، وبعدها الإصدار.</small></div>
+<div class="message-part" data-part="headers"><div dir="ltr"><code>Host: shop.example</code><code>Accept: application/json</code><code>Content-Type: application/json</code><code>Authorization: Bearer ey...</code><code>Cookie: session=abc123</code><code>Content-Length: 27</code></div><small><strong>Headers</strong><br>وصف الرسالة وطريقة التعامل معاها. قيمة 27 بتعد بايتات Body فقط.</small></div>
+<div class="message-separator">سطر فارغ: هنا Headers خلصت، وBody بتبدأ بعده</div>
+<div class="message-part" data-part="body"><div dir="ltr"><code>{"product_id":42,"count":2}</code></div><small><strong>Body</strong><br>البيانات نفسها: المنتج 42 والكمية 2.</small></div>
+<figcaption>اقرا الرسالة من فوق لتحت: نية الطلب، ثم وصفه، ثم بياناته. الفصل بالسطر الفارغ هنا يخص شكل HTTP/1.1 النصي؛ ألوان الأجزاء للتوضيح ومش جزء من الرسالة اللي بتتنقل.</figcaption>
+</figure>
+
 ## Methods
 
 | Method | الدلالة المعتادة | Safe؟ | Idempotent؟ |
@@ -91,6 +100,14 @@ Cache-Control: no-store
 | `5xx` | فشل جهة server | `500`, `502`, `503` |
 
 `401` يعني غالبًا أن المصادقة مطلوبة أو غير صالحة، و`403` أن الطلب مفهوم لكن غير مسموح. لا تستخدم `200` لكل شيء؛ الحالة جزء من عقد الـAPI (Application Programming Interface؛ اتفاق يسمح لبرنامج بطلب بيانات أو عملية من مكوّن آخر).
+
+:::note[تعمق أكثر: Safe وIdempotent وCacheable مش مترادفات]
+**Safe method** يعني أن العميل لا يطلب تغيير حالة business؛ `GET` و`HEAD` للقراءة. ده لا يمنع Logging أوMetrics، لكنه يمنع تصميم `GET /delete-order/7`. **Idempotent method** يعني تكرار الطلب له نفس الأثر المقصود مرة واحدة؛ `PUT` و`DELETE` قد يرجعا ردًا مختلفًا في المحاولة الثانية لكن الحالة النهائية نفسها. **Cacheable** قرار منفصل تحكمه مواصفات HTTP والـheaders والسياسة.
+
+الـ`POST` مش Idempotent تلقائيًا، لكن تقدر تجعل عملية بعينها آمنة لإعادة المحاولة بـ`Idempotency-Key` مربوط بالمستخدم والمدخلات والنتيجة. ما تعتبرش انقطاع الاتصال دليلًا إن server لم ينفذ: ممكن الدفع اتسجل والرد ضاع. لذلك Retry policy تعتمد على Semantics العملية، مش على Method وحدها.
+
+اقرأ أخطاء الوسطاء بدقة: `502` يعني إن Gateway لم يحصل على رد Upstream صالح، و`503` يعني إن الخدمة غير متاحة أومافيش Capacity الآن، و`504` يعني إن Gateway انتظر Upstream لحد انتهاء المهلة. الرمز يحدد أين تبدأ التحقيق، لكنه لا يثبت Root cause من غير Logs وTrace.
+:::
 
 ## مسائل عملية
 

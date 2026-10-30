@@ -43,6 +43,11 @@ Caching reduces latency, bandwidth, PHP (a programming language commonly used fo
 
 ## Freshness and validation
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/network/cache-revalidation.svg" alt="HTTP cache decision: serve a fresh entry directly, otherwise revalidate and either reuse the old body after 304 or store a new 200 response" loading="lazy" />
+  <figcaption>Freshness avoids a request. Validation still contacts the server but a 304 avoids retransmitting the body; a 200 replaces the cached representation.</figcaption>
+</figure>
+
 ```http
 Cache-Control: public, max-age=60, s-maxage=300
 ETag: "product-42-v7"
@@ -127,6 +132,14 @@ Exercise: send a nonmatching tag, a matching weak tag in a list, and `*`. Expect
 The **origin** is the source server; **edge/PoP (Point of Presence)** is a distributed serving location. A **cache key** groups requests sharing a representation. A content **hash** fingerprints data; it is not encryption. **Purge/invalidation** removes or expires a stored copy and may propagate gradually.
 
 Comparing purge completion across locations requires actual separate measurement locations; two commands on one device do not establish global propagation. Public sites need not expose request IDs on their 404 or 500 responses.
+
+:::note[Deep dive: strong ETags, weak ETags, and Vary]
+A **strong ETag** promises byte-for-byte identity, so it can safely validate range requests that combine pieces of one representation. A **weak ETag**, normally prefixed with `W/`, promises semantic equivalence even if unimportant bytes such as formatting or compression differ. Do not use a weak validator to assemble file ranges; that operation needs a strong identity for the representation.
+
+An ETag does not have to be an expensive hash of every response body. For database data, a version column or well-defined `updated_at` value can generate a cheap validator. The value must change whenever the protected representation changes, and it must not leak secrets or accidentally mix user-specific cache entries.
+
+The **Vary** header tells a cache which request headers change the representation. If language depends on `Accept-Language` and compression on `Accept-Encoding`, both belong in the cache key. High-cardinality choices such as `Vary: Cookie` or `Vary: User-Agent` can produce a separate entry for nearly every request and destroy the hit rate, so design and measure the key deliberately.
+:::
 
 ## Check this topic
 

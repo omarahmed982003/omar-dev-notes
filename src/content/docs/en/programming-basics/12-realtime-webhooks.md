@@ -41,6 +41,22 @@ Choose an update channel by data direction, frequency, and tolerated delay. Poll
 
 WebSockets add connection state, heartbeat, backpressure, and scaling concerns. Choose the simplest pattern that meets the requirement.
 
+## WebSocket at the connection level
+
+WebSocket commonly begins with an HTTP/1.1 request carrying `Upgrade: websocket` and `Connection: Upgrade`. A willing server answers `101 Switching Protocols`; the connection then carries bidirectional WebSocket **frames**, not ordinary request/response pairs. HTTP/2 can use extended CONNECT when the path supports it.
+
+Client-to-server frames are **masked** as required by the protocol. Masking helps prevent incorrect intermediary interpretation; it is not encryption. `wss://` means WebSocket protected by TLS.
+
+| Event | Application responsibility |
+|---|---|
+| Proxy idle timeout | Send heartbeat and configure deadlines intentionally |
+| Network loss | Reconnect with backoff and jitter instead of a retry storm |
+| Reconnection | Reauthenticate and resubscribe; do not assume old messages arrived |
+| Slow client | Bound queues and apply backpressure or disconnect it |
+| Multiple server instances | Use a broker or shared routing state to find the connection owner |
+
+**Backoff** increases retry delay gradually; **jitter** adds randomness so clients do not retry together. When loss matters, add message IDs or sequence numbers and a resume design. WebSocket alone is not an exactly-once delivery guarantee.
+
 ## Server-Sent Events
 
 The following fragment sends one event from a PHP (a programming language commonly used for server-side web processing) handler after its opening tag; it is not a complete streaming server. event names the event, data supplies content, and a blank line ends the event.
@@ -58,6 +74,14 @@ flush();
 ```
 
 Browsers reconnect automatically. Event IDs and `Last-Event-ID` can support resume. Long streams can occupy FPM (FastCGI Process Manager, managing PHP request workers) workers, so validate the server architecture and timeouts.
+
+:::note[Deep dive: choose polling, SSE, or WebSocket by data direction]
+**Short polling** is simple but sends requests when nothing changed and can delay an update by the full interval. **Long polling** holds a request until an event or timeout, then reconnects immediately; it needs a cursor such as `since=1042` so an event between requests is not lost.
+
+**SSE** is a long HTTP response with `text/event-stream`. An event can carry an `id`, and the browser reconnects with `Last-Event-ID` to resume. Send heartbeat comments, disable proxy buffering for the route, and set a suitable read timeout; otherwise events can arrive in a burst even when application code flushes them.
+
+**WebSocket** is full-duplex and fits frequent traffic in both directions, but the stateful connection needs deliberate distribution, heartbeats, backpressure, and message limits. Reconnection does not restore subscriptions or messages automatically: the client authenticates and subscribes again with its last known sequence, and the server decides what can be replayed from shared storage.
+:::
 
 ## Operations
 

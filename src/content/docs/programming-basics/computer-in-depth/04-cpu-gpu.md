@@ -39,6 +39,20 @@ next: {"link":"/programming-basics/computer-in-depth/03-binary-languages-algorit
 
 بعدها يستمر التنفيذ للتعليمة المناسبة التالية. النموذج بيوضح المسؤوليات؛ المعالج الحديث مش لازم يخلص تعليمة بالكامل قبل ما يبدأ تجهيز غيرها، والفرع البرمجي ممكن يغير اتجاه التنفيذ.
 
+<figure class="concept-visual" aria-labelledby="cpu-cycle-visual-ar">
+<div class="visual-heading">تعليمة واحدة تحت العدسة: أضف 3 إلى R</div>
+<p class="visual-note">قبل التعليمة ب: <code dir="ltr">R = 5</code>. هنمشي وراء التعليمة، ونشوف إمتى القيمة تتغيّر.</p>
+<div class="visual-cycle">
+<div class="visual-panel"><p class="visual-label">1 · Fetch</p><div class="visual-step">الـProgram counter يساعد في تحديد مكان التعليمة ب، والمعالج يجلبها.</div><span class="visual-tag"><code dir="ltr">R = 5</code></span></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-panel"><p class="visual-label">2 · Decode</p><div class="visual-step">الـControl unit تنظم فهم المطلوب: العملية جمع، والقيمة المضافة 3، والبيانات في R.</div><span class="visual-tag"><code dir="ltr">R = 5</code></span></div>
+<span class="visual-arrow" aria-hidden="true">↓</span>
+<div class="visual-panel"><p class="visual-label">3 · Execute</p><div class="visual-step">الـALU تنفذ الجمع في نموذجنا، والناتج يتحفظ في R.</div><span class="visual-tag"><code dir="ltr">5 + 3 → R = 8</code></span></div>
+</div>
+<p class="visual-note">بعد التنفيذ نتابع التعليمة المناسبة التالية؛ ولو فيه تعليمة تانية، نكرر نفس مسؤوليات الجلب والفهم والتنفيذ معها.</p>
+<figcaption id="cpu-cycle-visual-ar">القيمة ما اتغيرتش لمجرد جلب التعليمة أو فهمها؛ اتغيرت عند تنفيذ الجمع. الرسم بيفصل مسؤوليات تعليمة واحدة، ومش بيزعم إن كل مرحلة دورة واحدة أو إن المعالج الحديث بينفذ كل التعليمات بالتتابع الصارم ده.</figcaption>
+</figure>
+
 ### البيانات قريبة من المعالج ولا بعيدة عنه؟
 
 **Cache — ذاكرة مؤقتة قريبة من التنفيذ** تحتفظ بنسخ لتقليل انتظار بيانات متكررة. مش كل قيمة لازم تيجي من RAM في كل مرة.

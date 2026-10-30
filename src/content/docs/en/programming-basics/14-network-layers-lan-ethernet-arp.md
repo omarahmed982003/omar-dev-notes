@@ -43,14 +43,33 @@ ARP (Address Resolution Protocol, finding a local-link MAC address for an IPv4 a
 
 Layers separate responsibilities. HTTP defines application messages, TCP or UDP (User Datagram Protocol, independent messages without built-in delivery or ordering guarantees) transports them, IP routes packets between networks, and Ethernet or Wi-Fi moves frames across the current link.
 
-Each layer adds a header during encapsulation and the receiving side removes it.
+The **OSI model** is a seven-layer teaching vocabulary behind names such as Layer 4 and Layer 7. The **TCP/IP model** is closer to the protocol stack used by the Internet. Their mapping is approximate: the upper OSI layers usually sit inside the TCP/IP Application layer.
 
-| Layer | Examples | Data unit |
-|---|---|---|
-| Application | HTTP, DNS (Domain Name System, a distributed system answering queries about domain names), TLS (Transport Layer Security, rules for establishing an authenticated protected connection) | Message/Data |
-| Transport | TCP, UDP | Segment/Datagram |
-| Internet | IPv4, IPv6 | Packet |
-| Link | Ethernet, Wi-Fi | Frame |
+| OSI layer | TCP/IP layer | Data unit | Examples | Addressing |
+|---|---|---|---|---|
+| 7 Application | Application | Message / Data | HTTP, DNS, SMTP, WebSocket | URLs, hostnames |
+| 6 Presentation | Application | Message / Data | Encoding, compression, TLS roughly | — |
+| 5 Session | Application | Message / Data | Session setup and teardown roughly | — |
+| 4 Transport | Transport | Segment / Datagram | TCP, UDP, QUIC over UDP | Ports |
+| 3 Network | Internet | Packet | IPv4, IPv6, ICMP | IP addresses |
+| 2 Data link | Link | Frame | Ethernet, Wi-Fi, ARP | MAC addresses |
+| 1 Physical | Link | Bits | Copper, fiber, radio | — |
+
+This table is a reasoning aid, not a claim that every protocol fits one box perfectly. TLS, for example, serves applications while depending on a transport below it.
+
+## Encapsulation: what each layer adds
+
+**Encapsulation** means that a layer treats the complete unit from the layer above as its payload, then adds the metadata needed for its own responsibility. The receiver performs **decapsulation** in reverse until the application receives the original bytes.
+
+<figure class="teaching-figure teaching-figure-wide">
+  <picture>
+    <source media="(max-width: 500px)" srcset="/diagrams/foundations/network/encapsulation-mobile.svg" />
+    <img src="/diagrams/foundations/network/encapsulation.svg" alt="HTTP request bytes become the payload of a TCP segment; IP wraps that segment in a packet; Ethernet wraps the packet with a header and FCS." loading="lazy" />
+  </picture>
+  <figcaption>The boxes show containment, not scale. In a common no-options case, a 1500-byte Ethernet MTU minus a 20-byte IPv4 header and a 20-byte TCP header leaves an MSS near 1460 bytes. Options, tunnels, and other links change the calculation.</figcaption>
+</figure>
+
+The TCP header carries fields such as ports and sequence acknowledgements. The IP header carries source and destination IP addresses. The Ethernet header carries MAC addresses for the current local hop, while the **FCS (Frame Check Sequence)** helps the link detect frame corruption.
 
 ## LAN, Ethernet, and switches
 
@@ -67,6 +86,12 @@ ARP discovers the MAC address associated with an IPv4 address on the LAN. A host
 A switch forwards local frames using MAC addresses. A router connects IP networks and selects a next hop using its routing table.
 
 A home device may combine routing, switching, Wi-Fi, DHCP (Dynamic Host Configuration Protocol, automatic network configuration for hosts), and NAT (Network Address Translation, rewriting IP addresses at a network boundary), but these remain distinct functions.
+
+:::note[Deep dive: encapsulation changes at every hop]
+When an application sends HTTP, HTTP data becomes payload in a TCP segment, the segment becomes payload in an IP packet, and the packet becomes payload in a link-layer frame. A router does not forward one Ethernet frame unchanged across the Internet. It removes the incoming frame, decrements the hop limit or TTL, chooses a route, and builds a new frame for the next link. Endpoint IP addresses normally remain while MAC addresses change at each link; NAT or a proxy can deliberately change other boundaries.
+
+An **L4 load balancer** primarily routes using transport protocol, IP addresses, and ports, so it does not normally inspect an HTTP URL. An **L7 load balancer** terminates HTTP or TLS at some point and understands paths and headers, allowing `/api` and `/images` to reach different pools. The layer number describes the information available to the decision, not a claim that the product implements only one layer.
+:::
 
 ## Practical exercises
 

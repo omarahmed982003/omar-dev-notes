@@ -23,6 +23,11 @@ Software does not need a window to perform useful work.
 
 ## Source code, program, and process
 
+<figure class="teaching-figure visual-focus">
+  <img src="/diagrams/foundations/core/program-execution.svg" alt="A PHP source file passes through the PHP runtime and dependency loading before becoming a process that requests operating-system resources" loading="lazy" />
+  <figcaption>A source file is not a running process. The runtime prepares execution; the operating system then supplies CPU time, memory, files, and networking.</figcaption>
+</figure>
+
 **Source code** is the text a programmer writes for language tools to understand. `hello.php` is source code. A **program** is the instructions and components that accomplish a task, potentially spread across many files.
 
 A **process** is a running instance of a program with an identity, memory, and resources managed by the operating system.
